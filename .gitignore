@@ -4,10 +4,6 @@
 
 *.v#
 
-exer.0-1.log
-
-exer.1-2.log
-
 *.aux
 
 *.make
