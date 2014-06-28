@@ -1,0 +1,15 @@
+Coq formatting
+--------------
+  * fix spacing
+
+LaTeX formatting
+----------------
+  * make sure there's no namespace collisions; put primes on things where
+    needed.
+  * figure out noweb syntax highlighting
+
+Coq exercises
+-------------
+  * is it worthwhile to do the proofs in more detail, instead of just `trivial`
+    each time?
+  * learn Coq, then re-do all of the exercises in an illuminating way.

@@ -1,4 +1,4 @@
-\nwfilename{chap01.nw}\nwbegindocs{1}\section*{Introduction}
+@\section*{Introduction}
 
 The following are solutions to (eventually all of) the exercises from
 \emph{Homotopy Type Theory: Univalent Foundations of Mathematics}.  The Coq
@@ -6,10 +6,10 @@ code given alongside the by-hand solutions requires the HoTT version of Coq,
 available \href{https://github.com/HoTT}{at the HoTT github repository}.  It
 will be assumed throughout that it has been imported by
 
-\nwenddocs{}\nwbegincode{2}\moddef{chap01.v}\endmoddef
+<<chap01.v>>=
 Require Import HoTT.
 
-\nwendcode{}\nwbegindocs{3}The
+@ The
 \href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
 to Coq from the HoTT repo} is assumed.  Each exercise has its own
 \lstinline|Section| in the Coq file, so \lstinline|Context| declarations don't
@@ -41,10 +41,10 @@ and
 \]
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have
 
-\nwenddocs{}\nwbegincode{4}\moddef{chap01.v}\plusendmoddef
+<<chap01.v>>=
 Section Exercise1.
 
-Definition compose \{A B C:Type\} (g : B -> C) (f : A -> B) :=
+Definition compose {A B C:Type} (g : B -> C) (f : A -> B) :=
     fun x => g (f x).
 
 Theorem compose_assoc : forall (A B C D : Type) (f : A -> B) (g : B-> C) (h : C -> D),
@@ -55,7 +55,7 @@ Qed.
 
 End Exercise1.
 
-\nwendcode{}\nwbegindocs{5}%DONE
+@ %DONE
 \exer{1.2}{56}  Derive the recursion principle for products $\rec{A
   \times B}$ using only the projections, and verify that the definitional
 equalities are valid.  Do the same for $\Sigma$-types.
@@ -74,7 +74,7 @@ in terms of these projections as follows
 \]
 or, in Coq,
 
-\nwenddocs{}\nwbegincode{6}\moddef{chap01.v}\plusendmoddef
+<<chap01.v>>=
 Section Exercise2_prd.
 
 Variable A B : Type.
@@ -95,7 +95,9 @@ Variable B : A -> Type.
 Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) :=
     g (projT1 p) (projT2 p).
 
-\nwendcode{}\nwbegindocs{7}We must then show that
+End Exercise2_sm.
+
+@ We must then show that
 \begin{align*}
   \rec{A\times B}'(C, g, (a, b)) 
   \equiv g(\fst (a, b))(\snd (a, b))
@@ -1145,4 +1147,3 @@ induction.
 %  f: \prd{x, y :A}\prd{p: x=_{A} y} C(x, y, p)
 %\]
 %such that $f(x, x, \refl{x}) \defeq c(x)$.
-\nwenddocs{}
