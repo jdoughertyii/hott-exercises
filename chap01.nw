@@ -1,4 +1,4 @@
-@\section*{Introduction}
+@ \section*{Introduction}
 
 The following are solutions to (eventually all of) the exercises from
 \emph{Homotopy Type Theory: Univalent Foundations of Mathematics}.  The Coq

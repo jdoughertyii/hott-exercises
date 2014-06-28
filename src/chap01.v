@@ -33,3 +33,5 @@ Variable B : A -> Type.
 Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) :=
     g (projT1 p) (projT2 p).
 
+End Exercise2_sm.
+
