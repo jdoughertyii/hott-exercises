@@ -5,14 +5,13 @@ The following are solutions to (eventually all of) the exercises from
 code given alongside the by-hand solutions requires the HoTT version of Coq,
 available \href{https://github.com/HoTT}{at the HoTT github repository}.  It
 will be assumed throughout that it has been imported by
-
-\nwenddocs{}\nwbegincode{2}\moddef{chap01.v}\endmoddef
-\PY{k+kn}{Require} \PY{k+kn}{Import} \PY{n+nn}{HoTT}\PY{p}{.}
-
-\nwendcode{}\nwbegindocs{3}The
+\begin{lstlisting}
+  Require Import HoTT.
+\end{lstlisting}
+The
 \href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
 to Coq from the HoTT repo} is assumed.  Each exercise has its own
-\lstinline|{fun}| in the Coq file, so \lstinline|Context| declarations don't
+\lstinline|Section| in the Coq file, so \lstinline|Context| declarations don't
 extend beyond the exercise---and sometimes they're even more restricted than
 that.
 
@@ -41,21 +40,16 @@ and
 \]
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have
 
-\nwenddocs{}\nwbegincode{4}\moddef{chap01.v}\plusendmoddef
-\PY{k+kn}{Section} \PY{n+nn}{Exercise1}\PY{p}{.}
+\nwenddocs{}\nwbegincode{2}\moddef{ex01.v}\endmoddef
+\PY{k+kn}{Definition} \PY{n}{compose} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C}\PY{o}{:}\PY{k+kt}{Type}\PY{o}{\PYZcb{}} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
+    \PY{k}{fun} \PY{n}{x} \PY{o}{\mLA\ensuremath{\Rightarrow}\mRA} \PY{n}{g} \PY{o}{(}\PY{n}{f} \PY{n}{x}\PY{o}{)}\PY{o}{.}
 
-\PY{n+nc}{Definition} \PY{n}{compose} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C}\PY{o}{:}\PY{k+kt}{Type}\PY{o}{\PYZcb{}} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
-    \PY{k}{fun} \PY{n}{x} \PY{o}{=\PYZgt{}} \PY{n}{g} \PY{o}{(}\PY{n}{f} \PY{n}{x}\PY{o}{)}\PY{o}{.}
-
-\PY{k+kn}{Theorem} \PY{n}{compose\PYZus{}assoc} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C} \PY{n+nc}{D} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B}\PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{h} \PY{o}{:} \PY{n+nc}{C} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{D}\PY{o}{)}\PY{o}{,}
+\PY{k+kn}{Theorem} \PY{n}{compose\PYZus{}assoc} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C} \PY{n+nc}{D} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{B}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B}\PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{h} \PY{o}{:} \PY{n+nc}{C} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{D}\PY{o}{)}\PY{o}{,}
     \PY{n}{compose} \PY{n}{h} \PY{o}{(}\PY{n}{compose} \PY{n}{g} \PY{n}{f}\PY{o}{)} \PY{o}{=} \PY{n}{compose} \PY{o}{(}\PY{n}{compose} \PY{n}{h} \PY{n}{g}\PY{o}{)} \PY{n}{f}\PY{o}{.}
 \PY{k+kn}{Proof}\PY{o}{.}
   \PY{k}{trivial}\PY{o}{.}
 \PY{k+kn}{Qed}\PY{o}{.}
-
-\PY{k+kn}{End} \PY{n+nn}{Exercise1}\PY{p}{.}
-
-\nwendcode{}\nwbegindocs{5}%DONE
+\nwendcode{}\nwbegindocs{3}%DONE
 \exer{1.2}{56}  Derive the recursion principle for products $\rec{A
   \times B}$ using only the projections, and verify that the definitional
 equalities are valid.  Do the same for $\Sigma$-types.
@@ -74,30 +68,11 @@ in terms of these projections as follows
 \]
 or, in Coq,
 
-\nwenddocs{}\nwbegincode{6}\moddef{chap01.v}\plusendmoddef
-\PY{k+kn}{Section} \PY{n+nn}{Exercise2\PYZus{}prd}\PY{p}{.}
-
-\PY{n+nc}{Variable} \PY{n+nc}{A} \PY{n+nc}{B} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{.}
-
-\PY{k+kn}{Definition} \PY{n}{recprod} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
+\nwenddocs{}\nwbegincode{4}\moddef{ex02a.v}\endmoddef
+\PY{k+kn}{Definition} \PY{n}{recprod} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{B} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
     \PY{n}{g} \PY{o}{(}\PY{n}{fst} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{snd} \PY{n}{p}\PY{o}{)}\PY{o}{.}
 
-\PY{k+kn}{Goal} \PY{n}{recprod} \PY{n+nc}{A} \PY{o}{(}\PY{k}{fun} \PY{n}{a} \PY{o}{=\PYZgt{}} \PY{k}{fun} \PY{n}{b} \PY{o}{=\PYZgt{}} \PY{n}{a}\PY{o}{)} \PY{o}{=} \PY{n}{fst}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
-\PY{k+kn}{Goal} \PY{n}{recprod} \PY{n+nc}{B} \PY{o}{(}\PY{k}{fun} \PY{n}{a} \PY{o}{=\PYZgt{}} \PY{k}{fun} \PY{n}{b} \PY{o}{=\PYZgt{}} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{snd}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
-
-\PY{k+kn}{End} \PY{n+nn}{Exercise2\PYZus{}prd}\PY{p}{.}
-
-\PY{n+nc}{Section} \PY{n+nn}{Exercise2\PYZus{}sm}\PY{p}{.}
-
-\PY{n+nc}{Variable} \PY{n+nc}{A} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{.}
-\PY{k+kn}{Variable} \PY{n+nc}{B} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{k+kt}{Type}\PY{o}{.}
-
-\PY{k+kn}{Definition} \PY{n}{recsm} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{k}{exists} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x}\PY{o}{)} \PY{o}{:=}
-    \PY{n}{g} \PY{o}{(}\PY{n}{projT1} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{projT2} \PY{n}{p}\PY{o}{)}\PY{o}{.}
-
-\PY{k+kn}{End} \PY{n+nn}{Exercise2\PYZus{}sm}\PY{p}{.}
-
-\nwendcode{}\nwbegindocs{7}We must then show that
+\nwendcode{}\nwbegindocs{5}We must then show that
 \begin{align*}
   \rec{A\times B}'(C, g, (a, b)) 
   \equiv g(\fst (a, b))(\snd (a, b))
@@ -105,7 +80,10 @@ or, in Coq,
 \end{align*}
 which in Coq is also trivial:
 
-Now for the $\Sigma$-types.  Here we have a projection
+\nwenddocs{}\nwbegincode{6}\moddef{ex02a.v}\plusendmoddef
+\PY{k+kn}{Goal} \PY{k}{forall} \PY{n+nc}{C} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{,} \PY{n}{recprod} \PY{n+nc}{C} \PY{n}{g} \PY{o}{(}\PY{n}{a}\PY{o}{,} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{7}Now for the $\Sigma$-types.  Here we have a projection
 \[
   \fst : \left(\sm{x : A} B(x) \right) \to A
 \]
@@ -124,8 +102,12 @@ by
   \defeq
   g(\fst p)(\snd p)
 \]
-And in Coq,
-We then verify that
+
+\nwenddocs{}\nwbegincode{8}\moddef{ex02b.v}\endmoddef
+\PY{k+kn}{Definition} \PY{n}{recsm} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{k}{exists} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x}\PY{o}{)} \PY{o}{:=}
+    \PY{n}{g} \PY{o}{(}\PY{n}{projT1} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{projT2} \PY{n}{p}\PY{o}{)}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{9}We then verify that
 \begin{align*}
   \rec{\sm{x:A}B(x)}(C, g, (a, b))
   \equiv g(\fst (a, b))(\snd (a, b))
@@ -133,8 +115,10 @@ We then verify that
 \end{align*}
 which is again trivial in Coq:
 
-%DONE
-\exer{1.3}{56} Derive the induction principle for products $\ind{A \times B}$
+\nwenddocs{}\nwbegincode{10}\moddef{ex02b.v}\plusendmoddef
+\PY{k+kn}{Goal} \PY{k}{forall} \PY{n+nc}{C} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{,} \PY{n}{recsm} \PY{n+nc}{C} \PY{n}{g} \PY{o}{(}\PY{n}{a}\PY{o}{;} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{11}\exer{1.3}{56} Derive the induction principle for products $\ind{A \times B}$
 using only the projections and the propositional uniqueness principle $\uppt$.
 Verify that the definitional equalities are valid.  Generalize $\uppt$ to
 $\Sigma$-types, and do the same for $\Sigma$-types.
@@ -176,7 +160,15 @@ has the right type.
 In Coq we first define $\uppt$, then use it with transport to give our
 $\ind{A\times B}$.
 
-We now have to show that
+\nwenddocs{}\nwbegincode{12}\moddef{ex03a.v}\endmoddef
+\PY{k+kn}{Definition} \PY{n}{uppt} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:} \PY{o}{(}\PY{n}{fst} \PY{n}{x}\PY{o}{,} \PY{n}{snd} \PY{n}{x}\PY{o}{)} \PY{o}{=} \PY{n}{x}\PY{o}{.}
+  \PY{k}{destruct} \PY{n}{x}\PY{o}{;} \PY{k+kp}{reflexivity}\PY{o}{.}
+\PY{k+kn}{Defined}\PY{o}{.}
+
+\PY{k+kn}{Definition} \PY{n}{indprd} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n}{x}\PY{o}{:}\PY{n+nc}{A}\PY{o}{)} \PY{o}{(}\PY{n}{y}\PY{o}{:}\PY{n+nc}{B}\PY{o}{)}\PY{o}{,} \PY{n+nc}{C} \PY{o}{(}\PY{n}{x}\PY{o}{,} \PY{n}{y}\PY{o}{)}\PY{o}{)} \PY{o}{(}\PY{n}{z} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
+      \PY{o}{(}\PY{n}{uppt} \PY{n}{z}\PY{o}{)} \PY{o}{\PYZsh{}} \PY{o}{(}\PY{n}{g} \PY{o}{(}\PY{n}{fst} \PY{n}{z}\PY{o}{)} \PY{o}{(}\PY{n}{snd} \PY{n}{z}\PY{o}{)}\PY{o}{)}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{13}We now have to show that
 \[
   \ind{A \times B}(C, g, (a, b)) 
   \equiv g(a)(b)
@@ -201,6 +193,10 @@ Unfolding the left gives
 \end{align*}
 which was to be proved.  In Coq, it's as trivial as always:
 
+\nwenddocs{}\nwbegincode{14}\moddef{ex03a.v}\plusendmoddef
+\PY{k+kn}{Goal} \PY{k}{forall} \PY{n+nc}{C} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{,} \PY{n}{indprd} \PY{n+nc}{C} \PY{n}{g} \PY{o}{(}\PY{n}{a}\PY{o}{,} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{15}\nwdocspar
 For $\Sigma$-types, we define
 \[
   \ind{\tsm{x:A}B(x)} : \prd{C:(\tsm{x:A}B(x)) \to \UU}
@@ -230,7 +226,16 @@ Thus, we can write
 \]
 and in Coq,
 
-Now we must verify that
+\nwenddocs{}\nwbegincode{16}\moddef{ex03b.v}\endmoddef
+\PY{k+kn}{Definition} \PY{n}{upst} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{o}{\PYZob{}}\PY{n}{x}\PY{o}{:}\PY{n+nc}{A} \PY{o}{\PYZam{}} \PY{n+nc}{B} \PY{n}{x}\PY{o}{\PYZcb{}}\PY{o}{)} \PY{o}{:} \PY{o}{(}\PY{n}{projT1} \PY{n}{p}\PY{o}{;} \PY{n}{projT2} \PY{n}{p}\PY{o}{)} \PY{o}{=} \PY{n}{p}\PY{o}{.}
+  \PY{k}{destruct} \PY{n}{p}\PY{o}{;} \PY{k+kp}{reflexivity}\PY{o}{.}
+\PY{k+kn}{Defined}\PY{o}{.}
+
+\PY{k+kn}{Definition} \PY{n}{indsm} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{o}{\PYZob{}}\PY{n}{x}\PY{o}{:}\PY{n+nc}{A} \PY{o}{\PYZam{}} \PY{n+nc}{B} \PY{n}{x}\PY{o}{\PYZcb{}} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n}{a}\PY{o}{:}\PY{n+nc}{A}\PY{o}{)} \PY{o}{(}\PY{n}{b}\PY{o}{:}\PY{n+nc}{B} \PY{n}{a}\PY{o}{)}\PY{o}{,} \PY{n+nc}{C} \PY{o}{(}\PY{n}{a}\PY{o}{;} \PY{n}{b}\PY{o}{)}\PY{o}{)} 
+                 \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{o}{\PYZob{}}\PY{n}{x}\PY{o}{:}\PY{n+nc}{A} \PY{o}{\PYZam{}} \PY{n+nc}{B} \PY{n}{x}\PY{o}{\PYZcb{}}\PY{o}{)} \PY{o}{:=}
+     \PY{o}{(}\PY{n}{upst} \PY{n}{p}\PY{o}{)} \PY{o}{\PYZsh{}} \PY{o}{(}\PY{n}{g} \PY{o}{(}\PY{n}{projT1} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{projT2} \PY{n}{p}\PY{o}{)}\PY{o}{)}\PY{o}{.}
+
+\nwendcode{}\nwbegindocs{17}Now we must verify that
 \[
   \ind{\sm{x:A}B(x)}(C, g, (a, b)) \equiv g(a)(b)
 \]
@@ -253,9 +258,10 @@ We have
 \end{align*}
 which Coq finds trivial:
 
+\nwenddocs{}\nwbegincode{18}\moddef{ex03b.v}\plusendmoddef
+\PY{k+kn}{Goal} \PY{k}{forall} \PY{n+nc}{C} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{,} \PY{n}{indsm} \PY{n+nc}{C} \PY{n}{g} \PY{o}{(}\PY{n}{a}\PY{o}{;} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{g} \PY{n}{a} \PY{n}{b}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
 
-%DONE
-\exer{1.4}{56}  Assuming as given only the \emph{iterator} for natural numbers
+\nwendcode{}\nwbegindocs{19}\exer{1.4}{56}  Assuming as given only the \emph{iterator} for natural numbers
 \[
   \ite : 
   \prd{C:\UU} C \to (C \to C) \to \mathbb{N} \to C
@@ -519,7 +525,6 @@ Thus proving the second equality propositionally.
 
 In Coq, we can repeat this proof, but there's surely a better way.
 
-%DONE
 \exer{1.5}{56}  Show that if we define $A + B \defeq \sm{x:\bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
 which the definitional equalities stated in \S1.7 hold.
@@ -994,7 +999,6 @@ is definable using only $\rec{\mathbb{N}}$.
 %
 %
 
-%DONE
 \exer{1.11}{56}  Show that for any type $A$, we have $\lnot\lnot\lnot A \to
 \lnot A$.
 
@@ -1132,19 +1136,39 @@ defining equation
 \exer{1.15}{57} Show that indiscernability of identicals follows from path
 induction.
 
-%\soln The indiscernability of identicals states that for every family $C : A
-%\to \UU$, there is a function 
-%\[
-%  f: \prd{x, y : A}\prd{p: x=_{A} y} C(x) \to C(y)
-%\]
-%such that $f(x, x, \refl{x}) \defeq \idfunc{C(x)}$.  Path induction says
-%that given a family 
-%\[
-%  C : \prd{x, y : A}(x =_{A} y) \to \UU
-%\]
-%and a function $c: \prd{x:A} C(x, x, \refl{x})$, there is a function 
-%\[
-%  f: \prd{x, y :A}\prd{p: x=_{A} y} C(x, y, p)
-%\]
-%such that $f(x, x, \refl{x}) \defeq c(x)$.
-\nwenddocs{}
+\paragraph{Complete Chapter 1 source}
+
+\nwenddocs{}\nwbegincode{20}\moddef{chap01.v}\endmoddef
+\PY{k+kn}{Require} \PY{k+kn}{Import} \PY{n+nn}{HoTT}\PY{p}{.}
+
+\PY{n+nc}{Section} \PY{n+nn}{Exercise1}\PY{p}{.}
+
+  \LA{}ex01.v\RA{}
+\PY{n+nc}{End} \PY{n+nn}{Exercise1}\PY{p}{.}
+
+\PY{n+nc}{Section} \PY{n+nn}{Exercise2a}\PY{p}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{n+nc}{B} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+
+  \LA{}ex02a.v\RA{}
+\PY{k+kn}{End} \PY{n+nn}{Exercise2a}\PY{p}{.}
+
+\PY{n+nc}{Section} \PY{n+nn}{Exercise2b}\PY{p}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{B} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+
+  \LA{}ex02b.v\RA{}
+\PY{k+kn}{End} \PY{n+nn}{Exercise2b}\PY{p}{.}
+
+\PY{n+nc}{Section} \PY{n+nn}{Exercise3a}\PY{p}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{n+nc}{B} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+
+  \LA{}ex03a.v\RA{}
+\PY{k+kn}{End} \PY{n+nn}{Exercise3a}\PY{p}{.}
+
+\PY{n+nc}{Section} \PY{n+nn}{Exercise3b}\PY{p}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+  \PY{n+nc}{Context} \PY{o}{\PYZob{}}\PY{n+nc}{B} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\mLA\ensuremath{\rightarrow}\mRA} \PY{k+kt}{Type}\PY{o}{\PYZcb{}}\PY{o}{.}
+
+  \LA{}ex03b.v\RA{}
+\PY{k+kn}{End} \PY{n+nn}{Exercise3b}\PY{p}{.}
+\nwendcode{}

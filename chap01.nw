@@ -5,14 +5,13 @@ The following are solutions to (eventually all of) the exercises from
 code given alongside the by-hand solutions requires the HoTT version of Coq,
 available \href{https://github.com/HoTT}{at the HoTT github repository}.  It
 will be assumed throughout that it has been imported by
-
-<<chap01.v>>=
-Require Import HoTT.
-
-@ The
+\begin{lstlisting}
+  Require Import HoTT.
+\end{lstlisting}
+The
 \href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
 to Coq from the HoTT repo} is assumed.  Each exercise has its own
-\lstinline|{fun}| in the Coq file, so \lstinline|Context| declarations don't
+\lstinline|Section| in the Coq file, so \lstinline|Context| declarations don't
 extend beyond the exercise---and sometimes they're even more restricted than
 that.
 
@@ -41,9 +40,7 @@ and
 \]
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have
 
-<<chap01.v>>=
-Section Exercise1.
-
+<<ex01.v>>=
 Definition compose {A B C:Type} (g : B -> C) (f : A -> B) :=
     fun x => g (f x).
 
@@ -52,9 +49,6 @@ Theorem compose_assoc : forall (A B C D : Type) (f : A -> B) (g : B-> C) (h : C 
 Proof.
   trivial.
 Qed.
-
-End Exercise1.
-
 @ %DONE
 \exer{1.2}{56}  Derive the recursion principle for products $\rec{A
   \times B}$ using only the projections, and verify that the definitional
@@ -74,28 +68,9 @@ in terms of these projections as follows
 \]
 or, in Coq,
 
-<<chap01.v>>=
-Section Exercise2_prd.
-
-Variable A B : Type.
-
+<<ex02a.v>>=
 Definition recprod (C : Type) (g : A -> B -> C) (p : A * B) :=
     g (fst p) (snd p).
-
-Goal recprod A (fun a => fun b => a) = fst. trivial. Qed.
-Goal recprod B (fun a => fun b => b) = snd. trivial. Qed.
-
-End Exercise2_prd.
-
-Section Exercise2_sm.
-
-Variable A : Type.
-Variable B : A -> Type.
-
-Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) :=
-    g (projT1 p) (projT2 p).
-
-End Exercise2_sm.
 
 @ We must then show that
 \begin{align*}
@@ -105,7 +80,10 @@ End Exercise2_sm.
 \end{align*}
 which in Coq is also trivial:
 
-Now for the $\Sigma$-types.  Here we have a projection
+<<ex02a.v>>=
+Goal forall C g a b, recprod C g (a, b) = g a b. trivial. Qed.
+
+@ Now for the $\Sigma$-types.  Here we have a projection
 \[
   \fst : \left(\sm{x : A} B(x) \right) \to A
 \]
@@ -124,8 +102,12 @@ by
   \defeq
   g(\fst p)(\snd p)
 \]
-And in Coq,
-We then verify that
+
+<<ex02b.v>>=
+Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) :=
+    g (projT1 p) (projT2 p).
+
+@ We then verify that
 \begin{align*}
   \rec{\sm{x:A}B(x)}(C, g, (a, b))
   \equiv g(\fst (a, b))(\snd (a, b))
@@ -133,8 +115,10 @@ We then verify that
 \end{align*}
 which is again trivial in Coq:
 
-%DONE
-\exer{1.3}{56} Derive the induction principle for products $\ind{A \times B}$
+<<ex02b.v>>=
+Goal forall C g a b, recsm C g (a; b) = g a b. trivial. Qed.
+
+@ \exer{1.3}{56} Derive the induction principle for products $\ind{A \times B}$
 using only the projections and the propositional uniqueness principle $\uppt$.
 Verify that the definitional equalities are valid.  Generalize $\uppt$ to
 $\Sigma$-types, and do the same for $\Sigma$-types.
@@ -176,7 +160,15 @@ has the right type.
 In Coq we first define $\uppt$, then use it with transport to give our
 $\ind{A\times B}$.
 
-We now have to show that
+<<ex03a.v>>=
+Definition uppt (x : A * B) : (fst x, snd x) = x.
+  destruct x; reflexivity.
+Defined.
+
+Definition indprd (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (z : A * B) :=
+      (uppt z) # (g (fst z) (snd z)).
+
+@ We now have to show that
 \[
   \ind{A \times B}(C, g, (a, b)) 
   \equiv g(a)(b)
@@ -201,6 +193,10 @@ Unfolding the left gives
 \end{align*}
 which was to be proved.  In Coq, it's as trivial as always:
 
+<<ex03a.v>>=
+Goal forall C g a b, indprd C g (a, b) = g a b. trivial. Qed.
+
+@ 
 For $\Sigma$-types, we define
 \[
   \ind{\tsm{x:A}B(x)} : \prd{C:(\tsm{x:A}B(x)) \to \UU}
@@ -230,7 +226,16 @@ Thus, we can write
 \]
 and in Coq,
 
-Now we must verify that
+<<ex03b.v>>=
+Definition upst (p : {x:A & B x}) : (projT1 p; projT2 p) = p.
+  destruct p; reflexivity.
+Defined.
+
+Definition indsm (C : {x:A & B x} -> Type) (g : forall (a:A) (b:B a), C (a; b)) 
+                 (p : {x:A & B x}) :=
+     (upst p) # (g (projT1 p) (projT2 p)).
+
+@ Now we must verify that
 \[
   \ind{\sm{x:A}B(x)}(C, g, (a, b)) \equiv g(a)(b)
 \]
@@ -253,9 +258,10 @@ We have
 \end{align*}
 which Coq finds trivial:
 
+<<ex03b.v>>=
+Goal forall C g a b, indsm C g (a; b) = g a b. trivial. Qed.
 
-%DONE
-\exer{1.4}{56}  Assuming as given only the \emph{iterator} for natural numbers
+@ \exer{1.4}{56}  Assuming as given only the \emph{iterator} for natural numbers
 \[
   \ite : 
   \prd{C:\UU} C \to (C \to C) \to \mathbb{N} \to C
@@ -519,7 +525,6 @@ Thus proving the second equality propositionally.
 
 In Coq, we can repeat this proof, but there's surely a better way.
 
-%DONE
 \exer{1.5}{56}  Show that if we define $A + B \defeq \sm{x:\bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
 which the definitional equalities stated in \S1.7 hold.
@@ -994,7 +999,6 @@ is definable using only $\rec{\mathbb{N}}$.
 %
 %
 
-%DONE
 \exer{1.11}{56}  Show that for any type $A$, we have $\lnot\lnot\lnot A \to
 \lnot A$.
 
@@ -1132,18 +1136,38 @@ defining equation
 \exer{1.15}{57} Show that indiscernability of identicals follows from path
 induction.
 
-%\soln The indiscernability of identicals states that for every family $C : A
-%\to \UU$, there is a function 
-%\[
-%  f: \prd{x, y : A}\prd{p: x=_{A} y} C(x) \to C(y)
-%\]
-%such that $f(x, x, \refl{x}) \defeq \idfunc{C(x)}$.  Path induction says
-%that given a family 
-%\[
-%  C : \prd{x, y : A}(x =_{A} y) \to \UU
-%\]
-%and a function $c: \prd{x:A} C(x, x, \refl{x})$, there is a function 
-%\[
-%  f: \prd{x, y :A}\prd{p: x=_{A} y} C(x, y, p)
-%\]
-%such that $f(x, x, \refl{x}) \defeq c(x)$.
+\paragraph{Complete Chapter 1 source}
+
+<<chap01.v>>=
+Require Import HoTT.
+
+Section Exercise1.
+
+  <<ex01.v>>
+End Exercise1.
+
+Section Exercise2a.
+  Context {A B : Type}.
+
+  <<ex02a.v>>
+End Exercise2a.
+
+Section Exercise2b.
+  Context {A : Type}.
+  Context {B : A -> Type}.
+
+  <<ex02b.v>>
+End Exercise2b.
+
+Section Exercise3a.
+  Context {A B : Type}.
+
+  <<ex03a.v>>
+End Exercise3a.
+
+Section Exercise3b.
+  Context {A : Type}.
+  Context {B : A -> Type}.
+
+  <<ex03b.v>>
+End Exercise3b.
