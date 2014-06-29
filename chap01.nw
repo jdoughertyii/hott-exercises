@@ -12,7 +12,7 @@ Require Import HoTT.
 @ The
 \href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
 to Coq from the HoTT repo} is assumed.  Each exercise has its own
-\lstinline|Section| in the Coq file, so \lstinline|Context| declarations don't
+\lstinline|{fun}| in the Coq file, so \lstinline|Context| declarations don't
 extend beyond the exercise---and sometimes they're even more restricted than
 that.
 

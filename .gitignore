@@ -28,4 +28,6 @@ Reading_HoTT_in_Coq.v
 
 Makefile
 
-Makefile
+*.temp
+
+tex/lstcoq.sty

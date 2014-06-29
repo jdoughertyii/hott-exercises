@@ -7,12 +7,12 @@ available \href{https://github.com/HoTT}{at the HoTT github repository}.  It
 will be assumed throughout that it has been imported by
 
 \nwenddocs{}\nwbegincode{2}\moddef{chap01.v}\endmoddef
-Require Import HoTT.
+\PY{k+kn}{Require} \PY{k+kn}{Import} \PY{n+nn}{HoTT}\PY{p}{.}
 
 \nwendcode{}\nwbegindocs{3}The
 \href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
 to Coq from the HoTT repo} is assumed.  Each exercise has its own
-\lstinline|Section| in the Coq file, so \lstinline|Context| declarations don't
+\lstinline|{fun}| in the Coq file, so \lstinline|Context| declarations don't
 extend beyond the exercise---and sometimes they're even more restricted than
 that.
 
@@ -42,18 +42,18 @@ and
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have
 
 \nwenddocs{}\nwbegincode{4}\moddef{chap01.v}\plusendmoddef
-Section Exercise1.
+\PY{k+kn}{Section} \PY{n+nn}{Exercise1}\PY{p}{.}
 
-Definition compose \{A B C:Type\} (g : B -> C) (f : A -> B) :=
-    fun x => g (f x).
+\PY{n+nc}{Definition} \PY{n}{compose} \PY{o}{\PYZob{}}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C}\PY{o}{:}\PY{k+kt}{Type}\PY{o}{\PYZcb{}} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
+    \PY{k}{fun} \PY{n}{x} \PY{o}{=\PYZgt{}} \PY{n}{g} \PY{o}{(}\PY{n}{f} \PY{n}{x}\PY{o}{)}\PY{o}{.}
 
-Theorem compose_assoc : forall (A B C D : Type) (f : A -> B) (g : B-> C) (h : C -> D),
-    compose h (compose g f) = compose (compose h g) f.
-Proof.
-  trivial.
-Qed.
+\PY{k+kn}{Theorem} \PY{n}{compose\PYZus{}assoc} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n+nc}{A} \PY{n+nc}{B} \PY{n+nc}{C} \PY{n+nc}{D} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{f} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{B}\PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{h} \PY{o}{:} \PY{n+nc}{C} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{D}\PY{o}{)}\PY{o}{,}
+    \PY{n}{compose} \PY{n}{h} \PY{o}{(}\PY{n}{compose} \PY{n}{g} \PY{n}{f}\PY{o}{)} \PY{o}{=} \PY{n}{compose} \PY{o}{(}\PY{n}{compose} \PY{n}{h} \PY{n}{g}\PY{o}{)} \PY{n}{f}\PY{o}{.}
+\PY{k+kn}{Proof}\PY{o}{.}
+  \PY{k}{trivial}\PY{o}{.}
+\PY{k+kn}{Qed}\PY{o}{.}
 
-End Exercise1.
+\PY{k+kn}{End} \PY{n+nn}{Exercise1}\PY{p}{.}
 
 \nwendcode{}\nwbegindocs{5}%DONE
 \exer{1.2}{56}  Derive the recursion principle for products $\rec{A
@@ -75,27 +75,27 @@ in terms of these projections as follows
 or, in Coq,
 
 \nwenddocs{}\nwbegincode{6}\moddef{chap01.v}\plusendmoddef
-Section Exercise2_prd.
+\PY{k+kn}{Section} \PY{n+nn}{Exercise2\PYZus{}prd}\PY{p}{.}
 
-Variable A B : Type.
+\PY{n+nc}{Variable} \PY{n+nc}{A} \PY{n+nc}{B} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{.}
 
-Definition recprod (C : Type) (g : A -> B -> C) (p : A * B) :=
-    g (fst p) (snd p).
+\PY{k+kn}{Definition} \PY{n}{recprod} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{B} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{n+nc}{A} \PY{o}{*} \PY{n+nc}{B}\PY{o}{)} \PY{o}{:=}
+    \PY{n}{g} \PY{o}{(}\PY{n}{fst} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{snd} \PY{n}{p}\PY{o}{)}\PY{o}{.}
 
-Goal recprod A (fun a => fun b => a) = fst. trivial. Qed.
-Goal recprod B (fun a => fun b => b) = snd. trivial. Qed.
+\PY{k+kn}{Goal} \PY{n}{recprod} \PY{n+nc}{A} \PY{o}{(}\PY{k}{fun} \PY{n}{a} \PY{o}{=\PYZgt{}} \PY{k}{fun} \PY{n}{b} \PY{o}{=\PYZgt{}} \PY{n}{a}\PY{o}{)} \PY{o}{=} \PY{n}{fst}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
+\PY{k+kn}{Goal} \PY{n}{recprod} \PY{n+nc}{B} \PY{o}{(}\PY{k}{fun} \PY{n}{a} \PY{o}{=\PYZgt{}} \PY{k}{fun} \PY{n}{b} \PY{o}{=\PYZgt{}} \PY{n}{b}\PY{o}{)} \PY{o}{=} \PY{n}{snd}\PY{o}{.} \PY{k}{trivial}\PY{o}{.} \PY{k+kn}{Qed}\PY{o}{.}
 
-End Exercise2_prd.
+\PY{k+kn}{End} \PY{n+nn}{Exercise2\PYZus{}prd}\PY{p}{.}
 
-Section Exercise2_sm.
+\PY{n+nc}{Section} \PY{n+nn}{Exercise2\PYZus{}sm}\PY{p}{.}
 
-Variable A : Type.
-Variable B : A -> Type.
+\PY{n+nc}{Variable} \PY{n+nc}{A} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{.}
+\PY{k+kn}{Variable} \PY{n+nc}{B} \PY{o}{:} \PY{n+nc}{A} \PY{o}{\PYZhy{}\PYZgt{}} \PY{k+kt}{Type}\PY{o}{.}
 
-Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) :=
-    g (projT1 p) (projT2 p).
+\PY{k+kn}{Definition} \PY{n}{recsm} \PY{o}{(}\PY{n+nc}{C} \PY{o}{:} \PY{k+kt}{Type}\PY{o}{)} \PY{o}{(}\PY{n}{g} \PY{o}{:} \PY{k}{forall} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x} \PY{o}{\PYZhy{}\PYZgt{}} \PY{n+nc}{C}\PY{o}{)} \PY{o}{(}\PY{n}{p} \PY{o}{:} \PY{k}{exists} \PY{o}{(}\PY{n}{x} \PY{o}{:} \PY{n+nc}{A}\PY{o}{)}\PY{o}{,} \PY{n+nc}{B} \PY{n}{x}\PY{o}{)} \PY{o}{:=}
+    \PY{n}{g} \PY{o}{(}\PY{n}{projT1} \PY{n}{p}\PY{o}{)} \PY{o}{(}\PY{n}{projT2} \PY{n}{p}\PY{o}{)}\PY{o}{.}
 
-End Exercise2_sm.
+\PY{k+kn}{End} \PY{n+nn}{Exercise2\PYZus{}sm}\PY{p}{.}
 
 \nwendcode{}\nwbegindocs{7}We must then show that
 \begin{align*}
