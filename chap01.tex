@@ -1,0 +1,1292 @@
+\begin{coqdoccode}
+\end{coqdoccode}
+\section*{Introduction}
+
+
+The following are solutions to (eventually all of) the exercises from
+\textit{Homotopy Type Theory: Univalent Foundations of Mathematics}.  The Coq
+code given alongside the by-hand solutions requires the HoTT version of Coq,
+available \href{https://github.com/HoTT}{at the HoTT github repository}.  It
+will be assumed throughout that it has been imported by \begin{coqdoccode}
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdockw{Require} \coqdockw{Import} \coqdoclibrary{HoTT}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+The
+\href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction
+to Coq from the HoTT repo} is assumed.  Each exercise has its own
+\coqdockw{Section} in the Coq file, so \coqdockw{Context} declarations don't
+extend beyond the exercise---and sometimes they're even more restricted than
+that.
+
+
+\section{Type Theory}
+
+
+
+
+\exer{1.1}{56}  Given functions $f:A\to B$ and $g:B\to C$, define
+their \term{composite} $g \circ f : A \to C$.  Show that we have $h \circ (g
+\circ f) \equiv (h \circ g) \circ f$.
+
+
+\soln
+Define $g \circ f \defeq \lam{x:A}g(f(x))$.  Then if $h:C \to D$, we
+have
+\[
+h \circ (g \circ f) 
+\equiv \lam{x:A}h((g \circ f)x)
+\equiv \lam{x:A}h((\lam{y:A}g(fy))x)
+\equiv \lam{x:A}h(g(fx))
+\]
+and
+\[
+(h \circ g) \circ f 
+\equiv \lam{x:A}(h \circ g)(fx)
+\equiv \lam{x:A}(\lam{y:A}h(gy))(fx)
+\equiv \lam{x:A}h(g(fx))
+\]
+So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have \begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.compose}{compose}{\coqdocdefinition{compose}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{C}:\coqdockw{Type}\} (\coqdocvar{g} : \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) :=\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdocvariable{g} (\coqdocvariable{f} \coqdocvariable{x}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap01.compose assoc}{compose\_assoc}{\coqdoclemma{compose\_assoc}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{A} \coqdocvar{B} \coqdocvar{C} \coqdocvar{D} : \coqdockw{Type}) (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{g} : \coqdocvariable{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{h} : \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{D}),\coqdoceol
+\coqdocindent{2.00em}
+\coqref{chap01.compose}{\coqdocdefinition{compose}} \coqdocvariable{h} (\coqref{chap01.compose}{\coqdocdefinition{compose}} \coqdocvariable{g} \coqdocvariable{f}) \coqdocnotation{=} \coqref{chap01.compose}{\coqdocdefinition{compose}} (\coqref{chap01.compose}{\coqdocdefinition{compose}} \coqdocvariable{h} \coqdocvariable{g}) \coqdocvariable{f}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{trivial}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\end{coqdoccode}
+\symbol{92}exer\{1.2\}\{56\}  Derive the recursion principle for products $\rec{A
+  \times B}$ using only the projections, and verify that the definitional
+equalities are valid.  Do the same for $\Sigma$-types.
+
+
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap01.Exercise2a}{Exercise2a}{\coqdocsection{Exercise2a}}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{Context} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+
+
+\symbol{92}soln The recursion principle states that we can define a function $f : A
+\times B \to C$ by giving its value on pairs.  Suppose that we have projection
+functions $\fst : A \times B \to A$ and $\snd : A \times B \to B$.  Then we can
+define a function of type
+\symbol{92}
+  \symbol{92}\coqdocvar{rec}\{\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C} : \symbol{92}\coqdocvar{UU}\} (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \coqdocvariable{B} \symbol{92}\coqdocvar{to} \coqdocvariable{C}) \symbol{92}\coqdocvar{to} \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B} \symbol{92}\coqdocvar{to} \coqdocvariable{C}
+\symbol{92}
+in terms of these projections as follows
+\symbol{92}
+  \symbol{92}\coqdocvar{rec}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}'(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{p}) \symbol{92}\coqdocvar{defeq} 
+  \coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p})
+\symbol{92}
+or, in Coq,
+
+
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.recprod}{recprod}{\coqdocdefinition{recprod}} (\coqdocvar{C} : \coqdockw{Type}) (\coqdocvar{g} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{p} : \coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}) :=\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvariable{g} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}) (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}).\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+We must then show that
+\symbol{92}begin\{align*\}
+  \symbol{92}rec\{A\symbol{92}times B\}'(C, g, (a, b)) 
+  \symbol{92}equiv g(\symbol{92}fst (a, b))(\symbol{92}snd (a, b))
+  \symbol{92}equiv g(a)(b)
+\symbol{92}end\{align*\}
+which in Coq is also trivial:
+
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{C} \coqdocvar{g} \coqdocvar{a} \coqdocvar{b}, \coqref{chap01.recprod}{\coqdocdefinition{recprod}} \coqdocvariable{C} \coqdocvariable{g} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{a}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{b}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{a} \coqdocvariable{b}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap01.Exercise2a}{\coqdocsection{Exercise2a}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap01.Exercise2b}{Exercise2b}{\coqdocsection{Exercise2b}}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{2.00em}
+\coqdockw{Context} \{\coqdocvar{A} : \coqdockw{Type}\}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{Context} \{\coqdocvar{B} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+Now for the $\Sigma$-types.  Here we have a projection
+\symbol{92}
+  \symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} : \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x} : \coqdocvariable{A}\} \coqdocvariable{B}(\coqdocvariable{x}) \symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to} \coqdocvariable{A}
+\symbol{92}
+and another
+\symbol{92}
+  \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{p} : \symbol{92}\coqdocvar{sm}\{\coqdocvariable{x} : \coqdocvariable{A}\} \coqdocvariable{B}(\coqdocvariable{x})\} \coqdocvariable{B}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} (\coqdocvariable{p}))
+\symbol{92}
+Define a function of type 
+\symbol{92}
+  \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C}:\symbol{92}\coqdocvar{UU}\} \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{x}:\coqdocvariable{A}\} \coqdocvariable{B}(\coqdocvariable{x}) \symbol{92}\coqdocvar{to} \coqdocvariable{C} \symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tsm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x}) \symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to} \coqdocvariable{C}
+\symbol{92}
+by
+\symbol{92}
+  \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{p})
+  \symbol{92}\coqdocvar{defeq}
+  \coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p})
+\symbol{92}
+
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.recsm}{recsm}{\coqdocdefinition{recsm}} (\coqdocvar{C} : \coqdockw{Type}) (\coqdocvar{g} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{x} : \coqdocvariable{A}), \coqdocvariable{B} \coqdocvariable{x} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{p} : \coqexternalref{:type scope:'exists' x '..' x ',' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\ensuremath{\exists}}} \coqexternalref{:type scope:'exists' x '..' x ',' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{(}}\coqdocvar{x} : \coqdocvariable{A}\coqexternalref{:type scope:'exists' x '..' x ',' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{),}} \coqdocvariable{B} \coqdocvariable{x}) :=\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvariable{g} (\coqexternalref{projT1}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT1}} \coqdocvariable{p}) (\coqexternalref{projT2}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT2}} \coqdocvariable{p}).\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+We then verify that
+\symbol{92}begin\{align*\}
+  \symbol{92}rec\{\symbol{92}sm\{x:A\}B(x)\}(C, g, (a, b))
+  \symbol{92}equiv g(\symbol{92}fst (a, b))(\symbol{92}snd (a, b))
+  \symbol{92}equiv g(a)(b)
+\symbol{92}end\{align*\}
+which is again trivial in Coq:
+
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{C} \coqdocvar{g} \coqdocvar{a} \coqdocvar{b}, \coqref{chap01.recsm}{\coqdocdefinition{recsm}} \coqdocvariable{C} \coqdocvariable{g} \coqdocnotation{(}\coqdocvariable{a}\coqdocnotation{;} \coqdocvariable{b}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{a} \coqdocvariable{b}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap01.Exercise2b}{\coqdocsection{Exercise2b}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\symbol{92}exer\{1.3\}\{56\} Derive the induction principle for products $\ind{A \times B}$
+using only the projections and the propositional uniqueness principle $\uppt$.
+Verify that the definitional equalities are valid.  Generalize $\uppt$ to
+$\Sigma$-types, and do the same for $\Sigma$-types.
+
+
+\symbol{92}soln The induction principle has type
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C}: \coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{UU}\}\symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\coqdocvariable{A}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{y}:\coqdocvariable{B}\}\coqdocvariable{C}((\coqdocvariable{x},
+    \coqdocvariable{y}))\symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{prd}\{\coqdocvariable{z}:\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\}\coqdocvariable{C}(\coqdocvariable{z})
+\symbol{92}
+For a first pass, we can define
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{z})
+  \symbol{92}\coqdocvar{defeq}
+  \coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{z})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{z})
+\symbol{92}
+However, we have $g(\fst x)(\fst x) : C((\fst x, \snd x))$, so the type of this
+$\ind{A \times B}$ is
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C}: \coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{UU}\}\symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\coqdocvariable{A}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{y}:\coqdocvariable{B}\}\coqdocvariable{C}((\coqdocvariable{x},
+    \coqdocvariable{y}))\symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{prd}\{\coqdocvariable{z}:\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}\}\coqdocvariable{C}((\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{z}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{z}))
+\symbol{92}
+To define $\ind{A \times B}$ with the correct type, we need the
+$\mathsf{transport}$ operation from the next chapter.  The uniqueness principle
+for $A \times B$ is
+\symbol{92}
+  \symbol{92}\coqref{chap01.uppt}{\coqdocdefinition{uppt}} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x} : \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} \symbol{92}\coqdocvar{big}((\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x}) =\coqdocvar{\_}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} \coqdocvariable{x}\symbol{92}\coqdocvar{big})
+\symbol{92}
+By the transport principle, there is a function
+\symbol{92}
+  (\symbol{92}\coqref{chap01.uppt}{\coqdocdefinition{uppt}}\symbol{92}, \coqdocvariable{x})\coqdocvar{\_}\{*\} : \coqdocvariable{C}((\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})) \symbol{92}\coqdocvar{to} \coqdocvariable{C}(\coqdocvariable{x})
+\symbol{92}
+so
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{z})
+  \symbol{92}\coqdocvar{defeq}
+  (\symbol{92}\coqref{chap01.uppt}{\coqdocdefinition{uppt}}\symbol{92}, \coqdocvariable{z})\coqdocvar{\_}\{*\}(\coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{z})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{z}))
+\symbol{92}
+has the right type.
+In Coq we first define $\uppt$, then use it with transport to give our
+$\ind{A\times B}$.
+
+
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap01.Exercise3a}{Exercise3a}{\coqdocsection{Exercise3a}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Context} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.uppt}{uppt}{\coqdocdefinition{uppt}} (\coqdocvar{x} : \coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}) : \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocnotation{=} \coqdocvariable{x}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.indprd}{indprd}{\coqdocdefinition{indprd}} (\coqdocvar{C} : \coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{g} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{x}:\coqdocvariable{A}) (\coqdocvar{y}:\coqdocvariable{B}), \coqdocvariable{C} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}) (\coqdocvar{z} : \coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}) :=\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{(}\coqref{chap01.uppt}{\coqdocdefinition{uppt}} \coqdocvariable{z}\coqdocnotation{)} \coqdocnotation{\#} \coqdocnotation{(}\coqdocvariable{g} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{z}) (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{z})\coqdocnotation{)}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+We now have to show that
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}(\coqdocvariable{C}, \coqdocvariable{g}, (\coqdocvariable{a}, \coqdocvariable{b})) 
+  \symbol{92}\coqdocvar{equiv} \coqdocvariable{g}(\coqdocvariable{a})(\coqdocvariable{b})
+\symbol{92}
+Unfolding the left gives
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{A \symbol{92}times B\}(C, g, (a, b)) 
+  \&\symbol{92}equiv
+  (\symbol{92}uppt\symbol{92}, (a, b))\_\{*\}(g(\symbol{92}fst (a, b))(\symbol{92}snd (a, b)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{A \symbol{92}times B\}\}(D, d, (a, b), (a, b), \symbol{92}uppt((a, b)))(g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{A \symbol{92}times B\}\}(D, d, (a, b), (a, b), \symbol{92}refl\{(a, b)\})
+  (g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{A \symbol{92}times B\}\}(D, d, (a, b), (a, b), \symbol{92}refl\{(a, b)\})
+  (g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}mathsf\{id\}\_\{C((a, b))\}(g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  g(a)(b)
+\symbol{92}end\{align*\}
+which was to be proved.  In Coq, it's as trivial as always:
+
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{C} \coqdocvar{g} \coqdocvar{a} \coqdocvar{b}, \coqref{chap01.indprd}{\coqdocdefinition{indprd}} \coqdocvariable{C} \coqdocvariable{g} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{a}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{b}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{a} \coqdocvariable{b}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+
+
+For $\Sigma$-types, we define
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{tsm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C}:(\symbol{92}\coqdocvar{tsm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{UU}\}
+  \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{a}:\coqdocvariable{A}\}\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{b}:\coqdocvariable{B}(\coqdocvariable{a})\}\coqdocvariable{C}((\coqdocvariable{a}, \coqdocvariable{b}))\symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{prd}\{\coqdocvariable{p}: \symbol{92}\coqdocvar{tsm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\}\coqdocvariable{C}(\coqdocvariable{p})
+\symbol{92}
+at first pass by
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{tsm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{p})
+  \symbol{92}\coqdocvar{defeq}
+  \coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p})
+\symbol{92}
+We encounter a similar problem as before.  We need a uniqueness principle for
+$\Sigma$-types, which would be a function
+\symbol{92}
+  \symbol{92}\coqref{chap01.upst}{\coqdocdefinition{upst}} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{p} : \symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\} \symbol{92}\coqdocvar{big}(
+    (\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\} \coqdocvariable{p}
+  \symbol{92}\coqdocvar{big})
+\symbol{92}
+As for product types, we can define
+\symbol{92}
+  \symbol{92}\coqref{chap01.upst}{\coqdocdefinition{upst}}((\coqdocvariable{a}, \coqdocvariable{b})) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{refl}\{(\coqdocvariable{a}, \coqdocvariable{b})\}
+\symbol{92}
+which is well-typed, since $\fst(a, b) \equiv a$ and $\snd(a, b) \equiv b$.
+Thus, we can write
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{p}) \symbol{92}\coqdocvar{defeq} (\symbol{92}\coqref{chap01.upst}{\coqdocdefinition{upst}}\symbol{92}, \coqdocvariable{p})\coqdocvar{\_}\{*\}(\coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{b})).
+\symbol{92}
+and in Coq,
+
+
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap01.Exercise3a}{\coqdocsection{Exercise3a}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap01.Exercise3b}{Exercise3b}{\coqdocsection{Exercise3b}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{Context} \{\coqdocvar{A} : \coqdockw{Type}\}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{Context} \{\coqdocvar{B} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.upst}{upst}{\coqdocdefinition{upst}} (\coqdocvar{p} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{B} \coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) : \coqdocnotation{(}\coqexternalref{projT1}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT1}} \coqdocvariable{p}\coqdocnotation{;} \coqexternalref{projT2}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT2}} \coqdocvariable{p}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{p}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{p}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.indsm}{indsm}{\coqdocdefinition{indsm}} (\coqdocvar{C} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{B} \coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{g} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{a}:\coqdocvariable{A}) (\coqdocvar{b}:\coqdocvariable{B} \coqdocvariable{a}), \coqdocvariable{C} \coqdocnotation{(}\coqdocvariable{a}\coqdocnotation{;} \coqdocvariable{b}\coqdocnotation{)}) \coqdoceol
+\coqdocindent{8.50em}
+(\coqdocvar{p} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{B} \coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) :=\coqdoceol
+\coqdocindent{2.50em}
+\coqdocnotation{(}\coqref{chap01.upst}{\coqdocdefinition{upst}} \coqdocvariable{p}\coqdocnotation{)} \coqdocnotation{\#} \coqdocnotation{(}\coqdocvariable{g} (\coqexternalref{projT1}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT1}} \coqdocvariable{p}) (\coqexternalref{projT2}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{projT2}} \coqdocvariable{p})\coqdocnotation{)}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+Now we must verify that
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\coqdocvariable{A}\}\coqdocvariable{B}(\coqdocvariable{x})\}(\coqdocvariable{C}, \coqdocvariable{g}, (\coqdocvariable{a}, \coqdocvariable{b})) \symbol{92}\coqdocvar{equiv} \coqdocvariable{g}(\coqdocvariable{a})(\coqdocvariable{b})
+\symbol{92}
+We have
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{\symbol{92}sm\{x:A\}B(x)\}(C, g, (a, b))
+  \&\symbol{92}equiv
+  (\symbol{92}uppt\symbol{92}, (a, b))\_\{*\}(g(\symbol{92}fst(a, b))(\symbol{92}snd(a, b)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{\symbol{92}sm\{x:A\}B(x)\}\}(D, d, (a, b), (a, b), \symbol{92}uppt\symbol{92}, (a, b))
+  (g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{\symbol{92}sm\{x:A\}B(x)\}\}(D, d, (a, b), (a, b), \symbol{92}refl\{(a, b)\})
+  (g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}mathsf\{id\}\_\{C((a, b))\}
+  (g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  g(a)(b)
+\symbol{92}end\{align*\}
+which Coq finds trivial:
+
+
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{C} \coqdocvar{g} \coqdocvar{a} \coqdocvar{b}, \coqref{chap01.indsm}{\coqdocdefinition{indsm}} \coqdocvariable{C} \coqdocvariable{g} \coqdocnotation{(}\coqdocvariable{a}\coqdocnotation{;} \coqdocvariable{b}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{a} \coqdocvariable{b}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap01.Exercise3b}{\coqdocsection{Exercise3b}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\symbol{92}exer\{1.4\}\{56\}  Assuming as given only the \symbol{92}emph\{iterator\} for natural numbers
+\symbol{92}
+  \symbol{92}\coqdocvar{ite} : 
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C}:\symbol{92}\coqdocvar{UU}\} \coqdocvariable{C} \symbol{92}\coqdocvar{to} (\coqdocvariable{C} \symbol{92}\coqdocvar{to} \coqdocvariable{C}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \coqdocvariable{C}
+\symbol{92}                                                        
+with the defining equations
+\symbol{92}begin\{align*\}
+  \symbol{92}ite(C, c\{0\}, c\{s\}, 0) \&\symbol{92}defeq c\{0\}, \symbol{92}\symbol{92}
+  \symbol{92}ite(C, c\{0\}, c\{s\}, \symbol{92}suc(n)) \&\symbol{92}defeq c\{s\}(\symbol{92}ite(C, c\{0\}, c\{s\}, n)),
+\symbol{92}end\{align*\}
+derive a function having the type of the recursor $\rec{\mathbb{N}}$.  Show
+that the defining equations of the recursor hold propositionally for this
+function, using the induction principle for $\mathbb{N}$.
+
+
+\symbol{92}soln  Fix some $C :
+\UU$, $c_{0} : C$, and $c_{s} : \mathbb{N} \to C \to C$.
+$\ite(C)$ allows for the $n$-fold application of a single function to a single
+input from $C$, whereas $\rec{\mathbb{N}}$ allows each application to
+depend on $n$, as well.  Since $n$ just tracks how many applications we've
+done, we can construct $n$ on the fly, iterating over elements of $\mathbb{N}
+\times C$.  So we will use the iterator
+\symbol{92}
+  \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\} : \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C} \symbol{92}\coqdocvar{to} (\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}
+  \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}
+\symbol{92}
+to derive a function
+\symbol{92}
+  \symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C} : \symbol{92}\coqdocvar{UU}\} \coqdocvariable{C} \symbol{92}\coqdocvar{to} (\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \coqdocvariable{C} \symbol{92}\coqdocvar{to} \coqdocvariable{C}) \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \coqdocvariable{C}
+\symbol{92}
+which has the same type as $\rec{\mathbb{N}}$.  
+
+
+The first argument of $\ite_{\mathbb{N} \times C}$ is the starting point,
+which we'll make $(0, c_{0})$.  The second input takes an element of
+$\mathbb{N} \times C$ as an argument and uses $c_{s}$ to construct a new
+element of $\mathbb{N} \times C$.  We can use the first and second elements of
+the pair as arguments for $c_{s}$, and we'll use $\suc$ to advance the second
+argument, representing the number of steps taken.  This gives the function
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})) 
+  : \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}
+\symbol{92}
+for the second input to $\ite_{\mathbb{N} \times C}$.  The third input is just
+$n$, which we can pass through.  Plugging these in gives
+\symbol{92}
+  \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\}\symbol{92}\coqdocvar{big}(
+  (0, \coqdocvar{c\_}\{0\}),
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})),
+  \coqdocvariable{n}
+  \symbol{92}\coqdocvar{big})
+  : \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}
+\symbol{92}
+from which we need to extract an element of $C$.  This is easily done with the
+projection operator, so we have
+\symbol{92}
+  \symbol{92}\coqdocvar{Phi\_}\{\coqdocvariable{C}\}(\coqdocvar{c\_}\{0\}, \coqdocvar{c\_}\{\coqdocvar{s}\}, \coqdocvariable{n}) \symbol{92}\coqdocvar{defeq}
+  \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}}\symbol{92}\coqdocvar{bigg}(
+    \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\}\symbol{92}\coqdocvar{big}(
+    (0, \coqdocvar{c\_}\{0\}),
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})),
+    \coqdocvariable{n}
+    \symbol{92}\coqdocvar{big})
+  \symbol{92}\coqdocvar{bigg})
+\symbol{92}
+which has the same type as $\rec{\mathbb{N}}$.  In Coq we first define the
+iterator and then our alternative recursor:
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdef{chap01.iter}{iter}{\coqdocdefinition{iter}} (\coqdocvar{C} : \coqdockw{Type}) (\coqdocvar{c0} : \coqdocvariable{C}) (\coqdocvar{cs} : \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqdocvariable{C} :=\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{match} \coqdocvariable{n} \coqdockw{with}\coqdoceol
+\coqdocindent{3.00em}
+\ensuremath{|} 0 \ensuremath{\Rightarrow} \coqdocvariable{c0}\coqdoceol
+\coqdocindent{3.00em}
+\ensuremath{|} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n} \ensuremath{\Rightarrow} \coqdocvariable{cs} (\coqref{chap01.iter}{\coqdocdefinition{iter}} \coqdocvariable{C} \coqdocvariable{c0} \coqdocvariable{cs} \coqdocvariable{n})\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap01.Phi}{Phi}{\coqdocdefinition{Phi}} (\coqdocvar{C} : \coqdockw{Type}) (\coqdocvar{c0} : \coqdocvariable{C}) (\coqdocvar{cs}: \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :=\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} (\coqref{chap01.iter}{\coqdocdefinition{iter}} (\coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{C})\coqdoceol
+\coqdocindent{6.00em}
+\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}0\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{c0}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdoceol
+\coqdocindent{6.00em}
+(\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x})\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{cs} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}) (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}})\coqdoceol
+\coqdocindent{6.00em}
+\coqdocvariable{n}).\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+Now to show that the defining equations hold propositionally for $\Phi$.  First
+we need a small calculation about how the first element of the pair advances through
+iteration.  That is, we will be interested in the function
+\symbol{92}
+  \symbol{92}\coqdocvar{Theta}(\coqdocvariable{n}) \symbol{92}\coqdocvar{defeq}
+  \symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}}\symbol{92}\coqdocvar{bigg}(
+    \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\}\symbol{92}\coqdocvar{big}(
+    (0, \coqdocvar{c\_}\{0\}),
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})),
+    \coqdocvariable{n}
+    \symbol{92}\coqdocvar{big})
+  \symbol{92}\coqdocvar{bigg})
+\symbol{92}
+We show that $\Theta(n) =_{\mathbb{N}} n$ is inhabited for all $n$, by
+induction.  For the family 
+\symbol{92}
+  \coqdocvar{E}(\coqdocvariable{n}) \symbol{92}\coqdocvar{defeq} (\symbol{92}\coqdocvar{Theta}(\coqdocvariable{n}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvariable{n})
+\symbol{92}
+The induction principle for $\mathbb{N}$ gives us a function
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\coqdocvar{E}) :
+  \coqdocvar{E}(0) \symbol{92}\coqdocvar{to} \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{E}(\coqdocvariable{n}) \symbol{92}\coqdocvar{to} \coqdocvar{E}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))\symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{E}(\coqdocvariable{n})
+\symbol{92}
+which is just a functional version of usual notion of induction on
+$\mathbb{N}$.  So for the base case, we show that
+\symbol{92}
+  \symbol{92}\coqdocvar{Theta}(0)
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}}\symbol{92}\coqdocvar{bigg}(
+    \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\}\symbol{92}\coqdocvar{big}(
+    (0, \coqdocvar{c\_}\{0\}),
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})),
+    0
+    \symbol{92}\coqdocvar{big})
+  \symbol{92}\coqdocvar{bigg})
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}}(0, \coqdocvar{c\_}\{0\})
+  \symbol{92}\coqdocvar{equiv} 0
+\symbol{92}
+Thus $\refl{0} : (\Theta(0) =_{\mathbb{N}} 0) \equiv E(0)$.  For the induction
+step, we suppose that $n : \mathbb{N}$ and that $\refl{n} : E(n)$.  Unravelling the
+definition a bit, we get
+\symbol{92}begin\{align*\}
+  \&\symbol{92}phantom\{\symbol{92}equiv\}\symbol{92}Theta(\symbol{92}suc(n))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}fst\symbol{92}bigg(
+    \symbol{92}ite\{\symbol{92}mathbb\{N\} \symbol{92}times C\}\symbol{92}big(
+    (0, c\{0\}),
+    \symbol{92}lam\{x\}(\symbol{92}suc(\symbol{92}fst x), c\{s\}(\symbol{92}fst x, \symbol{92}snd x)),
+    \symbol{92}suc(n)
+    \symbol{92}big)
+  \symbol{92}bigg)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}fst(\symbol{92}suc(\symbol{92}Theta(n)), c\{s\}(\symbol{92}Theta(n), \symbol{92}Phi\{C\}(c\{0\}, c\{s\}, n)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}suc(\symbol{92}Theta(n))
+\symbol{92}end\{align*\}
+From which we conclude that $\refl{\Theta(\suc(n))} : \Theta(\suc(n))
+=_{\mathbb{N}} \suc(\Theta(n))$.  To replace the $\Theta(n)$ on the right hand
+side of this equality, we use $\refl{n}$ and the indiscernability of
+identicals.  We have the family
+\symbol{92}
+  \coqdocvar{F}(\coqdocvar{m}) \symbol{92}\coqdocvar{defeq} (\symbol{92}\coqdocvar{Theta}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n})) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \symbol{92}\coqdocvar{suc}(\coqdocvar{m}))
+\symbol{92}
+and the indiscernability of identicals gives us a function 
+\symbol{92}
+  \coqdocvariable{f} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}, \coqdocvariable{y}, \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{p} : \coqdocvariable{x} =\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvariable{y}\} \coqdocvar{F}(\coqdocvariable{x}) \symbol{92}\coqdocvar{to} \coqdocvar{F}(\coqdocvariable{y})
+\symbol{92}
+on the basis of this.  Plugging in the appropriate arguments, we obtain
+\symbol{92}
+  \coqdocvariable{f}\symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{Theta}(\coqdocvariable{n}), \coqdocvariable{n}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{n}\}, \symbol{92}\coqdocvar{refl}\{\symbol{92}\coqdocvar{Theta}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))\}\symbol{92}\coqdoctac{right}) : \coqdocvar{F}(\coqdocvariable{n}) \symbol{92}\coqdocvar{equiv}
+  (\symbol{92}\coqdocvar{Theta}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n})) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))
+  \symbol{92}\coqdocvar{equiv} \coqdocvar{E}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))
+\symbol{92}
+So, discharging the assumption of the induction step,
+\symbol{92}
+  \coqdocvar{e} \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}\{\symbol{92}\coqdocvar{refl}\{\coqdocvariable{n}\}\}\coqdocvariable{f}\symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{Theta}(\coqdocvariable{n}), \coqdocvariable{n}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{n}\}, \symbol{92}\coqdocvar{refl}\{\symbol{92}\coqdocvar{Theta}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))\}\symbol{92}\coqdoctac{right})
+  :
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\coqdocvar{E}(\coqdocvariable{n}) \symbol{92}\coqdocvar{to} \coqdocvar{E}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))
+\symbol{92}
+thus
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\coqdocvar{E}, \symbol{92}\coqdocvar{refl}\{0\}, \coqdocvar{e}) 
+  : 
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{E}(\coqdocvariable{n})
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} (\symbol{92}\coqdocvar{Theta}(\coqdocvariable{n}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvariable{n})
+\symbol{92}
+
+
+We're now prepared to show that the definitional equalities hold
+propositionally for $\Phi$.  To do this, we must show that
+\symbol{92}begin\{align*\}
+  \symbol{92}Phi\{C\}(c\{0\}, c\{s\}, 0) \&=\_\{C\} c\{0\} \symbol{92}\symbol{92}
+  \symbol{92}prd\{n:\symbol{92}mathbb\{N\}\}\symbol{92}bigg(\symbol{92}Phi\{C\}(c\{0\}, c\{s\}, \symbol{92}suc(n)) \&=\_\{C\} c\{s\}(n,
+  \symbol{92}Phi\{C\}(c\{0\}, c\{s\}, n)) \symbol{92}bigg)
+\symbol{92}end\{align*\}
+are inhabited.  Since $C$, $c_{0}$, and $c_{s}$ are fixed, define
+\symbol{92}
+  \symbol{92}\coqdocvar{Psi}(\coqdocvariable{n}) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{Phi\_}\{\coqdocvariable{C}\}(\coqdocvar{c\_}\{0\}, \coqdocvar{c\_}\{\coqdocvar{s}\}, \coqdocvariable{n})
+\symbol{92}
+for brevity. The first equality is straightforward:
+\symbol{92}
+  \symbol{92}\coqdocvar{Psi}(0)
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}}\symbol{92}\coqdocvar{bigg}(
+    \symbol{92}\coqdocvar{ite\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{times} \coqdocvariable{C}\}\symbol{92}\coqdocvar{big}(
+    (0, \coqdocvar{c\_}\{0\}),
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}), \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})),
+    0
+    \symbol{92}\coqdocvar{big})
+  \symbol{92}\coqdocvar{bigg})
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}}(0, \coqdocvar{c\_}\{0\})
+  \symbol{92}\coqdocvar{equiv}
+  \coqdocvar{c\_}\{0\}
+\symbol{92}
+So $\refl{\Psi(0)} : \Psi(0) =_{C} c_{0}$.  This establishes
+the first equality.  
+
+
+Given the family
+\symbol{92}
+  \coqdocvar{G}(\coqdocvariable{n}) \symbol{92}\coqdocvar{defeq}
+  \symbol{92}\coqdocvar{Psi}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n})) =\coqdocvar{\_}\{\coqdocvariable{C}\} \coqdocvar{c\_}\{\coqdocvar{s}\}(\coqdocvariable{n}, \symbol{92}\coqdocvar{Psi}(\coqdocvariable{n})),
+\symbol{92}
+the induction principle for $\mathbb{N}$ gives us a function
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\coqdocvar{G}) :
+  \coqdocvar{G}(0) \symbol{92}\coqdocvar{to} \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{G}(\coqdocvariable{n}) \symbol{92}\coqdocvar{to} \coqdocvar{G}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))\symbol{92}\coqdoctac{right}) \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{G}(\coqdocvariable{n})
+\symbol{92}
+In the base case,
+\symbol{92}begin\{align*\}
+  \&\symbol{92}phantom\{\symbol{92}equiv\} \symbol{92}Psi(1)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}snd\symbol{92}bigg(
+    \symbol{92}ite\{\symbol{92}mathbb\{N\} \symbol{92}times C\}\symbol{92}big(
+    (0, c\{0\}),
+    \symbol{92}lam\{x\}(\symbol{92}suc(\symbol{92}fst x), c\{s\}(\symbol{92}fst x, \symbol{92}snd x)),
+    1
+    \symbol{92}big)
+  \symbol{92}bigg)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}snd\symbol{92}bigg(
+    \symbol{92}suc(\symbol{92}fst (0, c\{0\})), c\{s\}(\symbol{92}fst (0, c\{0\}), \symbol{92}snd (0, c\{0\}))
+  \symbol{92}bigg)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  c\{s\}(0, c\{0\})
+\symbol{92}end\{align*\}
+So $\refl{\Psi(1)} : G(0)$.  Now suppose that $n : \mathbb{N}$ and
+$\refl{\Psi(\suc(n))} : G(n)$.  We have
+\symbol{92}begin\{align*\}
+  \&\symbol{92}phantom\{\symbol{92}equiv\}\symbol{92}Psi(\symbol{92}suc(\symbol{92}suc(n))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}snd\symbol{92}bigg(
+    \symbol{92}ite\{\symbol{92}mathbb\{N\} \symbol{92}times C\}\symbol{92}big(
+    (0, c\{0\}),
+    \symbol{92}lam\{x\}(\symbol{92}suc(\symbol{92}fst x), c\{s\}(\symbol{92}fst x, \symbol{92}snd x)),
+    \symbol{92}suc(\symbol{92}suc(n))
+    \symbol{92}big)
+  \symbol{92}bigg)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}snd\symbol{92}bigg(
+    \symbol{92}suc(\symbol{92}Theta(\symbol{92}suc(n))), c\{s\}(\symbol{92}Theta(\symbol{92}suc(n)), \symbol{92}Psi(\symbol{92}suc(n)))
+  \symbol{92}bigg)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  c\{s\}(\symbol{92}Theta(\symbol{92}suc(n)), \symbol{92}Psi(\symbol{92}suc(n)))
+\symbol{92}end\{align*\}
+We can again use the indiscernability of identicals here.  Define the family
+\symbol{92}
+  \coqdocvar{H}(\coqdocvar{m}) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{Psi}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))) =\coqdocvar{\_}\{\coqdocvariable{C}\} \coqdocvar{c\_}\{\coqdocvar{s}\}(\coqdocvar{m}, \symbol{92}\coqdocvar{Psi}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))) 
+\symbol{92}
+Then the indiscernability of identicals gives us a function
+\symbol{92}
+  \coqdocvariable{h}: \symbol{92}\coqdocvar{prd}\{\coqdocvar{m}, \coqdocvar{i} : \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{p}: \coqdocvar{m}=\coqdocvar{\_}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{i}\} \coqdocvar{H}(\coqdocvar{m}) \symbol{92}\coqdocvar{to} \coqdocvar{H}(\coqdocvar{i})
+\symbol{92}
+and
+\symbol{92}
+  \coqdocvariable{h}(\symbol{92}\coqdocvar{Theta}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n})), \symbol{92}\coqdocvar{suc}(\coqdocvariable{n}), \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\coqdocvar{E}, \symbol{92}\coqdocvar{refl}\{0\}, \coqdocvariable{g}, \symbol{92}\coqdocvar{suc}(\coqdocvariable{n})))
+  :
+  \symbol{92}\coqdocvar{Psi}(\symbol{92}\coqdocvar{suc}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))) =\coqdocvar{\_}\{\coqdocvariable{C}\} \coqdocvar{c\_}\{\coqdocvar{s}\}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}), \symbol{92}\coqdocvar{Psi}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n})))
+\symbol{92}
+Abstracting out the context, we obtain an object
+\symbol{92}
+  \coqdocvar{j} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{G}(\coqdocvariable{n}) \symbol{92}\coqdocvar{to} \coqdocvar{G}(\symbol{92}\coqdocvar{suc}(\coqdocvariable{n}))
+\symbol{92}
+So
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\coqdocvar{G}, \symbol{92}\coqdocvar{refl}\{\symbol{92}\coqdocvar{Psi}(1)\}, \coqdocvar{j}) : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\} \coqdocvar{G}(\coqdocvariable{n})
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{n}:\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\symbol{92}\coqdocvar{bigg}(\symbol{92}\coqdocvar{Phi\_}\{\coqdocvariable{C}\}(\coqdocvar{c\_}\{0\}, \coqdocvar{c\_}\{\coqdocvar{s}\}, \symbol{92}\coqdocvar{suc}(\coqdocvariable{n})) =\coqdocvar{\_}\{\coqdocvariable{C}\} \coqdocvar{c\_}\{\coqdocvar{s}\}(\coqdocvariable{n},
+  \symbol{92}\coqdocvar{Phi\_}\{\coqdocvariable{C}\}(\coqdocvar{c\_}\{0\}, \coqdocvar{c\_}\{\coqdocvar{s}\}, \coqdocvariable{n})) \symbol{92}\coqdocvar{bigg})
+\symbol{92}
+Thus proving the second equality propositionally.
+
+
+In Coq, we can repeat this proof, but there's surely a better way.
+\begin{coqdoccode}
+\coqdocnoindent
+\coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{C} \coqdocvar{c0} \coqdocvar{cs}, \coqref{chap01.Phi}{\coqdocdefinition{Phi}} \coqdocvariable{C} \coqdocvariable{c0} \coqdocvariable{cs} 0 \coqdocnotation{=} \coqdocvariable{c0}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\symbol{92}exer\{1.5\}\{56\}  Show that if we define $A + B \defeq \sm{x:\bool}
+\rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
+which the definitional equalities stated in \symbol{92}S1.7 hold.
+
+
+\symbol{92}soln  Define $A+B$ as stated.  We need to define a function of type
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}+\coqdocvariable{B}\}' : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C} : (\coqdocvariable{A} + \coqdocvariable{B}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{UU}\}
+               \symbol{92}\coqdoctac{left}( \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{a}:\coqdocvariable{A}\} \coqdocvariable{C}(\symbol{92}\coqdocvar{inl}(\coqdocvariable{a}))\symbol{92}\coqdoctac{right})
+               \symbol{92}\coqdocvar{to}
+               \symbol{92}\coqdoctac{left}( \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{b}:\coqdocvariable{B}\} \coqdocvariable{C}(\symbol{92}\coqdocvar{inr}(\coqdocvariable{b}))\symbol{92}\coqdoctac{right})
+               \symbol{92}\coqdocvar{to}
+               \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{x} : \coqdocvariable{A} + \coqdocvariable{B}\} \coqdocvariable{C}(\coqdocvariable{x})
+\symbol{92}
+which means that we also need to define $\inl' : A \to A + B$ and $\inr' B \to
+A + B$; these are
+\symbol{92}begin\{align*\}
+  \symbol{92}inl'(a) \symbol{92}defeq (0\{\symbol{92}bool\}, a)
+  \symbol{92}qquad\symbol{92}qquad
+  \symbol{92}inr'(b) \symbol{92}defeq (1\{\symbol{92}bool\}, b)
+\symbol{92}end\{align*\}
+In Coq, we can use \coqdocvar{sigT} to define \coqdocvar{coprd} as a
+$\Sigma$-type:
+Suppose that $C : A + B \to \UU$, $g_{0} : \prd{a:A} C(\inl'(a))$, $g_{1} :
+\prd{b:B} C(\inr'(b))$, and $x : A+B$; we're looking to define
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}+\coqdocvariable{B}\}'(\coqdocvariable{C}, \coqdocvar{g\_}\{0\}, \coqdocvar{g\_}\{1\}, \coqdocvariable{x})
+\symbol{92}
+We will use $\ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}$, and for notational
+convenience will write $\Phi \defeq \sm{x:\bool}\rec{\bool}(\UU, A, B, x)$.
+$\ind{\Phi}$ has signature
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}}\} :
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{C} : (\symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{UU}\}
+  \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\}\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{y}:\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\}\coqdocvariable{C}((\coqdocvariable{x}, \coqdocvariable{y}))\symbol{92}\coqdoctac{right})
+  \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{p}:\symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}}\} \coqdocvariable{C}(\coqdocvariable{p})
+\symbol{92}
+So
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}}\}(\coqdocvariable{C}) : 
+  \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\}\symbol{92}\coqdocvar{tprd}\{\coqdocvariable{y}:\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\}\coqdocvariable{C}((\coqdocvariable{x}, \coqdocvariable{y}))\symbol{92}\coqdoctac{right})
+  \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{tprd}\{\coqdocvariable{p}:\symbol{92}\coqref{chap01.Phi}{\coqdocdefinition{Phi}}\} \coqdocvariable{C}(\coqdocvariable{p})
+\symbol{92}
+To obtain something of type $\tprd{x:\bool}\tprd{y:\rec{\bool}(\UU, A, B,
+  x)}C((x, y))$ we'll have to use $\ind{\bool}$.  In particular, for $B(x)
+\defeq\prd{y:\rec{\bool}(\UU, A, B, x)}C((x, y))$ we have
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{bool}\}(\coqdocvariable{B})
+  :
+  \coqdocvariable{B}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})
+  \symbol{92}\coqdocvar{to}
+  \coqdocvariable{B}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})
+  \symbol{92}\coqdocvar{to}
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\}
+  \coqdocvariable{B}(\coqdocvariable{x})
+\symbol{92}
+along with
+\symbol{92}
+  \coqdocvar{g\_}\{0\} :
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{a}:\coqdocvariable{A}\} \coqdocvariable{C}(\symbol{92}\coqdocvar{inl'}(\coqdocvariable{a}))
+  \symbol{92}\coqdocvar{equiv}
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{a}:\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, 0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})\} \coqdocvariable{C}((0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}, \coqdocvariable{a}))
+  \symbol{92}\coqdocvar{equiv}
+  \coqdocvariable{B}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})
+\symbol{92}
+and similarly for $g_{1}$.  So
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{bool}\}(\coqdocvariable{B}, \coqdocvar{g\_}\{0\}, \coqdocvar{g\_}\{1\}) : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{y}:\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\}
+  \coqdocvariable{C}((\coqdocvariable{x}, \coqdocvariable{y}))
+\symbol{92}
+which is just what we needed for $\ind{\Phi}$.  So we define
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A}+\coqdocvariable{B}\}'(\coqdocvariable{C}, \coqdocvar{g\_}\{0\}, \coqdocvar{g\_}\{1\}, \coqdocvariable{x})
+  \symbol{92}\coqdocvar{defeq}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{sm}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\}\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\}\symbol{92}\coqdoctac{left}(
+    \coqdocvariable{C},
+    \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{bool}\}\symbol{92}\coqdoctac{left}(
+      \symbol{92}\coqdocvar{prd}\{\coqdocvariable{y}:\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\} \coqdocvariable{C}((\coqdocvariable{x}, \coqdocvariable{y})),
+      \coqdocvar{g\_}\{0\},
+      \coqdocvar{g\_}\{1\}
+    \symbol{92}\coqdoctac{right}),
+    \coqdocvariable{x}
+  \symbol{92}\coqdoctac{right})
+\symbol{92}
+and, in Coq, we use \coqdocvar{sigT\_rect}, which is the built-in
+$\lam{A}{B}\ind{\sm{x:A}B(x)}$:
+\symbol{92}newpage
+
+
+Now we must show that the definitional equalities
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, \symbol{92}inl'(a)) \symbol{92}equiv g\{0\}(a) \symbol{92}\symbol{92}
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, \symbol{92}inr'(b)) \symbol{92}equiv g\{1\}(b)
+\symbol{92}end\{align*\}
+hold.  For the first, we have
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, \symbol{92}inl'(a)) 
+  \&\symbol{92}equiv
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, (0\{\symbol{92}bool\}, a)) 
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{\symbol{92}sm\{x:\symbol{92}bool\}\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\}\symbol{92}left(
+    C,
+    \symbol{92}ind\{\symbol{92}bool\}\symbol{92}left(
+      \symbol{92}prd\{y:\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} C((x, y)),
+      g\{0\},
+      g\{1\}
+    \symbol{92}right),
+    (0\{\symbol{92}bool\}, a)
+  \symbol{92}right)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+    \symbol{92}ind\{\symbol{92}bool\}\symbol{92}left(
+      \symbol{92}prd\{y:\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} C((x, y)),
+      g\{0\},
+      g\{1\},
+      0\{\symbol{92}bool\}
+    \symbol{92}right)(a)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+      g\{0\}(a)
+\symbol{92}end\{align*\}
+and for the second,
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, \symbol{92}inr'(b)) 
+  \&\symbol{92}equiv
+  \symbol{92}ind\{A+B\}'(C, g\{0\}, g\{1\}, (1\{\symbol{92}bool\}, b)) 
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{\symbol{92}sm\{x:\symbol{92}bool\}\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\}\symbol{92}left(
+    C,
+    \symbol{92}ind\{\symbol{92}bool\}\symbol{92}left(
+      \symbol{92}prd\{y:\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} C((x, y)),
+      g\{0\},
+      g\{1\}
+    \symbol{92}right),
+    (1\{\symbol{92}bool\}, b)
+  \symbol{92}right)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+    \symbol{92}ind\{\symbol{92}bool\}\symbol{92}left(
+      \symbol{92}prd\{y:\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} C((x, y)),
+      g\{0\},
+      g\{1\},
+      1\{\symbol{92}bool\}
+    \symbol{92}right)(b)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+      g\{1\}(b)
+\symbol{92}end\{align*\}
+Trivial calculations, as Coq can attest:
+
+
+\symbol{92}exer\{1.6\}\{56\}  Show that if we define $A \times B \defeq \prd{x : \bool}
+\rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A \times
+  B}$ for which the definitional equalities stated in \symbol{92}S1.5 hold
+propositionally (i.e.\~{}using equality types).
+
+
+\symbol{92}soln Define
+\symbol{92}
+  \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B} \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x} : \symbol{92}\coqdocvar{bool}\} \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})
+\symbol{92}
+Supposing that $a : A$ and $b : B$, we have an element $(a, b) : A \times B$
+given by
+\symbol{92}
+  (\coqdocvariable{a}, \coqdocvariable{b}) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}), \coqdocvariable{a}, \coqdocvariable{b})
+\symbol{92}
+Defining this type and constructor in Coq, we have
+
+
+An induction principle for $A \times B$ will, given a family $C : A \times B
+\to \UU$ and a function 
+\symbol{92}
+  \coqdocvariable{g} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\coqdocvariable{A}\}\symbol{92}\coqdocvar{prd}\{\coqdocvariable{y}:\coqdocvariable{B}\} \coqdocvariable{C}((\coqdocvariable{x}, \coqdocvariable{y})),
+\symbol{92} 
+give a function $f : \prd{x : A \times B}C(x)$ defined by
+\symbol{92}
+  \coqdocvariable{f}((\coqdocvariable{x}, \coqdocvariable{y})) \symbol{92}\coqdocvar{defeq} \coqdocvariable{g}(\coqdocvariable{x})(\coqdocvariable{y})
+\symbol{92}
+So suppose that we have such a $C$ and $g$.  Writing things out in terms of the
+definitions, we have
+\symbol{92}begin\{align*\}
+  C \&: \symbol{92}left(\symbol{92}prd\{x:\symbol{92}bool\}\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\symbol{92}right) \symbol{92}to \symbol{92}UU \symbol{92}\symbol{92}
+  g \&: \symbol{92}prd\{x:A\}\symbol{92}prd\{y:B\} C(\symbol{92}ind\{\symbol{92}bool\}(\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B), x, y))
+\symbol{92}end\{align*\}  
+We can define projections by
+\symbol{92}
+  \symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p} \symbol{92}\coqdocvar{defeq} \coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}) \symbol{92}\coqdocvar{qquad}\symbol{92}\coqdocvar{qquad} \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p} \symbol{92}\coqdocvar{defeq} \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})
+\symbol{92}
+Since $p$ is an element of a dependent type, we have
+\symbol{92}begin\{align*\}
+  p(0\{\symbol{92}bool\}) \&: \symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, 0\{\symbol{92}bool\}) \symbol{92}equiv A\symbol{92}\symbol{92}
+  p(1\{\symbol{92}bool\}) \&: \symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, 1\{\symbol{92}bool\}) \symbol{92}equiv B
+\symbol{92}end\{align*\}
+which checks out.  Then we have
+\symbol{92}begin\{align*\}
+  g(\symbol{92}fst p)(\symbol{92}snd p) 
+  \&: C(\symbol{92}ind\{\symbol{92}bool\}(\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B), (\symbol{92}fst p), (\symbol{92}snd p)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv 
+  C(\symbol{92}ind\{\symbol{92}bool\}(\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B), (\symbol{92}fst p), (\symbol{92}snd p)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv 
+  C((p(0\{\symbol{92}bool\}), p(1\{\symbol{92}bool\})))
+\symbol{92}end\{align*\}
+So we have defined a function
+\symbol{92}
+  \coqdocvar{f'} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{p} : \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} \coqdocvariable{C}((\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}), \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})))
+\symbol{92}
+But we need one of the type
+\symbol{92}
+  \coqdocvariable{f} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{p} : \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} \coqdocvariable{C}(\coqdocvariable{p})
+\symbol{92}
+To solve this problem, we need to appeal to function extensionality from \symbol{92}S2.9.
+This implies that there is a function
+\symbol{92}
+  \symbol{92}\coqdocvar{funext} : 
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{f}, \coqdocvariable{g} : \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} 
+    \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\} (\coqdocvariable{f}(\coqdocvariable{x}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\} \coqdocvariable{g}(\coqdocvariable{x}))\symbol{92}\coqdoctac{right})
+    \symbol{92}\coqdocvar{to} 
+    (\coqdocvariable{f} =\coqdocvar{\_}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} \coqdocvariable{g})
+\symbol{92}
+So, consider
+\symbol{92}
+  \symbol{92}\coqdocvar{funext}(\coqdocvariable{p}, (\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}))) 
+  :
+  \symbol{92}\coqdoctac{left}(\symbol{92}\coqdocvar{prd}\{\coqdocvariable{x}:\symbol{92}\coqdocvar{bool}\} (\coqdocvariable{p}(\coqdocvariable{x}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\} (\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}),
+    \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}))(\coqdocvariable{x}))\symbol{92}\coqdoctac{right})
+  \symbol{92}\coqdocvar{to} 
+  (\coqdocvariable{p} =\coqdocvar{\_}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} (\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}), \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})))
+\symbol{92}
+We just need to show that the antecedent is inhabited, which we can do with
+$\ind{\bool}$.  So consider the family
+\symbol{92}begin\{align*\}
+  E \&\symbol{92}defeq 
+  \symbol{92}lam\{x : \symbol{92}bool\} 
+  (p(x) =\_\{\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} (p(0\{\symbol{92}bool\}), p(1\{\symbol{92}bool\}))(x)))
+  \symbol{92}\symbol{92}\&\symbol{92}phantom\{:\}\symbol{92}equiv
+  \symbol{92}lam\{x : \symbol{92}bool\} 
+  (p(x) =\_\{\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, x)\} \symbol{92}ind\{\symbol{92}bool\}(\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B),
+  p(0\{\symbol{92}bool\}), p(1\{\symbol{92}bool\}), x))
+\symbol{92}end\{align*\}
+We have
+\symbol{92}begin\{align*\}
+  E(0\{\symbol{92}bool\})
+  \&\symbol{92}equiv
+  (p(0\{\symbol{92}bool\}) =\_\{\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, 0\{\symbol{92}bool\})\} \symbol{92}ind\{\symbol{92}bool\}(\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B),
+  p(0\{\symbol{92}bool\}), p(1\{\symbol{92}bool\}), 0\{\symbol{92}bool\}))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  (p(0\{\symbol{92}bool\}) =\_\{\symbol{92}rec\{\symbol{92}bool\}(\symbol{92}UU, A, B, 0\{\symbol{92}bool\})\} p(0\{\symbol{92}bool\}))
+\symbol{92}end\{align*\}
+Thus $\refl{p(0_{\bool})} : E(0_{\bool})$.  The same argument goes through to
+show that $\refl{p(1_{\bool})} : E(1_{\bool})$.  This means that
+\symbol{92}
+  \coqdocvariable{h} \symbol{92}\coqdocvar{defeq}
+  \symbol{92}\coqdocvar{ind}\{\symbol{92}\coqdocvar{bool}\}(\coqdocvar{E}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})\}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})\})
+  :
+  \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x} : \symbol{92}\coqdocvar{bool}\} (\coqdocvariable{p}(\coqdocvariable{x}) =\coqdocvar{\_}\{\symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{bool}\}(\symbol{92}\coqdocvar{UU}, \coqdocvariable{A}, \coqdocvariable{B}, \coqdocvariable{x})\} (\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}),
+  \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\})))
+\symbol{92}
+and thus
+\symbol{92}
+  \symbol{92}\coqdocvar{funext}(\coqdocvariable{p}, (\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}), \coqdocvariable{h}) 
+  : \coqdocvariable{p} =\coqdocvar{\_}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\} (\coqdocvariable{p}(0\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}),
+  \coqdocvariable{p}(1\coqdocvar{\_}\{\symbol{92}\coqdocvar{bool}\}))
+\symbol{92}
+So, by the transport principle, there is a function
+\symbol{92}
+  (\symbol{92}\coqdocvar{funext}(\coqdocvariable{p}, (\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}), \coqdocvariable{h}))\coqdocvar{\_}\{*\} : \coqdocvariable{C}((\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p})) \symbol{92}\coqdocvar{to} \coqdocvariable{C}(\coqdocvariable{p})
+\symbol{92}
+and we may define
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}(\coqdocvariable{C}, \coqdocvariable{g}, \coqdocvariable{p}) \symbol{92}\coqdocvar{defeq}
+  (\symbol{92}\coqdocvar{funext}(\coqdocvariable{p}, (\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p}, \symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}), \coqdocvariable{h}))\coqdocvar{\_}\{*\}(\coqdocvariable{g}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{p})(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{p}))
+\symbol{92}
+In Coq we can repeat this construction using \coqdocvar{Funext}.
+
+
+Now, we must show that the definitional equality holds propositionally.  That
+is, we must show that the type
+\symbol{92}
+  \symbol{92}\coqdocvar{ind}\{\coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}(\coqdocvariable{C}, \coqdocvariable{g}, (\coqdocvariable{a}, \coqdocvariable{b})) =\coqdocvar{\_}\{\coqdocvariable{C}((\coqdocvariable{a}, \coqdocvariable{b}))\} \coqdocvariable{g}(\coqdocvariable{a})(\coqdocvariable{b})
+\symbol{92}
+is inhabited.  Unfolding the left hand side gives
+\symbol{92}begin\{align*\}
+  \symbol{92}ind\{A \symbol{92}times B\}(C, g, (a, b))
+  \&\symbol{92}equiv
+  (\symbol{92}funext((a, b), (\symbol{92}fst (a, b), \symbol{92}snd (a, b)), h))\_\{*\}(g(\symbol{92}fst (a, b))(\symbol{92}snd (a, b)))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  (\symbol{92}funext((a, b), (a, b), h))\_\{*\}(g(a)(b))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ind\{=\_\{A\symbol{92}times B\}\}(D, d, (a, b), (a, b), \symbol{92}funext((a, b), (a, b), h))
+  (g(a)(b))
+\symbol{92}end\{align*\}
+where $D(x, y, \funext((a, b), (a, b), h)) \defeq C(x) \to C(y)$ and
+\symbol{92}
+  \coqdocvar{d} \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}\symbol{92}\coqdocvar{mathsf}\{\coqdocvar{id}\}\coqdocvar{\_}\{\coqdocvariable{C}(\coqdocvariable{x})\} : \symbol{92}\coqdocvar{prd}\{\coqdocvariable{x} : \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B}\}\coqdocvariable{D}(\coqdocvariable{x}, \coqdocvariable{x}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{x}\})
+\symbol{92}
+But the defining equality of 
+
+
+\symbol{92}exer\{1.7\}\{56\} Give an alternative derivation of $\ind{=_{A}}'$ from
+$\ind{=_{A}}$ which avoids the use of universes.
+
+
+\symbol{92}exer\{1.8\}\{56\}  Define multiplication and exponentiation using
+$\rec{\mathbb{N}}$.  Verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring
+using only $\ind{\mathbb{N}}$.
+
+
+\symbol{92}soln For multiplication, we need to construct a function $\mult : \mathbb{N}
+\to \mathbb{N} \to \mathbb{N}$.  Defined with pattern-matching, we would have
+\symbol{92}begin\{align*\}
+  \symbol{92}mult(0, m) \&\symbol{92}defeq 0 \symbol{92}\symbol{92}
+  \symbol{92}mult(\symbol{92}suc(n), m) \&\symbol{92}defeq m + \symbol{92}mult(n, m)
+\symbol{92}end\{align*\}
+so in terms of $\rec{\mathbb{N}}$ we have
+\symbol{92}
+  \symbol{92}\coqdocvar{mult} \symbol{92}\coqdocvar{defeq} 
+  \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(
+  \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\},
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}0,
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}\{\coqdocvariable{g}\}\{\coqdocvar{m}\}\symbol{92}\coqdocvar{add}(\coqdocvar{m}, \coqdocvariable{g}(\coqdocvar{m}))
+  )
+\symbol{92}
+For exponentiation, we have the function $\expf: \mathbb{N} \to \mathbb{N} \to
+\mathbb{N}$, with the intention that $\expf(e, b) = b^{e}$.  In terms of pattern
+matching,
+\symbol{92}begin\{align*\}
+  \symbol{92}expf(0, b) \&\symbol{92}defeq 1 \symbol{92}\symbol{92}
+  \symbol{92}expf(\symbol{92}suc(e), b) \&\symbol{92}defeq \symbol{92}mult(b, \symbol{92}expf(e, b))
+\symbol{92}end\{align*\}
+or, in terms of $\rec{\mathbb{N}}$,
+\symbol{92}
+  \symbol{92}\coqdocvar{expf} \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(
+    \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\},
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}1,
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}\{\coqdocvariable{g}\}\{\coqdocvar{m}\}\symbol{92}\coqdocvar{mult}(\coqdocvar{m}, \coqdocvariable{g}(\coqdocvar{m}))
+  )
+\symbol{92}
+In Coq, we can define these by
+
+
+To verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring, we need stuff
+from Chapter 2.
+
+
+\symbol{92}exer\{1.9\}\{56\}  Define the type family $\Fin : \mathbb{N} \to \UU$
+mentioned at the end of \symbol{92}S1.3, and the dependent function $\fmax :
+\prd{n : \mathbb{N}} \Fin(n + 1)$ mentioned in \symbol{92}S1.4.
+
+
+\symbol{92}soln  $\Fin(n)$ is a type with exactly $n$ elements.  Essentially, we want to
+recreate $\mathbb{N}$ using types; so we will replace $0$ with $\emptyt$ and
+$\suc$ with a coproduct.  So we define $\Fin$ recursively:
+\symbol{92}begin\{align*\}
+  \symbol{92}Fin(0) \&\symbol{92}defeq \symbol{92}emptyt \symbol{92}\symbol{92}
+  \symbol{92}Fin(\symbol{92}suc(n)) \&\symbol{92}defeq \symbol{92}Fin(n) + \symbol{92}unit
+\symbol{92}end\{align*\}
+or, equivalently,
+\symbol{92}
+  \symbol{92}\coqdocvar{Fin} \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}(\symbol{92}\coqdocvar{UU}, \symbol{92}\coqdocvar{emptyt}, \symbol{92}\coqdocvar{lam}\{\coqdocvariable{C}\}\coqdocvariable{C}+\symbol{92}\coqdocvar{unit})
+\symbol{92}
+
+
+\symbol{92}exer\{1.10\}\{56\}  Show that the Ackermann function $\ack : \mathbb{N} \to
+\mathbb{N} \to \mathbb{N}$,
+satisfying the following equations
+\symbol{92}begin\{align*\}
+  \symbol{92}ack(0, n) \&\symbol{92}equiv \symbol{92}suc(n), \symbol{92}\symbol{92}
+  \symbol{92}ack(\symbol{92}suc(m), 0) \&\symbol{92}equiv \symbol{92}ack(m, 1), \symbol{92}\symbol{92}
+  \symbol{92}ack(\symbol{92}suc(m), \symbol{92}suc(n)) \&\symbol{92}equiv \symbol{92}ack(m, \symbol{92}ack(\symbol{92}suc(m), n)),
+\symbol{92}end\{align*\}
+is definable using only $\rec{\mathbb{N}}$.
+
+
+\symbol{92}soln Define
+\symbol{92}
+  \symbol{92}\coqdocvar{ack} \symbol{92}\coqdocvar{defeq} 
+  \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\symbol{92}\coqdocvar{big}(
+    \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}, 
+    \symbol{92}\coqdocvar{suc},
+    \symbol{92}\coqdocvar{lam}\{\coqdocvar{m}\}\{\coqdocvar{r}\}
+      \symbol{92}\coqdocvar{rec}\{\symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\}\}\symbol{92}\coqdocvar{big}(
+        \symbol{92}\coqdocvar{mathbb}\{\coqdocvar{N}\},
+        \coqdocvar{r}(1),
+        \symbol{92}\coqdocvar{lam}\{\coqdocvariable{n}\}\{\coqdocvar{s}\}\coqdocvar{r}(\coqdocvar{s}(\coqdocvar{r}, \coqdocvariable{n}))
+      \symbol{92}\coqdocvar{big})
+  \symbol{92}\coqdocvar{big})
+\symbol{92}
+To show that the defining equalities hold, we'll suppress the first argument of
+$\rec{\mathbb{N}}$ for clarity.  For the first we have
+\symbol{92}begin\{align*\}
+  \symbol{92}ack(0, n)
+  \symbol{92}equiv
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+    \symbol{92}suc,
+    \symbol{92}lam\{m\}\{r\}
+      \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+        r(1),
+        \symbol{92}lam\{n\}\{s\}r(s(r, n))
+      \symbol{92}big),
+    0
+  \symbol{92}big)(n)
+  \symbol{92}equiv
+  \symbol{92}suc(n)
+\symbol{92}end\{align*\}
+For the second,
+\symbol{92}begin\{align*\}
+  \&\symbol{92}phantom\{\symbol{92}equiv\} \symbol{92}ack(\symbol{92}suc(m), 0)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+    \symbol{92}suc,
+    \symbol{92}lam\{m\}\{r\}
+      \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+        r(1),
+        \symbol{92}lam\{n\}\{s\}r(s(r, n))
+      \symbol{92}big),
+    \symbol{92}suc(m)
+  \symbol{92}big)(0)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}big(
+  \symbol{92}big(\symbol{92}lam\{r\}
+    \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+      r(1),
+      \symbol{92}lam\{n\}\{s\}r(s(r, n))
+    \symbol{92}big)\symbol{92}big)
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+    \symbol{92}suc,
+    \symbol{92}lam\{m\}\{r\}
+      \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+        r(1),
+        \symbol{92}lam\{n\}\{s\}r(s(r, n))
+      \symbol{92}big),
+    m
+  \symbol{92}big)
+  \symbol{92}big)(0)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}big(
+  \symbol{92}big(\symbol{92}lam\{r\}
+    \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+      r(1),
+      \symbol{92}lam\{n\}\{s\}r(s(r, n))
+    \symbol{92}big)\symbol{92}big)
+    \symbol{92}ack(m, -)
+  \symbol{92}big)(0)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+  \symbol{92}ack(m, 1),
+  \symbol{92}lam\{n\}\{s\}\symbol{92}ack(m, s(\symbol{92}ack(m, -), n)),
+  0
+  \symbol{92}big)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}ack(m, 1)
+\symbol{92}end\{align*\}
+Finally, using the first few steps of this second calculation again,
+\symbol{92}begin\{align*\}
+  \&\symbol{92}phantom\{\symbol{92}equiv\} \symbol{92}ack(\symbol{92}suc(m), \symbol{92}suc(n))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+    \symbol{92}suc,
+    \symbol{92}lam\{m\}\{r\}
+      \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+        r(1),
+        \symbol{92}lam\{n\}\{s\}r(s(r, n))
+      \symbol{92}big),
+    \symbol{92}suc(m)
+  \symbol{92}big)(\symbol{92}suc(n))
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+  \symbol{92}ack(m, 1),
+  \symbol{92}lam\{n\}\{s\}\symbol{92}ack(m, s(\symbol{92}ack(m, -), n)),
+  \symbol{92}suc(n)
+  \symbol{92}big)
+  \symbol{92}\symbol{92}\&\symbol{92}equiv
+  (\symbol{92}lam\{s\}\symbol{92}ack(m, s(\symbol{92}ack(m, -), n)))
+  \symbol{92}rec\{\symbol{92}mathbb\{N\}\}\symbol{92}big(
+  \symbol{92}ack(m, 1),
+  \symbol{92}lam\{n\}\{s\}\symbol{92}ack(m, s(\symbol{92}ack(m, -), n)),
+  n
+  \symbol{92}big)
+\symbol{92}end\{align*\}
+
+
+\symbol{92}exer\{1.11\}\{56\}  Show that for any type $A$, we have $\lnot\lnot\lnot A \to
+\lnot A$.
+
+
+\symbol{92}soln Suppose that $\lnot\lnot\lnot A$ and $A$.  Supposing further that $\lnot
+A$, we get a contradiction with the second assumption, so $\lnot \lnot A$.  But
+this contradicts the first assumption that $\lnot\lnot\lnot A$, so $\lnot A$.
+Discharging the first assumption gives $\lnot\lnot\lnot A \to \lnot A$.
+
+
+In type-theoretic terms, the first assumption is $x : ((A \to \emptyt) \to
+\emptyt) \to \emptyt$, and the second is $a : A$.  If we further assume that
+$h : A \to \emptyt$, then $h(a) : \emptyt$, so discharging the $h$ gives
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{h}:\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{h}(\coqdocvariable{a}) : (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+But then we have
+\symbol{92}
+  \coqdocvariable{x}(\symbol{92}\coqdocvar{lam}\{\coqdocvariable{h} : \coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{h}(\coqdocvariable{a})) : \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+so discharging the $a$ gives
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{a}:\coqdocvariable{A}\}\coqdocvariable{x}(\symbol{92}\coqdocvar{lam}\{\coqdocvariable{h} : \coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{h}(\coqdocvariable{a})) : \coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+And discharging the first assumption gives
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}:((\coqdocvariable{A}\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt})\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt})\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt}\}\{\coqdocvariable{a}:\coqdocvariable{A}\}\coqdocvariable{x}(\symbol{92}\coqdocvar{lam}\{\coqdocvariable{h} : \coqdocvariable{A} \symbol{92}\coqdocvar{to}
+    \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{h}(\coqdocvariable{a})) :
+  (((\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt})
+\symbol{92}
+This is automatic for Coq, though not trivial
+One nice thing is that we can get a proof out of Coq by printing this
+\coqdockw{Goal}.  It returns
+\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{fun} (\coqdocvariable{A} : \coqdockw{Type}) (\coqdocvar{X} : \ensuremath{\lnot} \ensuremath{\lnot} \ensuremath{\lnot} \coqdocvariable{A}) (\coqdocvar{X0} : \coqdocvariable{A}) \ensuremath{\Rightarrow} \coqdocvar{X} (\coqdockw{fun} \coqdocvar{X1} : \coqdocvariable{A} \ensuremath{\rightarrow} \coqdocvar{Empty} \ensuremath{\Rightarrow} \coqdocvar{X1} \coqdocvar{X0}) \coqdoceol
+\coqdocindent{2.00em}
+: \coqdockw{\ensuremath{\forall}} \coqdocvariable{A} : \coqdockw{Type}, \ensuremath{\lnot} \ensuremath{\lnot} \ensuremath{\lnot} \coqdocvariable{A} \ensuremath{\rightarrow} \ensuremath{\lnot} \coqdocvariable{A}
+
+\coqdocemptyline
+
+
+\symbol{92}exer\{1.12\}\{56\}  Using the propositions as types interpretation, derive the
+following tautologies.
+\symbol{92}begin\{enumerate\}
+  \symbol{92}item If $A$, then (if $B$ then $A$).
+  \symbol{92}item If $A$, then not (not $A$).
+  \symbol{92}item If (not $A$ or not $B$), then not ($A$ and $B$).
+\symbol{92}end\{enumerate\}
+
+
+\symbol{92}soln (i)  Suppose that $A$ and $B$; then $A$.  Discharging the
+assumptions, $A \to B \to A$.  That is, we
+have 
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{a}:\coqdocvariable{A}\}\{\coqdocvariable{b}:\coqdocvariable{B}\}\coqdocvariable{a} : \coqdocvariable{A} \symbol{92}\coqdocvar{to} \coqdocvariable{B} \symbol{92}\coqdocvar{to} \coqdocvariable{A}
+\symbol{92}
+and in Coq,
+
+
+(ii)  Suppose that $A$.  Supposing further that $\lnot A$ gives a
+contradiction, so $\lnot\lnot A$.  That is,
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{a}:\coqdocvariable{A}\}\{\coqdocvariable{f}:\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{f}(\coqdocvariable{a}) : \coqdocvariable{A} \symbol{92}\coqdocvar{to} (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+(iii)
+Finally, suppose $\lnot A \lor \lnot B$.  Supposing further that $A \land B$
+means that $A$ and that $B$.  There are two cases.  If $\lnot A$, then we have
+a contradiction; but also if $\lnot B$ we have a contradiction.  Thus $\lnot (A
+\land B)$.
+
+
+Type-theoretically, we assume that $x : (A \to\emptyt) + (B \to\emptyt)$ and $z
+: A \times B$.  Conjunction elimination gives $\fst z : A$ and $\snd z : B$.
+We can now perform a case analysis.  Suppose that $x_{A} : A \to \emptyt$; then
+$x_{A}(\fst z) : \emptyt$, a contradicton; if instead $x_{B} : B \to \emptyt$,
+then $x_{B}(\snd z) : \emptyt$.  By the recursion principle for the coproduct,
+then,
+\symbol{92}
+  \coqdocvariable{f}(\coqdocvariable{z}) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{rec}\{(\coqdocvariable{A}\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt})+(\coqdocvariable{B}\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt})\}(
+    \symbol{92}\coqdocvar{emptyt},
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}\coqdocvariable{x}(\symbol{92}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{z}),
+    \symbol{92}\coqdocvar{lam}\{\coqdocvariable{x}\}\coqdocvariable{x}(\symbol{92}\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{z})
+  )
+  :
+  (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) + (\coqdocvariable{B} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+Discharging the assumption that $A \times B$ is inhabited, we have
+\symbol{92}
+  \coqdocvariable{f} : 
+  \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B} \symbol{92}\coqdocvar{to} (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) + (\coqdocvariable{B} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+So
+\symbol{92}
+  \symbol{92}\coqdocvar{mathsf}\{\coqdocvar{swap}\}(\coqdocvariable{A}\symbol{92}\coqdocvar{times} \coqdocvariable{B}, (\coqdocvariable{A}\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt})+(\coqdocvariable{B}\symbol{92}\coqdocvar{to}\symbol{92}\coqdocvar{emptyt}), \symbol{92}\coqdocvar{emptyt}, \coqdocvariable{f})
+  :
+  (\coqdocvariable{A} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) + (\coqdocvariable{B} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) 
+  \symbol{92}\coqdocvar{to} 
+  \coqdocvariable{A} \symbol{92}\coqdocvar{times} \coqdocvariable{B} 
+  \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+
+
+\symbol{92}exer\{1.13\}\{57\}  Using propositions-as-types, derive the double negation of the
+principle of excluded middle, i.e.\~{}prove \symbol{92}emph\{not (not ($P$ or not $P$))\}.
+
+
+\symbol{92}soln  Suppose that $\lnot(P \lor \lnot P)$.  Then, assuming $P$, we have
+$P \lor \lnot P$ by disjunction introduction, a contradiction.  Hence
+$\lnot P$.  But disjunction introduction on this again gives $P \lor \lnot P$,
+a contradiction.  So we must reject the remaining assumption, giving
+$\lnot\lnot(P \lor \lnot P)$.
+
+
+In type-theoretic terms, the initial assumption is that $g : P + (P \to
+\emptyt) \to \emptyt$.  Assuming $p : P$, disjunction introduction results in
+$\inl(p) : P + (P \to \emptyt)$.  But then $g(\inl(p)) : \emptyt$, so we
+discharge the assumption of $p : P$ to get
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{p}:\coqdocvar{P}\}\coqdocvariable{g}(\symbol{92}\coqdocvar{inl}(\coqdocvariable{p})) : \coqdocvar{P} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+Applying disjunction introduction again leads to contradiction, as
+\symbol{92}
+  \coqdocvariable{g}(\symbol{92}\coqdocvar{inr}(\symbol{92}\coqdocvar{lam}\{\coqdocvariable{p}:\coqdocvar{P}\}\coqdocvariable{g}(\symbol{92}\coqdocvar{inl}(\coqdocvariable{p})))) : \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+So we must reject the assumption of $\lnot( P \lor \lnot P)$, giving the
+result:
+\symbol{92}
+  \symbol{92}\coqdocvar{lam}\{\coqdocvariable{g}:\coqdocvar{P} + (\coqdocvar{P} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}\}\coqdocvariable{g}(\symbol{92}\coqdocvar{inr}(\symbol{92}\coqdocvar{lam}\{\coqdocvariable{p}:\coqdocvar{P}\}\coqdocvariable{g}(\symbol{92}\coqdocvar{inl}(\coqdocvariable{p})))) 
+  : 
+  (\coqdocvar{P} + (\coqdocvar{P} \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}) \symbol{92}\coqdocvar{to} \symbol{92}\coqdocvar{emptyt}
+\symbol{92}
+
+
+Finally, in Coq,
+
+
+\symbol{92}exer\{1.14\}\{57\}  Why do the induction principles for identity types not allow
+us to construct a function $f : \prd{x:A}\prd{p:x=x}(p = \refl{x})$ with the
+defining equation
+\symbol{92}
+  \coqdocvariable{f}(\coqdocvariable{x}, \symbol{92}\coqdocvar{refl}\{\coqdocvariable{x}\}) \symbol{92}\coqdocvar{defeq} \symbol{92}\coqdocvar{refl}\{\symbol{92}\coqdocvar{refl}\{\coqdocvariable{x}\}\}\symbol{92}\coqdocvar{qquad}?
+\symbol{92}
+
+
+\symbol{92}exer\{1.15\}\{57\} Show that indiscernability of identicals follows from path
+induction.
+
+
+\symbol{92}paragraph\{Complete Chapter 1 source\}
+
+
+\begin{coqdoccode}
+\end{coqdoccode}

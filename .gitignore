@@ -26,8 +26,6 @@ Reading_HoTT_in_Coq.v
 
 *.swp
 
-Makefile
-
 *.temp
 
-tex/lstcoq.sty
+tex/Makefile
