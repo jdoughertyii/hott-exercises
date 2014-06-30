@@ -486,6 +486,7 @@ to learn more Coq to do this proof in that.
 End Exercise4.
 (* end hide *)
 
+(* Done *)
 (** %\exer{1.5}{56}%  
 Show that if we define $A + B \defeq \sm{x:\bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
@@ -509,8 +510,17 @@ A + B$; these are
   \inr'(b) \defeq (1_{\bool}, b)
 \end{align*}%
 In Coq, we can use [sigT] to define [coprd] as a
-$\Sigma$-type:
-Suppose that $C : A + B \to \UU$, $g_{0} : \prd{a:A} C(\inl'(a))$, $g_{1} :
+$\Sigma$-type:*)
+
+Section Exercise5.
+
+Context {A B : Type}.
+
+Definition coprd := {x:Bool & if x then B else A}.
+Definition myinl (a : A) := existT (fun x:Bool => if x then B else A) false a.
+Definition myinr (b : B) := existT (fun x:Bool => if x then B else A) true b.
+
+(** Suppose that $C : A + B \to \UU$, $g_{0} : \prd{a:A} C(\inl'(a))$, $g_{1} :
 \prd{b:B} C(\inr'(b))$, and $x : A+B$; we're looking to define
 %\[
   \ind{A+B}'(C, g_{0}, g_{1}, x)
@@ -574,9 +584,13 @@ which is just what we needed for $\ind{\Phi}$.  So we define
   \right)
 \]%
 and, in Coq, we use [sigT_rect], which is the built-in
-$\lam{A}{B}\ind{\sm{x:A}B(x)}$:
+$\ind{\sm{x:A}B(x)}$: *)
 
-Now we must show that the definitional equalities
+Definition indcoprd (C : coprd -> Type) (g0 : forall a : A, C (myinl a)) (g1 : forall b : B, C (myinr b)) (x : coprd)
+           :=
+           sigT_rect C (Bool_rect (fun x:Bool => forall (y : if x then B else A), C (x; y)) g1 g0) x.
+
+(** Now we must show that the definitional equalities
 %\begin{align*}
   \ind{A+B}'(C, g_{0}, g_{1}, \inl'(a)) \equiv g_{0}(a) \\
   \ind{A+B}'(C, g_{0}, g_{1}, \inr'(b)) \equiv g_{1}(b)
@@ -631,9 +645,16 @@ and for the second,
   \\&\equiv
       g_{1}(b)
 \end{align*}%
-Trivial calculations, as Coq can attest:
+Trivial calculations, as Coq can attest: *)
 
-%\exer{1.6}{56}%
+Goal forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. trivial. Qed.
+Goal forall C g0 g1 b, indcoprd C g0 g1 (myinr b) = g1 b. trivial. Qed.
+
+(* begin hide *)
+End Exercise5.
+(* end hide *)
+
+(** %\exer{1.6}{56}%
 Show that if we define $A \times B \defeq \prd{x : \bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A \times
   B}$ for which the definitional equalities stated in \S1.5 hold
@@ -649,9 +670,17 @@ given by
 %\[
   (a, b) \defeq \ind{\bool}(\rec{\bool}(\UU, A, B), a, b)
 \]%
-Defining this type and constructor in Coq, we have
+Defining this type and constructor in Coq, we have *)
 
-An induction principle for $A \times B$ will, given a family $C : A \times B
+(* begin hide *)
+Section Exercise6.
+    Context {A B : Type}.
+
+(* end hide *)
+Definition prd := forall x:Bool, if x then B else A.
+Definition mypair (a:A) (b:B) := Bool_rect (fun x:Bool => if x then A else B) a b.
+
+(** An induction principle for $A \times B$ will, given a family $C : A \times B
 \to \UU$ and a function 
 %\[
   g : \prd{x:A}\prd{y:B} C((x, y)),
@@ -776,9 +805,11 @@ where $D(x, y, \funext((a, b), (a, b), h)) \defeq C(x) \to C(y)$ and
 %\[
   d \defeq \lam{x}\mathsf{id}_{C(x)} : \prd{x : A \times B}D(x, x, \refl{x})
 \]%
-But the defining equality of 
+But the defining equality of *)
 
-%\exer{1.7}{56}%
+End Exercise6.
+
+(** %\exer{1.7}{56}%             
 Give an alternative derivation of $\ind{=_{A}}'$ from
 $\ind{=_{A}}$ which avoids the use of universes.
 
