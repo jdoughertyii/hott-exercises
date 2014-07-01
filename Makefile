@@ -1,24 +1,25 @@
 TEXDIR = tex
+CHAPS = $(wildcard chap*.v)
+TCHAPS = $(CHAPS:%.v=tex/%.tex)
 
-all: doc
+all: pdf
 
-doc: pdf
-
-pdf: tex/chap01.tex
+pdf: $(TCHAPS)
 	cd $(TEXDIR) ; make hott-exercises ; mv -f hott-exercises.pdf ..
 
-tex/chap01.tex : chap01.glob
-	coqdoc --interpolate --latex --body-only -l -s -d tex \
-		chap01.v
+tex/%.tex : %.v %.glob
+	coqdoc --interpolate --latex --body-only -s -d tex $<
+	mv $*.glob src
+	mv $*.vo src
 	cp {src,tex}/coqdoc.sty
 
-chap01.glob : chap01.v
-	hoqc chap01.v
+%.glob : %.v
+	hoqc $<
 
 clean:
-	rm -f tex/chap01.tex
-	rm -f chap01.vo
-	rm -f chap01.glob
+	rm -f src/*.glob
+	rm -f src/*.vo
+	rm -f tex/chap*.tex
 	cd $(TEXDIR) ; make clean
 
 #all: sources pdf
