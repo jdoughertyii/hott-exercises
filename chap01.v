@@ -2,7 +2,7 @@
 %\section*{Introduction}%
 
 
-The following are solutions to (eventually all of) the exercises from
+The following are solutions to exercises from
 _Homotopy Type Theory: Univalent Foundations of Mathematics_.  The Coq
 code given alongside the by-hand solutions requires the HoTT version of Coq,
 available %\href{https://github.com/HoTT}{at the HoTT github repository}%.  It
@@ -14,8 +14,9 @@ Require Import HoTT.
 (** %\noindent%
 The
 %\href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction to Coq from the HoTT repo}% 
-is assumed.  Each exercise has its own Section in
-the Coq file, so Context declarations don't extend beyond the exercise---and sometimes they're even more restricted than that.
+is assumed.  Each exercise has its own [Section] in the Coq file, so [Context]
+declarations don't extend beyond the exercise---and sometimes they're even more
+restricted than that.
 
 
 * Type Theory *)
@@ -459,7 +460,7 @@ For the base case, we have
 (\suc(0), c_{s}(0, \snd\Phi'(0)))
 \end{align*}%
 using the derivation of the first propositional equality.  So $P(0)$ is
-inhabited; or $p_{0} : P(0)$.  For the induction
+inhabited, or $p_{0} : P(0)$.  For the induction
 hypothesis, suppose that $n : \mathbb{N}$ and that $p_{n} : P(n)$.  A little
 massaging gives
 %\begin{align*}
@@ -548,9 +549,6 @@ Repeating it all in Coq, we have*)
 Goal snd (Phi' O) = c0. auto. Qed.
 
 Goal forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))). Admitted.
-
-
-  
 
 (* begin hide *)
 End Exercise4.
@@ -736,6 +734,7 @@ Trivial calculations, as Coq can attest: *)
 End Exercise5.
 (* end hide *)
 
+(* DONE *)
 (** %\exer{1.6}{56}%
 Show that if we define $A \times B \defeq \prd{x : \bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A \times
@@ -789,7 +788,6 @@ Since $p$ is an element of a dependent type, we have
   p(1_{\bool}) &: \rec{\bool}(\UU, A, B, 1_{\bool}) \equiv B
 \end{align*}% *)
 
-
   Definition myfst (p : prd) := p false.
 
   Definition mysnd (p : prd) := p true.
@@ -814,37 +812,28 @@ To solve this problem, we need to appeal to function extensionality from %\S2.9%
 This implies that there is a function
 %\[
   \funext : 
-  \prd{f, g : A \times B} 
-    \left(\prd{x:\bool} (f(x) =_{\rec{\bool}(\UU, A, B, x)} g(x))\right)
+    \left(\prd{x:\bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))\right)
     \to 
-    (f =_{A \times B} g)
-\]%
-So, consider
-%\[
-  \funext(p, (\fst p, \snd p))) 
-  :
-  \left(\prd{x:\bool} (p(x) =_{\rec{\bool}(\UU, A, B, x)} (p(0_{\bool}),
-    p(1_{\bool}))(x))\right)
-  \to 
-  (p =_{A \times B} (p(0_{\bool}), p(1_{\bool})))
+    ((\fst p, \snd p) =_{A \times B} p)
 \]%
 We just need to show that the antecedent is inhabited, which we can do with
 $\ind{\bool}$.  So consider the family
 %\begin{align*}
   E &\defeq 
   \lam{x : \bool} 
-  (p(x) =_{\rec{\bool}(\UU, A, B, x)} (p(0_{\bool}), p(1_{\bool}))(x)))
+  ((p(0_{\bool}), p(1_{\bool}))(x) =_{\rec{\bool}(\UU, A, B, x)}  p(x)))
   \\&\phantom{:}\equiv
   \lam{x : \bool} 
-  (p(x) =_{\rec{\bool}(\UU, A, B, x)} \ind{\bool}(\rec{\bool}(\UU, A, B),
-  p(0_{\bool}), p(1_{\bool}), x))
+  (\ind{\bool}(\rec{\bool}(\UU, A, B), p(0_{\bool}), p(1_{\bool}), x)
+  =_{\rec{\bool}(\UU, A, B, x)} p(x))
 \end{align*}%
 We have
 %\begin{align*}
   E(0_{\bool})
   &\equiv
-  (p(0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})} \ind{\bool}(\rec{\bool}(\UU, A, B),
-  p(0_{\bool}), p(1_{\bool}), 0_{\bool}))
+  (\ind{\bool}(\rec{\bool}(\UU, A, B),
+  p(0_{\bool}), p(1_{\bool}), 0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})}
+  p(0_{\bool}))
   \\&\equiv
   (p(0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})} p(0_{\bool}))
 \end{align*}%
@@ -854,26 +843,29 @@ show that $\refl{p(1_{\bool})} : E(1_{\bool})$.  This means that
   h \defeq
   \ind{\bool}(E, \refl{p(0_{\bool})}, \refl{p(1_{\bool})})
   :
-  \prd{x : \bool} (p(x) =_{\rec{\bool}(\UU, A, B, x)} (p(0_{\bool}),
-  p(1_{\bool})))
+  \prd{x : \bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))
 \]%
 and thus
 %\[
-  \funext(p, (\fst p, \snd p), h) 
-  : p =_{A \times B} (p(0_{\bool}),
-  p(1_{\bool}))
+  \funext(h) 
+  : 
+  (p(0_{\bool}), p(1_{\bool}))
+  =_{A \times B} 
+  p 
 \]%
 This allows us to define the uniqueness principle for products:
 %\[
-\uppt \defeq \lam{p}\funext(p, (\fst p, \snd p), h)  
-: \prd{p:A \times B} p =_{A \times B} (\fst p, \snd p)
+\uppt \defeq \lam{p}\funext(h)  
+: \prd{p:A \times B} 
+(\fst p, \snd p)
+=_{A \times B} 
+p 
 \]%
-so we can define $\ind{A\times B}$ as before:
+where $\funext$ implicitly depends on $p$ in the way we've been assuming.
+Now we can define $\ind{A\times B}$ as
 %\[
   \ind{A\times B}(C, g, p) \defeq (\uppt\, p)_{*}(g(\fst p)(\snd p))
 \]%
-
-
 In Coq we can repeat this construction using [Funext]. *)
 
   Context `{Funext}.
@@ -894,26 +886,174 @@ is, we must show that the type
 %\[
   \ind{A \times B}(C, g, (a, b)) =_{C((a, b))} g(a)(b)
 \]%
-is inhabited.  Unfolding the left hand side gives
-
+is inhabited.  Unfolding the left gives
 %\begin{align*}
-  \ind{A \times B}(C, g, (a, b))
-  &\equiv
-  (\uppt\, (a, b))_{*}(g(\fst (a, b))(\snd (a, b)))
-  \\&\equiv
-  \ind{C((a, b))}(D, d, (a, b), (a, b), \uppt\, (a, b))(g(a)(b))
+\ind{A \times B}(C, g, (a, b))
+&\equiv
+(\uppt\, (a, b))_{*}(g(\fst (a, b))(\snd (a, b)))
+\\&\equiv
+\ind{=_{C((a, b))}}(D, d, (a, b), (a, b), \uppt\, (a, b))(g(a)(b))
 \end{align*}%
-
-
+where $D : \prd{x, y : A \times B} (x = y) \to \UU$ is given by $D(x, y, p)
+\defeq C(x) \to C(y)$ and
+%\[
+d \defeq \lam{x}\idfunc{C(x)} : \prd{x:A\times B} D(x, x, \refl{x})
+\]%
+Now,
+%\[
+\uppt\, (a, b) \equiv \funext(h) : (a, b) =_{A \times B} (a, b)
+\]%
+and, in particular, we have $h : x \mapsto \refl{(a, b)(x)}$, so $\funext(h) =
+\refl{(a, b)}$.  Plugging this into $\ind{=_{C((a, b))}}$ and applying its
+defining equality gives
+%\begin{align*}
+\ind{A \times B}(C, g, (a, b))
+&=
+\ind{=_{C((a, b))}}(D, d, (a, b), (a, b), \refl{(a, b)})(g(a)(b))
+\\&=
+d((a, b))(g(a)(b))
+\\&=
+\idfunc{C((a, b))}(g(a)(b))
+\\&=
+g(a)(b)
+\end{align*}%
+Verifying that the definitional equality holds propositionally.  The reason we
+can only get propositional equality, not judgemental equality, is that
+$\funext(h) = \refl{(a, b)}$ is just a propositional equality.  Understanding
+this better requires stuff from next chapter. 
  *)
+
+Goal forall C g a b, indprd' C g (mypair a b) = g a b. Admitted.
 
 (* begin hide *)
 End Exercise6.
 (* end hide *)
 
+(* DONE *)
 (** %\exer{1.7}{56}%             
-Give an alternative derivation of $\ind{=_{A}}'$ from
-$\ind{=_{A}}$ which avoids the use of universes. *)
+Give an alternative derivation of $\ind{=_{A}}'$ from $\ind{=_{A}}$ which
+avoids the use of universes. *)
+
+(** %\soln%
+To avoid universes, we follow the plan from %p.~53% of the text: show that
+$\ind{=_{A}}$ entails Lemmas 2.3.1 and 3.11.8, and that these two principles
+imply $\ind{=_{A}}'$ directly.  
+
+First we have Lemma 2.3.1, which states that for any type family $P$ over $A$
+and $p : x =_{A} y$, there is a function $p_{*} : P(x) \to P(y)$.  The proof
+for this can be taken directly from the text.  Consider the type family
+%\[
+D : \prd{x, y : A}(x = y) \to \UU,
+\qquad\qquad
+D(x, y, p) \defeq P(x) \to P(y)
+\]%
+which exists, since $P(x) : \UU$ for all $x : A$ and these can be used to form
+function types.  We also have
+%\[
+d \defeq \lam{x}\idfunc{P(x)} 
+: \prd{x:A}D(x, x, \refl{x})
+\equiv \prd{x:A} P(x) \to P(x)
+\]%
+We now apply $\ind{=_{A}}$ to obtain
+%\[
+p_{*} \defeq \ind{=_{A}}(D, d, x, y, p) : P(x) \to P(y)
+\]%
+establishing the Lemma.
+
+Next we have Lemma 3.11.8, which states that for any $A$ and any $a : A$, the
+type $\sm{x:A} (a = x)$ is contractible;  that is, there is some $w :
+\sm{x:A}(a=x)$ such that $w = w'$ for all $w' : \sm{x:A}(a=x)$.  Consider the
+point $(a, \refl{a}) : \sm{a:A}(a=x)$ and the family $C: \prd{x,y:A}(x=y) \to \UU$ given
+by
+%\[
+  C(x, y, p) \defeq 
+  ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
+\]%
+Take also the function
+%\[
+  \refl{(x, \refl{x})} : \prd{x:A} ((x, \refl{x}) =_{\sm{x:A}(x=z)} (x, \refl{x}))
+\]%
+By path induction, then, we have a function
+%\[
+  g : \prd{x, y:A}\prd{p:x =_{A} y} 
+  ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
+\]%
+such that $g(x, x, \refl{x}) \defeq \refl{(x, \refl{x})}$.  
+This allows us to construct
+%\[
+  \lam{p}g(a, \fst p, \snd p) : 
+  \prd{p:\sm{x:A}(a=x)}
+  (a, \refl{a}) =_{\sm{z:A}(a=z)} (\fst p, \snd p)
+\]%
+And $\upst$ lets us transport this, using the first lemma, to the statement
+that $\sm{x:A}(a=x)$ is contractible:
+%\[
+\contr \defeq \lam{p}\Big(
+(\upst\,p)_{*}g(a, \fst p, \snd p)
+\Big)
+:
+\prd{p:\sm{x:A}(a=x)}
+(a, \refl{a}) =_{\sm{z:A}(a=z)} p
+\]%
+
+With these two lemmas we can derive based path induction.  Fix some $a:A$ and
+suppose we have a family
+%\[
+  C : \prd{x:A} (a=x) \to \UU
+\]%
+and an element
+%\[
+  c : C(a, \refl{a}).
+\]%
+Suppose we have $x:A$ and $p:a=x$.  Then we have $(x,p) : \sm{x:A}(a=x)$, and
+because this type is contractible, an element $\contr_{(x,p)}: (a,\refl{a}) =
+(x,p)$.  So for any type family $P$ over $\sm{x:A}(a=x)$, we have the function
+$(\contr_{(x,p)})_{*} : P((a, \refl{a})) \to P((x,p))$.  In particular, we have
+the type family
+%\[
+\tilde{C} \defeq \lam{p} C(\fst p, \snd p)
+\]%
+so
+%\[
+  (\contr_{(x,p)})_{*} : \tilde{C}((a,\refl{a})) \to \tilde{C}((x,p)) \equiv  C(a, \refl{a}) \to C(x, p).
+\]%
+thus
+%\[
+(\contr_{(x,p)})(c) : C(x,p)
+\]%
+or, abstracting out the $x$ and $p$,
+%\[
+f \defeq \lam{x}{p}(\contr_{(x,p)})_{*}(c) : \prd{x:A}\prd{p:x=y}C(x,p).
+\]%
+We also have
+%\begin{align*}
+  f(a, \refl{a}) 
+  & \equiv 
+  (\contr_{(a, \refl{a})})_{*}(c)
+  \\&\equiv
+  ((\upst\, (a, \refl{a}))_{*}g(a, a, \refl{a}))_{*}(c)
+  \\&\equiv
+  ((\upst\, (a, \refl{a}))_{*}\refl{(a, \refl{a})})_{*}(c)
+  \\&\equiv
+  (\ind{=}(\lam{x}((a, \refl{a}) = x), \lam{x}\idfunc{(a, \refl{a})=x}, (a,\refl{a}), (a,\refl{a}),
+  \refl{(a,\refl{a})})\refl{(a, \refl{a})})_{*}(c)
+  \\&\equiv
+  (\idfunc{(a, \refl{a})=(a,\refl{a})}\refl{(a, \refl{a})})_{*}(c)
+  \\&\equiv
+  (\refl{(a, \refl{a})})_{*}(c)
+  \\&\equiv
+  \ind{=}(\tilde{C}, \lam{x}\idfunc{\tilde{C}(x)}, (a, \refl{a}), (a, \refl{a}), \refl{(a, \refl{a})})(c)
+  \\&\equiv
+  \idfunc{\tilde{C}((a, \refl{a}))}(c)
+  \\&\equiv
+  \idfunc{C(a, \refl{a})}(c)
+  \\&\equiv
+  c
+\end{align*}%
+So we have derived based path induction.
+
+
+*)
 
 
 (* DONE *)
@@ -1011,7 +1151,6 @@ all $n, m, k: \mathbb{N}$,
 \item $\prd{n,m,k:\mathbb{N}}n \times (m + k) = (n \times m) + (n \times k)$
 \item $\prd{n,m,k:\mathbb{N}}(n + m) \times k = (n \times k) + (m \times k)$
 \end{enumerate}%
-
 For (i)--(iii), we show each equality separately and then use concatenation to
 show the implicit third equality.  We dream of next chapter, where we obtain
 the function $\mathsf{ap}$.
@@ -1580,6 +1719,10 @@ Fixpoint Fin (n : nat) : Type :=
     | S n' => Unit + (Fin n')
   end.  
 
+(** %\noindent%
+To define $\fmax$, we'll first need 
+*)
+
 (** 
 %\exer{1.10}{56}%  
 Show that the Ackermann function $\ack : \mathbb{N} \to
@@ -1667,7 +1810,7 @@ should work.  Putting it all together, we have
                              \lam{n}{s}r(s))
   )
 \]%
-In Coq, we define XXX *)
+In Coq, we define *)
 
 (** Now, to show that the three equations hold, we just calculate
 %\begin{align*}
@@ -1924,6 +2067,20 @@ defining equation
 %\[
   f(x, \refl{x}) \defeq \refl{\refl{x}}\qquad?
 \]% *)
+
+(** %\soln%
+The induction principles allow one to construct either a function
+%\[
+  \ind{=_{A}}'(a, C, c) : \prd{a:A}\prd{p:a=_{A}x} C(x, p)
+\]%
+given a $a : A$, $C : \prd{x:A}(a =_{A} x) \to \UU$ and $c : C(a, \refl{a})$,
+or a function
+%\[
+  \ind{=_{A}}(C, c, x) : \prd{y : A}\prd{p : x =_{A} y} C(x, y, p)
+\]%
+given $C : \prd{x, y:A} (x =_{A} y) \to \UU$, $c : \prd{x:A}C(x, x, \refl{x})$,
+and $x:A$.  In order for such an $f$ to be of the right type,
+*)
 
 
 (* DONE *)
