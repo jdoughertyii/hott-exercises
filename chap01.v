@@ -12,10 +12,8 @@ will be assumed throughout that it has been imported by *)
 Require Import HoTT.
 
 (** %\noindent%
-The
-%\href{https://github.com/HoTT/book/blob/master/coq_introduction/Reading_HoTT_in_Coq.v}{introduction to Coq from the HoTT repo}% 
-is assumed.  Each exercise has its own [Section] in the Coq file, so [Context]
-declarations don't extend beyond the exercise---and sometimes they're even more
+Each part of each exercise has its own [Section] in the Coq file, so [Context]
+declarations don't extend beyond the exercise, and sometimes they're even more
 restricted than that.
 
 
@@ -384,14 +382,14 @@ iterator and then our alternative recursor: *)
 
 Fixpoint iter (C : Type) (c0 : C) (cs : C -> C) (n : nat) : C :=
   match n with 
-    | 0 => c0
+    | O => c0
     | S n' => cs(iter C c0 cs n')
   end.
 
 
 Definition Phi (C : Type) (c0 : C) (cs: nat -> C -> C) (n : nat) :=
   snd (iter (nat * C)
-            (0, c0)
+            (O, c0)
             (fun x => (S (fst x), cs (fst x) (snd x)))
             n).
 
@@ -406,7 +404,7 @@ For clarity of notation, define
     n
     \big)
 \]% *)
-Definition Phi' (n : nat) := iter (nat * C) (0, c0) (fun x => (S (fst x), cs (fst x) (snd x))) n.
+Definition Phi' (n : nat) := iter (nat * C) (O, c0) (fun x => (S (fst x), cs (fst x) (snd x))) n.
 
 (** %\noindent%
 So the propositional equalities can be written
@@ -505,7 +503,7 @@ c_{s}(\fst (\suc(n), c_{s}(n,
 \snd\Phi'(n))), \snd\Phi'(\suc(n)))) 
 \end{align*}%
 Let $p_{n+1} \defeq f((\suc(n), c_{s}(n, \snd \Phi'(n))))$.
-Our first bit of massaging allows us to replace the left hand side of this by
+0ur first bit of massaging allows us to replace the left hand side of this by
 $\Phi'(\suc(\suc(n))$.  As for the right, applying the projections gives
 %\begin{align*}
 p_{n+1} &: \Phi'(\suc(\suc(n))) 
@@ -546,7 +544,7 @@ is inhabited.  Next chapter we'll prove that functions are functors, and we
 won't have to do this based path induction every single time.  It'll be great.
 Repeating it all in Coq, we have*)
 
-Goal snd (Phi' O) = c0. auto. Qed.
+Goal snd (Phi' 0) = c0. auto. Qed.
 
 Goal forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))). Admitted.
 
@@ -1100,7 +1098,7 @@ In Coq, we can define these by *)
 
 Fixpoint add (n m : nat) :=
   match n with
-    | O => m
+    | 0 => m
     | S n' => S (add n' m)
   end.
 
@@ -1110,7 +1108,7 @@ Notation "x + y" := (add x y) : nat_scope.
 
 Fixpoint mult (n m : nat) :=
   match n with
-    | O => O
+    | 0 => 0
     | S n' => m + (mult n' m)
   end.
 
@@ -1119,7 +1117,7 @@ Notation "x * y" := (mult x y) : nat_scope.
 
 Fixpoint myexp (e b : nat) :=
   match e with
-    | O => S O
+    | 0 => S 0
     | S e' => mult b (myexp e' b)
   end.
 
@@ -1360,7 +1358,7 @@ something of type
 \[
   k + (n + m) \times k = (k + n \times k) + m \times k
 \]
-Our two strings of judgemental equalities mean that this is the same as the
+0ur two strings of judgemental equalities mean that this is the same as the
 type
 \[
   (\suc(n) + m) \times k = \suc(n) \times k + m \times k.
@@ -1589,7 +1587,7 @@ and $m$ and $k$ may be abstracted out to give (vii).
 In Coq we'll do things a touch out of order, so as to appeal to (viii) in the
 proof of (vi). *)
 
-Theorem plus_O_r : forall (n : nat), n = n + 0.
+Theorem plus_0_r : forall (n : nat), n = n + 0.
 Proof.
   induction n; [reflexivity | simpl; rewrite <- IHn; reflexivity].
 Qed.
@@ -1597,10 +1595,10 @@ Qed.
 Theorem ex1_8_i : forall (n : nat), 
   (0 + n = n) /\ (n = n + 0) /\ (0 + n = n + 0).
 Proof.
-  split; [reflexivity | split; rewrite <- plus_O_r; reflexivity].
+  split; [reflexivity | split; rewrite <- plus_0_r; reflexivity].
 Qed.
 
-Theorem mult_O_r : forall (n : nat), 0 = n * 0.
+Theorem mult_0_r : forall (n : nat), 0 = n * 0.
 Proof.
   induction n; [reflexivity
                | simpl; rewrite <- IHn; reflexivity].
@@ -1609,7 +1607,7 @@ Qed.
 Theorem ex1_8_ii : forall (n : nat),
   (0 * n = 0) /\ (0 = n * 0) /\ (0 * n = n * 0).
 Proof.
-  split; [reflexivity | split; rewrite <- mult_O_r; reflexivity].
+  split; [reflexivity | split; rewrite <- mult_0_r; reflexivity].
 Qed.
 
 Theorem mult_1_r : forall (n : nat), n = n * 1.
@@ -1623,7 +1621,7 @@ Qed.
 Proof.
   simpl.
   intro n.
-  rewrite <- plus_O_r.
+  rewrite <- plus_0_r.
   reflexivity.
 Qed.
 
@@ -1647,7 +1645,7 @@ Theorem ex1_8_iv : forall (n m : nat), n + m = m + n.
 Proof.
   intros n m.
   induction n.
-  rewrite <- plus_O_r. reflexivity.
+  rewrite <- plus_0_r. reflexivity.
   simpl. rewrite <- plus_n_Sm. rewrite IHn. reflexivity.
 Qed.
 
@@ -1699,30 +1697,28 @@ mentioned at the end of %\S1.3%, and the dependent function $\fmax :
 
 
 %\soln%  
-$\Fin(n)$ is a type with exactly $n$ elements.  Essentially, we want to
-recreate $\mathbb{N}$ using types; so we will replace $0$ with $\emptyt$ and
-$\suc$ with a coproduct.  So we define $\Fin$ recursively:
-%\begin{align*}
-  \Fin(0) &\defeq \emptyt \\
-  \Fin(\suc(n)) &\defeq \Fin(n) + \unit
-\end{align*}%
-or, equivalently,
+$\Fin(n)$ is a type with exactly $n$ elements.  Consider $\Fin(n)$ from the
+types-as-propositions point of view; if $x : \Fin(n)$, then $x$ must be one of
+the $n$ elements.  So we would like a type that is guaranteed to have $n$
+elements.  Recalling that $\sm{m:\mathbb{N}}(m < n)$ may be regarded as ``the
+type of all elements $m : \mathbb{N}$ such that $(m < n)$'', we note that there
+are $n$ such elements, and define
 %\[
-  \Fin \defeq \rec{\mathbb{N}}(\UU, \emptyt, \lam{C}C+\unit)
+  \Fin(n) 
+  \defeq \sum_{m:\mathbb{N}} (m < n)
+  \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(n+k = m)
 \]%
-In Coq, *)
+We should show that $\Fin(n)$ has exactly $n$ elements, which we'll do by
+induction.  We have
 
-
-Fixpoint Fin (n : nat) : Type := 
-  match n with
-    | O => Empty 
-    | S n' => Unit + (Fin n')
-  end.  
-
-(** %\noindent%
-To define $\fmax$, we'll first need 
+To define $\fmax$, note that we are looking for the element of $\Fin(n+1)$ that
+is greater than all others.  That is,
+%\[
+\fmax(n) : \sm{m:\Fin(n+1)} \prd{k:\Fin(n+1)} (k \leq m)
+\]%
 *)
 
+(* DONE *)
 (** 
 %\exer{1.10}{56}%  
 Show that the Ackermann function $\ack : \mathbb{N} \to
@@ -1812,6 +1808,14 @@ should work.  Putting it all together, we have
 \]%
 In Coq, we define *)
 
+Definition ack : nat -> nat -> nat :=
+    nat_rect (fun _ => nat -> nat)
+             S
+             (fun m r => nat_rect (fun _ => nat)
+                                  (r (S 0))
+                                  (fun n s => (r s))).
+
+
 (** Now, to show that the three equations hold, we just calculate
 %\begin{align*}
   \ack(0, n)
@@ -1861,8 +1865,33 @@ for the second, and finally
   \\&\equiv
   \ack(m, \rec{\mathbb{N}}(\mathbb{N}, \ack(m, 1), \lam{n}{s}\ack(m, s), n))
 \end{align*}%
-We need to show that 
+Focus on the second argument of the outer $\ack$.  We have
+%\begin{align*}
+  \ack(\suc(m), n) 
+  &\equiv
+  \rec{\mathbb{N}}(\mathbb{N} \to \mathbb{N}, 
+  \suc,
+  \lam{m}{r}\rec{\mathbb{N}}(\mathbb{N}, 
+                             r(1), 
+                             \lam{n}{s}r(s)),
+  \suc(m)
+  )
+  (n)
+  \\&\equiv
+  \rec{\mathbb{N}}(\mathbb{N}, \ack(m, 1), \lam{n}{s}\ack(m,s), n)
+\end{align*}%
+and so we may substitute it back in to get
+%\[
+  \ack(\suc(m), \suc(n))
+  \equiv
+  \ack(m, \ack(\suc(m), n))
+\]%
+which is the third equality.  In Coq,
 *)
+
+Goal forall n, ack 0 n = S n. auto. Qed.
+Goal forall m, ack (S m) 0 = ack m (S 0). auto. Qed.
+Goal forall m n, ack (S m) (S n) = ack m (ack (S m) n). auto. Qed.
 
 (* DONE *)
 (** %\exer{1.11}{56}%  
@@ -1897,18 +1926,17 @@ And discharging the first assumption gives
     \emptyt}h(a)) :
   (((A \to \emptyt) \to \emptyt) \to \emptyt) \to (A \to \emptyt)
 \]%
-This is automatic for Coq, though not trivial *)
+This is automatic for Coq, though not trivial: *)
 
 
 Goal forall A, ~ ~ ~ A -> ~A. auto. Qed.
 
 (** 
 %\noindent% 
-We can get a proof out of Coq by printing this
-Goal.  It returns
+We can get a proof out of Coq by printing this [Goal].  It returns
 [[
 fun (A : Type) (X : ~ ~ ~ A) (X0 : A) => X (fun X1 : A -> Empty => X1 X0) 
-: forall A : Type, ~ ~ ~ A -> ~ A
+    : forall A : Type, ~ ~ ~ A -> ~ A
 ]]
 %\noindent%
 which is just the function obtained by hand. *)
@@ -1946,7 +1974,6 @@ contradiction, so $\lnot\lnot A$.  That is,
 %\[
   \lam{a:A}{f:A \to \emptyt}f(a) : A \to (A \to \emptyt) \to \emptyt
 \]% *)
-
   Goal A -> ~ ~ A. auto. Qed.
 
   (** 
@@ -1986,13 +2013,12 @@ So
   A \times B 
   \to \emptyt
 \]% *)
-
-  Goal (~ A + ~ B) -> ~ (A * B).
+ Goal (~ A + ~ B) -> ~ (A * B).
   Proof.
     unfold not.
-    intros H X.
+    intros H x.
     apply H.
-    destruct X.
+    destruct x.
     constructor.
     exact a.
   Qed.
@@ -2069,17 +2095,6 @@ defining equation
 \]% *)
 
 (** %\soln%
-The induction principles allow one to construct either a function
-%\[
-  \ind{=_{A}}'(a, C, c) : \prd{a:A}\prd{p:a=_{A}x} C(x, p)
-\]%
-given a $a : A$, $C : \prd{x:A}(a =_{A} x) \to \UU$ and $c : C(a, \refl{a})$,
-or a function
-%\[
-  \ind{=_{A}}(C, c, x) : \prd{y : A}\prd{p : x =_{A} y} C(x, y, p)
-\]%
-given $C : \prd{x, y:A} (x =_{A} y) \to \UU$, $c : \prd{x:A}C(x, x, \refl{x})$,
-and $x:A$.  In order for such an $f$ to be of the right type,
 *)
 
 
