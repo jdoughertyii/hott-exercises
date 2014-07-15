@@ -60,11 +60,11 @@
 %         \prd@noparens{#1}}}}
 \def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{%
     \@ifnextchar\sm{\prd@parens{#1}\@eatsm}{%
-    \@ifnextchar\prd{\prd@parens{#1}\@eatprd}{%
-    \@ifnextchar\;{\prd@parens{#1}\@eatsemicolonspace}{%
-    \@ifnextchar\\{\prd@parens{#1}\@eatlinebreak}{%
-    \@ifnextchar\narrowbreak{\prd@parens{#1}\@eatnarrowbreak}{%
-      \prd@noparens{#1}}}}}}}}
+      \@ifnextchar\prd{\prd@parens{#1}\@eatprd}{%
+        \@ifnextchar\;{\prd@parens{#1}\@eatsemicolonspace}{%
+          \@ifnextchar\\{\prd@parens{#1}\@eatlinebreak}{%
+            \@ifnextchar\narrowbreak{\prd@parens{#1}\@eatnarrowbreak}{%
+              \prd@noparens{#1}}}}}}}}
 \def\prd@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\prd@parens}%
   {\@ifnextchar\sm%
@@ -90,7 +90,7 @@
 \def\@eatlinebreak\\{%
   \@ifnextchar\prd{\\\@eatprd}{%
     \@ifnextchar\sm{\\\@eatsm}{%
-      \\}}}
+    \\}}}
 \def\@eatsemicolonspace\;{%
   \@ifnextchar\prd{\;\@eatprd}{%
     \@ifnextchar\sm{\;\@eatsm}{%
@@ -125,11 +125,11 @@
 % Use in the same way as \prd
 \def\sm#1{\@ifnextchar\bgroup{\sm@parens{#1}}{%
     \@ifnextchar\prd{\sm@parens{#1}\@eatprd}{%
-    \@ifnextchar\sm{\sm@parens{#1}\@eatsm}{%
-    \@ifnextchar\;{\sm@parens{#1}\@eatsemicolonspace}{%
-    \@ifnextchar\\{\sm@parens{#1}\@eatlinebreak}{%
-    \@ifnextchar\narrowbreak{\sm@parens{#1}\@eatnarrowbreak}{%
-        \sm@noparens{#1}}}}}}}}
+      \@ifnextchar\sm{\sm@parens{#1}\@eatsm}{%
+        \@ifnextchar\;{\sm@parens{#1}\@eatsemicolonspace}{%
+          \@ifnextchar\\{\sm@parens{#1}\@eatlinebreak}{%
+            \@ifnextchar\narrowbreak{\sm@parens{#1}\@eatnarrowbreak}{%
+              \sm@noparens{#1}}}}}}}}
 \def\sm@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\sm@parens}%
   {\@ifnextchar\prd%
@@ -211,7 +211,7 @@
 
 %%% 2D path operations
 \newcommand{\leftwhisker}{\mathbin{{\ct}_{\mathsf{l}}}}  % was \ell
-\newcommand{\rightwhisker}{\mathbin{{\ct}_{\mathsf{r}}}} % was r
+  \newcommand{\rightwhisker}{\mathbin{{\ct}_{\mathsf{r}}}} % was r
 \newcommand{\hct}{\star}
 
 %%% modalities %%%
@@ -260,10 +260,13 @@
 %%% Path concatenation (used infix, in diagrammatic order) %%%
 \newcommand{\ct}{%
   \mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}%
-             {\mathbin{\raisebox{0.5ex}{$\centerdot$}}}%
-             {\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}%
-             {\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}
+  {\mathbin{\raisebox{0.5ex}{$\centerdot$}}}%
+  {\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}%
+  {\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}
 }
+\newcommand{\ctu}{\mathbin{\ct_{1}}}
+\newcommand{\ctd}{\mathbin{\ct_{2}}}
+\newcommand{\ctt}{\mathbin{\ct_{3}}}
 
 %%% Path reversal %%%
 \newcommand{\opp}[1]{\mathord{{#1}^{-1}}}
@@ -497,10 +500,27 @@
 
 \newcommand{\zerop}{\ensuremath{0'}\xspace}   % alternative zero in induction chapter
 \newcommand{\suc}{\mathsf{succ}}
+\newcommand{\pred}{\mathsf{pred}}
 \newcommand{\sucp}{\ensuremath{\suc'}\xspace} % alternative suc in induction chapter
 \newcommand{\add}{\mathsf{add}}
 \newcommand{\mult}{\mathsf{mult}}
 \newcommand{\expf}{\mathsf{exp}}
+\newcommand{\monus}{\mathsf{monus}}
+\providecommand{\dotdiv}{% Don't redefine it if available
+  \mathbin{% We want a binary operation
+    \vphantom{+}% The same height as a plus or minus
+    \text{% Change size in sub/superscripts
+      \mathsurround=0pt % To be on the safe side
+      \ooalign{% Superimpose the two symbols
+        \noalign{\kern-.35ex}% but the dot is raised a bit
+        \hidewidth$\smash{\cdot}$\hidewidth\cr % Dot
+        \noalign{\kern.35ex}% Backup for vertical alignment
+        $-$\cr % Minus
+      }%
+    }%
+  }%
+}
+\newcommand{\csub}{\dotdiv}
 \newcommand{\ack}{\mathsf{ack}}
 \newcommand{\ite}{\mathsf{iter}}
 \newcommand{\assoc}{\mathsf{assoc}}
@@ -711,7 +731,7 @@
 
 %%% Notes %%%
 \def\noteson{%
-\gdef\note##1{\mbox{}\marginpar{\color{blue}\textasteriskcentered\ ##1}}}
+  \gdef\note##1{\mbox{}\marginpar{\color{blue}\textasteriskcentered\ ##1}}}
 \gdef\notesoff{\gdef\note##1{\null}}
 \noteson
 

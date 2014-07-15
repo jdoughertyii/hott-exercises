@@ -1589,91 +1589,80 @@ proof of (vi). *)
 
 Theorem plus_0_r : forall (n : nat), n = n + 0.
 Proof.
-  induction n; [reflexivity | simpl; rewrite <- IHn; reflexivity].
+  induction n; [| simpl; rewrite <- IHn]; reflexivity.
 Qed.
 
 Theorem ex1_8_i : forall (n : nat), 
   (0 + n = n) /\ (n = n + 0) /\ (0 + n = n + 0).
 Proof.
-  split; [reflexivity | split; rewrite <- plus_0_r; reflexivity].
+  split; [| split; rewrite <- plus_0_r]; reflexivity.
 Qed.
 
 Theorem mult_0_r : forall (n : nat), 0 = n * 0.
 Proof.
-  induction n; [reflexivity
-               | simpl; rewrite <- IHn; reflexivity].
+  induction n; [| simpl; rewrite <- IHn]; reflexivity.
 Qed. 
 
 Theorem ex1_8_ii : forall (n : nat),
   (0 * n = 0) /\ (0 = n * 0) /\ (0 * n = n * 0).
 Proof.
-  split; [reflexivity | split; rewrite <- mult_0_r; reflexivity].
+  split; [| split; rewrite <- mult_0_r]; reflexivity.
 Qed.
 
 Theorem mult_1_r : forall (n : nat), n = n * 1.
 Proof.
-  induction n.
-  reflexivity.
-  simpl. rewrite <- IHn. reflexivity.
+  induction n; [| simpl; rewrite <- IHn]; reflexivity.
 Qed.
 
-  Theorem mult_1_l : forall (n : nat), 1 * n = n.
+Theorem mult_1_l : forall (n : nat), 1 * n = n.
 Proof.
-  simpl.
-  intro n.
-  rewrite <- plus_0_r.
-  reflexivity.
+  simpl; intro n; rewrite <- plus_0_r; reflexivity.
 Qed.
 
 Theorem ex1_8_iii : forall (n : nat),
   (1 * n = n) /\ (n = n * 1) /\ (1 * n = n * 1).
 Proof.
-  split; [rewrite mult_1_l; reflexivity | split; rewrite <- mult_1_r].
+    split; [rewrite mult_1_l
+  | split; rewrite <- mult_1_r; 
+        [| rewrite mult_1_l]];
   reflexivity.
-  rewrite mult_1_l. reflexivity.
 Qed.
 
 Theorem plus_n_Sm : forall (n m : nat), S (n + m) = n + (S m).
 Proof.
   intros n m.
-  induction n.
-  reflexivity.
-  simpl. rewrite IHn. reflexivity.
+  induction n; [| simpl; rewrite IHn]; reflexivity.
 Qed.
 
 Theorem ex1_8_iv : forall (n m : nat), n + m = m + n.
 Proof.
   intros n m.
-  induction n.
-  rewrite <- plus_0_r. reflexivity.
-  simpl. rewrite <- plus_n_Sm. rewrite IHn. reflexivity.
+  induction n; [ rewrite <- plus_0_r
+               | simpl; rewrite <- plus_n_Sm; rewrite IHn]; 
+  reflexivity.
 Qed.
+
+Definition plus_comm := ex1_8_iv.
 
 Theorem ex1_8_v : forall (n m k : nat),
   (n + m) + k = n + (m + k).
 Proof.
   intros n m k.
-  induction n.
-  reflexivity.
-  simpl. rewrite IHn. reflexivity.
+  induction n; [| simpl; rewrite IHn]; reflexivity.
 Qed.
 
 Theorem ex1_8_viii : forall (n m k : nat),
   (n + m) * k = (n * k) + (m * k).
 Proof.
   intros n m k.
-  induction n.
-  reflexivity.
-  simpl. rewrite IHn. rewrite ex1_8_v. reflexivity.
+  induction n; [| simpl; rewrite IHn; rewrite ex1_8_v]; reflexivity.
 Qed.
 
 Theorem ex1_8_vi : forall (n m k : nat),
   (n * m) * k = n * (m * k).
 Proof.
   intros n m k.
-  induction n.
-  reflexivity.
-  simpl. rewrite <- IHn. rewrite <- ex1_8_viii. reflexivity.
+  induction n; [| simpl; rewrite <- IHn; rewrite <- ex1_8_viii]; reflexivity.
 Qed.
 
 (* Yikes.  This would be easier if [replace] were available *)
@@ -1681,8 +1670,7 @@ Theorem ex1_8_vii : forall (n m k : nat),
   n * (m + k) = (n * m) + (n * k).
 Proof.
   intros n m k.
-  induction n.
-  reflexivity.
+  induction n; [reflexivity|].
   simpl. rewrite IHn. rewrite <- ex1_8_v. rewrite <- ex1_8_v.
   cut (m + n * m + k =  m + k + n * m). intro H. rewrite H. reflexivity.
   rewrite ex1_8_v.
@@ -1706,17 +1694,67 @@ are $n$ such elements, and define
 %\[
   \Fin(n) 
   \defeq \sum_{m:\mathbb{N}} (m < n)
-  \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(n+k = m)
+  \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(m+ \suc(k) = n)
 \]%
-We should show that $\Fin(n)$ has exactly $n$ elements, which we'll do by
-induction.  We have
 
-To define $\fmax$, note that we are looking for the element of $\Fin(n+1)$ that
-is greater than all others.  That is,
+To define $\fmax$, note that one can think of $\Fin(n)$ as a tuple $(m, (k,
+p))$, where $p : m + \suc(k) = n$.  The maximum element of $\Fin(n+1)$ will have the
+greatest value in the first slot, so
 %\[
-\fmax(n) : \sm{m:\Fin(n+1)} \prd{k:\Fin(n+1)} (k \leq m)
+  \fmax(n) \defeq n_{n+1} \defeq (n, (0, \refl{n+1}))
+  : \sm{m:\mathbb{N}}\sm{k:\mathbb{N}} (m+\suc(k) = n+1)
+  \equiv \Fin(n+1)
 \]%
+Verifying that this definition is correct is tedious but straightforward.  In Coq, it requires a bit of finagling, since [inversion] isn't available.
 *)
+
+Definition le (n m : nat) : Type := {k:nat & n + k = m}.
+Notation "n <= m" := (le n m) : type_scope.
+
+Definition lt (n m : nat) : Type := {k:nat & n + (S k) = m}.
+Notation "n < m" := (lt n m) : type_scope.
+
+Definition Fin (n:nat) : Type := {m:nat & m < n}.
+
+Definition fmax (n:nat) : Fin(n+1).
+  exists n. exists 0. reflexivity.
+Defined.
+
+Definition pred (n:nat) : nat :=
+  match n with
+    | O => O
+    | S n' => n'
+  end.
+
+Theorem pred_Sn : forall (n:nat), n = pred (S n). reflexivity. Qed.
+Theorem pred_S_inj : forall (n m :nat), pred (S n) = pred (S m) -> n = m. 
+Proof.
+  intros. 
+  rewrite <- pred_Sn in H.
+  rewrite <- pred_Sn in H.
+  apply H.
+Qed.
+
+Theorem S_inj : forall (n m : nat), S n = S m -> n = m.
+Proof.
+  intros. apply pred_S_inj. rewrite H. reflexivity.
+Qed.
+
+Theorem plus_1_r : forall n, S n = n + 1.
+Proof.
+  intros. rewrite plus_comm. reflexivity.
+Qed.
+
+Theorem fmax_correct : forall (n:nat) (m:Fin(n+1)),
+ m .1 <= (fmax n) .1.
+Proof.
+  unfold Fin, lt, le. intros. simpl.
+  exists m.2.1.
+  apply S_inj. rewrite plus_n_Sm.
+  rewrite plus_1_r.
+  apply m.2.2.
+Qed.
+
 
 (* DONE *)
 (** 
