@@ -93,7 +93,7 @@ or, in Coq,
 which in Coq is also trivial: *)
 
 
-  Goal forall C g a b, recprod C g (a, b) = g a b. trivial. Qed.
+Goal forall C g a b, recprod C g (a, b) = g a b. trivial. Qed.
 
 (* begin hide *)
 End Exercise2a.
@@ -124,11 +124,12 @@ by
 \defeq
 g(\fst p)(\snd p)
 \]% 
-   *)
-  Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x : A), B x) := g (projT1 p) (projT2 p).
+ *)
+Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x :
+    A), B x) := g (p.1) (p.2).
 
-  (** 
-  %\noindent%
+(** 
+%\noindent%
 We then verify that
 %\begin{align*}
 \rec{\sm{x:A}B(x)}(C, g, (a, b))
@@ -138,7 +139,7 @@ We then verify that
 which is again trivial in Coq: *)
 
 
-  Goal forall C g a b, recsm C g (a; b) = g a b. trivial. Qed.
+Goal forall C g a b, recsm C g (a; b) = g a b. trivial. Qed.
 
 (* begin hide *)
 End Exercise2b.
@@ -224,7 +225,7 @@ g(a)(b)
 which was to be proved.  In Coq, it's as trivial as always: *)
 
 
-  Goal forall C g a b, indprd C g (a, b) = g a b. trivial. Qed.
+Goal forall C g a b, indprd C g (a, b) = g a b. trivial. Qed.
 
 (* begin hide *)
 End Exercise3a.
@@ -264,11 +265,11 @@ Thus, we can write
 and in Coq, *)
 
 
-  Definition upst (p : {x:A & B x}) : (projT1 p; projT2 p) = p. destruct p; reflexivity. Defined.
+  Definition upst (p : {x:A & B x}) : (p.1; p.2) = p. destruct p; reflexivity. Defined.
 
 
   Definition indsm (C : {x:A & B x} -> Type) (g : forall (a:A) (b:B a), C (a; b)) (p : {x:A & B x}) :=
-    (upst p) # (g (projT1 p) (projT2 p)).
+    (upst p) # (g (p.1) (p.2)).
 
   (** 
 Now we must verify that
@@ -295,7 +296,7 @@ g(a)(b)
 which Coq finds trivial: *)
 
 
-  Goal forall C g a b, indsm C g (a; b) = g a b. trivial. Qed.
+Goal forall C g a b, indsm C g (a; b) = g a b. trivial. Qed.
 
 (* begin hide *)
 End Exercise3b.
@@ -601,7 +602,7 @@ convenience will write $\Phi \defeq \sm{x:\bool}\rec{\bool}(\UU, A, B, x)$.
 $\ind{\Phi}$ has signature
 %\[
   \ind{\Phi} :
-  \prd{C : (\Phi) \to \UU}
+  \prd{C : \Phi \to \UU}
   \left(\tprd{x:\bool}\tprd{y:\rec{\bool}(\UU, A, B, x)}C((x, y))\right)
   \to
   \tprd{p:\Phi} C(p)
@@ -724,9 +725,9 @@ and for the second,
 Trivial calculations, as Coq can attest: *)
 
 
-  Goal forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. trivial. Qed.
+Goal forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. trivial. Qed.
 
-  Goal forall C g0 g1 b, indcoprd C g0 g1 (myinr b) = g1 b. trivial. Qed.
+Goal forall C g0 g1 b, indcoprd C g0 g1 (myinr b) = g1 b. trivial. Qed.
 
 (* begin hide *)
 End Exercise5.
@@ -1678,6 +1679,7 @@ Proof.
   rewrite ex1_8_iv. reflexivity.
 Qed.
 
+(* DONE *)
 (** %\exer{1.9}{56}%  
 Define the type family $\Fin : \mathbb{N} \to \UU$
 mentioned at the end of %\S1.3%, and the dependent function $\fmax :
@@ -1686,27 +1688,17 @@ mentioned at the end of %\S1.3%, and the dependent function $\fmax :
 
 %\soln%  
 $\Fin(n)$ is a type with exactly $n$ elements.  Consider $\Fin(n)$ from the
-types-as-propositions point of view; if $x : \Fin(n)$, then $x$ must be one of
-the $n$ elements.  So we would like a type that is guaranteed to have $n$
-elements.  Recalling that $\sm{m:\mathbb{N}}(m < n)$ may be regarded as ``the
-type of all elements $m : \mathbb{N}$ such that $(m < n)$'', we note that there
-are $n$ such elements, and define
+types-as-propositions point of view: $\Fin(n)$ is a
+predicate that applies to exactly $n$ elements.  Recalling that
+$\sm{m:\mathbb{N}}(m < n)$ may be regarded as ``the type of all elements $m :
+\mathbb{N}$ such that $(m < n)$'', we note that there are $n$ such elements,
+and define
 %\[
   \Fin(n) 
   \defeq \sum_{m:\mathbb{N}} (m < n)
   \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(m+ \suc(k) = n)
 \]%
-
-To define $\fmax$, note that one can think of $\Fin(n)$ as a tuple $(m, (k,
-p))$, where $p : m + \suc(k) = n$.  The maximum element of $\Fin(n+1)$ will have the
-greatest value in the first slot, so
-%\[
-  \fmax(n) \defeq n_{n+1} \defeq (n, (0, \refl{n+1}))
-  : \sm{m:\mathbb{N}}\sm{k:\mathbb{N}} (m+\suc(k) = n+1)
-  \equiv \Fin(n+1)
-\]%
-Verifying that this definition is correct is tedious but straightforward.  In Coq, it requires a bit of finagling, since [inversion] isn't available.
-*)
+And in Coq, *)
 
 Definition le (n m : nat) : Type := {k:nat & n + k = m}.
 Notation "n <= m" := (le n m) : type_scope.
@@ -1716,28 +1708,63 @@ Notation "n < m" := (lt n m) : type_scope.
 
 Definition Fin (n:nat) : Type := {m:nat & m < n}.
 
-Definition fmax (n:nat) : Fin(n+1).
-  exists n. exists 0. reflexivity.
-Defined.
+(** %\noindent%
+To prove that this definition is correct, we should show that for every $n :
+\mathbb{N}$, $\Fin(n)$ has $n$ elements.  This is just to say that there is a
+bijection between the set of numbers less than $n$ and the elements of
+$\Fin(n)$.  One direction is obvious: for any $m : \Fin(n)$,
+$\snd(\snd(m)):(\fst(m) < n)$.  For the other direction, suppose that $m :
+\mathbb{N}$ and that $p : (m < n)$.  Then
+%\[
+  (m, p) : \sum{m:\mathbb{N}}(m < n) \equiv \Fin(n)
+\]%
+Moreover, these two constructions are clearly inverses, so we have our
+bijection.  It's not clear how to even formulate this correctness claim in Coq, since the only obvious way to define the bijection involves taking the domain and codomain to be the same, trivializing the problem.  The real problem, I think, is that the notion of ``exactly $n$ elements'' is too squishy here.
 
-Definition pred (n:nat) : nat :=
-  match n with
-    | O => O
-    | S n' => n'
-  end.
+To define $\fmax$, note that one can think of an element of $\Fin(n)$ as a
+tuple $(m, (k, p))$, where $p : m + \suc(k) = n$.  The maximum element of
+$\Fin(n+1)$ will have the greatest value in the first slot, so
+%\[
+  \fmax(n) \defeq n_{n+1} \defeq (n, (0, \refl{n+1}))
+  : \sm{m:\mathbb{N}}\sm{k:\mathbb{N}} (m+\suc(k) = n+1)
+  \equiv \Fin(n+1)
+\]% *)
 
-Theorem pred_Sn : forall (n:nat), n = pred (S n). reflexivity. Qed.
-Theorem pred_S_inj : forall (n m :nat), pred (S n) = pred (S m) -> n = m. 
-Proof.
-  intros. 
-  rewrite <- pred_Sn in H.
-  rewrite <- pred_Sn in H.
-  apply H.
-Qed.
+Definition fmax (n:nat) : Fin(n+1) := (n; (0; 1)). 
+
+(** %\noindent%
+Fully verifying that this definition is correct is tedious but straightforward.  We
+need to show that
+%\[
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (\fst(m_{n+1}) \leq \fst(\fmax(n)))
+\]%
+is inhabited.  Unfolding this a bit, we get
+%\[
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (m \leq n)
+  \equiv
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)}\sm{k:\mathbb{N}} (m + k = n)
+\]%
+Fix some such $n$ and $m_{n+1}$.  By the propositional uniqueness principle for
+$\Sigma$-types, we can write $m_{n+1} = (m^{1}, (m^{2}, m^{3}))$, where $m^{3}
+: m^{1} + \suc(m^{2}) = n + 1$.  Using the results of the previous exercise, we
+can obtain from $m^{3}$ a proof $p : m^{1} + m^{2} = n$.  So $(m^{2}, p)$ is a
+witness to our result. 
+Coq requires a bit of finagling, since [inversion] isn't available.
+*)
+
+
+Definition pred (n : nat) : nat :=
+    match n with
+      | O => O
+      | S n' => n'
+    end.
 
 Theorem S_inj : forall (n m : nat), S n = S m -> n = m.
 Proof.
-  intros. apply pred_S_inj. rewrite H. reflexivity.
+  intros. 
+  cut (pred (S n) = pred (S m)). intros.
+  simpl in X. apply X.
+  rewrite H. reflexivity.
 Qed.
 
 Theorem plus_1_r : forall n, S n = n + 1.
@@ -2004,7 +2031,7 @@ have
 and in Coq, *)
 
 
-  Goal A -> B -> A. trivial. Qed.
+Goal A -> B -> A. trivial. Qed.
 
   (** 
 (ii)  Suppose that $A$.  Supposing further that $\lnot A$ gives a
@@ -2012,7 +2039,7 @@ contradiction, so $\lnot\lnot A$.  That is,
 %\[
   \lam{a:A}{f:A \to \emptyt}f(a) : A \to (A \to \emptyt) \to \emptyt
 \]% *)
-  Goal A -> ~ ~ A. auto. Qed.
+Goal A -> ~ ~ A. auto. Qed.
 
   (** 
 (iii)
@@ -2051,15 +2078,15 @@ So
   A \times B 
   \to \emptyt
 \]% *)
- Goal (~ A + ~ B) -> ~ (A * B).
-  Proof.
-    unfold not.
-    intros H x.
-    apply H.
-    destruct x.
-    constructor.
-    exact a.
-  Qed.
+Goal (~ A + ~ B) -> ~ (A * B).
+Proof.
+  unfold not.
+  intros H x.
+  apply H.
+  destruct x.
+  constructor.
+  exact a.
+Qed.
 
 (* begin hide *)
 End Exercise12.
@@ -2107,22 +2134,23 @@ result:
 Finally, in Coq, *)
 
 
-  Goal ~ ~ (P + ~P).
-  Proof.
-    unfold not.
-    intro H.
-    apply H.
-    right.
-    intro p.
-    apply H.
-    left.
-    apply p.
-  Qed.
+Goal ~ ~ (P + ~P).
+Proof.
+  unfold not.
+  intro H.
+  apply H.
+  right.
+  intro p.
+  apply H.
+  left.
+  apply p.
+Qed.
 
 (* begin hide *)
 End Exercise13.
 (* end hide *)
 
+(* DONE *)
 (** 
 %\exer{1.14}{57}%  
 Why do the induction principles for identity types not allow
@@ -2133,6 +2161,25 @@ defining equation
 \]% *)
 
 (** %\soln%
+The problem is that $f$ is not well-typed in general; i.e., its purported type
+is not inhabited for all $A$, $x$, and $p$.  Read propositionally, $f :
+\prd{x:A}\prd{p:x=x}(p = \refl{x})$ means that for all $x:A$, the only witness
+to $x = x$ is $\refl{x}$, and this is not true.  One can have nontrivial
+homotopies, leading to $p : x = x$ such that $\lnot (p = \refl{x})$.
+
+Coq prevents this construction for this reason.  Attempting it would proceed as
+[[
+Definition f : forall (A : Type) (x : A) (p : x = x), p = 1.
+  intros. path_induction.
+  exact 1.
+]]
+%\noindent%
+which returns the error message
+[[
+The term "1" has type "p = p" while it is expected to have type "p = 1".
+]]
+%\noindent%
+Because of the possiblity of nontrivial homotopies, one might fail to have $(p = p) = (p = \refl{x})$.
 *)
 
 
