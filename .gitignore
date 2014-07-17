@@ -29,3 +29,5 @@ Reading_HoTT_in_Coq.v
 *.temp
 
 tex/Makefile
+
+tex/hott-exercises.toc

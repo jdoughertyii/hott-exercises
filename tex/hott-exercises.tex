@@ -3,12 +3,12 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[color]{coqdoc}
-\usepackage{enumerate}
 \usepackage{enumitem}
 \usepackage[margin=1in]{geometry}
 \usepackage{mathtools}
 \usepackage{noweb}
 \usepackage{python}
+\usepackage{tocloft}
 \usepackage{xspace}
 \usepackage[all]{xy}
 
@@ -21,9 +21,12 @@
 \definecolor{dkred}{rgb}{0.5,0,0}
 \definecolor{grey}{rgb}{0.5,0.5,0.6}
 
-% Structural commands
-\newcommand{\exer}[2]{\paragraph{Exercise #1 (p.~#2)}}
-\newcommand{\soln}{\paragraph{Solution}}
+% Formatting
+\newcommand{\exer}[2]{\paragraph{${}^{*}$Exercise #1 (p.~#2)}}
+\newcommand{\exerdone}[2]{\paragraph{Exercise #1 (p.~#2)}}
+\newcommand{\soln}{\paragraph*{Solution}}
+\setcounter{tocdepth}{5}
+\cftsetindents{paragraph}{0pt}{0pt}
 
 % Typeface
 \usepackage{tgpagella}

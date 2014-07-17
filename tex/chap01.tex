@@ -21,12 +21,14 @@ declarations don't extend beyond the exercise, and sometimes they're even more
 restricted than that.
 
 
+\tableofcontents
+
+
 \section{Type Theory}
 
-\begin{coqdoccode}
-\coqdocemptyline
-\end{coqdoccode}
-\exer{1.1}{56}  
+
+
+ \exerdone{1.1}{56}  
 Given functions $f:A\to B$ and $g:B\to C$, define their \term{composite} 
 $g \circ f : A \to C$.  Show that we have $h \circ (g \circ f) \equiv (h \circ g) \circ f$.
 
@@ -60,7 +62,7 @@ So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have \begin{coq
 \coqdockw{Proof}. \coqdoctac{trivial}. \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.2}{56}  
+\exerdone{1.2}{56}  
 Derive the recursion principle for products $\rec{A \times B}$ using only the
 projections, and verify that the definitional equalities are valid.  Do the
 same for $\Sigma$-types.  \begin{coqdoccode}
@@ -146,7 +148,7 @@ which is again trivial in Coq: \begin{coqdoccode}
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.3}{56} 
+\exerdone{1.3}{56} 
 Derive the induction principle for products $\ind{A \times B}$ using only the
 projections and the propositional uniqueness principle $\uppt$.  Verify that
 the definitional equalities are valid.  Generalize $\uppt$ to $\Sigma$-types,
@@ -299,7 +301,7 @@ which Coq finds trivial: \begin{coqdoccode}
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.4}{56}  
+\exerdone{1.4}{56}  
 Assuming as given only the \textit{iterator} for natural numbers
 \[
 \ite : 
@@ -555,7 +557,7 @@ Repeating it all in Coq, we have\begin{coqdoccode}
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.5}{56}  
+\exerdone{1.5}{56}  
 Show that if we define $A + B \defeq \sm{x:\bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
 which the definitional equalities stated in \S1.7 hold.
@@ -740,7 +742,7 @@ Trivial calculations, as Coq can attest: \begin{coqdoccode}
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.6}{56}
+\exerdone{1.6}{56}
 Show that if we define $A \times B \defeq \prd{x : \bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A \times
   B}$ for which the definitional equalities stated in \S1.5 hold
@@ -944,7 +946,7 @@ this better requires stuff from next chapter.
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.7}{56}             
+\exerdone{1.7}{56}             
 Give an alternative derivation of $\ind{=_{A}}'$ from $\ind{=_{A}}$ which
 avoids the use of universes. 
 
@@ -1070,10 +1072,9 @@ We also have
 So we have derived based path induction.
 
 
-\begin{coqdoccode}
-\coqdocemptyline
-\end{coqdoccode}
-\exer{1.8}{56}  
+
+
+ \exerdone{1.8}{56}  
 Define multiplication and exponentiation using
 $\rec{\mathbb{N}}$.  Verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring
 using only $\ind{\mathbb{N}}$.
@@ -1774,7 +1775,7 @@ proof of (vi). \begin{coqdoccode}
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.9}{56}  
+\exerdone{1.9}{56}  
 Define the type family $\Fin : \mathbb{N} \to \UU$
 mentioned at the end of \S1.3, and the dependent function $\fmax :
 \prd{n : \mathbb{N}} \Fin(n + 1)$ mentioned in \S1.4.
@@ -1912,7 +1913,7 @@ Coq requires a bit of finagling, since \coqdoctac{inversion} isn't available.
 \end{coqdoccode}
 
 
-\exer{1.10}{56}  
+\exerdone{1.10}{56}  
 Show that the Ackermann function $\ack : \mathbb{N} \to
 \mathbb{N} \to \mathbb{N}$,
 satisfying the following equations
@@ -2095,7 +2096,7 @@ which is the third equality.  In Coq,
 \coqdockw{Goal} \coqdockw{\ensuremath{\forall}} \coqdocvar{m} \coqdocvar{n}, \coqref{chap01.ack}{\coqdocdefinition{ack}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m}) (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}) \coqdocnotation{=} \coqref{chap01.ack}{\coqdocdefinition{ack}} \coqdocvariable{m} (\coqref{chap01.ack}{\coqdocdefinition{ack}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m}) \coqdocvariable{n}). \coqdoctac{auto}. \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.11}{56}  
+\exerdone{1.11}{56}  
 Show that for any type $A$, we have $\lnot\lnot\lnot A \to
 \lnot A$.
 
@@ -2146,10 +2147,9 @@ We can get a proof out of Coq by printing this \coqdockw{Goal}.  It returns
 
 \coqdocemptyline
 \noindent
-which is just the function obtained by hand. \begin{coqdoccode}
-\coqdocemptyline
-\end{coqdoccode}
-\exer{1.12}{56}  
+which is just the function obtained by hand. 
+
+ \exerdone{1.12}{56}  
 Using the propositions as types interpretation, derive the
 following tautologies.
 \begin{enumerate}
@@ -2244,7 +2244,7 @@ So
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
-\exer{1.13}{57}
+\exerdone{1.13}{57}
 Using propositions-as-types, derive the double negation of the
 principle of excluded middle, i.e.~prove 
 \emph{not (not ($P$ or not $P$))}. \begin{coqdoccode}
@@ -2308,7 +2308,7 @@ Finally, in Coq, \begin{coqdoccode}
 \end{coqdoccode}
 
 
-\exer{1.14}{57}  
+\exerdone{1.14}{57}  
 Why do the induction principles for identity types not allow
 us to construct a function $f : \prd{x:A}\prd{p:x=x}(p = \refl{x})$ with the
 defining equation
@@ -2345,10 +2345,9 @@ which returns the error message
 \coqdocemptyline
 \noindent
 Because of the possiblity of nontrivial homotopies, one might fail to have $(p = p) = (p = \refl{x})$.
-\begin{coqdoccode}
-\coqdocemptyline
-\end{coqdoccode}
-\exer{1.15}{57} 
+
+
+ \exerdone{1.15}{57} 
 Show that indiscernability of identicals follows from path induction.
 
  \soln

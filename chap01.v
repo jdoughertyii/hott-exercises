@@ -16,12 +16,13 @@ Each part of each exercise has its own [Section] in the Coq file, so [Context]
 declarations don't extend beyond the exercise, and sometimes they're even more
 restricted than that.
 
+%\tableofcontents%
+
 
 * Type Theory *)
 
 
-(* DONE *)
-(** %\exer{1.1}{56}%  
+(** %\exerdone{1.1}{56}%  
 Given functions $f:A\to B$ and $g:B\to C$, define their %\term{composite}% 
 $g \circ f : A \to C$.  Show that we have $h \circ (g \circ f) \equiv (h \circ g) \circ f$.
 
@@ -52,8 +53,7 @@ Goal forall (A B C D : Type) (f : A -> B) (g : B-> C) (h : C -> D),
     compose h (compose g f) = compose (compose h g) f.
 Proof. trivial. Qed.
 
-(* DONE *)
-(** %\exer{1.2}{56}%  
+(** %\exerdone{1.2}{56}%  
 Derive the recursion principle for products $\rec{A \times B}$ using only the
 projections, and verify that the definitional equalities are valid.  Do the
 same for $\Sigma$-types.  *)
@@ -145,8 +145,7 @@ Goal forall C g a b, recsm C g (a; b) = g a b. trivial. Qed.
 End Exercise2b.
 (* end hide *)
 
-(* DONE *)
-(** %\exer{1.3}{56}% 
+(** %\exerdone{1.3}{56}% 
 Derive the induction principle for products $\ind{A \times B}$ using only the
 projections and the propositional uniqueness principle $\uppt$.  Verify that
 the definitional equalities are valid.  Generalize $\uppt$ to $\Sigma$-types,
@@ -302,8 +301,7 @@ Goal forall C g a b, indsm C g (a; b) = g a b. trivial. Qed.
 End Exercise3b.
 (* end hide *)
 
-(* DONE (not Coq) *)
-(** %\exer{1.4}{56}%  
+(** %\exerdone{1.4}{56}%  
 Assuming as given only the _iterator_ for natural numbers
 %\[
 \ite : 
@@ -553,8 +551,7 @@ Goal forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))). Admitted.
 End Exercise4.
 (* end hide *)
 
-(* DONE *)
-(** %\exer{1.5}{56}%  
+(** %\exerdone{1.5}{56}%  
 Show that if we define $A + B \defeq \sm{x:\bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
 which the definitional equalities stated in %\S1.7% hold.
@@ -733,8 +730,7 @@ Goal forall C g0 g1 b, indcoprd C g0 g1 (myinr b) = g1 b. trivial. Qed.
 End Exercise5.
 (* end hide *)
 
-(* DONE *)
-(** %\exer{1.6}{56}%
+(** %\exerdone{1.6}{56}%
 Show that if we define $A \times B \defeq \prd{x : \bool}
 \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A \times
   B}$ for which the definitional equalities stated in %\S1.5% hold
@@ -928,8 +924,7 @@ Goal forall C g a b, indprd' C g (mypair a b) = g a b. Admitted.
 End Exercise6.
 (* end hide *)
 
-(* DONE *)
-(** %\exer{1.7}{56}%             
+(** %\exerdone{1.7}{56}%             
 Give an alternative derivation of $\ind{=_{A}}'$ from $\ind{=_{A}}$ which
 avoids the use of universes. *)
 
@@ -1055,8 +1050,7 @@ So we have derived based path induction.
 *)
 
 
-(* DONE *)
-(** %\exer{1.8}{56}%  
+(** %\exerdone{1.8}{56}%  
 Define multiplication and exponentiation using
 $\rec{\mathbb{N}}$.  Verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring
 using only $\ind{\mathbb{N}}$.
@@ -1679,8 +1673,7 @@ Proof.
   rewrite ex1_8_iv. reflexivity.
 Qed.
 
-(* DONE *)
-(** %\exer{1.9}{56}%  
+(** %\exerdone{1.9}{56}%  
 Define the type family $\Fin : \mathbb{N} \to \UU$
 mentioned at the end of %\S1.3%, and the dependent function $\fmax :
 \prd{n : \mathbb{N}} \Fin(n + 1)$ mentioned in %\S1.4%.
@@ -1783,9 +1776,8 @@ Proof.
 Qed.
 
 
-(* DONE *)
 (** 
-%\exer{1.10}{56}%  
+%\exerdone{1.10}{56}%  
 Show that the Ackermann function $\ack : \mathbb{N} \to
 \mathbb{N} \to \mathbb{N}$,
 satisfying the following equations
@@ -1958,8 +1950,7 @@ Goal forall n, ack 0 n = S n. auto. Qed.
 Goal forall m, ack (S m) 0 = ack m (S 0). auto. Qed.
 Goal forall m n, ack (S m) (S n) = ack m (ack (S m) n). auto. Qed.
 
-(* DONE *)
-(** %\exer{1.11}{56}%  
+(** %\exerdone{1.11}{56}%  
 Show that for any type $A$, we have $\lnot\lnot\lnot A \to
 \lnot A$.
 
@@ -2006,8 +1997,7 @@ fun (A : Type) (X : ~ ~ ~ A) (X0 : A) => X (fun X1 : A -> Empty => X1 X0)
 %\noindent%
 which is just the function obtained by hand. *)
 
-(* DONE *)
-(** %\exer{1.12}{56}%  
+(** %\exerdone{1.12}{56}%  
 Using the propositions as types interpretation, derive the
 following tautologies.
 %\begin{enumerate}
@@ -2092,9 +2082,8 @@ Qed.
 End Exercise12.
 (* end hide *)
 
-(* DONE *)
 (**
-%\exer{1.13}{57}%
+%\exerdone{1.13}{57}%
 Using propositions-as-types, derive the double negation of the
 principle of excluded middle, %i.e.~prove% 
 %\emph{not (not ($P$ or not $P$))}%. *)
@@ -2150,9 +2139,8 @@ Qed.
 End Exercise13.
 (* end hide *)
 
-(* DONE *)
 (** 
-%\exer{1.14}{57}%  
+%\exerdone{1.14}{57}%  
 Why do the induction principles for identity types not allow
 us to construct a function $f : \prd{x:A}\prd{p:x=x}(p = \refl{x})$ with the
 defining equation
@@ -2183,8 +2171,7 @@ Because of the possiblity of nontrivial homotopies, one might fail to have $(p =
 *)
 
 
-(* DONE *)
-(** %\exer{1.15}{57}% 
+(** %\exerdone{1.15}{57}% 
 Show that indiscernability of identicals follows from path induction.*)
 
 (** %\soln%
