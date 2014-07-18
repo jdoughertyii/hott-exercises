@@ -424,7 +424,7 @@ this concatenation is an equivalence.
 \coqdockw{fun} \coqdocvar{q} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocdefinition{transport\_const} \coqdocvariable{p} (\coqdocvariable{f} \coqdocvariable{x})\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvariable{q}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{chap02.alpha}{alpha}{\coqdocdefinition{alpha}} : \coqdockw{\ensuremath{\forall}} \{\coqdocvar{A} \coqdocvar{B}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{f}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) \coqdocvar{q}, \coqdoceol
+\coqdockw{Definition} \coqdef{chap02.alpha2 5}{alpha2\_5}{\coqdocdefinition{alpha2\_5}} : \coqdockw{\ensuremath{\forall}} \{\coqdocvar{A} \coqdocvar{B}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{f}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) \coqdocvar{q}, \coqdoceol
 \coqdocindent{1.00em}
 \coqdocnotation{(}\coqref{chap02.eq2 3 6}{\coqdocdefinition{eq2\_3\_6}} \coqdocvariable{f} \coqdocvariable{p} (\coqref{chap02.eq2 3 7}{\coqdocdefinition{eq2\_3\_7}} \coqdocvariable{f} \coqdocvariable{p} \coqdocvariable{q})\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
 \coqdocindent{1.00em}
@@ -433,7 +433,7 @@ this concatenation is an equivalence.
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{chap02.beta}{beta}{\coqdocdefinition{beta}} : \coqdockw{\ensuremath{\forall}} \{\coqdocvar{A} \coqdocvar{B}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{f}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) \coqdocvar{q}, \coqdoceol
+\coqdockw{Definition} \coqdef{chap02.beta2 5}{beta2\_5}{\coqdocdefinition{beta2\_5}} : \coqdockw{\ensuremath{\forall}} \{\coqdocvar{A} \coqdocvar{B}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{f}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) \coqdocvar{q}, \coqdoceol
 \coqdocindent{1.00em}
 \coqdocnotation{(}\coqref{chap02.eq2 3 7}{\coqdocdefinition{eq2\_3\_7}} \coqdocvariable{f} \coqdocvariable{p} (\coqref{chap02.eq2 3 6}{\coqdocdefinition{eq2\_3\_6}} \coqdocvariable{f} \coqdocvariable{p} \coqdocvariable{q})\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
 \coqdocindent{1.00em}
@@ -448,7 +448,7 @@ this concatenation is an equivalence.
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{isequiv\_adjointify} \coqdocvar{\_} (\coqref{chap02.eq2 3 7}{\coqdocdefinition{eq2\_3\_7}} \coqdocvar{f} \coqdocvar{p}) (\coqref{chap02.alpha}{\coqdocdefinition{alpha}} \coqdocvar{f} \coqdocvar{p}) (\coqref{chap02.beta}{\coqdocdefinition{beta}} \coqdocvar{f} \coqdocvar{p})).\coqdoceol
+\coqdoctac{apply} (\coqdocdefinition{isequiv\_adjointify} \coqdocvar{\_} (\coqref{chap02.eq2 3 7}{\coqdocdefinition{eq2\_3\_7}} \coqdocvar{f} \coqdocvar{p}) (\coqref{chap02.alpha2 5}{\coqdocdefinition{alpha2\_5}} \coqdocvar{f} \coqdocvar{p}) (\coqref{chap02.beta2 5}{\coqdocdefinition{beta2\_5}} \coqdocvar{f} \coqdocvar{p})).\coqdoceol
 \coqdocnoindent
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
@@ -493,14 +493,14 @@ is an equivalence.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{chap02.alpha'}{alpha'}{\coqdocdefinition{alpha'}} \{\coqdocvar{A}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z}:\coqdocvariable{A}\} (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) (\coqdocvar{q}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{z}) : \coqdocvariable{p} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvariable{q}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
+\coqdockw{Definition} \coqdef{chap02.alpha2 6}{alpha2\_6}{\coqdocdefinition{alpha2\_6}} \{\coqdocvar{A}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z}:\coqdocvariable{A}\} (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) (\coqdocvar{q}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{z}) : \coqdocvariable{p} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvariable{q}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdocvar{path\_induction}. \coqdoctac{reflexivity}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{chap02.beta'}{beta'}{\coqdocdefinition{beta'}} \{\coqdocvar{A}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z}:\coqdocvariable{A}\} (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) (\coqdocvar{q}:\coqdocvariable{y}\coqdocnotation{=}\coqdocvariable{z}) : \coqdocvariable{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{p} \coqdocnotation{@} \coqdocvariable{q}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
+\coqdockw{Definition} \coqdef{chap02.beta2 6}{beta2\_6}{\coqdocdefinition{beta2\_6}} \{\coqdocvar{A}:\coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z}:\coqdocvariable{A}\} (\coqdocvar{p}:\coqdocvariable{x}\coqdocnotation{=}\coqdocvariable{y}) (\coqdocvar{q}:\coqdocvariable{y}\coqdocnotation{=}\coqdocvariable{z}) : \coqdocvariable{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{p} \coqdocnotation{@} \coqdocvariable{q}\coqdocnotation{)} \coqdocnotation{=} \coqdocvariable{q}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdocvar{path\_induction}. \coqdoctac{reflexivity}.\coqdoceol
 \coqdocnoindent
@@ -511,7 +511,7 @@ is an equivalence.
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{isequiv\_adjointify} \coqdocvar{\_} (\coqdockw{fun} \coqdocvar{q}:(\coqdocvar{x}\coqdocnotation{=}\coqdocvar{z}) \ensuremath{\Rightarrow} \coqdocvar{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvariable{q}) (\coqref{chap02.alpha'}{\coqdocdefinition{alpha'}} \coqdocvar{p}) (\coqref{chap02.beta'}{\coqdocdefinition{beta'}} \coqdocvar{p})).\coqdoceol
+\coqdoctac{apply} (\coqdocdefinition{isequiv\_adjointify} \coqdocvar{\_} (\coqdockw{fun} \coqdocvar{q}:(\coqdocvar{x}\coqdocnotation{=}\coqdocvar{z}) \ensuremath{\Rightarrow} \coqdocvar{p}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvariable{q}) (\coqref{chap02.alpha2 6}{\coqdocdefinition{alpha2\_6}} \coqdocvar{p}) (\coqref{chap02.beta2 6}{\coqdocdefinition{beta2\_6}} \coqdocvar{p})).\coqdoceol
 \coqdocnoindent
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
@@ -553,7 +553,92 @@ Prove that coproducts have the expected universal property,
 Can you generalize this to an equivalence involving dependent functions?
 
 
- \exer{2.10}{104} 
+ \soln
+To define the forward map, let $h : A+B \to X$ and define $f : (A+B\to X) \to
+(A\to X) \times (B \to X)$ by
+\[
+  f(h) \defeq (\lam{a}h(\inl(a)), \lam{b}h(\inr(b)))
+\]
+To show that $f$ is an equivalence, we'll need a quasi-inverse, given by
+\[
+ g(h) \defeq \rec{A+B}(X, \fst h, \snd h)
+\]
+As well as the homotopies $\alpha : f\circ g \sim \idfunc{(A\to X)\times(B \to
+X)}$ and $\beta : g \circ f \sim \idfunc{A+B\to X}$.  For $\alpha$ we need a
+witness to
+\begin{align*}
+  &\prd{h:(A\to X) \times (B\to X)} (f(g(h)) 
+  = \idfunc{(A\to X) \times (B\to X)}(h))
+  \\&\equiv
+  \prd{h:(A\to X) \times (B\to X)} (
+  (\lam{a}\rec{A+B}(X, \fst h, \snd h, \inl(a)),
+   \lam{b}\rec{A+B}(X, \fst h, \snd h, \inr(b)))
+  = h)
+  \\&\equiv
+  \prd{h:(A\to X) \times (B\to X)} ((\fst h, \snd h) = h)
+\end{align*}
+and this is inhabited by $\uppt$.  For $\beta$, we need an inhabitant of
+\begin{align*}
+  &\prd{h:A+B\to X} (g(f(h)) = \idfunc{A+B\to X}(h))
+  \\&\equiv
+  \prd{h:A+B\to X} (
+  \rec{A+B}(X, \lam{a}h(\inl(a)), \lam{b}h(\inr(b)))
+  = h)
+\end{align*}
+which, assuming function extensionality, is inhabited.  So $(g,
+\alpha, \beta)$ is a quasi-inverse to $f$, giving the universal property.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.forward}{forward}{\coqdocdefinition{forward}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{X} : \coqdockw{Type}\} (\coqdocvar{h} : (\coqdocvariable{A}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}}\coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{X})) : \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{h} \coqdocnotation{o} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{h} \coqdocnotation{o} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.backward}{backward}{\coqdocdefinition{backward}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{X} : \coqdockw{Type}\} (\coqdocvar{h} : \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}) : \coqdocvariable{A}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}}\coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{X} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdockw{match} \coqdocvariable{x} \coqdockw{with}\coqdoceol
+\coqdocindent{6.50em}
+\ensuremath{|} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}} \coqdocvar{a} \ensuremath{\Rightarrow} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{h}) \coqdocvar{a}\coqdoceol
+\coqdocindent{6.50em}
+\ensuremath{|} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}} \coqdocvar{b} \ensuremath{\Rightarrow} (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{h}) \coqdocvar{b}\coqdoceol
+\coqdocindent{5.50em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.alpha2 9}{alpha2\_9}{\coqdoclemma{alpha2\_9}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{X}: \coqdockw{Type}\} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{h} : \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{X}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}), \coqdoceol
+\coqdocindent{1.00em}
+\coqref{chap02.forward}{\coqdocdefinition{forward}} (\coqref{chap02.backward}{\coqdocdefinition{backward}} \coqdocvariable{h}) \coqdocnotation{=} \coqdocvariable{h}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqref{chap02.forward}{\coqdocdefinition{forward}}, \coqref{chap02.backward}{\coqdocdefinition{backward}}. \coqdoctac{destruct} \coqdocvar{h} \coqdockw{as} (\coqdocvar{x}, \coqdocvar{y}). \coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.beta2 9}{beta2\_9}{\coqdoclemma{beta2\_9}} `\{\coqdocclass{Funext}\} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{X}: \coqdockw{Type}\} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{h} : \coqdocvariable{A}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}}\coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{X}), \coqdoceol
+\coqdocindent{1.00em}
+\coqref{chap02.backward}{\coqdocdefinition{backward}} (\coqref{chap02.forward}{\coqdocdefinition{forward}} \coqdocvariable{h}) \coqdocnotation{=} \coqdocvariable{h}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros}. \coqdoctac{apply} \coqdocvar{H}. \coqdoctac{unfold} \coqdocdefinition{pointwise\_paths}. \coqdoctac{intros}. \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap02.ex2 9}{ex2\_9}{\coqdoclemma{ex2\_9}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{A} \coqdocvar{B} \coqdocvar{X}, \coqdocclass{IsEquiv}(@\coqref{chap02.forward}{\coqdocdefinition{forward}} \coqdocvariable{A} \coqdocvariable{B} \coqdocvariable{X}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros}. \coqdoctac{apply} (\coqdocdefinition{isequiv\_adjointify} \coqref{chap02.forward}{\coqdocdefinition{forward}} \coqref{chap02.backward}{\coqdocdefinition{backward}} \coqref{chap02.alpha2 9}{\coqdoclemma{alpha2\_9}} \coqref{chap02.beta2 9}{\coqdoclemma{beta2\_9}}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocemptyline
+\end{coqdoccode}
+\exer{2.10}{104} 
 Prove that $\Sigma$-types are ``associative'', in that for any $A:\UU$ and
 families $B : A \to \UU$ and $C : (\sm{x:A} B(x)) \to \UU$, we have
 \[
@@ -580,6 +665,10 @@ is called a (homotopy) pullback square if for any $X$, the induced map
 \]
 is an equivalence.  Prove that the pullback $P \defeq A \times_{C} B$ defined
 in 2.15.11 is the corner of a pullback square.
+
+
+ \soln
+To show that $P$ is the corner of a pullback square, we need to produce 
 
 
  \exer{2.12}{104} 

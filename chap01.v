@@ -125,8 +125,8 @@ by
 g(\fst p)(\snd p)
 \]% 
  *)
-Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : exists (x :
-    A), B x) := g (p.1) (p.2).
+Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : {x:A & B x}) := 
+  g (p.1) (p.2).
 
 (** 
 %\noindent%
@@ -167,7 +167,7 @@ For a first pass, we can define
 \defeq
 g(\fst z)(\snd z)
 \]%
-However, we have $g(\fst x)(\fst x) : C((\fst x, \snd x))$, so the type of this
+However, we have $g(\fst x)(\snd x) : C((\fst x, \snd x))$, so the type of this
 $\ind{A \times B}$ is
 %\[
 \ind{A\times B} : \prd{C: A\times B \to \UU}\left(\prd{x:A}\prd{y:B}C((x,
@@ -485,7 +485,6 @@ D(z) \defeq
 =
 (\suc(\fst z), c_{s}(\fst z, \snd \Phi'(\suc(n)))) 
 \]%
-(i.e., $D$ is proof-irrelevant).
 Clearly, we have
 %\[
 \refl{\Phi'(\suc(\suc(n)))} : D(\Phi'(\suc(n)), \refl{\Phi'(\suc(n))})
@@ -502,7 +501,7 @@ c_{s}(\fst (\suc(n), c_{s}(n,
 \snd\Phi'(n))), \snd\Phi'(\suc(n)))) 
 \end{align*}%
 Let $p_{n+1} \defeq f((\suc(n), c_{s}(n, \snd \Phi'(n))))$.
-0ur first bit of massaging allows us to replace the left hand side of this by
+Our first bit of massaging allows us to replace the left hand side of this by
 $\Phi'(\suc(\suc(n))$.  As for the right, applying the projections gives
 %\begin{align*}
 p_{n+1} &: \Phi'(\suc(\suc(n))) 
@@ -545,7 +544,14 @@ Repeating it all in Coq, we have*)
 
 Goal snd (Phi' 0) = c0. auto. Qed.
 
-Goal forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))). Admitted.
+Goal forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))).
+Proof.
+  intros. induction n. reflexivity.
+  assert (Phi' (S (S n)) = (S (fst (Phi' (S n))), 
+                            cs (fst (Phi' (S n))) (snd (Phi' (S n))))).
+  reflexivity.
+  rewrite X. rewrite IHn. reflexivity.
+Qed.
 
 (* begin hide *)
 End Exercise4.
@@ -863,10 +869,7 @@ Now we can define $\ind{A\times B}$ as
 \]%
 In Coq we can repeat this construction using [Funext]. *)
 
-  Context `{Funext}.
-
-
-  Definition myuppt (p : prd) : mypair (myfst p) (mysnd p) = p.
+  Definition myuppt `{Funext} (p : prd) : mypair (myfst p) (mysnd p) = p.
     apply path_forall.
     unfold pointwise_paths; apply Bool_rect; reflexivity.
   Defined.
@@ -918,7 +921,25 @@ $\funext(h) = \refl{(a, b)}$ is just a propositional equality.  Understanding
 this better requires stuff from next chapter. 
  *)
 
-Goal forall C g a b, indprd' C g (mypair a b) = g a b. Admitted.
+Lemma lemma1_6 : forall a b, myuppt (mypair a b) = 1.
+Proof.
+  intros. unfold myuppt.
+  transitivity (path_forall (mypair (myfst (mypair a b)) (mysnd (mypair a b))) 
+                            _
+                            (fun _ => 1)).
+  f_ap. by_extensionality x. destruct x; reflexivity.
+  unfold mypair, myfst, mysnd. simpl.
+  apply path_forall_1 with (f:=Bool_rect (fun x : Bool => if x then B else A) b a).
+Qed.
+
+
+Goal forall C g a b, indprd' C g (mypair a b) = g a b.
+Proof.
+  intros. unfold indprd'. unfold transport.
+  rewrite lemma1_6.
+  unfold mypair, myfst, mysnd. reflexivity.
+Qed.
+
 
 (* begin hide *)
 End Exercise6.
@@ -1353,7 +1374,7 @@ something of type
 \[
   k + (n + m) \times k = (k + n \times k) + m \times k
 \]
-0ur two strings of judgemental equalities mean that this is the same as the
+Our two strings of judgemental equalities mean that this is the same as the
 type
 \[
   (\suc(n) + m) \times k = \suc(n) \times k + m \times k.

@@ -361,12 +361,12 @@ Definition eq2_3_7 {A B : Type} {x y : A} (f : A -> B) (p : x = y) :
   (@transport _ (fun _ => B) _ _ p (f x) = f y) -> (f x = f y) :=
   fun q => (transport_const p (f x))^ @ q.
 
-Definition alpha : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
+Definition alpha2_5 : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
   (eq2_3_6 f p (eq2_3_7 f p q)) = q. 
   unfold eq2_3_6, eq2_3_7. path_induction. reflexivity.
 Defined.
 
-Definition beta : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
+Definition beta2_5 : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
   (eq2_3_7 f p (eq2_3_6 f p q)) = q. 
   unfold eq2_3_6, eq2_3_7. path_induction. reflexivity.
 Defined.
@@ -374,7 +374,7 @@ Defined.
 Lemma isequiv_transportconst (A B:Type) (x y z : A) (f : A -> B) (p : x = y) : 
   IsEquiv (eq2_3_6 f p).
 Proof.
-  apply (isequiv_adjointify _ (eq2_3_7 f p) (alpha f p) (beta f p)).
+  apply (isequiv_adjointify _ (eq2_3_7 f p) (alpha2_5 f p) (beta2_5 f p)).
 Qed.
 
 
@@ -417,17 +417,17 @@ which is inhabited by $\refl{q}$.  So $(p \ct -)$ has a quasi-inverse, hence it
 is an equivalence.
 *)
 
-Definition alpha' {A:Type} {x y z:A} (p:x=y) (q:x=z) : p @ (p^ @ q) = q.
+Definition alpha2_6 {A:Type} {x y z:A} (p:x=y) (q:x=z) : p @ (p^ @ q) = q.
   path_induction. reflexivity.
 Defined.
 
-Definition beta' {A:Type} {x y z:A} (p:x=y) (q:y=z) : p^ @ (p @ q) = q.
+Definition beta2_6 {A:Type} {x y z:A} (p:x=y) (q:y=z) : p^ @ (p @ q) = q.
   path_induction. reflexivity.
 Defined.
 
 Lemma isequiv_eqcat (A:Type) (x y z : A) (p : x = y) : IsEquiv (fun q:(y=z) => p @ q).
 Proof.
-  apply (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) (alpha' p) (beta' p)).
+  apply (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) (alpha2_6 p) (beta2_6 p)).
 Qed.
 
 (** %\exer{2.7}{104}% 
@@ -465,6 +465,69 @@ Prove that coproducts have the expected universal property,
 \]%
 Can you generalize this to an equivalence involving dependent functions?
 *)
+
+(** %\soln%
+To define the forward map, let $h : A+B \to X$ and define $f : (A+B\to X) \to
+(A\to X) \times (B \to X)$ by
+%\[
+  f(h) \defeq (\lam{a}h(\inl(a)), \lam{b}h(\inr(b)))
+\]%
+To show that $f$ is an equivalence, we'll need a quasi-inverse, given by
+%\[
+ g(h) \defeq \rec{A+B}(X, \fst h, \snd h)
+\]%
+As well as the homotopies $\alpha : f\circ g \sim \idfunc{(A\to X)\times(B \to
+X)}$ and $\beta : g \circ f \sim \idfunc{A+B\to X}$.  For $\alpha$ we need a
+witness to
+%\begin{align*}
+  &\prd{h:(A\to X) \times (B\to X)} (f(g(h)) 
+  = \idfunc{(A\to X) \times (B\to X)}(h))
+  \\&\equiv
+  \prd{h:(A\to X) \times (B\to X)} (
+  (\lam{a}\rec{A+B}(X, \fst h, \snd h, \inl(a)),
+   \lam{b}\rec{A+B}(X, \fst h, \snd h, \inr(b)))
+  = h)
+  \\&\equiv
+  \prd{h:(A\to X) \times (B\to X)} ((\fst h, \snd h) = h)
+\end{align*}%
+and this is inhabited by $\uppt$.  For $\beta$, we need an inhabitant of
+%\begin{align*}
+  &\prd{h:A+B\to X} (g(f(h)) = \idfunc{A+B\to X}(h))
+  \\&\equiv
+  \prd{h:A+B\to X} (
+  \rec{A+B}(X, \lam{a}h(\inl(a)), \lam{b}h(\inr(b)))
+  = h)
+\end{align*}%
+which, assuming function extensionality, is inhabited.  So $(g,
+\alpha, \beta)$ is a quasi-inverse to $f$, giving the universal property.
+*)
+
+Definition forward {A B X : Type} (h : (A+B -> X)) : (A->X) * (B->X) :=
+  (h o inl, h o inr).
+
+Definition backward {A B X : Type} (h : (A->X) * (B->X)) : A+B -> X :=
+  fun x => match x with
+             | inl a => (fst h) a
+             | inr b => (snd h) b
+           end.
+
+Lemma alpha2_9 {A B X: Type} : forall (h : (A -> X) * (B -> X)), 
+  forward (backward h) = h.
+Proof.
+  unfold forward, backward. destruct h as (x, y). reflexivity.
+Qed.
+
+Lemma beta2_9 `{Funext} {A B X: Type} : forall (h : A+B -> X), 
+  backward (forward h) = h.
+Proof.
+  intros. apply H. unfold pointwise_paths. intros. destruct x; reflexivity.
+Qed.
+
+Theorem ex2_9 : forall A B X, IsEquiv(@forward A B X).
+Proof.
+  intros. apply (isequiv_adjointify forward backward alpha2_9 beta2_9).
+Qed.
+          
      
 (** %\exer{2.10}{104}% 
 Prove that $\Sigma$-types are ``associative'', in that for any $A:\UU$ and
@@ -493,6 +556,10 @@ is called a (homotopy) pullback square if for any $X$, the induced map
 \]%
 is an equivalence.  Prove that the pullback $P \defeq A \times_{C} B$ defined
 in 2.15.11 is the corner of a pullback square.
+*)
+
+(** %\soln%
+To show that $P$ is the corner of a pullback square, we need to produce 
 *)
 
 (** %\exer{2.12}{104}% 
