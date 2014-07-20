@@ -2,6 +2,7 @@
 Require Import HoTT.
 (* end hide *)
 
+(** printing <~> %\ensuremath{\eqvsym}% *)
 (** * Homotopy type theory *)
 
 
@@ -354,12 +355,13 @@ this concatenation is an equivalence.
 *)
 
 
-Definition eq2_3_6 {A B : Type} {x y : A} (f : A -> B) (p : x = y) :
-  (f x = f y) -> (@transport _ (fun _ => B) _ _ p (f x) = f y) :=
-  fun q => (transport_const p (f x)) @ q.
-Definition eq2_3_7 {A B : Type} {x y : A} (f : A -> B) (p : x = y) :
-  (@transport _ (fun _ => B) _ _ p (f x) = f y) -> (f x = f y) :=
-  fun q => (transport_const p (f x))^ @ q.
+Definition eq2_3_6 {A B : Type} {x y : A} (f : A -> B) (p : x = y) (q : f x = f y) : 
+    (@transport _ (fun _ => B) _ _ p (f x) = f y) := 
+    (transport_const p (f x)) @ q.
+Definition eq2_3_7 {A B : Type} {x y : A} (f : A -> B) (p : x = y)
+  (q : @transport _ (fun _ => B) _ _ p (f x) = f y) : 
+  (f x = f y) :=
+  (transport_const p (f x))^ @ q.
 
 Definition alpha2_5 : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
   (eq2_3_6 f p (eq2_3_7 f p q)) = q. 
@@ -430,7 +432,7 @@ Proof.
   apply (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) (alpha2_6 p) (beta2_6 p)).
 Qed.
 
-(** %\exer{2.7}{104}% 
+(** %\exerdone{2.7}{104}% 
 State and prove a generalization of Theorem 2.6.5 from cartesian products to
 $\Sigma$-types.
 *)
@@ -439,24 +441,151 @@ $\Sigma$-types.
 Suppose that we have types $A$ and $A'$ and type families $B:A\to\UU$ and
 $B':A'\to\UU$, along with a function $g:A \to A'$ and a dependent function
 $h:\prd{x:A} B(x) \to B'(f(x))$.  We can then define a function $f :
-(\sm{x:A}B(x)) \to (\sm{x:A'}B'(x))$ by $f(x) \defeq (g(\fst x), h(\fst x, \snd x))$.
+(\sm{x:A}B(x)) \to (\sm{x:A'}B'(x))$ by $f(x) \defeq (g(\fst x), h(\fst x, \snd
+x))$.  
+Let $x, y : \sm{a:A}B(a)$, and 
+suppose that $p : \fst x = \fst y$ and that $q : p_{*}(\snd x) =
+\snd y$.  The left-side of Theorem 2.6.5 generalizes directly to
+$f(\pair^{=}(p, q))$, where now $\pair^{=}$ is given by the backward direction
+of Theorem 2.7.2.  
+    
+The right hand side is trickier.  It ought to represent the application of $g$
+and $h$, followed by the application of $\pair^{=}$, as Theorem 2.6.5 does.
+Applying $g$ produces the first argument to $\pair^{=}$, $\apfunc{g}(p) \equiv
+g(p)$.  For $h$, we'll need to construct the right object.  We need one of type
+%\[
+  (g(p))_{*}(h(\fst x, \snd x)) = h(\fst y, \snd y)
+\]%
+Which we'll construct by induction.  It suffices to consider the case where $x
+\equiv (a, b)$, $y \equiv (a', b')$, $p \equiv \refl{a}$, and $q \equiv
+\refl{b}$.  Then we need an object of type
+%\[
+  \left[(g(\refl{a}))_{*}(h(a, b)) = h(a', b')\right]
+  \equiv
+  \left[h(a, b) = h(a', b')\right]
+\]%
+which we can easily construct by applying $h$ to $p$ and $q$.  So by induction, we have an object
+%\[
+  T(h, p, q) : 
+  (g(p))_{*}(h(\fst x, \snd x)) = h(\fst y, \snd y)
+\]%
+such that $T(h, \refl{a}, \refl{b}) \equiv \refl{h(a, b)}$.
 
-Suppose that $x, y : \sm{a:A}B(a)$, $p : \fst x = \fst y$, and $q : p_{*}(\snd
-x) = \snd y$.  Part of the statement of Theorem 2.6.5 is easily generalized: we
-are looking to show that
+Now we can state the generalization.  We show that
 %\[
-  f(\pair^{=}(p, q)) =_{f(x) = f(y)} \pair^{=}(g(p), -)
+  f(\pair^{=}(p, q)) = \pair^{=}(g(p), T(h, p, q))
 \]%
-for some object
+by induction.  So let $x \equiv (a, b)$, $y \equiv (a', b')$, $p
+\equiv \refl{a}$, and $q \equiv \refl{b}$.  Then we need to show that
 %\[
-  - : (g(p))_{*}(h(\fst x, \snd x)) =_{B'(g(\fst x))} h(\fst y, \snd y).
+  \refl{f((a, b))} = \refl{(g(a), h(a, b))}
 \]%
-The difficulty is finding this object.
+But from the definition of $f$, this is a judgemental equality.  So we're done.
+
+Coq takes of a bit of coaxing to get the types right.
 *)
 
-(** %\exer{2.8}{104}% 
+Definition T {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+           {g : A -> A'} (h : forall a, B a -> B' (g a))
+           {x y : {a:A & B a}}
+           (p : x.1 = y.1) (q : p # x.2 = y.2)
+  : (ap g p) # (h x.1 x.2) = h y.1 y.2.
+  transitivity (h y.1 (p # x.2));
+  destruct x; destruct y; simpl in *; induction p; [|rewrite q]; reflexivity.
+Defined.
+
+Theorem ex2_7 : forall {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+                       (g : A -> A') (h : forall a, B a -> B' (g a))
+                       (x y : {a:A & B a})
+                       (p : x.1 = y.1) (q : p # x.2 = y.2),
+let f z := (g z.1; h z.1 z.2) in
+  ap f (path_sigma B x y p q) = path_sigma B' (f x) (f y) (ap g p) (T h p q). 
+intros. unfold f, T. 
+destruct x. destruct y. simpl in *. induction p.  rewrite <- q. reflexivity.
+Defined.
+
+
+
+(** %\exerdone{2.8}{104}% 
 State and prove an analogue of Theorem 2.6.5 for coproducts.
 *)
+
+(** %\soln%
+Let $A, A', B, B' : \UU$, and let $g: A \to A'$ and $h: B \to B'$.  These allow
+us to construct a function $f : A + B \to A' + B'$ given by
+%\[
+  f(\inl(a)) \defeq \inl'(g(a))
+  \qquad\qquad
+  f(\inr(b)) \defeq \inr'(h(b))
+\]%
+
+Now, we want to show that $\apfunc{f}$ is functorial, which requires something
+corresponding to $\pair^{=}$.  The type of this function will vary depending on
+which two $x, y : A+B$ we consider. Suppose that $p : x = y$; there are four
+cases:
+
+- $x = \inl(a_{1})$ and $y = \inl(a_{2})$.  Then $\pair^{=}$ is given by
+  $\apfunc{\inl}$, and we must show that
+  %\[
+    f(\inl(p)) = \inl'(g(p))
+  \]%
+  which is easy with path induction; it suffices to consider $p \equiv
+  \refl{a}$, which reduces our equality to
+  %\[
+    \refl{f(\inl(a))} = \refl{\inl'(g(a))}
+  \]%
+  and this is a judgemental equality, given the definition of $f$.
+
+- $x = \inl(a)$ and $y = \inr(b)$.  Then by 2.12.3 $(x = y) \eqvsym \emptyt$,
+  and $p$ allows us to construct anything we like.
+
+- $x = \inr(b)$ and $y = \inl(a)$ proceeds just as in the previous case.
+
+- $x = \inr(b)$ and $y = \inr(b)$ proceeds just as in the first case.
+
+Since these are all the cases, we've proven the analogue to Theorem 2.6.5 for
+coproducts (though it was stated rather implicitly).  I'll have to state it
+more explicitly in Coq, though the proof is verbatim the same as the one by
+hand.
+*)
+
+Definition code {A B : Type} (x : A + B) (y : A + B) :=
+  match x with
+  | inl a => match y with 
+             | inl a' => (a = a')
+             | inr b => Empty
+             end
+  | inr b => match y with
+             | inl a => Empty
+             | inr b' => (b = b')
+             end
+  end.
+                     
+Theorem ex2_8 : forall (A A' B B' : Type)
+                       (g : A -> A') (h : B -> B')
+                       (x y : A+B) (p : code x y),
+  let f z := match z with
+             | inl a => inl (g a)
+             | inr b => inr (h b)
+             end 
+  in 
+  ap f (path_sum x y p) = path_sum (f x) (f y) (
+        (match x return code x y -> code (f x) (f y) with
+         | inl a => match y return code (inl a) y -> code (inl (g a)) (f y) with
+                    | inl a' => ap g
+                    | inr b => idmap
+                    end
+         | inr b => match y return code (inr b) y -> code (inr (h b)) (f y) with
+                    | inl a => idmap
+                    | inr b' => ap h
+                    end
+         end) p).
+Proof.
+  intros. destruct x; destruct y; simpl in *; 
+    try (path_induction; reflexivity);
+    try (destruct p).
+Qed.
+
      
 (** %\exer{2.9}{104}% 
 Prove that coproducts have the expected universal property,
@@ -529,7 +658,7 @@ Proof.
 Qed.
           
      
-(** %\exer{2.10}{104}% 
+(** %\exerdone{2.10}{104}% 
 Prove that $\Sigma$-types are ``associative'', in that for any $A:\UU$ and
 families $B : A \to \UU$ and $C : (\sm{x:A} B(x)) \to \UU$, we have
 %\[
@@ -538,6 +667,56 @@ families $B : A \to \UU$ and $C : (\sm{x:A} B(x)) \to \UU$, we have
   \left(\sm{p:\sm{x:A}B(x)}C(p)\right)
 \]%
 *)
+
+(** %\soln%
+The map
+%\[
+  f(a, b, c) \defeq ((a, b), c)
+\]%
+where $a:A$, $b:B(a)$, and $c : C((a, b))$ is an equivalence.  For a
+quasi-inverse, we have
+%\[
+  g(p, c) \defeq (\fst p, \snd p, c)
+\]%
+As proof, by induction we can consider the case where $p \equiv (a, b)$.  Then
+we have
+%\[
+  f(g((a, b), c))
+  =
+  f(a, b, c)
+  =
+  ((a, b), c)
+\]%
+and
+%\[
+  g(f(a, b, c))
+  =
+  g((a, b), c)
+  =
+  (a, b, c)
+\]%
+So $f$ is an equivalence.
+*)
+
+Definition ex2_10_f {A : Type} {B : A -> Type} {C : {x:A & B x} -> Type} : 
+  {x:A & {y : B x & C (x; y)}} -> {p : {x:A & B x} & C p}.
+  intro abc. destruct abc as [a [b c]]. apply ((a; b); c).
+Defined.
+
+Definition ex2_10_g {A : Type} {B : A -> Type} {C : {x:A & B x} -> Type} : 
+  {p : {x:A & B x} & C p} -> {x:A & {y : B x & C (x; y)}}.
+  intro abc. destruct abc as [[a b] c].
+  exists a; exists b; apply c.
+Defined.
+
+Theorem ex2_10 : forall A B C, IsEquiv(@ex2_10_f A B C).
+Proof.
+  intros. 
+  refine (isequiv_adjointify ex2_10_f ex2_10_g _ _);
+  unfold ex2_10_f, ex2_10_g; intro abc; 
+  [ destruct abc as [[a b] c] | destruct abc as [a [b c]]];
+  reflexivity.
+Qed.
 
 (** %\exer{2.11}{104}% 
 A (homotopy) commutative square
@@ -581,10 +760,17 @@ The good ol' pullback lemma.
 Show that $(\bool \eqvsym \bool) \eqvsym \bool$.
 *)
 
-(** %\exer{2.14}{104}% 
+(** %\exerdone{2.14}{104}% 
 Suppose we add to type theory the equality reflection rule which says that if
 there is an element $p : x = y$, then in fact $x \equiv y$.  Prove that for any
 $p : x = x$ we have $p \equiv \refl{x}$.
+*)
+
+(** %\soln%
+Suppose that $p : x = x$; we show that $p = \refl{x}$, by path induction.  It
+suffices to consider the case where $p \equiv \refl{x}$, in which case we have
+$\refl{\refl{x}} : \refl{x} = \refl{x}$.  Thus $p = \refl{x}$ is inhabited, so
+by the equality reflection rule, $p \equiv \refl{x}$.
 *)
 
 (** %\exer{2.15}{105}%
@@ -607,6 +793,19 @@ sufficient to imply the whole function extensionality axiom (that $\happly$ is
 an equivalence).
 *)
 
+(** %\soln%
+Suppose that we have such an element, and let $A:\UU$, $B:A \to \UU$, and $f, g
+    : \prd{x:A}B(x)$.  We need to construct a quasi-inverse for
+the function
+%\[
+  \happly : (f = g) \to (f \sim g)
+\]%
+and this is given by $\funext$.  Suppose that $p : f = g$; then we can show
+$\funext(\happly(p)) = p$.  By induction, we can assume that $p$ is $\refl{f}$.
+Then by definition,
+$\happly(\refl{f}) \equiv \lam{x}\refl{f(x)} : \prd{x:A} f(x) = f(x)$. 
+*)
+
 (** %\exer{2.17}{105}%
 %\begin{enumerate}
   \item Show that if $A \eqvsym A'$ and $B \eqvsym B'$, then $(A \times B)
@@ -617,3 +816,47 @@ an equivalence).
   $\Sigma$, $\to$, $\Pi$, and $+$.
 \end{enumerate}%
 *)
+
+(** %\soln%
+(i)
+Suppose that $g : A \eqvsym A'$ and $h : B \eqvsym B'$.  By the univalence
+axiom, this means that $A = A'$ and $B = B'$.  But then $A \times B = A' \times
+B'$, so again by univalence $(A \times B) \eqvsym (A' \times B')$. *)
+
+Theorem ex2_17_i `{Univalence}: forall (A A' B B' : Type),
+  A <~> A' -> B <~> B' -> (A * B) <~> (A' * B').
+Proof.
+  intros A A' B B' HA HB. 
+  apply equiv_path_universe in HA.
+  apply equiv_path_universe in HB.
+  apply equiv_path_universe.
+  rewrite HA, HB. reflexivity.
+Defined.
+
+(**
+%\noindent%
+(ii)  To prove this without univalence
+
+%\noindent%
+(iii)
+*)
+
+Theorem ex2_17_maps `{Univalence}: forall (A A' B B' : Type),
+  A <~> A' -> B <~> B' -> (A -> B) <~> (A' -> B').
+Proof.
+  intros A A' B B' HA HB.
+  apply equiv_path_universe in HA.
+  apply equiv_path_universe in HB.
+  apply equiv_path_universe.
+  rewrite HA, HB. reflexivity.
+Qed.
+
+Theorem ex2_17_sum `{Univalence}: forall (A A' B B' : Type), 
+  A <~> A' -> B <~> B' -> (A + B) <~> (A' + B').
+Proof.
+  intros A A' B B' HA HB.
+  apply equiv_path_universe in HA.
+  apply equiv_path_universe in HB.
+  apply equiv_path_universe.
+  rewrite HA, HB. reflexivity.
+Qed.
