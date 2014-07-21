@@ -1,7 +1,6 @@
 (* begin hide *)
 Require Import HoTT.
 (* end hide *)
-
 (** printing <~> %\ensuremath{\eqvsym}% *)
 (** * Homotopy type theory *)
 
@@ -587,7 +586,7 @@ Proof.
 Qed.
 
      
-(** %\exer{2.9}{104}% 
+(** %\exerdone{2.9}{104}% 
 Prove that coproducts have the expected universal property,
 %\[
   (A + B \to X) \eqvsym (A \to X) \times (B \to X).
@@ -596,7 +595,7 @@ Can you generalize this to an equivalence involving dependent functions?
 *)
 
 (** %\soln%
-To define the forward map, let $h : A+B \to X$ and define $f : (A+B\to X) \to
+To define the ex2_9_f map, let $h : A+B \to X$ and define $f : (A+B\to X) \to
 (A\to X) \times (B \to X)$ by
 %\[
   f(h) \defeq (\lam{a}h(\inl(a)), \lam{b}h(\inr(b)))
@@ -631,31 +630,57 @@ which, assuming function extensionality, is inhabited.  So $(g,
 \alpha, \beta)$ is a quasi-inverse to $f$, giving the universal property.
 *)
 
-Definition forward {A B X : Type} (h : (A+B -> X)) : (A->X) * (B->X) :=
+Definition ex2_9_f {A B X : Type} (h : (A+B -> X)) : (A->X) * (B->X) :=
   (h o inl, h o inr).
 
-Definition backward {A B X : Type} (h : (A->X) * (B->X)) : A+B -> X :=
+Definition ex2_9_g {A B X : Type} (h : (A->X) * (B->X)) : A+B -> X :=
   fun x => match x with
              | inl a => (fst h) a
              | inr b => (snd h) b
            end.
 
 Lemma alpha2_9 {A B X: Type} : forall (h : (A -> X) * (B -> X)), 
-  forward (backward h) = h.
+  ex2_9_f (ex2_9_g h) = h.
 Proof.
-  unfold forward, backward. destruct h as (x, y). reflexivity.
+  unfold ex2_9_f, ex2_9_g. destruct h as (x, y). reflexivity.
 Qed.
 
 Lemma beta2_9 `{Funext} {A B X: Type} : forall (h : A+B -> X), 
-  backward (forward h) = h.
+  ex2_9_g (ex2_9_f h) = h.
 Proof.
   intros. apply H. unfold pointwise_paths. intros. destruct x; reflexivity.
 Qed.
 
-Theorem ex2_9 : forall A B X, IsEquiv(@forward A B X).
+Theorem ex2_9 : forall A B X, (A+B->X) <~> (A->X) * (B->X).
 Proof.
-  intros. apply (isequiv_adjointify forward backward alpha2_9 beta2_9).
+  intros. apply (equiv_adjointify ex2_9_f ex2_9_g alpha2_9 beta2_9).
 Qed.
+
+(** All of this generalizes directly to the case of dependent functions. *)
+
+
+Definition ex2_9_f' {A B : Type} {C: A+B -> Type} (h : forall (p:A+B), C p) 
+  : (forall a:A, C(inl a)) * (forall b:B, C(inr b)) :=
+(fun _ => h (inl _), fun _ => h (inr _)).
+
+Definition ex2_9_g' {A B : Type} {C: A+B -> Type} 
+           (h : (forall a:A, C(inl a)) * (forall b:B, C(inr b))) : 
+  forall (p:A+B), C p :=
+ fun _ => match _ as s return (C s) with
+            | inl a => fst h a
+            | inr b => snd h b
+          end.
+
+Theorem ex2_9' : forall A B C, 
+  (forall (p:A+B), C(p)) <~> (forall a:A, C(inl a)) * (forall b:B, C(inr b)).
+Proof.
+  intros. 
+  refine (equiv_adjointify ex2_9_f' ex2_9_g' _ _); unfold ex2_9_f', ex2_9_g'.
+  intro. destruct x. apply path_prod; simpl;
+  apply path_forall; unfold pointwise_paths; reflexivity.
+  intro. apply path_forall; intro p. destruct p; reflexivity.
+Qed.
+
           
      
 (** %\exerdone{2.10}{104}% 
@@ -717,8 +742,11 @@ Proof.
   [ destruct abc as [[a b] c] | destruct abc as [a [b c]]];
   reflexivity.
 Qed.
+(* begin hide *)
+Require Import HoTT.
+(* end hide *)
 
-(** %\exer{2.11}{104}% 
+(** %\exerdone{2.11}{104}% 
 A (homotopy) commutative square
 %\[
   \xymatrix{
@@ -738,8 +766,115 @@ in 2.15.11 is the corner of a pullback square.
 *)
 
 (** %\soln%
-To show that $P$ is the corner of a pullback square, we need to produce 
+To show that $P$ is the corner of a pullback square, we need to produce the
+three other corners and show that it is a pullback.  Given $f : A \to C$ and $G
+: B \to C$, we define
+%\[
+  P \defeq \sm{a:A}\sm{b:B} (f(a) = g(b))
+\]%
+This is the corner of the following pullback square:
+%\[
+  \xymatrix @R=.5in @C=.5in {
+  P \ar[r]^{\fst \circ \snd} \ar[d]_{\fst} & B \ar[d]^{g} \\
+  A \ar[r]_{f} & C
+  }
+\]%
+To show that it's commutative, it suffices to consider an element $(a, b, c)$
+of $P$.  We then have
+%\[
+  g(\fst(\snd(a, b, c))) = g(b) = f(a) = f(\fst(a, b, c))
+\]%
+making the square commutative.
+
+To show that the square is a pullback square, suppose that $h : X \to P$.  Then
+we obtain maps $\fst \circ h : X \to A$ and $\fst \circ \snd \circ h : X \to
+B$, which in turn give the functions
+%\[
+  f \circ \fst \circ h : X \to C 
+  \qquad \qquad 
+  g \circ \fst \circ \snd \circ h : X \to C
+\]%
+If we can show that these two maps are equal, then we've constructed the
+forward direction of the equivalence.  For this we just need to consider any
+element $x:X$.  Then $h(x) : P$, and by induction we can assume that $h(x) =
+(a, b, c)$.  But in this case the goal reduces to $f(a) = g(b)$, and this is
+proven by $c$.
+
+To show that this is an equivalence, we need to exhibit a quasi-inverse.  So
+suppose that $h : (X \to A) \times_{(X\to C)} (X \to B)$.  By induction, we can
+assume that $h$ is $(h_{A}, h_{B}, p)$, where $p : f \circ h_{A} = g \circ
+h_{B}$.  We need to construct a map $h' : X \to P$, which we can do as follows:
+%\[
+  h(x) \defeq (h_{A}(x), h_{B}(x), q)
+\]%
+where $q$ is a proof that $f(h_{A}(x)) = g(h_{B}(x))$.  But this is just the
+result of using $\happly$ on $p$, so we've constructed our map.
+
+To show that this is really a quasi-inverse, let $h:X \to P$, and run the first
+construction.  This gives an element $(\fst \circ h, \fst \circ \snd \circ h,
+p)$, where $p : f \circ \fst \circ h = g \circ \fst \circ \snd \circ h$.  By
+induction, we may suppose that $p$ is a reflexivity.  Running the backwards
+construction, we define
+%\[
+  h'(x) \equiv (\fst \circ h, \fst \circ \snd \circ h, \happly(\refl{}, x))
+\]%
+By function extensionality, $h' = h$.  For the other direction, it suffices to
+consider an element $(h_{A}, h_{B}, p)$ with $p : f \circ h_{A} = g \circ
+h_{B}$, which we may assume is a reflexivity.  Then the second construction
+gives a function
+%\[
+  h(x) \equiv (h_{A}(x), h_{B}(x), \happly(q)(x))
+\]%
+and running the first construction on this gives
+%\[
+  (h_{A}(x), h_{B}(x), p)
+\]%
+thus establishing the equivalence.
+
+For the Coq solution, I needed some help from %\href{https://github.com/ezyang/HoTT-coqex/blob/master/ch2.v}{ezyang's
+solutions}%, since I
+was struggling with the second part of the proof.
 *)
+(* begin hide *)
+Section Exercise2_11.
+Variables (A B C X : Type) (f : A -> C) (g : B -> C).
+(* end hide *)
+
+
+Definition P := pullback f g.
+Definition funpull := pullback (@compose X _ _ f) (@compose X _ _ g).
+
+Definition ex2_11_f : (X -> P) -> funpull.
+  intro h. unfold funpull. 
+  refine (fun x:X => (h x).1; _).
+  refine (fun x:X => (h x).2.1; _).
+  apply path_forall; intro.
+  unfold compose. apply (h x).2.2.
+Defined.
+
+Definition ex2_11_g : funpull -> (X -> P).
+  intros z x.
+  refine (z.1 x; (z.2.1 x; _)).
+  exact (apD10 z.2.2 x).
+Defined.
+
+Theorem ex2_11 : (X -> P) <~> funpull.
+Proof.
+  refine (equiv_adjointify ex2_11_f ex2_11_g _ _).
+  
+  intro h. destruct h as [hA [hB p]].
+  unfold ex2_11_f, ex2_11_g. simpl. f_ap. f_ap.
+  apply eta_path_forall.
+
+  intro h. apply path_forall; intro. simpl.
+  repeat (apply path_sigma_uncurried; exists 1; simpl).
+  change (h x).2.2 with ((fun x' => (h x').2.2) x); f_ap.
+  apply eisretr.
+Qed.
+
+(* begin hide *)
+End Exercise2_11.
+(* end hide *)
 
 (** %\exer{2.12}{104}% 
 Suppose given two commutative squares
@@ -753,12 +888,94 @@ pullback square.
 *)
 
 (** %\soln%
-The good ol' pullback lemma.
+The good ol' pullback lemma.  Suppose we have such a commutative diagram, and
+that the square on the right is a pullback, or
+%\[
+    (X \to C) \eqvsym (X \to E) \times_{(X\to F)} (X \to D)
+\]%  
+For the forward direction, suppose
+that the left-hand square is also a pullback, so that
+%\[
+  (X \to A) \eqvsym (X \to C) \times_{(X \to D)} (X \to B)
+\]%
+We need to show that the full
+square is a pullback; i.e. that
+%\[
+  (X \to A) \eqvsym (X \to E) \times_{(X\to F)} (X \to B)
+\]%
+which we'll do by showing that
+%\[
+  (X \to C) \times_{(X \to D)} (X \to B)
+  \eqvsym (X \to E) \times_{(X\to F)} (X \to B)
+\]%
+and then composing.  To build this equivalence, it suffices by induction to
+consider an element of the form $(f, g, p)$, where $f:X \to C$, $g : X \to B$,
+and $p : cd \circ f = bd \circ g$, where the functions with two-letter names
+denote the obvious arrows in the diagram.  We can then obtain an element $(ce
+\circ f, g, q)$ on the right hand side, where $q : ef \circ ce \circ f = df
+\circ bd \circ g$, by using $p$ and the equality $ef \circ ce = df \circ cd$
+arising from the right square.
+
+To show that this is an equivalence, suppose that $(f', g', p)$ is an element
+of the codomain.  Then $(f', bd \circ g, p')$ is an element of the right side
+of the equivalence making the right-hand square a pullback, so we obtain an
+arrow $h : X \to A$ by transporting along the equivalence.  Then $(ac \circ h,
+g, p'')$ is an element of the left-hand side of our purported equivalence, and
+we just need to show that these procedures are homotopic to the identity.
+
+Suppose we have $f:X\to C$, $g : X \to B$, and that $cd \circ f = bd \circ g$.
+Then $ce \circ f : X \to E$ is such that $ef \circ ce \circ f = df \circ bd
+\circ g$.  Running the second construction, the other way, we obtain an arrow
+$h:X \to A$ such that $ab \circ h = g$ and $ce \circ ac \circ h = ce \circ f$,
+and because the left square is a pullback, $ac \circ h = f$.
+We then need to show that $bd \circ g = ac \circ h$, which is immediate.
+
+Supposing we start instead with an element $(f', g', p')$ of the codomain, we
+obtain 
 *)
+
 
 (** %\exer{2.13}{104}% 
 Show that $(\bool \eqvsym \bool) \eqvsym \bool$.
 *)
+
+(** %\soln%
+The result essentially says that $\bool$ is equivalent to itself in two ways:
+the identity provides one equivalence, and negation gives the other.  So we
+first define these.  $\idfunc{\bool}$ is its own quasi-inverse; we have
+$\idfunc{\bool} \circ \idfunc{\bool} \equiv \idfunc{\bool}$, so $\idfunc{\bool}
+\sim \idfunc{\bool}$ easily.  $\lnot$ is also its own quasi-inverse, since for
+any $x$, $\lnot\lnot x = x$.  Now we need to show that these are the only two
+elements of $\bool \eqvsym \bool$.  That is, we want to show that
+%\[
+\prd{x:\sm{f:\bool\to\bool}\isequiv(f)} (f = (\idfunc{\bool}, q)) + (f = (\lnot,
+q'))
+\]%
+where $q$ and $q'$ are the appropriate proofs of equivalence.  So suppose that
+$x : (\bool \eqvsym \bool)$; by induction, it suffices to consider the case
+where $x$ is $(f, p)$, with $f:\bool \to \bool$ and $p:\isequiv(f)$.
+*)
+
+Lemma id_isequiv : Bool <~> Bool.
+Proof.
+  refine (equiv_adjointify idmap idmap _ _).
+  intro; reflexivity.
+  intro; reflexivity.
+Defined.
+
+Lemma negb_isequiv : Bool <~> Bool.
+Proof.
+  refine (equiv_adjointify negb negb _ _);
+  intro; destruct x; reflexivity.
+Defined.
+
+Definition ex2_13_g : Bool -> (Bool <~> Bool).
+  intros. destruct H.
+  refine (equiv_adjointify idmap idmap _ _); intro; reflexivity.
+  refine (equiv_adjointify negb negb _ _); intro; destruct x; reflexivity.
+Defined.
+
+
 
 (** %\exerdone{2.14}{104}% 
 Suppose we add to type theory the equality reflection rule which says that if
