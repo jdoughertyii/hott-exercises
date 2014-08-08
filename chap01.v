@@ -1034,7 +1034,7 @@ so
 \]%
 thus
 %\[
-(\contr_{(x,p)})(c) : C(x,p)
+(\contr_{(x,p)})_{*}(c) : C(x,p)
 \]%
 or, abstracting out the $x$ and $p$,
 %\[
@@ -1066,10 +1066,38 @@ We also have
   c
 \end{align*}%
 So we have derived based path induction.
-
-
 *)
 
+Definition ind {A} : forall (C : forall (x y : A), x = y -> Type),
+                       (forall (x:A), C x x 1) -> 
+                       forall (x y : A) (p : x = y), C x y p.
+  path_induction. apply X.
+Defined.
+
+Definition Lemma231 {A} (P : A -> Type) (x y : A) (p : x = y) : P(x) -> P(y).
+  intro. rewrite <- p. apply X.
+Defined.
+
+Definition isContr (A : Type) := {a:A & forall (x:A), a = x}.
+
+Definition Lemma3118 {A} : forall (a:A), isContr {x:A & a=x}.
+  intro a. unfold isContr. exists (a; 1).
+  intro x. destruct x as [x p]. path_induction. reflexivity.
+Defined.
+
+Definition my_contr {A} (p:isContr A) := p.2.
+
+Definition ind' {A} : forall (a : A) (C : forall (x:A), a = x -> Type),
+                        C a 1 -> forall (x:A) (p:a=x), C x p.
+  intros.
+  assert (isContr {x:A & a=x}) as H. apply Lemma3118.
+  change (C x p) with ((fun c => C c.1 c.2) (x; p)).
+  apply Lemma231 with (x0:=(a; 1)) (y:=(x; p)).
+  transitivity H.1. destruct H as [[a' p'] z]. simpl. 
+  rewrite <- p'. reflexivity.
+  destruct H as [[a' p'] z]. simpl. rewrite <- p'. rewrite <- p. reflexivity.
+  apply X.
+Defined.
 
 (** %\exerdone{1.8}{56}%  
 Define multiplication and exponentiation using
