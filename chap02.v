@@ -3,6 +3,7 @@ Require Import HoTT.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
+(** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Homotopy type theory *)
 
 
@@ -1032,6 +1033,8 @@ At this point we have shown that
 \]%
 Since equivalence is an equivalence relation, this means that $g$ is an
 equivalence iff $h$ is an equivalence, which is what was to be proved.
+
+NB: using [rewrite] in a transparent proof is a bad idea.
 *)
 
 Lemma compose_assoc {A B C D} : forall (f: C -> D) (g: B -> C) (h: A -> B),
@@ -1538,20 +1541,40 @@ End Exercise2_16.
 (i)
 Suppose that $g : A \eqvsym A'$ and $h : B \eqvsym B'$.  By the univalence
 axiom, this means that $A = A'$ and $B = B'$.  But then $A \times B = A' \times
-B'$, so again by univalence $(A \times B) \eqvsym (A' \times B')$. *)
+B'$, so again by univalence $(A \times B) \eqvsym (A' \times B')$. 
+*)
 
 Theorem ex2_17_i `{Univalence}: forall (A A' B B' : Type),
   A <~> A' -> B <~> B' -> (A * B) <~> (A' * B').
 Proof.
-  intros A A' B B' HA HB. 
-  apply equiv_path_universe in HA.
-  apply equiv_path_universe in HB.
-  rewrite HA, HB. apply equiv_idmap.
+  intros A A' B B' f g. 
+  apply equiv_path_universe in f.
+  apply equiv_path_universe in g.
+  apply equiv_path_universe.
+  apply (transport (fun x:Type => A * B = A' * x) g).
+  apply (transport (fun x:Type => A * B = x * B) f).
+  reflexivity.
 Defined.
 
 (**
 %\noindent%
-(ii)  To prove this without univalence
+(ii) To prove this without univalence, we construct an explicit
+equivalence.  Suppose that $f : A \to A'$ and $g : B \to B'$ are both equivalences, and define $h : A \times B \to A' \times B'$ by
+%\[
+  h(a, b) \defeq (f(a), g(b))
+\]%
+with the appropriate inverse
+%\[
+  h^{-1}(a', b') \defeq (f^{-1}(a'), g^{-1}(b'))
+\]%
+Clearly these are quasi-inverses, since
+%\[
+  h(h^{-1}(a', b')) 
+  \equiv h(f^{-1}(a'), g^{-1}(b'))
+  \equiv (f(f^{-1}(a')), g(g^{-1}(b')))
+  \equiv (a', b')
+\]%
+and vice versa.
 *)
 
 Theorem ex2_17_i' : forall (A A' B B' : Type),
@@ -1565,28 +1588,101 @@ Proof.
     try (apply eisretr); try (apply eissect).
 Defined.
 
-Theorem equal_proofs2_17 `{Univalence} : ex2_17_i = ex2_17_i'.
+(** %\noindent%
+Proving that the two proofs are equal seems real hard.  I probably won't finish
+it.
+*)
+
+Theorem equal_proofs `{Univalence} : ex2_17_i = ex2_17_i'.
 Proof.
-  apply path_forall; intro A.
-  apply path_forall; intro A'.
-  apply path_forall; intro B.
-  apply path_forall; intro B'.
-  apply path_forall; intro f.
-  apply path_forall; intro g.
-  assert (A = A'). apply path_universe_uncurried. apply f.
-  assert (B = B'). apply path_universe_uncurried. apply g.
-  unfold ex2_17_i, ex2_17_i'. simpl. unfold compose. simpl.
-  induction X. induction X0. simpl.
+  unfold ex2_17_i, ex2_17_i'. simpl. unfold compose.
+  apply path_forall; intro A.  apply path_forall; intro A'.
+  apply path_forall; intro B.  apply path_forall; intro B'.
+  apply path_forall; intro f.  apply path_forall; intro g.
   
+  (* equiv_fun *)
+  assert (transport idmap
+                  (transport (fun x : Type => A * B = A' * x)
+                     (path_universe_uncurried g)
+                     (transport (fun x : Type => A * B = x * B)
+                        (path_universe_uncurried f) 1))
+          =
+         fun z : A * B => (f (fst z), g (snd z))) as H1.
+  apply path_forall; intro z. 
+  repeat (rewrite trans_paths; hott_simpl).
+  rewrite transport_pp. 
+  rewrite <- transport_idmap_ap.
+  rewrite <- (transport_idmap_ap Type (fun a:Type => a * B) A A' (path_universe_uncurried f) z).
+  rewrite (@transport_prod Type idmap (fun x:Type => B)).
+  rewrite transport_prod. simpl.
+  destruct z; apply path_prod; simpl.
+    rewrite transport_const.
+    assert ((path_universe_uncurried f) = (path_universe (equiv_fun A A' f))).
+    unfold path_universe. destruct f. reflexivity.
+    rewrite X. apply transport_path_universe.
+    rewrite transport_const.
+    assert ((path_universe_uncurried g) = (path_universe (equiv_fun B B' g))).
+    unfold path_universe. destruct g. reflexivity.
+    rewrite X. apply transport_path_universe.
+
+  Admitted.
   
   
   
 
 (** %\noindent%
-(iii)
+(iii)  The proofs of the rest of these are pretty much routine.  With
+univalence, we can just convert everything to equality, rewrite, and then
+convert back to equivalences.  However, since Coq's rewriting approach can be
+fiddly, we sometimes have to write things out explicitly.  Most of the
+conceptual work in this problem is just stating the generalizations, though,
+which are as follows:
+%\begin{description}
+\item[$\Sigma$]  If $f : A \eqvsym A'$ and for all $x:A$ we have $B(x) \eqvsym
+B'(f(x))$, then $(\sm{x:A}B(x)) \eqvsym (\sm{x':A'} B'(x'))$.  Another way to
+state the second assumption is that there is a fiberwise equivalence $g:
+\prd{x:A} B(x) \eqvsym B'(f(x))$.
+
+\item[$\to$] If $A \eqvsym A'$ and $B \eqvsym B'$, then $(A \to B) \eqvsym (A'
+\to B')$.
+
+\item[$\Pi$] If $f : A \eqvsym A'$ and there is a fiberwise equivalence $g :
+\prd{x:A}B(x) \eqvsym B'(f(x))$, then 
+\[
+  \left(\prd{x:A} B(x)\right) \eqvsym \left(\prd{x':A'} B'(f(x'))\right)
+\]
+
+\item[$+$] If $A \eqvsym A'$ and $B \eqvsym B'$, then $A + B \eqvsym A' + B'$.
+\end{description}%
 *)
 
-Theorem ex2_17_sigma `{Univalence} : forall (A A' : Type), 
+Definition sigma_f `{Univalence} {A A' : Type} {B : A -> Type} {B' : A' -> Type} 
+        (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
+  {x : A & B x} -> {x' : A' & B' x'}.
+Proof.
+  intros. exists (f X.1). apply (g X.1 X.2).
+Defined.
+
+Definition sigma_f_inv `{Univalence} {A A' : Type} {B : A -> Type} {B' : A' -> Type} 
+    (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) (X : {x' : A' & B' x'}) 
+    := 
+    (f^-1 X.1; (g (f^-1 X.1))^-1 ((eisretr f X.1)^ # X.2)).
+
+Theorem ex2_17_sigma `{Univalence} (A A' : Type) (B : A -> Type) (B' : A' -> Type) 
+        (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
+  {x : A & B x} <~> {x' : A' & B' x'}.
+Proof.
+  intros. 
+  refine (equiv_adjointify (sigma_f f g) (sigma_f_inv f g) _ _); intro h; 
+  unfold sigma_f, sigma_f_inv; simpl; apply path_sigma_uncurried; simpl.
+  exists (eisretr f h.1). simpl. 
+  rewrite (eisretr (g (f^-1 h.1))). rewrite transport_pV. reflexivity.
+  exists (eissect f h.1).
+  refine ((ap_transport (eissect f h.1) (fun x' => (g x') ^-1)
+                        (transport B' (eisretr f (f h.1)) ^ (g h.1 h.2)))^ @ _).
+  rewrite transport_compose, eisadj, transport_pV. apply eissect.
+Defined.
+  
 
 Theorem ex2_17_maps `{Univalence} : forall (A A' B B' : Type),
   A <~> A' -> B <~> B' -> (A -> B) <~> (A' -> B').
@@ -1596,9 +1692,37 @@ Proof.
   apply equiv_path_universe in HB.
   apply equiv_path_universe.
   rewrite HA, HB. reflexivity.
+Defined.
+
+
+Definition pi_f {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+        (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
+  (forall x:A, B x) -> (forall x':A', B' x').
+  intros.
+  apply ((eisretr f x') # ((g (f^-1 x')) (X (f^-1 x')))).
+Defined.
+  
+Definition pi_f_inv {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+           (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
+  (forall x':A', B' x') -> (forall x:A, B x).
+  intros.
+  apply (g x)^-1. apply (X (f x)).
+Defined.
+
+Theorem ex2_17_pi {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+           (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
+  (forall x:A, B x) <~> (forall x':A', B' x').
+Proof.
+  refine (equiv_adjointify (pi_f f g) (pi_f_inv f g) _ _); intro h;
+  unfold pi_f, pi_f_inv.
+  apply path_forall; intro x'.
+  rewrite (eisretr (g (f^-1 x'))). induction (eisretr f x'). reflexivity.
+  apply path_forall; intro x.
+  apply (ap (g x))^-1. rewrite (eisretr (g x)).
+  rewrite eisadj. rewrite <- transport_compose.
+  induction (eissect f x). reflexivity.
 Qed.
 
-Theorem ex2_17_prd `{Univalence} : forall (A A' : Type),
 
 Theorem ex2_17_sum `{Univalence} : forall (A A' B B' : Type), 
   A <~> A' -> B <~> B' -> (A + B) <~> (A' + B').
