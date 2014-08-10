@@ -1239,12 +1239,6 @@ Proof.
 Qed.                                 
   
   
-    
-  
-    
-  
-
-
 (** %\exerdone{2.14}{104}% 
 Suppose we add to type theory the equality reflection rule which says that if
 there is an element $p : x = y$, then in fact $x \equiv y$.  Prove that for any
@@ -1526,7 +1520,7 @@ Qed.
   
 End Exercise2_16.
 
-(** %\exer{2.17}{105}%
+(** %\exerdone{2.17}{105}%
 %\begin{enumerate}
   \item Show that if $A \eqvsym A'$ and $B \eqvsym B'$, then $(A \times B)
       \eqvsym (A' \times B')$.
@@ -1589,8 +1583,8 @@ Proof.
 Defined.
 
 (** %\noindent%
-Proving that the two proofs are equal seems real hard.  I probably won't finish
-it.
+To prove that the proofs are equivalent, it suffices to show that the
+underlying functions are equal, by Lemma 3.5.1.  
 *)
 
 Theorem equal_proofs `{Univalence} : ex2_17_i = ex2_17_i'.
@@ -1625,8 +1619,11 @@ Proof.
     unfold path_universe. destruct g. reflexivity.
     rewrite X. apply transport_path_universe.
 
-  Admitted.
-  
+ unfold equiv_path, equiv_adjointify. 
+ 
+ (* Lemma 3.5.1 *)
+ apply path_equiv. apply H1.
+Qed.
   
   
 

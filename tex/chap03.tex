@@ -1,0 +1,646 @@
+\begin{coqdoccode}
+\end{coqdoccode}
+\section{Sets and logic}
+
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Notation} \coqdef{chap03.Brck}{Brck}{\coqdocabbreviation{Brck}} \coqdocvar{Q} := (\coqdocinductive{Truncation} \coqdocabbreviation{minus\_one} \coqdocvar{Q}).\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.1}{127}  
+Prove that if $A \eqvsym B$ and $A$ is a set, then so is $B$.
+
+
+ \soln
+Suppose that $A \eqvsym B$ and that $A$ is a set.  Since $A$ is a set, $x =_{A}
+y$ is a mere proposition.  And since $A \eqvsym B$, this means that $x =_{B} y$
+is a mere proposition, hence that $B$ is a set.
+
+
+Alternatively, we can unravel some definitions.  By assumption we have $f : A
+\eqvsym B$ and
+\[
+  g : \isset(A) \equiv \prd{x, y:A}\prd{p,q : x=y} (p = q)
+\]
+Now suppose that $x, y : B$ and $p, q : x = y$.  Then $f^{-1}(x),
+f^{-1}(y) : A$ and $f^{-1}(p), f^{-1}(q) : f^{-1}(x) =
+f^{-1}(y)$, so
+\[
+  f\!\left(g(f^{-1}(x), f^{-1}(y), f^{-1}(p), f^{-1}(q))\right) 
+  : 
+    f(f^{-1}(p)) = f(f^{-1}(q))
+\]
+Since $f^{-1}$ is a quasi-inverse of $f$, we have the homotopy $\alpha :
+\prd{a:A} (f(f^{-1}(a)) = a)$, thus
+\[
+  \alpha_{x}^{-1} \ct 
+  f\!\left(g(f^{-1}(x), f^{-1}(y), f^{-1}(p), f^{-1}(q))\right) 
+  \ct \alpha_{y}
+  :
+  p = q
+\]
+So we've constructed an element of
+\[
+  \isset(B) : \prd{x, y : B} \prd{p, q : x = y} (p = q)
+\]
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 1}{ex3\_1}{\coqdoclemma{ex3\_1}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) `\{\coqdocclass{Univalence}\} : \coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqdocvariable{B}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{f} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_path\_universe} \coqdoctac{in} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvar{g}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 1'}{ex3\_1'}{\coqdoclemma{ex3\_1'}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) : \coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqdocvariable{B}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{f} \coqdocvar{g} \coqdocvar{x} \coqdocvar{y}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocdefinition{ap} \coqdocvar{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{p} \coqdocnotation{=} \coqdocdefinition{ap} \coqdocvar{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{q}). \coqdoctac{apply} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap} (\coqdocdefinition{ap} \coqdocvar{f}\coqdocnotation{\ensuremath{^{-1}}})\coqdocnotation{)\^{}-1} \coqdocvar{X}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.2}{127}
+Prove that if $A$ and $B$ are sets, then so is $A + B$.
+
+
+ \soln
+Suppose that $A$ and $B$ are sets.  Then for all $a, a' : A$ and $b, b': B$, $a
+= a'$ and $b = b'$ are contractible.  Given the characterization of the path
+space of $A+B$ in \symbol{92}S2.12, it must also be contractible.  Hence $A + B$ is a
+set.
+
+
+More explicitly, suppose that $z, z' : A + B$ and $p, q : z = z'$.  By
+induction, there are four cases.
+
+
+
+\begin{itemize}
+\item  $z \equiv \inl(a)$ and $z' \equiv \inl(a')$.  Then $(z = z') \eqvsym (a = a')$, and since $A$ is a set, $a = a'$ is contractible, so $(z = z')$ is as well.
+
+\item  $z \equiv \inl(a)$ and $z' \equiv \inr(b)$.  Then $(z = z') \eqvsym \emptyt$, so $p$ is a contradiction.
+
+\item  $z \equiv \inr(b)$ and $z' \equiv \inl(a)$.  Then $(z = z') \eqvsym \emptyt$, so $p$ is a contradiction.
+
+\item  $z \equiv \inr(b)$ and $z' \equiv \inr(b')$.  Then $(z = z') \eqvsym (b = b')$, and since $B$ is a set, this type is contractible.
+
+\end{itemize}
+So $z = z'$ is contractible, making $A + B$ a set.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 2}{ex3\_2}{\coqdoclemma{ex3\_2}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) : \coqdocabbreviation{IsHSet} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} (\coqdocvariable{A} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocvariable{B}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{f} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{z} \coqdocvar{z'}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_sum} \coqdocvar{z} \coqdocvar{z'}\coqdocnotation{)\^{}-1} \coqdocvar{p} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_sum} \coqdocvar{z} \coqdocvar{z'}\coqdocnotation{)\^{}-1} \coqdocvar{q}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{pose} \coqdocvar{proof} (\coqdocnotation{(}\coqdocdefinition{path\_sum} \coqdocvar{z} \coqdocvar{z'}\coqdocnotation{)\^{}-1} \coqdocvar{p}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{z} \coqdockw{as} [\coqdocvar{a} \ensuremath{|} \coqdocvar{b}], \coqdocvar{z'} \coqdockw{as} [\coqdocvar{a'} \ensuremath{|} \coqdocvar{b'}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvar{f}. \coqdocvar{contradiction}. \coqdocvar{contradiction}. \coqdoctac{apply} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap} \coqdocnotation{(}\coqdocdefinition{path\_sum} \coqdocvar{z} \coqdocvar{z'}\coqdocnotation{)\^{}-1)\^{}-1} \coqdocvar{X}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.3}{127}
+Prove that if $A$ is a set and $B : A \to \UU$ is a type family such that
+$B(x)$ is a set for all $x:A$, then $\sm{x:A}B(x)$ is a set.
+
+
+ \soln
+At this point the pattern in these proofs is relatively obvious: show
+that the path space of the combined types is determined by the path
+spaces of the base types, and then apply the fact that the base types
+are sets.  So here we suppose that $w w' : \sm{x:A} B(x)$, and that $p
+q : (w = w')$.  Now
+\[
+  (w = w') \eqvsym \sm{p : \fst(w) = \fst(w')} p_{*}(\snd(w)) = \snd(w')
+\]
+by Theorem 2.7.2. Since $A$ is a set, $\fst(w) = \fst(w')$ is
+contractible, so $(w = w') \eqvsym ((\refl{\fst(w)})_{*}(\snd(w)) =
+\snd(w')) \equiv (\snd(w) = \snd(w'))$ by Lemma 3.11.9.  And since $B$
+is a set, this too is contractible, making $w = w'$ contractible and
+$\sm{x:A} B(x)$ a set.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 3}{ex3\_3}{\coqdoclemma{ex3\_3}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{B} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) : \coqdoceol
+\coqdocindent{1.00em}
+\coqdocabbreviation{IsHSet} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{x}:\coqdocvariable{A}, \coqdocabbreviation{IsHSet} (\coqdocvariable{B} \coqdocvariable{x})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{x} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{B} \coqdocvar{x}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{f} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{w} \coqdocvar{w'}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_sigma\_uncurried} \coqdocvar{B} \coqdocvar{w} \coqdocvar{w'}\coqdocnotation{)\^{}-1} \coqdocvar{p} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_sigma\_uncurried} \coqdocvar{B} \coqdocvar{w} \coqdocvar{w'}\coqdocnotation{)\^{}-1} \coqdocvar{q}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocvar{p}..\coqdocnotation{1} \coqdocnotation{=} \coqdocvar{q}..\coqdocnotation{1}). \coqdoctac{apply} \coqdocvar{f}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{X}. \coqdoctac{apply} (\coqdocvar{g} \coqdocvar{w'}\coqdocnotation{.1}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap} \coqdocnotation{(}\coqdocdefinition{path\_sigma\_uncurried} \coqdocvar{B} \coqdocvar{w} \coqdocvar{w'}\coqdocnotation{)\^{}-1)\^{}-1} \coqdocvar{X}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.4}{127}
+Show that $A$ is a mere proposition if and only if $A \to A$ is contractible.
+
+
+ \soln 
+For the forward direction, suppose that $A$ is a mere proposition.  Then by
+Example 3.6.2, $A \to A$ is a mere proposition.  We also have $\idfunc{A} : A
+\to A$ when $A$ is inhabited and $! : A \to A$ when it's not, so $A \to A$ is
+contractible.
+
+
+For the other direction, suppose that $A \to A$ is contractible and that $x y :
+A$.  We have the functions $z \mapsto x$ and $z \mapsto y$, and since $A \to A$
+is contractible these functions are equal.  $\happly$ then gives $x = y$, so
+$A$ is a mere proposition.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 4}{ex3\_4}{\coqdoclemma{ex3\_4}} (\coqdocvar{A} : \coqdockw{Type}) : \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '<->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\leftrightarrow}}} \coqdocabbreviation{Contr} (\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{split}; \coqdoctac{intro} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocabbreviation{idmap}; \coqdoctac{intro} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{x}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}; \coqdoctac{intros} \coqdocvar{x} \coqdocvar{y}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocnotation{(}\coqdockw{fun} \coqdocvar{z}:\coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvar{x}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{z}:\coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvar{y}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{H}. \coqdoctac{transitivity} \coqdocvar{center}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocnotation{(}\coqdocvar{contr} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvar{x})\coqdocnotation{)\^{}}. \coqdoctac{apply} (\coqdocvar{contr} (\coqdockw{fun} \coqdocvar{\_} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvar{y})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{apD10} \coqdocvar{X} \coqdocvar{x}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.5}{127}
+Show that $\isprop(A) \eqvsym (A \to \iscontr(A))$.
+
+
+ \soln
+Lemma 3.3.3 gives us maps $\isprop(A) \to (A \to \iscontr(A))$ and $(A
+\to \iscontr(A)) \to \isprop(A)$.  Note that $\iscontr(A)$ is a mere
+proposition, so $A \to \iscontr(A)$ is as well.  $\isprop(A)$ is
+always a mere proposition, so by Lemma 3.3.3 we have the equivalence.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 5}{ex3\_5}{\coqdoclemma{ex3\_5}} (\coqdocvar{A} : \coqdockw{Type}) : \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{Contr} \coqdocvariable{A}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_iff\_hprop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{contr\_inhabited\_hprop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocinstance{hprop\_inhabited\_contr}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.6}{127}
+Show that if $A$ is a mere proposition, then so is $A + (\lnot A)$.
+
+
+ \soln
+Suppose that $A$ is a mere proposition, and that $x, y : A + (\lnot A)$.  By a
+case analysis, we have
+
+
+
+\begin{itemize}
+\item  $x = \inl(a)$ and $y = \inl(a')$.  Then $(x = y) \eqvsym (a = a')$, and $A$ is a mere proposition, so this holds.
+
+\item  $x = \inl(a)$ and $y = \inr(f)$.  Then $f(a) : \emptyt$, a contradiction.
+
+\item  $x = \inr(f)$ and $y = \inl(a)$.  Then $f(a) : \emptyt$, a contradiction.
+
+\item  $x = \inr(f)$ and $y = \inr(f')$.  Then $(x = y) \eqvsym (f = f')$, and $\lnot A$ is a mere proposition, so this holds.
+
+\end{itemize}
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 6}{ex3\_6}{\coqdoclemma{ex3\_6}} \{\coqdocvar{A}\} : \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdocvariable{A} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocnotation{\ensuremath{\lnot}}\coqdocvariable{A}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocabbreviation{IsHProp} (\coqdocnotation{\ensuremath{\lnot}}\coqdocvar{A})) \coqdockw{as} \coqdocvar{H'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{f} \coqdocvar{f'}. \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{x}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{x} \coqdocvar{y}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{x} \coqdockw{as} [\coqdocvar{a} \ensuremath{|} \coqdocvar{f}], \coqdocvar{y} \coqdockw{as} [\coqdocvar{a'} \ensuremath{|} \coqdocvar{f'}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}}). \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}}). \coqdoctac{apply} \coqdocvar{H'}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.7}{127}
+More generally, show that if $A$ and $B$ are mere propositions and $\lnot (A
+\times B)$, then $A + B$ is also a mere proposition.
+
+
+ \soln
+Suppose that $A$ and $B$ are mere propositions with $f : \lnot (A \times B)$,
+and let $x, y : A + B$.  Then we have cases:
+
+
+
+\begin{itemize}
+\item  $x = \inl(a)$ and $y = \inl(a')$.  Then $(x = y) \eqvsym (a = a')$, and $A$ is a mere proposition, so this holds.
+
+\item  $x = \inl(a)$ and $y = \inr(b)$.  Then $f(a, b) : \emptyt$, a contradiction.
+
+\item  $x = \inr(b)$ and $y = \inl(a)$.  Then $f(a, b) : \emptyt$, a contradiction.
+
+\item  $x = \inr(b)$ and $y = \inr(b')$.  Then $(x = y) \eqvsym (b = b')$, and $B$ is a mere proposition, so this holds.
+
+\end{itemize}
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 7}{ex3\_7}{\coqdoclemma{ex3\_7}} \{\coqdocvar{A} \coqdocvar{B}\} : \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocnotation{\~{}(}\coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}\coqdocnotation{)} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdocvariable{A}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}}\coqdocvariable{B}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{HA} \coqdocvar{HB} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}; \coqdoctac{intros} \coqdocvar{x} \coqdocvar{y}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{x} \coqdockw{as} [\coqdocvar{a} \ensuremath{|} \coqdocvar{b}], \coqdocvar{y} \coqdockw{as} [\coqdocvar{a'} \ensuremath{|} \coqdocvar{b'}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}}). \coqdoctac{apply} \coqdocvar{HA}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} \coqdocinductive{Empty}. \coqdoctac{apply} (\coqdocvar{f} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{a}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{b'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}). \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} \coqdocinductive{Empty}. \coqdoctac{apply} (\coqdocvar{f} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{a'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{b}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}). \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}}). \coqdoctac{apply} \coqdocvar{HB}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.8}{127}
+Assuming that some type $\isequiv(f)$ satisfies
+\begin{itemize}
+  \item[(i)] For each $f : A \to B$, there is a function $\qinv(f) \to \isequiv(f)$;
+  \item[(ii)] For each $f$ we have $\isequiv(f) \to \qinv(f)$;
+  \item[(iii)] For any two $e_{1}, e_{2} : \isequiv(f)$ we have $e_{1} = e_{2}$,
+\end{itemize}
+show that the type $\brck{\qinv(f)}$ satisfies the same conditions and is
+equivalent to $\isequiv(f)$.
+
+
+ \soln
+Suppose that $f : A \to B$.  There is a function $\qinv(f) \to \brck{\qinv(f)}$
+by definition.  Since $\isequiv(f)$ is a mere proposition (by iii), the
+recursion principle for $\brck{\qinv(f)}$ gives a map $\brck{\qinv(f)} \to
+\isequiv(f)$, which we compose with the map from (ii) to give a map
+$\brck{\qinv(f)} \to \qinv(f)$.  Finally, $\brck{\qinv(f)}$ is a mere
+proposition by construction.  Since $\brck{\qinv(f)}$ and $\isequiv(f)$ are
+both mere propositions and logically equivalent, $\brck{\qinv(f)} \eqvsym
+\isequiv(f)$ by Lemma 3.3.3.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap03.Exercise3 8}{Exercise3\_8}{\coqdocsection{Exercise3\_8}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variables} (\coqdef{chap03.Exercise3 8.E}{E}{\coqdocvariable{E}} \coqdef{chap03.Exercise3 8.Q}{Q}{\coqdocvariable{Q}} : \coqdockw{Type}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{chap03.Exercise3 8.H1}{H1}{\coqdocvariable{H1}} : \coqdocvariable{Q} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{E}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{chap03.Exercise3 8.H2}{H2}{\coqdocvariable{H2}} : \coqdocvariable{E} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Q}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{chap03.Exercise3 8.H3}{H3}{\coqdocvariable{H3}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{e} \coqdocvar{e'} : \coqdocvariable{E}, \coqdocvariable{e} \coqdocnotation{=} \coqdocvariable{e'}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap03.ex3 8 i}{ex3\_8\_i}{\coqdocdefinition{ex3\_8\_i}} : \coqdocvariable{Q} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{Q}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} := \coqdocconstructor{truncation\_incl}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap03.ex3 8 ii}{ex3\_8\_ii}{\coqdocdefinition{ex3\_8\_ii}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{Q}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Q}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{q}. \coqdoctac{apply} \coqdocvariable{H2}. \coqdoctac{apply} (@\coqdocdefinition{Truncation\_rect\_nondep} \coqdocabbreviation{minus\_one} \coqdocvariable{Q} \coqdocvariable{E}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{exact} \coqdocvariable{H3}. \coqdoctac{apply} \coqdocvariable{H1}. \coqdoctac{apply} \coqdocvar{q}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 8 iii}{ex3\_8\_iii}{\coqdoclemma{ex3\_8\_iii}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{q} \coqdocvar{q'} : \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{Q}, \coqdocvariable{q} \coqdocnotation{=} \coqdocvariable{q'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 8 iv}{ex3\_8\_iv}{\coqdoclemma{ex3\_8\_iv}} : \coqdocnotation{(}\coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{Q}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocvariable{E}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} @\coqdocdefinition{equiv\_iff\_hprop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{apply} \coqref{chap03.ex3 8 iii}{\coqdoclemma{ex3\_8\_iii}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{apply} \coqdocvariable{H3}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocvariable{H1} \coqdocnotation{o} \coqref{chap03.ex3 8 ii}{\coqdocdefinition{ex3\_8\_ii}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqref{chap03.ex3 8 i}{\coqdocdefinition{ex3\_8\_i}} \coqdocnotation{o} \coqdocvariable{H2}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap03.Exercise3 8}{\coqdocsection{Exercise3\_8}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{3.9}{127}
+Show that if $\LEM{}$ holds, then the type $\prop \defeq \sm{A:\UU}\isprop(A)$
+is equivalent to $\bool$.
+
+
+ \soln
+Suppose that 
+\[
+  f : \prd{A:\UU}\left(\isprop(A) \to (A + \lnot A)\right)
+\]
+To construct a map $\prop \to \bool$, it suffices to consider an element of the
+form $(A, g)$, where $g : \isprop(A)$.  Then $f(g) : A + \lnot A$, so we have
+two cases:
+
+
+
+\begin{itemize}
+\item  $f(g) \equiv \inl(a)$, in which case we send it to $1_{\bool}$, or
+
+\item  $f(g) \equiv \inr(a)$, in which case we send it to $0_{\bool}$.
+
+\end{itemize}
+To go the other way, note that $\LEM{}$ splits $\prop$ into two equivalence
+classes (basically, the true and false propositions), and $\unit$ and $\emptyt$
+are in different classes.  Univalence quotients out these classes, leaving us
+with two elements.  We'll use $\unit$ and $\emptyt$ as representatives, so we
+send $0_{\bool}$ to $\emptyt$ and $1_{\bool}$ to $\unit$.
+
+
+Coq has some trouble with the universes here, so we have to specify that we want (\coqdocinductive{Unit} : \coqdockw{Type}) and (\coqdocinductive{Empty} : \coqdockw{Type}); otherwise we get the \coqdocvar{Type0} versions.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{chap03.Exercise3 9}{Exercise3\_9}{\coqdocsection{Exercise3\_9}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{chap03.Exercise3 9.LEM}{LEM}{\coqdocvariable{LEM}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{A} : \coqdockw{Type}), \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{A} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocnotation{\ensuremath{\lnot}}\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap03.ex3 9 f}{ex3\_9\_f}{\coqdocdefinition{ex3\_9\_f}} (\coqdocvar{P} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{A}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdockw{Type} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocabbreviation{IsHProp} \coqdocvar{A}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) : \coqdocinductive{Bool} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} (\coqdocvariable{LEM} \coqdocvariable{P}\coqdocnotation{.1} \coqdocvariable{P}\coqdocnotation{.2}) \coqdockw{with}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}} \coqdocvar{a} \ensuremath{\Rightarrow} \coqdocconstructor{true}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}} \coqdocvar{a'} \ensuremath{\Rightarrow} \coqdocconstructor{false}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap03.hprop Unit}{hprop\_Unit}{\coqdoclemma{hprop\_Unit}} : \coqdocabbreviation{IsHProp} (\coqdocinductive{Unit} : \coqdockw{Type}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocinstance{hprop\_inhabited\_contr}. \coqdoctac{intro} \coqdocvar{u}. \coqdoctac{apply} \coqdocinstance{contr\_unit}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap03.ex3 9 inv}{ex3\_9\_inv}{\coqdocdefinition{ex3\_9\_inv}} (\coqdocvar{b} : \coqdocinductive{Bool}) : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdockw{Type} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocabbreviation{IsHProp} \coqdocvar{A}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} \coqdocvariable{b} \coqdockw{with}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqdocconstructor{true} \ensuremath{\Rightarrow} @\coqexternalref{existT}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{existT}} \coqdockw{Type} \coqdocabbreviation{IsHProp} (\coqdocinductive{Unit} : \coqdockw{Type}) \coqref{chap03.hprop Unit}{\coqdoclemma{hprop\_Unit}}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqdocconstructor{false} \ensuremath{\Rightarrow} @\coqexternalref{existT}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{existT}} \coqdockw{Type} \coqdocabbreviation{IsHProp} (\coqdocinductive{Empty} : \coqdockw{Type}) \coqdocinstance{hprop\_Empty}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 9}{ex3\_9}{\coqdoclemma{ex3\_9}} `\{\coqdocclass{Univalence}\} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdockw{Type} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocabbreviation{IsHProp} \coqdocvar{A}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqref{chap03.ex3 9 f}{\coqdocdefinition{ex3\_9\_f}} \coqref{chap03.ex3 9 inv}{\coqdocdefinition{ex3\_9\_inv}} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{b}. \coqdoctac{unfold} \coqref{chap03.ex3 9 f}{\coqdocdefinition{ex3\_9\_f}}, \coqref{chap03.ex3 9 inv}{\coqdocdefinition{ex3\_9\_inv}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{b}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{simpl}. \coqdoctac{destruct} (\coqdocvariable{LEM} (\coqdocinductive{Unit}:\coqdockw{Type}) \coqref{chap03.hprop Unit}{\coqdoclemma{hprop\_Unit}}).\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{contradiction} \coqdocvar{n}. \coqdoctac{exact} \coqdocconstructor{tt}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{simpl}. \coqdoctac{destruct} (\coqdocvariable{LEM} (\coqdocinductive{Empty}:\coqdockw{Type}) \coqdocinstance{hprop\_Empty}).\coqdoceol
+\coqdocindent{3.00em}
+\coqdocvar{contradiction}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{A}  \coqdocvar{p}]. \coqdoctac{unfold} \coqref{chap03.ex3 9 f}{\coqdocdefinition{ex3\_9\_f}}, \coqref{chap03.ex3 9 inv}{\coqdocdefinition{ex3\_9\_inv}}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{simpl}. \coqdoctac{destruct} (\coqdocvariable{LEM} \coqdocvar{A} \coqdocvar{p}) \coqdockw{as} [\coqdocvar{x} \ensuremath{|} \coqdocvar{x}].\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocinductive{Unit}:\coqdockw{Type}\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{A}).\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{assert} (\coqdocabbreviation{Contr} \coqdocvar{A}). \coqdoctac{apply} \coqdoclemma{contr\_inhabited\_hprop}. \coqdoctac{apply} \coqdocvar{p}. \coqdoctac{apply} \coqdocvar{x}.\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_path\_universe}. \coqdoctac{apply} \coqdoclemma{equiv\_inverse}. \coqdoctac{apply} \coqdocdefinition{equiv\_contr\_unit}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{X}. \coqdoctac{induction} \coqdocvar{X}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{assert} (\coqdocabbreviation{IsHProp} (\coqdocabbreviation{IsHProp} (\coqdocinductive{Unit}:\coqdockw{Type}))). \coqdoctac{apply} \coqdocinstance{HProp\_HProp}. \coqdoctac{apply} \coqdocvar{X}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocinductive{Empty}:\coqdockw{Type}\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{A}).\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_path\_universe}. \coqdoctac{apply} \coqdocdefinition{equiv\_iff\_hprop}.\coqdoceol
+\coqdocindent{4.00em}
+\coqdoctac{intro} \coqdocvar{z}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{4.00em}
+\coqdoctac{intro} \coqdocvar{a}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{X}. \coqdoctac{induction} \coqdocvar{X}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{assert} (\coqdocabbreviation{IsHProp} (\coqdocabbreviation{IsHProp} (\coqdocinductive{Empty}:\coqdockw{Type}))). \coqdoctac{apply} \coqdocinstance{HProp\_HProp}. \coqdoctac{apply} \coqdocvar{X}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap03.Exercise3 9}{\coqdocsection{Exercise3\_9}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{3.10}{127}
+Show that if $\UU_{i+1}$ satisfies $\LEM{}$, then the canonical inclusion
+$\prop_{\UU_{i}} \to \prop_{\UU_{i+1}}$ is an equivalence.
+
+
+ \exerdone{3.11}{127}
+Show that it is not the case that for all $A : \UU$ we have $\brck{A} \to A$.
+
+
+ \soln
+We can essentially just copy Theorem 3.2.2.  Suppose given a function $f :
+\prd{A:\UU} \brck{A} \to A$, and recall the equivalence $e : \bool \eqvsym
+\bool$ from Exercise 2.13 given by $e(1_{\bool}) \defeq 0_{\bool}$ and
+$e(0_{\bool}) = 1_{\bool}$.  Then $\ua(e) : \bool = \bool$, $f(\bool)
+: \brck{\bool} \to \bool$, and
+\[
+  \mapdepfunc{f}(\ua(e)) : 
+  \transfib{A \mapsto (\brck{A} \to A)}{\ua(e)}{f(\bool)} = f(\bool)
+\]
+So for $u : \brck{\bool}$,
+\[
+  \happly(\mapdepfunc{f}(\ua(e)), u) : 
+  \transfib{A \mapsto (\brck{A} \to A)}{\ua(e)}{f(\bool)}(u) = f(\bool)(u)
+\]
+and by 2.9.4, we have
+\[
+  \transfib{A \mapsto (\brck{A} \to A)}{\ua(e)}{f(\bool)}(u) 
+  =
+  \transfib{A \mapsto A}{\ua(e)}{f(\bool)(\transfib{\lvert \blank
+  \rvert}{\ua(e)^{-1}}{u}})
+\]
+But, any two $u, v : \brck{A}$ are equal, since $\brck{A}$ is contractible.  So
+$\transfib{\lvert\blank\rvert}{\ua(e)^{-1}}{u} = u$, and so
+\[
+  \happly(\mapdepfunc{f}(\ua(e)), u) : 
+  \transfib{A \mapsto A}{\ua(e)}{f(\bool)(u)}
+  = f(\bool)(u)
+\]
+and the propositional computation rule for $\ua$ gives
+\[
+  \happly(\mapdepfunc{f}(\ua(e)), u) : 
+  e(f(\bool)(u)) = f(\bool)(u)
+\]
+But $e$ has no fixed points, so we have a contradiction.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap03.negb no fixpoint}{negb\_no\_fixpoint}{\coqdoclemma{negb\_no\_fixpoint}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{b}, \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocdefinition{negb} \coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{b} \coqdocvar{H}. \coqdoctac{destruct} \coqdocvar{b}; \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{false\_ne\_true} \coqdocvar{H}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{true\_ne\_false} \coqdocvar{H}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap03.ex3 11}{ex3\_11}{\coqdoclemma{ex3\_11}} `\{\coqdocclass{Univalence}\} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdockw{\ensuremath{\forall}} \coqdocvar{A}, \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdockw{\ensuremath{\forall}} \coqdocvar{b}, \coqdocdefinition{negb} (\coqdocvar{f} \coqdocinductive{Bool} \coqdocvariable{b}) \coqdocnotation{=} \coqdocvar{f} \coqdocinductive{Bool} \coqdocvariable{b}). \coqdoctac{intro} \coqdocvar{b}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{A} \ensuremath{\Rightarrow} \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}) (\coqdocdefinition{path\_universe} \coqdocdefinition{negb}) (\coqdocvar{f} \coqdocinductive{Bool}) \coqdocvar{b}\coqdoceol
+\coqdocindent{5.00em}
+\coqdocnotation{=}\coqdoceol
+\coqdocindent{5.00em}
+\coqdocvar{f} \coqdocinductive{Bool} \coqdocvar{b}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{apD10} (\coqdocdefinition{apD} \coqdocvar{f} (\coqdocdefinition{path\_universe} \coqdocdefinition{negb})) \coqdocvar{b}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{A} \ensuremath{\Rightarrow} \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}) (\coqdocdefinition{path\_universe} \coqdocdefinition{negb}) (\coqdocvar{f} \coqdocinductive{Bool}) \coqdocvar{b}\coqdoceol
+\coqdocindent{5.00em}
+\coqdocnotation{=}\coqdoceol
+\coqdocindent{5.00em}
+\coqdocdefinition{transport} \coqdocabbreviation{idmap} (\coqdocdefinition{path\_universe} \coqdocdefinition{negb}) \coqdoceol
+\coqdocindent{10.00em}
+(\coqdocvar{f} \coqdocinductive{Bool} (\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{A} \ensuremath{\Rightarrow} \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A}) \coqdoceol
+\coqdocindent{19.50em}
+\coqdocnotation{(}\coqdocdefinition{path\_universe} \coqdocdefinition{negb}\coqdocnotation{)\^{}}\coqdoceol
+\coqdocindent{19.50em}
+\coqdocvar{b}))).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (@\coqdocdefinition{transport\_arrow} \coqdockw{Type} (\coqdockw{fun} \coqdocvar{A} \ensuremath{\Rightarrow} \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A}) \coqdocabbreviation{idmap}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{rewrite} \coqdocvar{X} \coqdoctac{in} \coqdocvar{X0}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocvar{b} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{A} : \coqdockw{Type} \ensuremath{\Rightarrow} \coqref{chap03.Brck}{\coqdocabbreviation{Brck}} \coqdocvariable{A}) \coqdocnotation{(}\coqdocdefinition{path\_universe} \coqdocdefinition{negb}\coqdocnotation{)} \coqdocnotation{\^{}} \coqdocvar{b}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{allpath\_hprop}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{X1} \coqdoctac{in} \coqdocvar{X0}. \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{X0}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocdefinition{transport} \coqdocabbreviation{idmap} (\coqdocdefinition{path\_universe} \coqdocdefinition{negb}) (\coqdocvar{f} \coqdocinductive{Bool} \coqdocvar{b}) \coqdocnotation{=} \coqdocdefinition{negb} (\coqdocvar{f} \coqdocinductive{Bool} \coqdocvar{b})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{transport\_path\_universe}. \coqdoctac{rewrite} \coqdocvar{X2} \coqdoctac{in} \coqdocvar{X0}. \coqdoctac{apply} \coqdocvar{X0}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (@\coqref{chap03.negb no fixpoint}{\coqdoclemma{negb\_no\_fixpoint}} (\coqdocvar{f} \coqdocinductive{Bool} (\coqdocconstructor{truncation\_incl} \coqdocconstructor{true}))).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocvar{X} (\coqdocconstructor{truncation\_incl} \coqdocconstructor{true})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{3.12}{127}
+Show that if $\LEM{}$ holds, then for all $A : \UU$ we have $\bbrck{(\brck{A}
+\to A)}$.
+
+
+ \soln
+Suppose that $\LEM{}$ holds, and let $A : \UU$.
+\begin{coqdoccode}
+\end{coqdoccode}

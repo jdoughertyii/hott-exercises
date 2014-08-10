@@ -1438,10 +1438,6 @@ $(\bool \eqvsym \bool) \eqvsym \bool$.
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
 \coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
 \end{coqdoccode}
 \exerdone{2.14}{104} 
 Suppose we add to type theory the equality reflection rule which says that if
@@ -1845,7 +1841,7 @@ HoTT library lemmas I use depend on \coqdocclass{Funext} or \coqdocclass{Univale
 \coqdockw{End} \coqref{chap02.Exercise2 16}{\coqdocsection{Exercise2\_16}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{2.17}{105}
+\exerdone{2.17}{105}
 \begin{enumerate}
   \item Show that if $A \eqvsym A'$ and $B \eqvsym B'$, then $(A \times B)
       \eqvsym (A' \times B')$.
@@ -1930,8 +1926,8 @@ and vice versa.
 \coqdocemptyline
 \end{coqdoccode}
 \noindent
-Proving that the two proofs are equal seems real hard.  I probably won't finish
-it.
+To prove that the proofs are equivalent, it suffices to show that the
+underlying functions are equal, by Lemma 3.5.1.  
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
@@ -1994,9 +1990,13 @@ it.
 \coqdocindent{2.00em}
 \coqdoctac{rewrite} \coqdocvar{X}. \coqdoctac{apply} \coqdocdefinition{transport\_path\_universe}.\coqdoceol
 \coqdocemptyline
-\coqdocindent{1.00em}
-\coqdocvar{Admitted}.\coqdoceol
+\coqdocindent{0.50em}
+\coqdoctac{unfold} \coqdocdefinition{equiv\_path}, \coqdocdefinition{equiv\_adjointify}.\coqdoceol
 \coqdocemptyline
+\coqdocindent{0.50em}
+\coqdoctac{apply} \coqdocdefinition{path\_equiv}. \coqdoctac{apply} \coqdocvar{H1}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}
@@ -2046,7 +2046,7 @@ state the second assumption is that there is a fiberwise equivalence $g:
 \coqdocindent{2.00em}
 := \coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{(}\coqdocvariable{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{X}\coqdocnotation{.1}\coqdocnotation{;} \coqdocnotation{(}\coqdocvariable{g} (\coqdocvariable{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{X}\coqdocnotation{.1})\coqdocnotation{)} \coqdocnotation{\ensuremath{^{-1}}} (\coqdocnotation{(}\coqdocmethod{eisretr} \coqdocvariable{f} \coqdocvariable{X}\coqdocnotation{.1}\coqdocnotation{)\^{}} \coqdocnotation{\#} \coqdocvariable{X}\coqdocnotation{.2})\coqdocnotation{)}.\coqdoceol
+\coqdocnotation{(}\coqdocvariable{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{X}\coqdocnotation{.1}\coqdocnotation{;} \coqdocnotation{(}\coqdocvariable{g} (\coqdocvariable{f}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{X}\coqdocnotation{.1})\coqdocnotation{)\^{}-1} (\coqdocnotation{(}\coqdocmethod{eisretr} \coqdocvariable{f} \coqdocvariable{X}\coqdocnotation{.1}\coqdocnotation{)\^{}} \coqdocnotation{\#} \coqdocvariable{X}\coqdocnotation{.2})\coqdocnotation{)}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Theorem} \coqdef{chap02.ex2 17 sigma}{ex2\_17\_sigma}{\coqdoclemma{ex2\_17\_sigma}} `\{\coqdocclass{Univalence}\} (\coqdocvar{A} \coqdocvar{A'} : \coqdockw{Type}) (\coqdocvar{B} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{B'} : \coqdocvariable{A'} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) \coqdoceol
