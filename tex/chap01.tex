@@ -1916,7 +1916,7 @@ $\snd(\snd(m)):(\fst(m) < n)$.  For the other direction, suppose that $m :
   (m, p) : \sum{m:\mathbb{N}}(m < n) \equiv \Fin(n)
 \]
 Moreover, these two constructions are clearly inverses, so we have our
-bijection.  It's not clear how to even formulate this correctness claim in Coq, since the only obvious way to define the bijection involves taking the domain and codomain to be the same, trivializing the problem.  The real problem, I think, is that the notion of ``exactly $n$ elements'' is too squishy here.
+bijection.  It's not clear to me how to formulate this correctness claim in Coq.
 
 
 To define $\fmax$, note that one can think of an element of $\Fin(n)$ as a

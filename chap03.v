@@ -429,5 +429,760 @@ Proof.
   apply (X (min1 true)).
 Qed.
   
+ 
+(** %\exerdone{3.12}{127}%
+Show that if $\LEM{}$ holds, then for all $A : \UU$ we have $\bbrck{\brck{A}
+\to A}$.
+*)
+
+(** %\soln%
+Suppose that $\LEM{}$ holds, and that $A : \UU$.  By $\LEM{}$, either $\brck{A}$
+or $\lnot\brck{A}$.   If the
+former, then we can use the recursion principle for $\brck{A}$ to construct a
+map to $\bbrck{\brck{A} \to A}$, then apply it to the element of $\brck{A}$.
+So we need a map $A \to \bbrck{\brck{A} \to A}$, which is not hard to get:
+%\[
+  \lam{a:A}\left\lvert\lam{a':\brck{A}}a\right\rvert : A \to \bbrck{\brck{A} \to A}
+\]%
+If the latter, then we have the canonical map out of the empty type $\brck{A}
+\to A$, hence we have $\bbrck{\brck{A} \to A}$.  
+*)
+
+Section Exercise3_12.
+
+Hypothesis LEM : forall A, IsHProp A -> (A + ~A).
+
+Theorem ex3_12 : forall A, Brck (Brck A -> A).
+Proof.
+  intro A.
+  destruct (LEM (Brck A) minus1Trunc_is_prop).
+  apply (minus1Trunc_rect_nondep (fun a => min1 (fun _ : Brck A => a))).
+  apply minus1Trunc_is_prop. apply m.
+  apply min1. intro a. contradiction.
+Defined.
+
+End Exercise3_12.
+
+
+
+(** %\exerdone{3.13}{127}%
+Show that the axiom
+%\[
+    \LEM{}': \prd{A:\UU} (A + \lnot A)
+\]%
+implies that for $X : \UU$, $A : X \to \UU$, and $P : \prd{x:X} A(x) \to \UU$,
+if $X$ is a set, $A(x)$ is a set for all $x:X$, and $P(x, a)$ is a mere
+proposition for all $x:X$ and $a:A(x)$, 
+%\[
+  \left(\prd{x:X}\left\lVert\sm{a:A(x)}P(x, a)\right\rVert\right)
+  \to
+  \left\lVert \sm{g:\prd{x:X}A(x)}\prd{x:X}P(x, g(x))\right\rVert.
+\]%
+*)
+
+(** %\soln%
+By Lemma 3.8.2, it suffices to show that for any set $X$ and any $Y : X \to
+\UU$ such that $Y(x)$ is a set, we have
+%\[
+  \left(\prd{x:X}\brck{Y(x)}\right) \to \left\lVert\prd{x:X}Y(x)\right\rVert
+\]%
+Suppose that $f : \prd{x:X}\brck{Y(x)}$.  By $\LEM{}'$, either $Y(x)$ is
+inhabited or it's not.  If it is, then $\LEM{}'(Y(x)) \equiv y : Y(x)$, and we
+have
+%\[
+  \left\lvert\lam{x:X}y\right\rvert : \left\lVert \prd{x:X} Y(x) \right\rVert
+\]%
+Suppose instead that $\lnot Y(x)$ and that $x:X$.  Then $f(x) : \brck{Y(x)}$.
+Since we're trying to derive a mere proposition, we can ignore this truncation
+and suppose that $f(x) : Y(x)$, in which case we have a contradiction, and
+we're done.
+
+The reason we can ignore the truncation (and apply [strip_truncations] in Coq)
+in hypotheses is given by the reasoning in the previous Exercise.  If the
+conclusion is a mere proposition, then the recursion principle for
+$\brck{Y(x)}$ allows us to construct an arrow out of $\brck{Y(x)}$ if we have
+one from $Y(x)$.
+*)
+  
+Definition AC := forall X A P,
+  IsHSet X -> (forall x, IsHSet (A x)) -> (forall x a, IsHProp (P x a))
+  -> ((forall x:X, Brck {a:A x & P x a}) 
+      -> Brck {g : forall x, A x & forall x, P x (g x)}).
+
+Definition AC_simpl := forall (X : hSet) (Y : X -> Type),
+  (forall x, IsHSet (Y x)) -> 
+  ((forall x, Brck (Y x)) -> Brck (forall x, Y x)).
+
+Lemma hprop_is_hset (A : Type) : IsHProp A -> IsHSet A.
+Proof.
+  typeclasses eauto.
+Defined.
+
+Lemma Lemma382 : AC <~> AC_simpl.
+Proof.
+  apply equiv_iff_hprop; unfold AC, AC_simpl.
+
+  intros AC. intros X Y HY D.
+  assert (Brck ({g : forall x, Y x & forall x, (fun x a => Unit) x (g x)})
+               <~> Brck (forall x, Y x)).
+  apply equiv_iff_hprop. 
+  intro w. strip_truncations. apply min1. apply w.1.
+  intro g. strip_truncations. apply min1. exists g. intro x. apply tt.
+  apply X0. apply (AC X Y (fun x a => Unit)). apply X. apply HY.
+  intros. apply hprop_Unit. intros. 
+  assert (Brck (Y x)) as y by apply D. strip_truncations. 
+  apply min1. exists y. apply tt.
+
+  intros AC_simpl X A P HX HA HP D.
+  assert (Brck (forall x, {a : A x & P x a}) 
+            <~> Brck {g : forall x, A x & forall x, P x (g x)}).
+  apply equiv_iff_hprop.
+  intros. strip_truncations. apply min1. exists (fun x => (X0 x).1).
+  intro x. apply (X0 x).2.
+  intros. strip_truncations. apply min1. intro x. apply (X0.1 x; X0.2 x). 
+  apply X0. apply (AC_simpl (default_HSet X HX) (fun x => {a : A x & P x a})).
+  intros. apply ex3_3. apply (HA x). intro a.
+  apply hprop_is_hset. apply (HP x a).
+  intro x. apply (D x).
+Defined.
+
+Section Exercise3_13.
+
+Hypothesis LEM' : forall A, A + ~A.
+
+Theorem ex3_13: AC.
+Proof.
+  apply Lemma382. unfold AC_simpl. intros X Y HX HY.
+  apply min1. intros. 
+  destruct (LEM' (Y x)). apply y.
+  assert (Brck (Y x)) as y'. apply HY.
+  assert (~ Brck (Y x)) as nn. intro p. strip_truncations. contradiction.
+  contradiction.
+Defined.
+
+End Exercise3_13.
+
+(** %\exer{3.14}{127}%
+Show that assuming $\LEM{}$, the double negation $\lnot\lnot A$ has the same
+universal property as the propositional truncation $\brck{A}$, and is therefore
+equivalent to it.  
+*)
+
+(** %\exer{3.15}{128}%
+Show that if we assume propositional resizing, then the type
+%\[
+  \prd{P:\prop}\left((A \to P) \to P\right)
+\]%
+has the same universal property as $\brck{A}$.
+*)
+
+(** %\exerdone{3.16}{128}%
+Assuming $\LEM{}$, show that double negation commutes with universal
+quantification of mere propositions over sets.  That is, show that if $X$ is a
+set and each $Y(x)$ is a mere proposition, then $\LEM{}$ implies
+%\[
+  \left(\prd{x:X}\lnot\lnot Y(x)\right) 
+  \eqvsym
+  \left(\lnot\lnot\prd{x:X} Y(x)\right).
+\]%
+*)
+
+(** %\soln%
+Each side is a mere proposition, since one side is a dependent function into a
+mere proposition and the other is a negation.  So we just need to show that
+each implies the other.  From left to right we use the fact that $\LEM{}$
+is equivalent to double negation to obtain $\prd{x:X}Y(x)$, and double negation
+introduction is always allowed, giving the right side.  For the other direction
+we do the same.
+*)
+
+Section Exercise3_16.
+
+Hypothesis LEM : forall A, IsHProp A -> (A + ~ A).
+
+Theorem ex3_16 (X : hSet) (Y : X -> Type) :
+  (forall x, IsHProp (Y x)) -> 
+  (forall x, ~ ~ Y x) <~> ~ ~ (forall x, Y x).
+Proof.
+  intro HY. apply equiv_iff_hprop; intro H.
+  
+  intro f. apply f. intro x. 
+  destruct (LEM (Y x)). 
+    apply HY. apply y.
+    contradiction (H x).
+  
+  intro x. 
+  destruct (LEM (Y x)). 
+    apply HY. intro f. contradiction.
+    assert (~ (forall x, Y x)). intro f. contradiction (f x).
+    contradiction.
+Qed.
+   
+End Exercise3_16.
+  
+
+(** %\exerdone{3.17}{128}%
+Show that the rules for the propositional truncation given in %\S3.7% are
+sufficient to imply the following induction principle: for any type family $B :
+\brck{A} \to \UU$ such that each $B(x)$ is a mere proposition, if for every
+$a:A$ we have $B(\lvert a \rvert)$, then for every $x : \brck{A}$ we have
+$B(x)$.
+*)
+
+(** %\soln%
+Suppose that $B : \brck{A} \to \UU$, $B(x)$ is a mere proposition for all $x :
+\brck{A}$ and that $f : \prd{a:A} B(\lvert a \rvert)$. Suppose that $x
+: \brck{A}$; we need to construct an element of $B(x)$.  By the
+induction principle for $\brck{A}$, it suffices to exhibit a map $A
+\to B(x)$.  So suppose that $a:A$, and we'll construct an element of
+$B(x)$.  Since $\brck{A}$ is contractible, we have $p : \lvert a
+\rvert = x$, and $p_{*}(f(a)) : B(x)$.
+*)
+
+Theorem ex3_17 (A : Type) (B : Brck A -> Type) :
+  (forall x, IsHProp (B x)) -> (forall a, B (min1 a)) -> (forall x, B x).
+Proof.
+  intros HB f. intro x.
+  apply (@minus1Trunc_rect_nondep A (B x)).
+  intro a. assert (min1 a = x) as p. apply allpath_hprop.
+  apply (transport _ p). apply (f a).
+  apply allpath_hprop. apply x.
+Defined.
+
+(** %\exerdone{3.18}{128}%
+Show that the law of excluded middle
+%\[
+  \LEM{} : \prd{A:\UU} \left( \isprop(A) \to (A + \lnot A)\right)
+\]%
+and the law of double negation
+%\[
+  \DN : \prd{A:\UU} \left( \isprop(A) \to (\lnot\lnot A \to A)\right)
+\]%
+are logically equivalent.
+*)
+
+(** %\soln%
+For the forward direction, suppose that $\LEM{}$ holds, that $A : \UU$,
+that $H : \isprop(A)$, and that $f : \lnot\lnot A$.  We then need to produce an
+element of $A$.  We have $z \defeq \LEM{}(A, H) : A + \lnot A$, so we can
+consider cases:
+ - $z \equiv \inl(a)$, in which case we can produce $a$.
+ - $z \equiv \inr(x)$, in which case we have $f(x) : \emptyt$, a contradiction.
+giving the forward direction.
+
+Suppose instead that $\DN$ holds, and we have $A : \UU$ and $H : \isprop(A)$.
+We need to provide an element of $A + \lnot A$.  By Exercise 3.6, $A + \lnot A$
+is a mere proposition, so by $\DN$, if we can give an element of $\lnot\lnot(A
++ \lnot A)$, then we'll get one of $A + \lnot A$.  In Exercise 1.13 we
+constructed such an element, so producing that gives one of $A + \lnot A$, and
+we're done.
+*)
+
+Theorem ex3_18: 
+  (forall A, IsHProp A -> (A + ~A)) <-> (forall A, IsHProp A -> (~ ~A -> A)).
+Proof.
+  split.
+  intros LEM A H f. destruct (LEM A H). apply a. contradiction.
+  intros DN A H. apply (DN (A + ~A) (ex3_6 H)).
+  exact (fun g : ~ (A + ~ A) => g (inr (fun a:A => g (inl a)))).
+Qed.
   
   
+
+(** %\exer{3.19}{128}%
+Suppose $P : \mathbb{N} \to \UU$ is a decidable family of mere propositions.
+Prove that
+%\[
+  \left\lVert \sm{n:\mathbb{N}} P(n) \right\rVert
+  \to
+  \sm{n:\mathbb{N}} P(n).
+\]%
+*)
+
+(** %\soln%
+Since $P : \mathbb{N} \to \UU$ is decidable, we have $f : \prd{n:\mathbb{N}}
+(P(n) + \lnot P(n))$.  So if $\bbrck{\sm{n:\mathbb{N}}
+P(n)}$ is inhabited, then there is some smallest $n$ such that $P(n)$.
+It would be nice if we could define a function to return the
+smallest $n$ such that $P(n)$.  But unbounded minimization isn't a
+total function, so that won't obviously work.  Following the
+discussion of Corollary 3.9.2, what we can do instead is to define some
+%\[
+  Q : \left(\sm{n:\mathbb{N}} P(n)\right) \to \UU
+\]%
+such that $\sm{w:\sm{n:\mathbb{N}} P(n)} Q(w)$ is a mere proposition.  Then
+we can project out an element of $\sm{n:\mathbb{N}} P(n)$.
+
+$Q(w)$ will be the proposition that $w$ is the smallest member of
+$\sm{n\mathbb{N}}P(n)$.  Explicitly,
+%\[
+  Q(w) \defeq 
+  \prd{w' : \sm{n:\mathbb{N}}P(n)} \fst(w) \leq \fst(w')
+\]%
+Then we have
+%\[
+  \sm{w : \sm{n : \mathbb{N}} P(n)} Q(w)
+  \equiv
+  \sm{w : \sm{n : \mathbb{N}} P(n)}
+  \prd{w' : \sm{n:\mathbb{N}}P(n)} \fst(w) \leq \fst(w')
+\]%
+which we must show to be a mere proposition.  Suppose that $w$ and $w'$ are two
+elements of this type.  By $\snd(w)$ and $\snd(w')$, we have $\fst(w) \leq
+\fst(w')$ and $\fst(w') \leq \fst(w)$, so $\fst(w) = \fst(w')$.  Since
+$\mathbb{N}$ has decidable equality, $\fst(w) \leq \snd(w')$ is a mere
+proposition for all $w$ and $w'$, meaning that $Q(w)$ is a mere proposition.
+So $w = w'$, meaning that our type is contractible.
+
+Now we can use the universal property of $\bbrck{\sm{n:\mathbb{N}}P(n)}$ to
+construct an arrow into $\sm{w : \sm{n:\mathbb{N}} P(n)} Q(w)$ by way of a
+function $\big(\sm{n:\mathbb{N}} P(n)\big) \to \sm{w : \sm{n:\mathbb{N}} P(n)}
+Q(w)$.  So suppose that we have some element $w : \sm{n:\mathbb{N}} P(n)$.
+Using bounded minimization, we can obtain the smallest element of $\sm{n:
+\mathbb{N}} P(n)$ that's less than or equal to $w$, and this will in fact be
+the smallest element _tout court_.  This means that it's a member of our
+constructed type, so we've constructed a map
+%\[
+  \left\lVert \sm{n:\mathbb{N}} P(n) \right\rVert
+  \to
+  \sm{w:\sm{n:\mathbb{N}}P(n)}Q(w)
+\]%
+and projecting out gives the function in the statement.
+
+I'm having just the damnedest time trying to work everything out in Coq.  At
+some point I'll sort out my loadpath to cut out the [nat] lemmas.  I'm sure I'm
+overcomplicating the correctness proofs for [bounded_min], though.  No way can
+they be this long.
+*)
+
+
+Fixpoint add (n m : nat) :=
+  match n with
+    | O => m 
+    | S n' => S (add n' m)
+  end.
+
+Infix "+" := add : nat_scope.
+
+Definition le (n m : nat) := {k : nat & n + k = m}.
+Infix "<=" := le : nat_scope.
+
+Definition lt (n m : nat) := S n <= m.
+Infix "<" := lt : nat_scope.
+
+Fixpoint leb n m :=
+  match n, m with
+    | O, _ => true
+    | S n', O => false
+    | S n', S m' => leb n' m'
+  end.
+
+Infix "<=?" := leb (at level 70) : nat_scope.
+
+
+Fixpoint nat_code (n m : nat) :=
+  match n, m with
+    | O, O => Unit
+    | S n', O => Empty
+    | O, S m' => Empty
+    | S n', S m' => nat_code n' m'
+  end.
+
+Fixpoint nat_r (n : nat) : nat_code n n :=
+  match n with
+    | O => tt
+    | S n' => nat_r n'
+  end.
+
+Definition nat_encode (n m : nat) (p : n = m) := 
+  transport (fun _ => nat_code n _) p (nat_r n).
+
+Definition nat_decode : forall (n m : nat) (p : nat_code n m), n = m.
+  induction n, m; intro.
+  reflexivity. contradiction. contradiction.
+  apply (ap S). apply IHn. apply p.
+Defined.
+  
+Theorem Theorem2131 : forall n m, (nat_code n m) <~> (n = m).
+Proof.
+  intros. refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _);
+  intro p.
+
+  induction p. simpl. induction n. reflexivity.
+  simpl. rewrite IHn. reflexivity.
+
+  generalize dependent m. generalize dependent n.
+  induction n. induction m. simpl in *. apply eta_unit. contradiction. 
+  induction m. contradiction.
+  intro p. simpl. unfold nat_encode. rewrite <- transport_compose. simpl. 
+  change (transport (fun x : nat => nat_code n x) (nat_decode n m p) (nat_r n))
+         with (nat_encode n m (nat_decode n m p)).
+  simpl in p. apply IHn.
+Defined.
+
+Theorem S_inj : forall n m, S n = S m -> n = m.
+Proof.
+  intros. induction n, m;
+    try(reflexivity);
+    try(apply Theorem2131 in H; contradiction).
+    apply Theorem2131 in H.
+    change (nat_code (S (S n)) (S (S m))) with (nat_code (S n) (S m)) in H.
+    apply Theorem2131 in H. apply H.
+Defined.
+
+Lemma Sn_le_Sm__n_le_m (n m : nat) : (S n) <= (S m) -> n <= m.
+  intros. destruct H. simpl in p. apply S_inj in p. apply (x; p).
+Defined.
+
+Lemma n_le_m__Sn_le_Sm (n m : nat) : n <= m -> (S n) <= (S m).
+  intros. destruct H. exists x. simpl. apply (ap S). apply p.
+Defined.
+
+Lemma n_neq_Sn (n : nat) : ~ (n = S n).
+Proof.
+  induction n.
+    intro p. apply Theorem2131 in p. contradiction.
+    intro p. apply Theorem2131 in p. simpl in p. apply Theorem2131 in p.
+      contradiction.
+Defined.
+
+Theorem Sn_plus_Sm__SS_n_plus_m (n m : nat) : S n + S m = S (S (n + m)).
+Proof.
+  induction n; [| simpl; rewrite <- IHn]; reflexivity.
+Defined.
+
+Theorem plus_O_r : forall n, n = n+0.
+Proof.
+  induction n; [| simpl; rewrite <- IHn]; reflexivity.
+Defined.
+
+Theorem n_plus_Sm__Sn_plus_m (n m :nat) : n + S m = S n + m.
+Proof.
+  revert m. induction n. reflexivity.
+  intros. simpl. apply (ap S). simpl in IHn. apply IHn.
+Defined.
+
+Theorem plus_assoc : forall n m k, (n + m) + k = n + (m + k).
+Proof.
+  intros n m k.
+  induction n; [| simpl; rewrite IHn ]; reflexivity.
+Defined.
+
+Lemma O_is_id : forall n m, n + m = n -> m = 0.
+Proof.
+  induction n.
+    intros. apply H.
+    intros m H. apply IHn. simpl in H. apply S_inj in H. apply H.
+Defined.
+
+Lemma sum_Ol : forall n m, n + m = 0 -> n = 0.
+Proof.
+  intros. induction n. reflexivity. 
+  simpl in H. apply Theorem2131 in H. contradiction.
+Defined.
+
+Lemma leb_le n m : (n <=? m) = true <-> n <= m.
+Proof.
+  revert m.
+  induction n; destruct m; simpl.
+  - split; [exists 0|]; trivial.
+  - split; trivial. exists (S m). trivial.
+  - split; intros. apply false_ne_true in H. contradiction. 
+    destruct H. apply sum_Ol in p. apply Theorem2131 in p. contradiction.
+  - split. 
+    + intros. apply n_le_m__Sn_le_Sm. apply IHn. apply H.
+    + intros. apply IHn. apply Sn_le_Sm__n_le_m. apply H.
+Defined.
+
+Lemma subtract_on_right : forall n m k, (n + m = n + k) -> (m = k).
+Proof.
+  induction n. 
+  intros. apply H.
+  intros. simpl in H. apply S_inj in H. apply IHn. apply H.
+Defined.
+
+Lemma le_antisymmetric (n m : nat) : (n <= m) -> (m <= n) -> (n = m).
+Proof.
+  intros I1 I2. destruct I1 as [k1 p1], I2 as [k2 p2].
+  generalize dependent m. generalize dependent n.
+  induction n, m. 
+    reflexivity. 
+    intros. apply Theorem2131 in p2. contradiction.
+    intros. apply Theorem2131 in p1. contradiction.
+    intros. apply (ap S). apply IHn. simpl in p1. apply S_inj in p1. apply p1.
+    intros. simpl in p2. apply S_inj in p2. apply p2.
+Defined.
+
+Lemma le_refl n : n <= n.
+Proof.
+  exists 0. symmetry. apply plus_O_r.
+Defined.
+
+Lemma le_trans n m k : (n <= m) -> (m <= k) -> (n <= k).
+Proof.
+  intros H H'. destruct H, H'.
+  exists (x + x0). rewrite <- plus_assoc. rewrite p. apply p0.
+Defined.
+
+Theorem ishset_nat : IsHSet nat.
+Proof.
+  apply hset_decidable. intros n.
+  induction n; intro m; destruct m.
+      left. reflexivity.
+      right. intro p. apply Theorem2131 in p. contradiction.
+      right. intro p. apply Theorem2131 in p. contradiction.
+      destruct (IHn m).
+        left. apply (ap S). apply p.
+        right. intro p. apply S_inj in p. contradiction.
+Defined.
+        
+Section Exercise3_19.
+
+Definition decidable {A} (P : A -> Type) := forall a, (P a + ~ P a).
+
+Lemma nat_eq_decidable : forall (n m : nat), (n = m) + ~ (n = m).
+Proof.
+  intro n.
+  induction n; intro m; destruct m.
+      left. reflexivity.
+      right. intro p. apply Theorem2131 in p. contradiction.
+      right. intro p. apply Theorem2131 in p. contradiction.
+      destruct (IHn m).
+        left. apply (ap S). apply p.
+        right. intro p. apply S_inj in p. contradiction.
+Defined.
+
+Lemma order_partitions : forall n m, (n <= m) + (m < n).
+Proof.
+  induction n.
+    intro m. left. exists m. reflexivity.
+  induction m.
+    right. exists n. reflexivity.
+    destruct IHm.
+      left. destruct l. exists (S x).
+      rewrite Sn_plus_Sm__SS_n_plus_m. apply (ap S). apply p.
+      destruct (IHn m). 
+        left. apply n_le_m__Sn_le_Sm. apply l0.
+        right. destruct l0. exists x. simpl. apply (ap S). apply p.
+Defined.
+      
+Definition Q {P : nat -> Type} (w : {n : nat & P n}) := 
+  forall w' : {n : nat & P n}, w.1 <= w'.1. 
+
+Lemma ishprop_dependent (A : Type) (P : A -> Type) :
+  (forall a, IsHProp (P a)) -> IsHProp (forall a, P a).
+Proof.
+  intro HP. apply hprop_allpath. intros p p'.
+  apply path_forall; intro a. apply HP.
+Defined.
+  
+Lemma hprop_Q : forall P, (forall n, IsHProp (P n)) -> 
+  IsHProp {w : {n : nat & P n} & Q w}.
+Proof.
+  intro P. intro HP. apply hprop_allpath. intros w w'.
+  destruct w as [[n p] q], w' as [[n' p'] q'].
+  apply path_sigma_uncurried. simpl. 
+  assert ((n; p) = (n'; p')).
+  apply path_sigma_uncurried. simpl.
+  assert (n = n').
+  assert (n <= n') as H. apply (q (n'; p')).
+  assert (n' <= n) as H'. apply (q' (n; p)).
+  destruct H as [k r], H' as [k' r'].
+  rewrite <- r' in r. rewrite plus_assoc in r. apply O_is_id in r.
+  apply sum_Ol in r. rewrite r in r'. symmetry in r'. 
+  rewrite <- plus_O_r in r'. apply r'.
+  induction X. exists 1. simpl.
+  apply (HP n).
+  exists X.
+  assert (IsHProp (Q (n'; p'))).
+  unfold Q. simpl. apply ishprop_dependent. intro w. destruct w as [n'' p''].
+  simpl. apply hprop_allpath. intros w w'.
+  apply path_sigma_uncurried.
+  destruct w, w'. simpl. 
+  assert (x = x0). apply subtract_on_right with (n := n').
+  apply (p0 @ p1^). exists X0.
+  induction X0. simpl. apply ishset_nat. apply X0.
+Defined.
+  
+Definition decidable_to_bool {A} (P : A -> Type) (H : decidable P) : A -> Bool.
+  intro a. destruct (H a). apply true. apply false.
+Defined.
+
+Fixpoint bounded_min (P : nat -> Type) (H : decidable P) (b : nat) : nat :=
+  match b with
+    | O => O
+    | S n => if (bounded_min P H n <=? n) then (bounded_min P H n) else
+               if ((decidable_to_bool P H) (S n)) then (S n) else (S (S n))
+  end.
+
+Lemma foo : forall n m, ~ (n = m) -> (n <= m) -> ~ (m <= n).
+  intros. intro p. apply le_antisymmetric in H0. symmetry in H0.
+  contradiction. apply p.
+Defined.
+
+Lemma bar : forall n m, ~ n = S n + m.
+  induction n.
+  intros m p. apply Theorem2131 in p. contradiction.
+  intros m p. simpl in p. apply S_inj in p. apply (IHn m). apply p.
+Defined.
+
+Lemma bmin_short_circuit (P : nat -> Type) (H : decidable P) :
+  P 0 -> forall n, bounded_min P H n = 0.
+Proof.
+  intros. induction n. simpl. unfold decidable_to_bool. 
+  destruct (H 0). reflexivity. contradiction.
+  simpl. assert (bounded_min P H n <=? n = true). apply leb_le.
+  rewrite IHn. exists n. reflexivity.
+  rewrite X0. apply IHn.
+Defined.
+
+Lemma bmin_correct_i (P : nat -> Type) (H : decidable P) (n : nat) :
+  P n -> P (bounded_min P H n).
+Admitted.
+
+Lemma bmin_correct' (P : nat -> Type) (H : decidable P) (n : nat) :
+  P n -> (bounded_min P H n) <= n.
+Proof.
+  intro p. induction n. simpl.
+  assert (decidable_to_bool P H 0 = true) as HP0.
+  unfold decidable_to_bool. destruct (H 0). reflexivity. contradiction.
+  exists 0. reflexivity.
+  
+  simpl. destruct (order_partitions (bounded_min P H n) n).
+  apply leb_le in l. rewrite l. apply leb_le in l. destruct l.
+  exists (S x). rewrite n_plus_Sm__Sn_plus_m. simpl. apply (ap S). apply p0.
+  assert ( ~ (bounded_min P H n <= n)).
+  apply foo. intro. destruct l. rewrite <- p0 in H0. apply bar in H0.
+  contradiction.
+  destruct l. exists (S x). rewrite n_plus_Sm__Sn_plus_m. apply p0.
+  assert ( ~ (bounded_min P H n <=? n = true)).
+  intro H'. apply X. apply leb_le. apply H'.
+  assert (bounded_min P H n <=? n = false).
+  destruct (bounded_min P H n <=? n). assert (true = true) by reflexivity.
+  contradiction. reflexivity.
+  rewrite X1. unfold decidable_to_bool. destruct (H (S n)). 
+  apply le_refl. contradiction.
+Defined.
+
+Lemma bmin_unique (P : nat -> Type) (H : decidable P) (n : nat) :
+  P n -> forall m, P m -> (bounded_min P H n) = (bounded_min P H m).
+Proof.
+  intro p.
+  induction n.
+Admitted.
+  
+Definition ex3_19_arrow (P : nat -> Type) (H : decidable P) : 
+  (forall n, IsHProp (P n)) -> {n : nat & P n} -> {w : {n : nat & P n} & Q w}.
+  intros HP X. destruct X as [n p].
+  refine ((bounded_min P H n; bmin_correct_i P H n p); _).
+  unfold Q. intro w'. simpl.
+  apply le_trans with (m:=bounded_min P H w'.1).
+  exists 0. rewrite <- plus_O_r. apply bmin_unique. apply p. apply w'.2.
+  apply bmin_correct'. apply w'.2.
+Defined.
+
+Definition ex3_19 (P : nat -> Type) (H : decidable P) 
+                  (HP : forall n, IsHProp (P n)) : 
+  Brck {n : nat & P n} -> {n : nat & P n}.
+  intros. apply (@pr1 {n : nat & P n} Q). 
+  assert (IsHProp {w : {n : nat & P n} & Q w}) as H'. apply hprop_Q. apply HP.
+  strip_truncations. apply ex3_19_arrow. apply H. apply HP. apply X.
+Defined.  
+  
+End Exercise3_19.
+  
+
+(** %\exerdone{3.20}{128}%
+Prove Lemma 3.11.9(ii): if $A$ is contractible with center $a$, then
+$\sm{x:A}P(x)$ is equivalent to $P(a)$.
+*)
+
+(** %\soln%
+Suppose that $A$ is contractible with center $a$.  For the forward direction,
+suppose that $w : \sm{x:A} P(x)$.  Then $\fst(w) = a$, since $A$ is
+contractible, so from $\snd(w) : P(\fst(w))$ and the indiscernibility
+of identicals, we have $P(a)$.  For the backward direction, suppose
+that $p : P(a)$.  Then we have $(a, p) : \sm{x:A} P(x)$.
+
+To show that these are quasi-inverses, suppose that $p : P(a)$.  Going backward
+gives $(a, p) : \sm{x:A} P(x)$, and going forward we have
+$(\contr_{a}^{-1})_{*}p$.  Since $A$ is contractible, $\contr_{a} =
+\refl{a}$, so this reduces to $p$, as needed.
+For the other direction, suppose that $w : \sm{x:X} P(x)$.  Going forward gives
+$(\contr_{\fst(w)}^{-1})_{*}\snd(w) : P(a)$, and going back gives
+%\[
+  (a, (\contr_{\fst(w)}^{-1})_{*}\snd(w)) : \sm{x:A} P(x)
+\]%
+By Theoremm 2.7.2, it suffices to show that $a = \fst(w)$ and that
+%\[
+  (\contr_{\fst(w)})_{*}(\contr_{\fst(w)}^{-1})_{*} \snd(w) = \snd(w)
+\]%
+The first of these is given by the fact that $A$ is contractible.  The second
+results from the functorality of transport.
+*)
+
+Definition ex3_20_f (A : Type) (P : A -> Type) (HA : Contr A) : 
+  {x : A & P x} -> P (center A).
+  intros. apply (transport _ (contr X.1)^). apply X.2.
+Defined.
+
+Definition ex3_20_g (A : Type) (P : A -> Type) (HA : Contr A) : 
+  P (center A) -> {x : A & P x}.
+  intros. apply (center A; X).
+Defined.
+  
+Theorem ex3_20 (A : Type) (P : A -> Type) (HA : Contr A) : 
+  {x : A & P x} <~> P (center A).
+Proof.
+  refine (equiv_adjointify (ex3_20_f A P HA) (ex3_20_g A P HA)_ _); 
+  unfold ex3_20_f, ex3_20_g.
+
+  intro p. simpl. 
+  assert (Contr (center A = center A)). apply contr_paths_contr.
+  assert (contr (center A) = 1). apply allpath_hprop.
+  rewrite X0. reflexivity.
+
+  intro w. apply path_sigma_uncurried.
+  simpl. exists (contr w.1).
+  apply transport_pV.
+Defined.
+  
+
+(** %\exerdone{3.21}{128}%
+Prove that $\isprop(P) \eqvsym (P \eqvsym \brck{P})$.
+*)
+
+(** %\soln%
+$\isprop(P)$ is a mere proposition by Lemma 3.3.5.  $P \eqvsym \brck{P}$ is
+also a mere proposition.  An equivalence is determined by its underlying
+function, and for all $f, g : P \to \brck{P}$, $f = g$ by function
+extensionality and the fact that $\brck{P}$ is a mere proposition.  Since each
+of the two sides is a mere proposition, we just need to show that they imply
+each other, by Lemma 3.3.3.  Lemma 3.9.1 gives the forward direction.  For the
+backward direction, suppose that $e : P \eqvsym \brck{P}$, and let $x, y : P$.
+Then $e(x) = e(y)$, since $\brck{P}$ is a proposition, and applying $e^{-1}$ to
+each side gives $x = y$.  Thus $P$ is a mere proposition.
+*)
+
+Theorem ex3_31 (P : Type) : IsHProp P <~> (P <~> Brck P).
+Proof.
+  assert (IsHProp (P <~> Brck P)). apply hprop_allpath; intros e1 e2.
+  apply path_equiv. apply path_forall; intro p.
+  apply hprop_allpath. apply allpath_hprop.
+  apply equiv_iff_hprop.
+
+  intro HP. apply equiv_iff_hprop. apply min1.
+  apply (minus1Trunc_rect_nondep idmap). apply HP.
+  
+  intro e. apply hprop_allpath; intros x y.
+  assert (e x = e y) as p. apply hprop_allpath. apply allpath_hprop.
+  rewrite (eissect e x)^. rewrite (eissect e y)^.
+  apply (ap e^-1 p). 
+Defined.
+  
+
+(** %\exer{3.22}{128}%
+As in classical set theory, the finite version of the axiom of choice is a
+theorem.  Prove that the axiom of choice holds when $X$ is a finite type
+$\Fin(n)$.
+*)
+

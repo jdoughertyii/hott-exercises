@@ -31,3 +31,7 @@ Reading_HoTT_in_Coq.v
 tex/Makefile
 
 tex/hott-exercises.toc
+
+.#chap03.v
+
+tex/hott-exercises.run.cookie
