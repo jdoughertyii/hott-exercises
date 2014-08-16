@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Import HoTT.
+Require Export HoTT chap02.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -352,10 +352,23 @@ Qed.
 
 End Exercise3_9.
 
-(** %\exer{3.10}{127}%
+(** %\exerdone{3.10}{127}%
 Show that if $\UU_{i+1}$ satisfies $\LEM{}$, then the canonical inclusion
 $\prop_{\UU_{i}} \to \prop_{\UU_{i+1}}$ is an equivalence.
 *)
+
+(* %\soln%
+If $\LEM{i+1}$ holds, then $\LEM{i}$ holds as well.  For suppose that
+$A : \UU_{i}$ and $p : \isprop(A)$.  Then we also have $A :
+\UU_{i+1}$, so $\LEM{i+1}(A, p) : A + \lnot A$, establishing
+$\LEM{i}$.  By the previous exercise, then, $\prop_{\UU_{i}} \eqvsym
+\bool \eqvsym \prop_{\UU_{i+1}}$.
+
+Since Coq doesn't let the user access the [Type]$_{i}$ hierarchy,
+there's not much to do here.  This is really more of a ``proof by
+contemplation'' anyway.
+*)
+
 
 (** %\exerdone{3.11}{127}%
 Show that it is not the case that for all $A : \UU$ we have $\brck{A} \to A$.
@@ -562,19 +575,103 @@ Defined.
 
 End Exercise3_13.
 
-(** %\exer{3.14}{127}%
+(** %\exerdone{3.14}{127}%
 Show that assuming $\LEM{}$, the double negation $\lnot\lnot A$ has the same
 universal property as the propositional truncation $\brck{A}$, and is therefore
 equivalent to it.  
 *)
 
-(** %\exer{3.15}{128}%
+(** %\soln%
+Suppose that $a : \lnot\lnot A$ and that we have some function $g : A \to B$,
+where $B$ is a mere proposition, so $p : \isprop(B)$.  We can construct a
+function $\lnot \lnot A \to \lnot \lnot B$ by using contraposition twice,
+producing $g'': \lnot \lnot A \to \lnot \lnot B$
+%\[
+    g''(h) \defeq 
+    \lam{f : \lnot B}h(\lam{a:A}f(g(a))) 
+\]%
+$\LEM{}$ then allows us to use double negation elimination to produce a map
+$\lnot \lnot B \to B$.  Suppose that $f : \lnot \lnot B$.  Then we have
+$\LEM{}(B, p) : B + \lnot B$, and in the left case we can produce the witness,
+and in the right case we use $f$ to derive a contradiction.  Explicitly, we
+have $\ell : \lnot \lnot B \to B$ given by
+%\[
+  \ell(f) \defeq 
+  \rec{B + \lnot\lnot B}(B, \idfunc{B}, f, \LEM{}(B, p))
+\]%
+The computation rule does not hold judgementally for $g'' \circ \ell$.  I don't
+see that it can, given the use of $\LEM{}$.  Clearly it does hold
+propositionally, if one takes $\lvert a \rvert' \defeq \lam{f}f(a)$ to be the
+analogue of the constructor for $\brck{A}$; for any $a : A$, we have $g(a) :
+B$, and the fact that $B$ is a mere proposition ensures that $(g'' \circ
+\ell)(\lvert a \rvert') = g(a)$.
+*)
+
+Section Exercise3_14.
+
+Hypothesis LEM : forall A, IsHProp A -> (A + ~A).
+
+Definition Brck' (A : Type) := ~ ~ A.
+Definition min1' {A : Type} (a : A) : Brck' A := fun f => f a.
+
+Definition contrapositive {A B : Type} : (A -> B) -> (~ B -> ~ A).
+  intros. intro a. apply X0. apply X. apply a.
+Defined.
+
+Definition DNE {B : Type} `{IsHProp B} : ~ ~ B -> B.
+  intros. destruct (LEM B IsHProp0). apply b. contradiction.
+Defined.
+
+Definition trunc_rect' {A B : Type} (g : A -> B) : IsHProp B -> Brck' A -> B.
+  intros HB a. apply DNE. apply (contrapositive (contrapositive g)). apply a.
+Defined.
+
+End Exercise3_14.
+
+(** %\exerdone{3.15}{128}%
 Show that if we assume propositional resizing, then the type
 %\[
   \prd{P:\prop}\left((A \to P) \to P\right)
 \]%
 has the same universal property as $\brck{A}$.
 *)
+
+(** %\soln%
+Let $A:\UU_{i}$, so that for $\brck{A}'' \defeq \prd{P:\prop_{\UU_{i}}} ((A \to
+P) \to P)$ we have $\brck{A}'' : \UU_{i+1}$.  By propositional resizing,
+however, we have a corresponding $\brck{A}'' : \UU_{i}$.  To construct an arrow
+$\brck{A}'' \to B$, suppose that $f : \brck{A}''$ and $g : A \to B$.  Then
+$f(B, g) : B$.  So $\lam{f}\tilde{f}(B, g) : \brck{A}'' \to B$, where
+$\tilde{f}$ is the image of $f$ under the inverse of the canonical inclusion
+$\prop_{\UU_{i}} \to \prop_{\UU_{i+1}}$.
+
+To show that the computation rule holds, let
+%\[
+  \lvert a \rvert'' \defeq \lam{P}{f}f(a) : \prd{P:\prop}\left((A \to P) \to P
+  \right)
+\]%
+We need to show that $(\lam{f}\tilde{f}(B, g))(\lvert a \rvert'') \equiv g(a)$.
+Assuming that propositional resizing gives a judgemental equality, we have
+%\begin{align*}
+  (\lam{f}\tilde{f}(B, g))(\lvert a \rvert '')
+  &\equiv
+  (\lam{f}\tilde{f}(B, g))(\lam{P}{f}f(a))
+  \\&\equiv
+  (\lam{P}{f}f(a))(B, g)
+  \\&\equiv
+  g(a)
+\end{align*}%
+*)
+
+Definition Brck'' (A : Type) := forall (P : hProp), ((A -> P) -> P).
+Definition min1'' {A : Type} (a : A) := fun (P : hProp) (f : A -> P) => f a.
+
+Definition trunc_rect'' {A B : Type} (g : A -> B) : IsHProp B -> Brck'' A -> B.
+  intros p f.
+  apply (f (hp B p)). apply g.
+Defined.
+
+
 
 (** %\exerdone{3.16}{128}%
 Assuming $\LEM{}$, show that double negation commutes with universal
@@ -754,14 +851,7 @@ overcomplicating the correctness proofs for [bounded_min], though.  No way can
 they be this long.
 *)
 
-
-Fixpoint add (n m : nat) :=
-  match n with
-    | O => m 
-    | S n' => S (add n' m)
-  end.
-
-Infix "+" := add : nat_scope.
+Local Open Scope nat_scope.
 
 Definition le (n m : nat) := {k : nat & n + k = m}.
 Infix "<=" := le : nat_scope.
@@ -990,7 +1080,7 @@ Proof.
   rewrite <- r' in r. rewrite plus_assoc in r. apply O_is_id in r.
   apply sum_Ol in r. rewrite r in r'. symmetry in r'. 
   rewrite <- plus_O_r in r'. apply r'.
-  induction X. exists 1. simpl.
+  induction X. exists 1%path. simpl.
   apply (HP n).
   exists X.
   assert (IsHProp (Q (n'; p'))).
@@ -1020,6 +1110,12 @@ Lemma foo : forall n m, ~ (n = m) -> (n <= m) -> ~ (m <= n).
 Defined.
 
 Lemma bar : forall n m, ~ n = S n + m.
+  induction n.
+  intros m p. apply Theorem2131 in p. contradiction.
+  intros m p. simpl in p. apply S_inj in p. apply (IHn m). apply p.
+Defined.
+
+Lemma baz : forall n m, ~ n = n + S m.
   induction n.
   intros m p. apply Theorem2131 in p. contradiction.
   intros m p. simpl in p. apply S_inj in p. apply (IHn m). apply p.
@@ -1065,9 +1161,6 @@ Defined.
 
 Lemma bmin_unique (P : nat -> Type) (H : decidable P) (n : nat) :
   P n -> forall m, P m -> (bounded_min P H n) = (bounded_min P H m).
-Proof.
-  intro p.
-  induction n.
 Admitted.
   
 Definition ex3_19_arrow (P : nat -> Type) (H : decidable P) : 
@@ -1138,7 +1231,7 @@ Proof.
 
   intro p. simpl. 
   assert (Contr (center A = center A)). apply contr_paths_contr.
-  assert (contr (center A) = 1). apply allpath_hprop.
+  assert (contr (center A) = idpath). apply allpath_hprop.
   rewrite X0. reflexivity.
 
   intro w. apply path_sigma_uncurried.
@@ -1186,3 +1279,186 @@ theorem.  Prove that the axiom of choice holds when $X$ is a finite type
 $\Fin(n)$.
 *)
 
+(** %\soln%
+We want to show that for all $n$, $A : \Fin(n) \to \UU$, and 
+$P : \prd{m_{n} : \Fin(n)} A(m_{n}) \to \UU$, if $A$ is a family of sets and
+$P$ a family of propositions, then
+%\[
+  \left(
+    \prd{m_{n} : \Fin(n)} \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
+  \right)
+  \to
+  \left\lVert
+    \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
+        P(m_{n}, g(m_{n}))
+  \right\rVert.
+\]%
+
+We proceed by induction.  For the base case, suppose that $n \equiv 0$, so we
+are interested in $\Fin(0) \defeq \sm{n:\mathbb{N}}(m < 0)$, which is
+equivalent to $\emptyt$.  Then we have $\ind{\emptyt}(A) : \prd{m_{0} :
+\Fin(0)} A(m_{0})$, so
+%\[
+  \left(
+    \ind{\emptyt}(A),
+    \ind{\emptyt}(\lam{m_{0}}P(m_{0}, \ind{\emptyt}(A, m_{0})))
+  \right)
+\]%
+is an element of the codomain.
+
+For the induction step, suppose that we have an element
+%\[
+  f : \prd{m_{n+1} : \Fin(n+1)} 
+        \left\lVert \sm{a:A(m_{n+1})} P(m_{n+1}, a)\right\rVert
+\]%
+which can be modified in the obvious way to give a function
+%\[
+  \tilde{f} : \prd{m_{n} : \Fin(n)} 
+        \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
+\]%
+So by the induction step, and since the element we're trying to construct is a
+mere proposition, we have an element
+%\[
+    w : \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
+        P(m_{n}, g(m_{n}))
+\]%
+
+Now, we need to construct an element of
+%\[
+\left\lVert
+    \sm{g : \prd{m_{n+1} : \Fin(n+1)} A(m_{n+1})} \prd{m_{n+1} : \Fin(n+1)}
+        P(m_{n+1}, g(m_{n+1}))
+\right\rVert
+\]%
+To construct the first slot, suppose that $k : \Fin(n + 1)$.  Then because we
+have $e : \Fin(n+1) \eqvsym \Fin(n) + \unit$, there are two cases: either $e(k)
+: \Fin(n)$ or $e(k) = *$.  In the first case, we set $g(e(k)) \defeq (\fst
+w)(e(k))$.  In the second, we 
+
+
+
+Suppose the first.  Then we can modify $f$ in the
+obvious way to obtain
+%\[
+  \tilde{f} : \prd{m_{n} : \Fin(n)} 
+        \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
+\]%
+So by the induction step, and since the element we're trying to construct is a
+mere proposition, we have an element
+%\[
+    w : \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
+        P(m_{n}, g(m_{n}))
+\]%
+
+
+
+
+*)
+
+Infix "<>" := (fun n m => ~ (n = m)) : nat_scope. 
+
+Definition pred (n : nat) :=
+  match n with
+    | O => O
+    | S n' => n'
+  end.
+
+Lemma S_pred_inv : forall n, (n <> O) -> S (pred n) = n.
+Proof.
+  induction n. intros. assert (0 = 0) as H' by reflexivity. contradiction.
+  intros. reflexivity.
+Defined.
+
+
+Definition cardF_f {n} : Fin (S n) -> (Fin n) + Unit.
+  intro x. destruct x as [m [k p]].
+  destruct (nat_eq_decidable m n).
+  right. apply tt.
+  left. exists m. exists (pred k). 
+  rewrite S_pred_inv.
+  simpl in p. rewrite <- plus_n_Sm in p. apply S_inj in p. apply p. 
+  intro. rewrite H in p.  rewrite <- plus_1_r in p. apply S_inj in p. 
+  contradiction.
+Defined.
+
+Definition Fin_incl {n : nat} : Fin n -> Fin (S n).
+  intros m. destruct m as [m [k p]].
+  exists m. exists (S k). apply ((plus_n_Sm m (S k))^ @ (ap S p)).
+Defined.
+
+Definition cardF_g {n} : (Fin n) + Unit -> Fin (S n).
+  intro x. destruct x as [m | t]. apply (Fin_incl m).
+  exists n. exists 0. apply (plus_1_r n)^.
+Defined.
+  
+Lemma sum_O_r (n m : nat) : n + m = n -> m = 0.
+Proof.
+  induction n. simpl. apply idmap.
+  intros. simpl in H. apply S_inj in H. apply IHn. apply H.
+Defined.
+
+Lemma cardFO : Fin O <~> Empty.
+Proof.
+  refine (equiv_adjointify _ _ _ _).
+  intro e. contradiction.
+  intro n. destruct n as [n [k p]].
+  assert (n + S k = 0) as q. apply p. rewrite <- plus_n_Sm in q.
+  apply Theorem2131 in q. contradiction.
+  Grab Existential Variables. contradiction.
+  intro n. destruct n as [n [k p]].
+  assert (n + S k = 0) as q. apply p. rewrite <- plus_n_Sm in q.
+  apply Theorem2131 in q. contradiction.
+Defined.
+
+Lemma cardF {n : nat} : Fin (S n) <~> (Fin n) + Unit.
+Proof.
+  intros. refine (equiv_adjointify cardF_f cardF_g _ _); intros x.
+  unfold cardF_f, cardF_g. simpl.
+  destruct x. simpl. destruct f as [m [k p]]. simpl.
+  destruct (nat_eq_decidable m n). simpl.
+  rewrite <- p in p0. assert (m <> m + S k). apply baz. contradiction.
+  simpl. apply (ap inl). apply path_sigma_uncurried. simpl. exists idpath.
+  simpl. apply path_sigma_uncurried. simpl. exists idpath.
+  simpl. apply ishset_nat.
+  destruct (nat_eq_decidable n n). apply (ap inr). apply path_unit.
+  assert Empty. apply n0. reflexivity. contradiction.
+
+  unfold cardF_f, cardF_g. simpl. destruct x as [m [k p]].
+  destruct (nat_eq_decidable m n).
+  apply path_sigma_uncurried. simpl. exists p0^. simpl.
+  induction p0. simpl. apply path_sigma_uncurried. simpl.
+  assert (0 = k). symmetry. apply sum_O_r with (n := S m). 
+  rewrite <- plus_n_Sm in p. simpl.
+  apply p. exists X.
+  apply ishset_nat.
+  apply path_sigma_uncurried. simpl. exists idpath. simpl. 
+  apply path_sigma_uncurried. simpl.
+  assert (k <> 0). intro. rewrite X in p.
+  rewrite <- plus_n_Sm in p. apply S_inj in p. rewrite <- plus_0_r in p.
+  contradiction.
+  exists (S_pred_inv k X). apply ishset_nat.
+Defined.
+
+Theorem ex3_22 `{Univalence}: forall (n : nat) (A : Fin n -> Type)
+                        (P : forall (m : Fin n), A m -> Type),
+  (forall n, IsHSet (A n)) -> (forall m a, IsHProp (P m a)) ->
+  (forall m, Brck {a : A m & P m a}) -> 
+  Brck {g : forall m, A m & forall k, P k (g k)}.
+Proof.
+  induction n.
+  
+  (* case n = 0 *)
+  intros A P HA HP f. apply min1.
+  assert (forall m, A m). intros. contradiction (cardFO m).
+  exists X. intro. contradiction (cardFO k).
+
+  (* case n = S n *)
+  intros A P HA HP f.
+  assert (forall k : Fin n, Brck {a : A (Fin_incl k) & P (Fin_incl k) a}) as w.
+  intros. apply (f (Fin_incl k)).
+  apply IHn in w. strip_truncations.
+  apply min1. assert (forall m : Fin (S n), A m) as g.
+  intro m. destruct (cardF m).
+Admitted.
+
+Local Close Scope nat_scope.

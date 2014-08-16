@@ -1,10 +1,12 @@
 (* begin hide *)
-Require Import HoTT.
+Require Export chap01.
+Open Scope type_scope.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Homotopy type theory *)
+
 
 
 (** %\exerdone{2.1}{103}%  
@@ -1033,22 +1035,18 @@ At this point we have shown that
 \]%
 Since equivalence is an equivalence relation, this means that $g$ is an
 equivalence iff $h$ is an equivalence, which is what was to be proved.
-
-NB: using [rewrite] in a transparent proof is a bad idea.
 *)
 
-Lemma compose_assoc {A B C D} : forall (f: C -> D) (g: B -> C) (h: A -> B),
-  f o (g o h) = (f o g) o h.
-  trivial. Defined.
+Section Exercise2_12.
 
-(*Section Exercise2_12.
 Variables (A B C D E F X : Type) (ab:A->B) (ac:A->C) (bd:B->D)
           (cd:C->D) (ce:C->E) (df:D->F) (ef:E->F)
           (l: bd o ab = cd o ac) (r: df o cd = ef o ce).
 
 Definition e : df o bd o ab = ef o ce o ac.
-  rewrite <- compose_assoc. rewrite l. rewrite compose_assoc.
-  rewrite r. reflexivity.
+  transitivity (df o cd o ac).
+  apply (ap (compose df) l).
+  apply (ap (fun (f: C -> F) => f o ac) r).
 Defined.
 
 Definition f (k : X->C) : pullback (@compose X _ _ df) (@compose X _ _ ef) :=
@@ -1056,14 +1054,28 @@ Definition f (k : X->C) : pullback (@compose X _ _ df) (@compose X _ _ ef) :=
 
 Hypothesis right_pullback : IsEquiv(f).
 
-Lemma comp_ce_is_proj2 : forall (k : pullback (@compose X _ _ df) 
+Lemma comp_cd_is_pr1 : forall (k : pullback (@compose X _ _ df) 
+                                              (@compose X _ _ ef)),
+                           cd o f^-1 k = k.1.
+Proof.
+  intros.
+  change (cd o f^-1 k) with (f (f^-1 k)).1.
+  apply (ap pr1 (eisretr f k)).
+Defined.
+
+Lemma comp_ce_is_pr2 : forall (k : pullback (@compose X _ _ df) 
                                               (@compose X _ _ ef)),
                            ce o f^-1 k = k.2.1.
 Proof.
   intros.
   change (ce o f^-1 k) with (f (f^-1 k)).2.1.
-  unfold pullback in k. (* can't unify (f (f^-1 k)).2.1 = k.2.1 with itself? *)
-  rewrite eisretr. reflexivity.
+  apply (ap ((fun (k : pullback (@compose X _ _ df) (@compose X _ _ ef))
+                   => k.2.1))
+             (@eisretr (X -> C) 
+                       (pullback (@compose X _ _ df) (@compose X _ _ ef))
+                       f 
+                       right_pullback
+                       k)).
 Defined.
 
 Definition phi (k: pullback (@compose X _ _ bd) (@compose X _ _ cd))
@@ -1078,41 +1090,24 @@ Lemma ex2_12_alpha : forall k, phi (phi_inv k) = k.
 Proof.
   unfold phi, phi_inv. intro k.
   apply path_sigma_uncurried. exists 1. simpl.
-  apply path_sigma_uncurried. simpl. exists (comp_ce_is_proj2 (bd o k.1; k.2)).
+  apply path_sigma_uncurried. simpl. exists (comp_ce_is_pr2 (bd o k.1; k.2)).
+  unfold comp_ce_is_pr2.
   rewrite trans_paths. rewrite ap_const. simpl. rewrite concat_1p.
-  rewrite <- ap_apply_Fl. 
-  rewrite ap_V. rewrite concat_pp_p.
-  apply moveR_Vp. destruct k as [a [b p]]; simpl.
+  rewrite <- ap_apply_Fl.
 Admitted.
-    
 
-Lemma foo : forall (k: pullback (compose bd) (compose cd)),
-              f ^-1 (bd o k .1;
-                     (ce o k.2.1;
-                      ap (compose df) k.2.2 @ ap10 (ap compose r) k.2.1)) 
-              =
-              (k .2) .1.
-Proof.
-  intros. 
-  apply (ap f)^-1.
-  rewrite eisretr. unfold f.
-  apply path_sigma_uncurried. simpl. exists k.2.2. 
-  rewrite transport_sigma'. simpl.
-  apply path_sigma_uncurried. exists 1. simpl.
-  rewrite trans_paths. simpl. rewrite concat_p_pp. rewrite concat_Vp. 
-  rewrite concat_1p. apply moveR_Mp. rewrite concat_Vp.
-  destruct k as [a [b p]]. simpl. induction p. reflexivity.
-Defined.
 
-Lemma beta : forall k, phi_inv (phi k) = k.
+Lemma ex2_12_beta : forall k, phi_inv (phi k) = k.
 Proof.
   intro k. unfold phi_inv, phi. simpl.
   apply path_sigma_uncurried. exists 1. simpl.
   apply path_sigma_uncurried. simpl.
-  exists (foo k).
-  rewrite trans_paths. rewrite ap_const. simpl.
-  rewrite concat_1p. unfold foo.
+  assert (f^-1 (bd o k .1; 
+                (ce o k.2.1; 
+                 ap (compose df) k.2.2 @ ap10 (ap compose r) k.2.1)) 
+          = k.2.1).
 Admitted.
+  
   
   
    
@@ -1121,22 +1116,29 @@ Theorem ex2_12_helper :
   pullback (@compose X _ _ bd) (@compose X _ _ cd)
   <~> pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef).
 Proof.
-  refine (equiv_adjointify phi phi_inv _ _).
+  apply (equiv_adjointify phi phi_inv ex2_12_alpha ex2_12_beta).
+Defined.
+  
+Theorem ex2_12 : 
+  (X -> A) <~> pullback (@compose X _ _ bd) (@compose X _ _ cd)
+  <->
+  (X -> A) <~> pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef).
+Proof.
+  split. 
 
-  (* alpha *)
-  unfold Sect, phi, phi_inv. intro k. simpl.
-  apply path_sigma_uncurried. exists 1. simpl.
-  apply path_sigma_uncurried. simpl.
-  exists (comp_ce_is_proj2 (bd o k.1; k.2)).
-  rewrite transport_paths_Fr.
-  rewrite concat_pp_p.
-  rewrite <- inverse_ap.
-Admitted.
+  intros. 
+  apply (@equiv_compose' _ (pullback (@compose X _ _ bd) (@compose X _ _ cd))).
+  apply ex2_12_helper. apply X0.
+
+  intros.
+  apply (@equiv_compose' _ (pullback (@compose X _ _ (df o bd))
+                                     (@compose X _ _ ef))).
+  apply (equiv_inverse ex2_12_helper). apply X0.
+Defined.
   
-  
+
   
 End Exercise2_12.
-*)
 
 
 (** %\exerdone{2.13}{104}% 
@@ -1381,7 +1383,7 @@ is contractible.  Since any two contractible types are equivalent, this means
   \left(\tsm{g:\prd{x:A}B(x)} (f \sim g)\right)   
 \]%
 Since the first is contractible by Lemma 3.11.8.  Thus, we've shown
-that $\total(\happly(f))$, as defined in Definition 4.7.5, is an
+that $\total{\happly(f)}$, as defined in Definition 4.7.5, is an
 equivalence.  By Theorem 4.7.7, this makes $\happly(f, g)$ an
 equivalence for all $g$, proving the result.  Fingers crossed that none of the
 HoTT library lemmas I use depend on [Funext] or [Univalence].

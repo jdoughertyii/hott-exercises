@@ -1280,18 +1280,187 @@ At this point we have shown that
 \]
 Since equivalence is an equivalence relation, this means that $g$ is an
 equivalence iff $h$ is an equivalence, which is what was to be proved.
-
-
-NB: using \coqdoctac{rewrite} in a transparent proof is a bad idea.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{chap02.compose assoc}{compose\_assoc}{\coqdoclemma{compose\_assoc}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{C} \coqdocvar{D}\} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{f}: \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{D}) (\coqdocvar{g}: \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{h}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}),\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvariable{f} \coqdocnotation{o} \coqdocnotation{(}\coqdocvariable{g} \coqdocnotation{o} \coqdocvariable{h}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{f} \coqdocnotation{o} \coqdocvariable{g}\coqdocnotation{)} \coqdocnotation{o} \coqdocvariable{h}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{trivial}. \coqdockw{Defined}.\coqdoceol
+\coqdockw{Section} \coqdef{chap02.Exercise2 12}{Exercise2\_12}{\coqdocsection{Exercise2\_12}}.\coqdoceol
 \coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variables} (\coqdef{chap02.Exercise2 12.A}{A}{\coqdocvariable{A}} \coqdef{chap02.Exercise2 12.B}{B}{\coqdocvariable{B}} \coqdef{chap02.Exercise2 12.C}{C}{\coqdocvariable{C}} \coqdef{chap02.Exercise2 12.D}{D}{\coqdocvariable{D}} \coqdef{chap02.Exercise2 12.E}{E}{\coqdocvariable{E}} \coqdef{chap02.Exercise2 12.F}{F}{\coqdocvariable{F}} \coqdef{chap02.Exercise2 12.X}{X}{\coqdocvariable{X}} : \coqdockw{Type}) (\coqdef{chap02.Exercise2 12.ab}{ab}{\coqdocvariable{ab}}:\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{B}) (\coqdef{chap02.Exercise2 12.ac}{ac}{\coqdocvariable{ac}}:\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{C}) (\coqdef{chap02.Exercise2 12.bd}{bd}{\coqdocvariable{bd}}:\coqdocvariable{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{D})\coqdoceol
+\coqdocindent{5.00em}
+(\coqdef{chap02.Exercise2 12.cd}{cd}{\coqdocvariable{cd}}:\coqdocvariable{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{D}) (\coqdef{chap02.Exercise2 12.ce}{ce}{\coqdocvariable{ce}}:\coqdocvariable{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{E}) (\coqdef{chap02.Exercise2 12.df}{df}{\coqdocvariable{df}}:\coqdocvariable{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{F}) (\coqdef{chap02.Exercise2 12.ef}{ef}{\coqdocvariable{ef}}:\coqdocvariable{E}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{F})\coqdoceol
+\coqdocindent{5.00em}
+(\coqdef{chap02.Exercise2 12.l}{l}{\coqdocvariable{l}}: \coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{ab} \coqdocnotation{=} \coqdocvariable{cd} \coqdocnotation{o} \coqdocvariable{ac}) (\coqdef{chap02.Exercise2 12.r}{r}{\coqdocvariable{r}}: \coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{cd} \coqdocnotation{=} \coqdocvariable{ef} \coqdocnotation{o} \coqdocvariable{ce}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.e}{e}{\coqdocdefinition{e}} : \coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{ab} \coqdocnotation{=} \coqdocvariable{ef} \coqdocnotation{o} \coqdocvariable{ce} \coqdocnotation{o} \coqdocvariable{ac}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{cd} \coqdocnotation{o} \coqdocvariable{ac}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{compose} \coqdocvariable{df}) \coqdocvariable{l}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} (\coqdockw{fun} (\coqdocvar{f}: \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{F}) \ensuremath{\Rightarrow} \coqdocvariable{f} \coqdocnotation{o} \coqdocvariable{ac}) \coqdocvariable{r}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.f}{f}{\coqdocdefinition{f}} (\coqdocvar{k} : \coqdocvariable{X}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{C}) : \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{df}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}) :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{cd} \coqdocnotation{o} \coqdocvariable{k}\coqdocnotation{;} \coqdocnotation{(}\coqdocvariable{ce} \coqdocnotation{o} \coqdocvariable{k}\coqdocnotation{;} \coqdocdefinition{ap10} (\coqdocdefinition{ap} \coqdocdefinition{compose} \coqdocvariable{r}) \coqdocvariable{k}\coqdocnotation{))}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{chap02.Exercise2 12.right pullback}{right\_pullback}{\coqdocvariable{right\_pullback}} : \coqdocclass{IsEquiv}(\coqref{chap02.f}{\coqdocdefinition{f}}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.comp cd is pr1}{comp\_cd\_is\_pr1}{\coqdoclemma{comp\_cd\_is\_pr1}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{k} : \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{df}) \coqdoceol
+\coqdocindent{23.00em}
+(@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef})),\coqdoceol
+\coqdocindent{13.50em}
+\coqdocvariable{cd} \coqdocnotation{o} \coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{k} \coqdocnotation{=} \coqdocvariable{k}\coqdocnotation{.1}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{change} (\coqdocvariable{cd} \coqdocnotation{o} \coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{k}) \coqdockw{with} \coqdocnotation{(}\coqref{chap02.f}{\coqdocdefinition{f}} (\coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{k})\coqdocnotation{).1}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqdocabbreviation{pr1} (\coqdocmethod{eisretr} \coqref{chap02.f}{\coqdocdefinition{f}} \coqdocvar{k})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.comp ce is pr2}{comp\_ce\_is\_pr2}{\coqdoclemma{comp\_ce\_is\_pr2}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{k} : \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{df}) \coqdoceol
+\coqdocindent{23.00em}
+(@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef})),\coqdoceol
+\coqdocindent{13.50em}
+\coqdocvariable{ce} \coqdocnotation{o} \coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvariable{k} \coqdocnotation{=} \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{.1}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{change} (\coqdocvariable{ce} \coqdocnotation{o} \coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{k}) \coqdockw{with} \coqdocnotation{(}\coqref{chap02.f}{\coqdocdefinition{f}} (\coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocvar{k})\coqdocnotation{).2}\coqdocnotation{.1}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} ((\coqdockw{fun} (\coqdocvar{k} : \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{df}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}))\coqdoceol
+\coqdocindent{9.50em}
+\ensuremath{\Rightarrow} \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{.1}))\coqdoceol
+\coqdocindent{6.50em}
+(@\coqdocmethod{eisretr} (\coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) \coqdoceol
+\coqdocindent{11.50em}
+(\coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{df}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}))\coqdoceol
+\coqdocindent{11.50em}
+\coqref{chap02.f}{\coqdocdefinition{f}} \coqdoceol
+\coqdocindent{11.50em}
+\coqdocvariable{right\_pullback}\coqdoceol
+\coqdocindent{11.50em}
+\coqdocvar{k})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.phi}{phi}{\coqdocdefinition{phi}} (\coqdocvar{k}: \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{bd}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{cd}))\coqdoceol
+\coqdocnoindent
+: \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd})) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}) :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocnotation{(}\coqdocvariable{ce} \coqdocnotation{o} \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{.1}\coqdocnotation{;} \coqdocnotation{(}\coqdocdefinition{ap} (\coqdocdefinition{compose} \coqdocvariable{df}) \coqdocvariable{k}\coqdocnotation{.2.2}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap10} (\coqdocdefinition{ap} \coqdocdefinition{compose} \coqdocvariable{r}) \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{.1}\coqdocnotation{)}\coqdocnotation{))}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{chap02.phi inv}{phi\_inv}{\coqdocdefinition{phi\_inv}} (\coqdocvar{k}: \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd})) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}))\coqdoceol
+\coqdocnoindent
+: \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{bd}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{cd}) :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocnotation{(}\coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{);} \coqdocnotation{(}\coqdocdefinition{base\_path} (\coqdocmethod{eisretr} \coqref{chap02.f}{\coqdocdefinition{f}} \coqdocnotation{(}\coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvariable{k}\coqdocnotation{.2}\coqdocnotation{)})\coqdocnotation{)\^{}}\coqdocnotation{))}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.ex2 12 alpha}{ex2\_12\_alpha}{\coqdoclemma{ex2\_12\_alpha}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{k}, \coqref{chap02.phi}{\coqdocdefinition{phi}} (\coqref{chap02.phi inv}{\coqdocdefinition{phi\_inv}} \coqdocvariable{k}) \coqdocnotation{=} \coqdocvariable{k}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqref{chap02.phi}{\coqdocdefinition{phi}}, \coqref{chap02.phi inv}{\coqdocdefinition{phi\_inv}}. \coqdoctac{intro} \coqdocvar{k}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{\ensuremath{\exists}} (\coqref{chap02.comp ce is pr2}{\coqdoclemma{comp\_ce\_is\_pr2}} \coqdocnotation{(}\coqdocvariable{bd} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqref{chap02.comp ce is pr2}{\coqdoclemma{comp\_ce\_is\_pr2}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{rewrite} \coqdoclemma{trans\_paths}. \coqdoctac{rewrite} \coqdocdefinition{ap\_const}. \coqdoctac{simpl}. \coqdoctac{rewrite} \coqdocdefinition{concat\_1p}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocdefinition{ap\_apply\_Fl}.\coqdoceol
+\coqdocnoindent
+\coqdocvar{Admitted}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{chap02.ex2 12 beta}{ex2\_12\_beta}{\coqdoclemma{ex2\_12\_beta}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{k}, \coqref{chap02.phi inv}{\coqdocdefinition{phi\_inv}} (\coqref{chap02.phi}{\coqdocdefinition{phi}} \coqdocvariable{k}) \coqdocnotation{=} \coqdocvariable{k}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{k}. \coqdoctac{unfold} \coqref{chap02.phi inv}{\coqdocdefinition{phi\_inv}}, \coqref{chap02.phi}{\coqdocdefinition{phi}}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqref{chap02.f}{\coqdocdefinition{f}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{bd} \coqdocnotation{o} \coqdocvar{k} \coqdocnotation{.1}\coqdocnotation{;} \coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{(}\coqdocvariable{ce} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{.1}\coqdocnotation{;} \coqdoceol
+\coqdocindent{8.50em}
+\coqdocdefinition{ap} (\coqdocdefinition{compose} \coqdocvariable{df}) \coqdocvar{k}\coqdocnotation{.2.2} \coqdocnotation{@} \coqdocdefinition{ap10} (\coqdocdefinition{ap} \coqdocdefinition{compose} \coqdocvariable{r}) \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{.1}\coqdocnotation{))} \coqdoceol
+\coqdocindent{5.00em}
+\coqdocnotation{=} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{.1}).\coqdoceol
+\coqdocnoindent
+\coqdocvar{Admitted}.\coqdoceol
+\coqdocemptyline
+\coqdocemptyline
+\coqdocemptyline
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap02.ex2 12 helper}{ex2\_12\_helper}{\coqdoclemma{ex2\_12\_helper}} : \coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{bd}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{cd})\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{\ensuremath{\eqvsym}} \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd})) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{equiv\_adjointify} \coqref{chap02.phi}{\coqdocdefinition{phi}} \coqref{chap02.phi inv}{\coqdocdefinition{phi\_inv}} \coqref{chap02.ex2 12 alpha}{\coqdocaxiom{ex2\_12\_alpha}} \coqref{chap02.ex2 12 beta}{\coqdocaxiom{ex2\_12\_beta}}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{chap02.ex2 12}{ex2\_12}{\coqdoclemma{ex2\_12}} : \coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{bd}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{cd})\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '<->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\leftrightarrow}}}\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd})) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{split}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intros}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (@\coqdocdefinition{equiv\_compose'} \coqdocvar{\_} (\coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{bd}) (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{cd}))).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{chap02.ex2 12 helper}{\coqdoclemma{ex2\_12\_helper}}. \coqdoctac{apply} \coqdocvar{X0}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intros}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (@\coqdocdefinition{equiv\_compose'} \coqdocvar{\_} (\coqdocdefinition{pullback} (@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} (\coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd}))\coqdoceol
+\coqdocindent{18.50em}
+(@\coqdocdefinition{compose} \coqdocvariable{X} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{ef}))).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdoclemma{equiv\_inverse} \coqref{chap02.ex2 12 helper}{\coqdoclemma{ex2\_12\_helper}}). \coqdoctac{apply} \coqdocvar{X0}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{chap02.Exercise2 12}{\coqdocsection{Exercise2\_12}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
 \exerdone{2.13}{104} 
@@ -1592,7 +1761,7 @@ is contractible.  Since any two contractible types are equivalent, this means
   \left(\tsm{g:\prd{x:A}B(x)} (f \sim g)\right)   
 \]
 Since the first is contractible by Lemma 3.11.8.  Thus, we've shown
-that $\total(\happly(f))$, as defined in Definition 4.7.5, is an
+that $\total{\happly(f)}$, as defined in Definition 4.7.5, is an
 equivalence.  By Theorem 4.7.7, this makes $\happly(f, g)$ an
 equivalence for all $g$, proving the result.  Fingers crossed that none of the
 HoTT library lemmas I use depend on \coqdocclass{Funext} or \coqdocclass{Univalence}.

@@ -10,7 +10,6 @@ pdf: $(TCHAPS)
 tex/%.tex : %.v %.glob
 	coqdoc --interpolate --latex --body-only -s -d tex $<
 	mv $*.glob src
-	mv $*.vo src
 	cp {src,tex}/coqdoc.sty
 
 %.glob : %.v
@@ -18,6 +17,6 @@ tex/%.tex : %.v %.glob
 
 clean:
 	rm -f src/*.glob
-	rm -f src/*.vo
+	rm -f *.vo
 	rm -f tex/chap*.tex
 	cd $(TEXDIR) ; make clean
