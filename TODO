@@ -1,0 +1,4 @@
+* figure out the Module/Section stuff
+  - Pick a style
+  - refactor ch1-5 to fit that style and make Notations and Scopes consistent
+* fix coqdoc compilation so that cross-references are right

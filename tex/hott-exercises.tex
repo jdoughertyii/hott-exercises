@@ -61,56 +61,8 @@
 
 \begin{python}
 import glob
-for chap in glob.iglob('chap*.tex'):
+for chap in glob.iglob('Ch*.tex'):
     print r'\input{{{chap}}}'.format(chap=chap)
 \end{python}
-
-%\appendix
-%\section{Statistics}
-%
-%\begin{python}
-%from __future__ import division
-%import glob
-%import subprocess
-%
-%total_done = 0
-%total_exer = 0
-%
-%print r'\begin{itemize}'
-%for chap in glob.iglob('chap*.tex'):
-%    this_done = 0
-%    this_total = 0
-%
-%    try:
-%        this_done = int(subprocess.check_output(['grep', '-c', r'%DONE', chap]))
-%    except subprocess.CalledProcessError:
-%        this_done = 0
-%
-%    try:
-%        this_total = int(subprocess.check_output(['grep', '-c', r'\\exer', chap]))
-%    except subprocess.CalledProcessError:
-%        this_total = 0
-%
-%    try:
-%        print r'\item {chap}: {done}/{total} {ratio:.2f}\%'.format(chap=chap,
-%          done=this_done, total=this_total, ratio=((this_done/this_total)*100))
-%    except ZeroDivisionError:
-%        print r'\item {chap}: 0/0 100.00\%'.format(chap=chap)
-%
-%    total_done += this_done
-%    total_exer += this_total
-%
-%print r'\end{itemize}'
-%
-%try:
-%  print '{done}/{total}: {ratio:.2f}\%'.format(done=total_done,
-%                              total=total_exer,
-%                              ratio=((total_done/total_exer)*100))
-%  if total_done/total_exer >= .25:
-%    print '--- Move on!'
-%except ZeroDivisionError:
-%  print '0/0: 0.00\%'
-%
-%\end{python}
 
 \end{document}

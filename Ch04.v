@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export HoTT chap03.
+Require Export HoTT Ch03.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -20,18 +20,6 @@ By Lemma 4.2.2, we know that if $f$ is an equivalence, then this type is
 inhabited.  Give a characterization of this type analogous to Lemma 4.1.1.
 Give an example showing that this type is not generally a mere proposition.
 *)
-
-
-Definition tsaed {A B} (f : A -> B) :=
-  {g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
-    (forall x, (ap f (h x)) = e (f x)) * (forall y, (ap g (e y)) = h (g y))}}}.
-
-
-Definition step1_f {A B} (f : A -> B) : (tsaed f) -> 
-  {g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
-    (forall x, (ap f (h x)) = e (f x))}}} 
-  :=
-  fun X => (X.1; (X.2.1; (X.2.2.1; fst X.2.2.2))).
 
 
 (** %\exer{4.2}{147}% 
@@ -140,7 +128,6 @@ Definition ex4_4_g (w : (hfiber f b)) : (hfiber f_star (b; 1)).
   induction w.2. reflexivity.
 Defined.
 
-
 Lemma ex4_4_alpha : Sect ex4_4_g ex4_4_f.
 Proof.
   unfold ex4_4_f, ex4_4_g. 
@@ -154,7 +141,16 @@ Lemma ex4_4_beta : Sect ex4_4_f ex4_4_g.
 Proof.
   unfold ex4_4_f, ex4_4_g, f_star. intro w.
   apply path_sigma_uncurried. simpl.
-  assert (((w .1) .1; ap g (base_path w .2)) = w .1).
+  assert ((w.1.1; ap g (base_path w.2)) = w.1).
+  unfold hfiber in w.
+  apply (@path_sigma A (fun x:A => (g o f) x = g b) 
+                     (w.1.1; ap g (base_path w.2))
+                     w.1
+                     1).
+  simpl. 
+  (*
+  apply (@hfiber_triangle B C g (g b) (b; 1) (f w.1.1; w.1.2) w.2^).
+                     
   apply path_sigma_uncurried. exists 1. simpl.
   destruct w as [[a p] q]. simpl in *.
   transitivity ((ap g (base_path q))^)^. symmetry. apply inv_V.
@@ -165,6 +161,7 @@ Proof.
   apply (@hfiber_triangle B C g (g b) (b; 1) (f a; p) q^).
   exists X.
   destruct w as [[a p] q]. simpl in *.
+  *)
 Admitted.
   
 
@@ -467,9 +464,13 @@ Proof.
   apply ((X1 a).2 1). hott_simpl.
 Defined.
   
-Definition idtoqinv_Bool : 
-  ((Bool:Type) <~> (Bool:Type)) -> ((Bool:Type) = (Bool:Type)).
+Definition Bool_Bool_to_a_a : 
+  ((Bool:Type) <~> (Bool:Type)) -> 
+  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
+  =
+  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}).
   intros.
+  apply path_sigma_hprop. simpl.
   apply (qinv_univalence Bool Bool).1.
   destruct X. exists equiv_fun.
   destruct equiv_isequiv. exists equiv_inv.
@@ -497,24 +498,10 @@ Proof.
   set (q := (path_sigma_hprop a a ((qinv_univalence Bool Bool).1 (lnot; r)))).
   assert {f : forall x, x = x & (f a) = q}.
   apply Lemma412.
-  apply (ex3_1' (Bool <~> Bool)).
-  refine (equiv_adjointify ((path_sigma_hprop a a) o idtoqinv_Bool) 
-                           (a_a_to_Bool_Bool)
-                           _ _);
-  unfold idtoqinv_Bool, a_a_to_Bool_Bool, compose.
+  apply (ex3_1' ((Bool:Type) <~> (Bool:Type))).
+  refine (equiv_adjointify Bool_Bool_to_a_a a_a_to_Bool_Bool _ _);
+  unfold Bool_Bool_to_a_a, a_a_to_Bool_Bool.
   intro p. simpl.
 Admitted.
   
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-
-
 End Exercise4_6.

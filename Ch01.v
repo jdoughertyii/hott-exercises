@@ -11,11 +11,7 @@ will be assumed throughout that it has been imported by *)
 
 Require Export HoTT.
 
-(** %\noindent%
-Each part of each exercise has its own [Section] in the Coq file, so [Context]
-    declarations don't extend beyond the exercise, and sometimes they're even more
-    restricted than that.
-
+(**
 %\tableofcontents%
 
 
@@ -61,9 +57,6 @@ Derive the recursion principle for products $\rec{A \times B}$ using only the
     same for $\Sigma$-types.  *)
 
 
-Section Exercise2a.
-  Context {A B : Type}.
-
   (** %\soln% 
     The recursion principle states that we can define a function $f : A
     \times B \to C$ by giving its value on pairs.  Suppose that we have projection
@@ -80,6 +73,9 @@ g(\fst p)(\snd p)
 or, in Coq,
    *)
 
+
+Section Exercise2a.
+  Context {A B : Type}.
 
   Definition recprd (C : Type) (g : A -> B -> C) (p : A * B) := g (fst p) (snd p).
 
@@ -1767,7 +1763,9 @@ Definition Fin (n:nat) : Type := {m:nat & m < n}.
     (m, p) : \sum{m:\mathbb{N}}(m < n) \equiv \Fin(n)
     \]%
     Moreover, these two constructions are clearly inverses, so we have our
-    bijection.  It's not clear to me how to formulate this correctness claim in Coq.
+    bijection.  To formalize this argument, I have to appeal to the fact that
+    equality in $\mathbb{N}$ is decidable as well as the notion of equivalence
+    introduced in the next chapter.  I prove it in Exercise 3.22.
 
     To define $\fmax$, note that one can think of an element of $\Fin(n)$ as a
     tuple $(m, (k, p))$, where $p : m + \suc(k) = n$.  The maximum element of

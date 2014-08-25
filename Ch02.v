@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export chap01.
+Require Export Ch01.
 Open Scope type_scope.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)

@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export HoTT chap02.
+Require Export HoTT Ch02.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -983,7 +983,7 @@ Proof.
     + intros. apply IHn. apply Sn_le_Sm__n_le_m. apply H.
 Defined.
 
-Lemma subtract_on_right : forall n m k, (n + m = n + k) -> (m = k).
+Lemma subtract_on_left : forall n m k, (n + m = n + k) -> (m = k).
 Proof.
   induction n. 
   intros. apply H.
@@ -1088,7 +1088,7 @@ Proof.
   simpl. apply hprop_allpath. intros w w'.
   apply path_sigma_uncurried.
   destruct w, w'. simpl. 
-  assert (x = x0). apply subtract_on_right with (n := n').
+  assert (x = x0). apply subtract_on_left with (n := n').
   apply (p0 @ p1^). exists X0.
   induction X0. simpl. apply ishset_nat. apply X0.
 Defined.
@@ -1456,9 +1456,15 @@ Proof.
   intros A P HA HP f.
   assert (forall k : Fin n, Brck {a : A (Fin_incl k) & P (Fin_incl k) a}) as w.
   intros. apply (f (Fin_incl k)).
-  apply IHn in w. strip_truncations.
-  apply min1. assert (forall m : Fin (S n), A m) as g.
-  intro m. destruct (cardF m).
-Admitted.
+  apply IHn in w. 
+  strip_truncations.
+  assert (forall m : Fin (S n), A m) as g.
+  intro m. 
+  rewrite <- (eissect cardF m). 
+  destruct (cardF m) as [em | m_m]; simpl.
+    apply (w.1 em).
+    Admitted.
+    
+  
 
 Local Close Scope nat_scope.
