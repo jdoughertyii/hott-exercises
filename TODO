@@ -1,4 +1,9 @@
+* fix the things that got broke in the last update
 * figure out the Module/Section stuff
   - Pick a style
   - refactor ch1-5 to fit that style and make Notations and Scopes consistent
 * fix coqdoc compilation so that cross-references are right
+* s/isContr/Contr
+* use HoTTBook.v for numbered lemmas & theorems
+* get the f from the PBL out of the global namespace
+* fix the nat_scope issues

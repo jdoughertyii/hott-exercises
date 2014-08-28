@@ -357,14 +357,14 @@ Show that if $\UU_{i+1}$ satisfies $\LEM{}$, then the canonical inclusion
 $\prop_{\UU_{i}} \to \prop_{\UU_{i+1}}$ is an equivalence.
 *)
 
-(* %\soln%
+(** %\soln%
 If $\LEM{i+1}$ holds, then $\LEM{i}$ holds as well.  For suppose that
 $A : \UU_{i}$ and $p : \isprop(A)$.  Then we also have $A :
 \UU_{i+1}$, so $\LEM{i+1}(A, p) : A + \lnot A$, establishing
 $\LEM{i}$.  By the previous exercise, then, $\prop_{\UU_{i}} \eqvsym
 \bool \eqvsym \prop_{\UU_{i+1}}$.
 
-Since Coq doesn't let the user access the [Type]$_{i}$ hierarchy,
+Since Coq doesn't let the user access the [Type]${}_{i}$ hierarchy,
 there's not much to do here.  This is really more of a ``proof by
 contemplation'' anyway.
 *)
@@ -432,7 +432,7 @@ Proof.
                     (f Bool (transport (fun A => Brck A) 
                                        (path_universe negb)^
                                        b))).
-  apply (@transport_arrow Type (fun A => Brck A) idmap).
+  apply (@transport_arrow Type0 (fun A => Brck A) idmap).
   rewrite X in X0.
   assert (b = (transport (fun A : Type => Brck A) (path_universe negb) ^ b)).
   apply allpath_hprop. rewrite <- X1 in X0. symmetry in X0.
@@ -471,7 +471,7 @@ Proof.
   destruct (LEM (Brck A) minus1Trunc_is_prop).
   apply (minus1Trunc_rect_nondep (fun a => min1 (fun _ : Brck A => a))).
   apply minus1Trunc_is_prop. apply m.
-  apply min1. intro a. contradiction.
+  apply min1. intro a. contradiction n.
 Defined.
 
 End Exercise3_12.
@@ -570,7 +570,7 @@ Proof.
   destruct (LEM' (Y x)). apply y.
   assert (Brck (Y x)) as y'. apply HY.
   assert (~ Brck (Y x)) as nn. intro p. strip_truncations. contradiction.
-  contradiction.
+  contradiction nn.
 Defined.
 
 End Exercise3_13.
@@ -619,7 +619,7 @@ Definition contrapositive {A B : Type} : (A -> B) -> (~ B -> ~ A).
 Defined.
 
 Definition DNE {B : Type} `{IsHProp B} : ~ ~ B -> B.
-  intros. destruct (LEM B IsHProp0). apply b. contradiction.
+  intros. destruct (LEM B IsHProp0). apply b. contradiction X.
 Defined.
 
 Definition trunc_rect' {A B : Type} (g : A -> B) : IsHProp B -> Brck' A -> B.
@@ -712,7 +712,7 @@ Proof.
   destruct (LEM (Y x)). 
     apply HY. intro f. contradiction.
     assert (~ (forall x, Y x)). intro f. contradiction (f x).
-    contradiction.
+    contradiction H.
 Qed.
    
 End Exercise3_16.
@@ -894,7 +894,9 @@ Defined.
   
 Theorem Theorem2131 : forall n m, (nat_code n m) <~> (n = m).
 Proof.
-  intros. refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _);
+  intros. 
+  (* Update to Coq broke this 
+  refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _);
   intro p.
 
   induction p. simpl. induction n. reflexivity.
@@ -907,7 +909,8 @@ Proof.
   change (transport (fun x : nat => nat_code n x) (nat_decode n m p) (nat_r n))
          with (nat_encode n m (nat_decode n m p)).
   simpl in p. apply IHn.
-Defined.
+   *)
+Admitted.
 
 Theorem S_inj : forall n m, S n = S m -> n = m.
 Proof.
@@ -1105,7 +1108,7 @@ Fixpoint bounded_min (P : nat -> Type) (H : decidable P) (b : nat) : nat :=
   end.
 
 Lemma foo : forall n m, ~ (n = m) -> (n <= m) -> ~ (m <= n).
-  intros. intro p. apply le_antisymmetric in H0. symmetry in H0.
+  intros. intro p. apply le_antisymmetric in H. symmetry in H.
   contradiction. apply p.
 Defined.
 
@@ -1154,7 +1157,7 @@ Proof.
   intro H'. apply X. apply leb_le. apply H'.
   assert (bounded_min P H n <=? n = false).
   destruct (bounded_min P H n <=? n). assert (true = true) by reflexivity.
-  contradiction. reflexivity.
+  contradiction X0. reflexivity.
   rewrite X1. unfold decidable_to_bool. destruct (H (S n)). 
   apply le_refl. contradiction.
 Defined.
@@ -1365,7 +1368,7 @@ Definition pred (n : nat) :=
 
 Lemma S_pred_inv : forall n, (n <> O) -> S (pred n) = n.
 Proof.
-  induction n. intros. assert (0 = 0) as H' by reflexivity. contradiction.
+  induction n. intros. contradiction X. reflexivity.
   intros. reflexivity.
 Defined.
 
@@ -1400,14 +1403,14 @@ Defined.
 Lemma cardFO : Fin O <~> Empty.
 Proof.
   refine (equiv_adjointify _ _ _ _).
+  intro n. destruct n as [n [k p]]. 
+  assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
+  apply Theorem2131 in X. contradiction.
+  intro e. contradiction.
   intro e. contradiction.
   intro n. destruct n as [n [k p]].
-  assert (n + S k = 0) as q. apply p. rewrite <- plus_n_Sm in q.
-  apply Theorem2131 in q. contradiction.
-  Grab Existential Variables. contradiction.
-  intro n. destruct n as [n [k p]].
-  assert (n + S k = 0) as q. apply p. rewrite <- plus_n_Sm in q.
-  apply Theorem2131 in q. contradiction.
+  assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
+  apply Theorem2131 in X. contradiction.
 Defined.
 
 Lemma cardF {n : nat} : Fin (S n) <~> (Fin n) + Unit.

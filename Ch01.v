@@ -1096,7 +1096,7 @@ Definition ind' {A} : forall (a : A) (C : forall (x:A), a = x -> Type),
   assert (isContr {x:A & a=x}) as H. apply Lemma3118.
   change (C x p) with ((fun c => C c.1 c.2) (x; p)).
   apply Lemma231 with (x0:=(a; 1)) (y:=(x; p)).
-  transitivity H.1. destruct H as [[a' p'] z]. simpl. 
+  transitivity (projT1 H). destruct H as [[a' p'] z]. simpl. 
   rewrite <- p'. reflexivity.
   destruct H as [[a' p'] z]. simpl. rewrite <- p'. rewrite <- p. reflexivity.
   apply X.
@@ -1745,10 +1745,10 @@ Local Open Scope nat_scope.
     And in Coq, *)
 
 Definition le (n m : nat) : Type := {k:nat & n + k = m}.
-Infix "<=" := le : nat_scope.
+Notation "n <= m" := (le n m)%nat (at level 70) : nat_scope.
 
 Definition lt (n m : nat) : Type := {k : nat & n + S k = m}.
-Infix "<" := lt : nat_scope.
+Notation "n < m" := (lt n m)%nat (at level 70) : nat_scope.
 
 Definition Fin (n:nat) : Type := {m:nat & m < n}.
 

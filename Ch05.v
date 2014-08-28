@@ -150,7 +150,7 @@ Section Ex3.
     assert (c' = c) as s.
     apply (apD10 r). 
     symmetry in s.
-    contradiction.
+    contradiction p.
   Defined.
 
 End Ex3.
@@ -264,7 +264,7 @@ Proof.
   apply eissect.
   assert (~ ((ez, es) = (ez', es'))) as nH.
     apply (Ex3.ex5_3 Bool true false). apply true_ne_false.
-    contradiction.
+    contradiction nH.
 Qed.
                                   
 
@@ -273,10 +273,6 @@ Show that if we assume simple instead of dependent elimination for $\w$-types,
 the uniqueness property fails to hold.  That is, exhibit a type satisfying the
 recursion principle of a $\w$-type, but for which functions are not determined
 uniquely by their recurrence.
-*)
-
-(** %\soln%
-Let $\w'_{x:A}B(x)$ be a type such that
 *)
 
 (** %\exer{5.7}{175}% 
@@ -346,9 +342,7 @@ and for any $h : A^{L_{A} \to A}$, we have
   =
   h
 \]%
-by function extensionality.  So we can recap the proof of Lawvere's fixed-point
-theorem with this $\phi$.
-
+So we can recap the proof of Lawvere's fixed-point theorem with this $\phi$.
 Suppose that $f : A \to A$, and define
 %\begin{align*}
   q &\defeq \lam{\alpha:L_{A} \to A}f(\phi(\alpha, \alpha)) 
@@ -356,7 +350,7 @@ Suppose that $f : A \to A$, and define
   p &\defeq \rec{L_{A}}(A, q) 
      : L_{A} \to A
 \end{align*}%
-So that
+so that $p$ lifts $q$:
 %\[
   \phi(p)
   \equiv
@@ -366,29 +360,19 @@ So that
   =
   q
 \]%
-This means that
+This make $\phi(p, p)$ a fixed point of $f$:
 %\[
   f(\phi(p, p))
   = (\lam{\alpha : L_{A} \to A}f(\phi(\alpha, \alpha)))(p) 
   = q(p) 
   = \phi(p, p) 
 \]%
-so $f(\phi(p, p)) = \phi(p, p)$, making $\phi(p, p)$ a fixed point of $f$.
 *)
 
-Module Ex9.
-Section Ex9.
-
-Variable (L A : Type).
-Variable lawvere : (L -> A) -> L.
-Variable rec : forall P, ((L -> A) -> P) -> L -> P.
-Hypothesis rec_comp : forall P h alpha, rec P h (lawvere alpha) = h alpha.
-
-Definition point_surjective {X Y} (phi : X -> Y) :=
-  forall q : Y, {p : X & phi p = q}.
+Definition onto {X Y} (f : X -> Y) := forall y : Y, {x : X & f x = y}.
 
 Lemma LawvereFP {X Y} (phi : X -> (X -> Y)) : 
-  point_surjective phi -> forall (f : Y -> Y), {y : Y & f y = y}.
+  onto phi -> forall (f : Y -> Y), {y : Y & f y = y}.
 Proof.
   intros Hphi f.
   set (q := fun x => f (phi x x)).
@@ -398,6 +382,14 @@ Proof.
   change (fun x => f (phi x x)) with q.
   symmetry. apply (apD10 Hp).
 Defined.
+
+Module Ex9.
+Section Ex9.
+
+Variable (L A : Type).
+Variable lawvere : (L -> A) -> L.
+Variable rec : forall P, ((L -> A) -> P) -> L -> P.
+Hypothesis rec_comp : forall P h alpha, rec P h (lawvere alpha) = h alpha.
 
 Definition phi : (L -> A) -> ((L -> A) -> A) :=
   fun f alpha => f (lawvere alpha).
@@ -413,14 +405,56 @@ Defined.
 End Ex9.
 End Ex9.
 
-(** %\exer{5.10}{176}% 
+(** %\exerdone{5.10}{176}% 
 Continuing from Exercise 5.9, consider $L_{\unit}$, which is not obviously
 inconsistent since $\unit$ does have the fixed-point property.  Formulate an
 induction principle for $L_{\unit}$ and its computation rule, analogously to
 its recursor, and using this, prove that it is contractible.
 *)
 
-(** %\exer{5.11}{176}% 
+(** %\soln%
+The induction principle for $L_{\unit}$ is
+%\[
+  \ind{L_{\unit}} 
+  : \prd{P : L_{\unit} \to \UU} 
+    \left(\prd{\alpha : L_{\unit} \to \unit} P(\mathsf{lawvere}(\alpha))\right)
+    \to \prd{\ell : L_{\unit}}P(\ell)
+\]%
+and it has the computation rule
+%\[
+  \ind{L_{\unit}}(P, f, \mathsf{lawvere}(\alpha)) \equiv f(\alpha)
+\]%
+for all $f : \prd{\alpha : L_{\unit} \to \unit} P(\mathsf{lawvere}(\alpha))$
+and $\alpha : L_{\unit} \to \unit$.
+
+Let ${!} : L_{\unit} \to \unit$ be the unique terminal arrow.  I claim that
+$L_{\unit}$ is contractible with center $\mathsf{lawvere}({!})$.  By
+$\ind{L_{\unit}}$, it suffices to show that $\mathsf{lawvere}({!}) =
+\mathsf{lawvere}(\alpha)$ for any $\alpha : L_{\unit} \to \unit$.  And by the
+universal property of the terminal object, $\alpha = {!}$, so we're done.
+*)
+
+Module Ex10.
+Section Ex10.
+
+Variable L : Type.
+Variable lawvere : (L -> Unit) -> L.
+
+Variable indL : forall P, (forall alpha, P (lawvere alpha)) -> forall l, P l.
+Hypothesis ind_comp : forall P f alpha, indL P f (lawvere alpha) = f alpha.
+
+Theorem ex5_10 : Contr L.
+Proof.
+  apply (BuildContr L (lawvere (fun _ => tt))).
+  apply indL; intro alpha.
+  apply (ap lawvere).
+  apply allpath_hprop.
+Defined.
+
+End Ex10.
+End Ex10.
+
+(** %\exerdone{5.11}{176}% 
 In %\S5.1% we defined the type $\lst{A}$ of finite lists of elements of some
 type $A$.  Consider a similiar inductive definition of a type $\lost{A}$, whose
 only constructor is
@@ -429,3 +463,36 @@ only constructor is
 \]%
 Show that $\lost{A}$ is equivalent to $\emptyt$.
 *)
+
+(** %\soln%
+Consider the recursor for $\lost{A}$, given by
+%\[
+  \rec{\lost{A}} : \prd{P : \UU} (A \to \lost{A} \to P \to P) \to \lost{A} \to P
+\]%
+with computation rule
+%\[
+  \rec{\lost{A}}(P, f, \cons(h, t)) \equiv f(h, \rec{\lost{A}}(P, f, t))
+\]%
+Now $\rec{\lost{A}}(\emptyt, \lam{a}{\ell}\idfunc{\emptyt}) : \lost{A} \to
+\emptyt$, so $\lnot \lost{A}$ is inhabited, thus $\lost{A} \eqvsym \emptyt$.
+*)
+
+Theorem not_equiv_empty (A : Type) : ~ A -> (A <~> Empty).
+Proof.
+  intro nA. refine (equiv_adjointify nA (Empty_rect (fun _ => A)) _ _);
+  intro; contradiction.
+Defined.
+
+Module Ex11.
+
+Inductive lost (A : Type) := cons : A -> lost A -> lost A.
+
+Theorem ex5_11 (A : Type) : lost A <~> Empty.
+Proof.
+  apply not_equiv_empty.
+  intro l.
+  apply (lost_rect A). auto. apply l.
+Defined.
+
+End Ex11.
+

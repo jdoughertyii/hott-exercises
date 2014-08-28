@@ -129,7 +129,7 @@ proof we seek is just reflexivity.
 \coqdockw{Section} \coqdef{Ch04.Exercise4 4}{Exercise4\_4}{\coqdocsection{Exercise4\_4}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Variables} (\coqdef{Ch04.Exercise4 4.A}{A}{\coqdocvariable{A}} \coqdef{Ch04.Exercise4 4.B}{B}{\coqdocvariable{B}} \coqdef{Ch04.Exercise4 4.C}{C}{\coqdocvariable{C}} \coqdef{Ch04.Exercise4 4.D}{D}{\coqdocvariable{D}} : \coqdockw{Type}) (\coqdef{Ch04.Exercise4 4.f}{f}{\coqdocvariable{f}} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdef{Ch04.Exercise4 4.g}{g}{\coqdocvariable{g}} : \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdef{Ch04.Exercise4 4.b}{b}{\coqdocvariable{b}} : \coqdocvariable{B}).\coqdoceol
+\coqdockw{Variables} (\coqdef{Ch04.Exercise4 4.A}{A}{\coqdocvariable{A}} \coqdef{Ch04.Exercise4 4.B}{B}{\coqdocvariable{B}} \coqdef{Ch04.Exercise4 4.C}{C}{\coqdocvariable{C}} \coqdef{Ch04.Exercise4 4.D}{D}{\coqdocvariable{D}} : \coqdockw{Type}) (\coqdef{Ch04.Exercise4 4.f}{f}{\coqdocvariable{f}} : \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{B}) (\coqdef{Ch04.Exercise4 4.g}{g}{\coqdocvariable{g}} : \coqdocvar{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{C}) (\coqdef{Ch04.Exercise4 4.b}{b}{\coqdocvariable{b}} : \coqdocvar{B}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch04.f star}{f\_star}{\coqdocdefinition{f\_star}} (\coqdocvar{z} : ((\coqdocdefinition{hfiber} (\coqdocvariable{g} \coqdocnotation{o} \coqdocvariable{f}) (\coqdocvariable{g} \coqdocvariable{b})))) : (\coqdocdefinition{hfiber} \coqdocvariable{g} (\coqdocvariable{g} \coqdocvariable{b})) := \coqdoceol
@@ -833,19 +833,65 @@ that it's equivalent to $(\bool \eqvsym \bool)$.
 \coqdocindent{1.00em}
 \coqdoctac{set} (\coqdocvar{r} := \coqdocnotation{(}\coqdocvar{lnot}\coqdocnotation{\ensuremath{^{-1}}}\coqdocnotation{;} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocmethod{eisretr} \coqdocvar{lnot}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocmethod{eissect} \coqdocvar{lnot}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdocnotation{)} : \coqref{Ch04.qinv}{\coqdocdefinition{qinv}} \coqdocvar{lnot}).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{set} (\coqdocvar{q} := (\coqdocdefinition{path\_sigma\_hprop} \coqdocvar{a} \coqdocvar{a} (\coqdocnotation{(}\coqdocvariable{qinv\_univalence} \coqdocinductive{Bool} \coqdocinductive{Bool}\coqdocnotation{).1} \coqdocnotation{(}\coqdocvar{lnot}\coqdocnotation{;} \coqdocvar{r}\coqdocnotation{)}))).\coqdoceol
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+Coq\coqdocindent{0.50em}
+update\coqdocindent{0.50em}
+broke\coqdocindent{0.50em}
+this\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{assert} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{f} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdockw{\ensuremath{\forall}} \coqdocvar{x}, \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{x} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdocvar{f} \coqdocvar{a}\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{q}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
+set\coqdocindent{0.50em}
+(q\coqdocindent{0.50em}
+:=\coqdocindent{0.50em}
+(path\_sigma\_hprop\coqdocindent{0.50em}
+a\coqdocindent{0.50em}
+a\coqdocindent{0.50em}
+((qinv\_univalence\coqdocindent{0.50em}
+Bool\coqdocindent{0.50em}
+Bool).1\coqdocindent{0.50em}
+(lnot;\coqdocindent{0.50em}
+r)))).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch04.Lemma412}{\coqdoclemma{Lemma412}}.\coqdoceol
+assert\coqdocindent{0.50em}
+\{f\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+forall\coqdocindent{0.50em}
+x,\coqdocindent{0.50em}
+x\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+x\coqdocindent{0.50em}
+\&\coqdocindent{0.50em}
+(f\coqdocindent{0.50em}
+a)\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+q\}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdoclemma{ex3\_1'} (\coqdocnotation{(}\coqdocinductive{Bool}:\coqdockw{Type}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocinductive{Bool}:\coqdockw{Type}\coqdocnotation{)})).\coqdoceol
+apply\coqdocindent{0.50em}
+Lemma412.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqref{Ch04.Bool Bool to a a}{\coqdocdefinition{Bool\_Bool\_to\_a\_a}} \coqref{Ch04.a a to Bool Bool}{\coqdocdefinition{a\_a\_to\_Bool\_Bool}} \coqdocvar{\_} \coqdocvar{\_});\coqdoceol
+apply\coqdocindent{0.50em}
+(ex3\_1'\coqdocindent{0.50em}
+((Bool:Type)\coqdocindent{0.50em}
+<\~{}>\coqdocindent{0.50em}
+(Bool:Type))).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch04.Bool Bool to a a}{\coqdocdefinition{Bool\_Bool\_to\_a\_a}}, \coqref{Ch04.a a to Bool Bool}{\coqdocdefinition{a\_a\_to\_Bool\_Bool}}.\coqdoceol
+refine\coqdocindent{0.50em}
+(equiv\_adjointify\coqdocindent{0.50em}
+Bool\_Bool\_to\_a\_a\coqdocindent{0.50em}
+a\_a\_to\_Bool\_Bool\coqdocindent{0.50em}
+\_\coqdocindent{0.50em}
+\_);\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{simpl}.\coqdoceol
+unfold\coqdocindent{0.50em}
+Bool\_Bool\_to\_a\_a,\coqdocindent{0.50em}
+a\_a\_to\_Bool\_Bool.\coqdoceol
+\coqdocindent{1.00em}
+intro\coqdocindent{0.50em}
+p.\coqdocindent{0.50em}
+simpl.\coqdoceol
+\coqdocindent{1.50em}
+\end{coqdoccomment}
+\coqdoceol
 \coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline

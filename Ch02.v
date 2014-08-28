@@ -660,7 +660,7 @@ Qed.
 Lemma beta2_9 `{Funext} {A B X: Type} : forall (h : A + B -> X), 
   ex2_9_g (ex2_9_f h) = h.
 Proof.
-  intros. apply H. unfold pointwise_paths. intros. destruct x; reflexivity.
+  intros. apply path_forall. intro z. destruct z; reflexivity.
 Qed.
 
 Theorem ex2_9 : forall A B X, (A + B->X) <~> (A->X) * (B->X).
@@ -1233,7 +1233,7 @@ Proof.
   
   (* beta *)
   destruct x. pose proof (equiv_not_const equiv_fun) as H1.
-  apply path_equiv; apply path_forall; destruct x; simpl.
+  apply path_equiv; apply path_forall; intro x; destruct x; simpl.
   destruct (equiv_fun false); simpl;
     repeat (transitivity (negb (negb (equiv_fun true)));
       [rewrite <- H1; reflexivity | apply negb_involutive]).
@@ -1613,11 +1613,11 @@ Proof.
   rewrite transport_prod. simpl.
   destruct z; apply path_prod; simpl.
     rewrite transport_const.
-    assert ((path_universe_uncurried f) = (path_universe (equiv_fun A A' f))).
+    assert ((path_universe_uncurried f) = (path_universe (equiv_fun f))).
     unfold path_universe. destruct f. reflexivity.
     rewrite X. apply transport_path_universe.
     rewrite transport_const.
-    assert ((path_universe_uncurried g) = (path_universe (equiv_fun B B' g))).
+    assert ((path_universe_uncurried g) = (path_universe (equiv_fun g))).
     unfold path_universe. destruct g. reflexivity.
     rewrite X. apply transport_path_universe.
 

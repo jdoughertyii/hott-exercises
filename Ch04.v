@@ -495,6 +495,7 @@ Proof.
   set (a := ((Bool:Type); min1 1) : X).
   set (e := negb_isequiv). destruct e as [lnot H].
   set (r := (lnot^-1; (eisretr lnot, eissect lnot)) : qinv lnot).
+  (* Coq update broke this
   set (q := (path_sigma_hprop a a ((qinv_univalence Bool Bool).1 (lnot; r)))).
   assert {f : forall x, x = x & (f a) = q}.
   apply Lemma412.
@@ -502,6 +503,7 @@ Proof.
   refine (equiv_adjointify Bool_Bool_to_a_a a_a_to_Bool_Bool _ _);
   unfold Bool_Bool_to_a_a, a_a_to_Bool_Bool.
   intro p. simpl.
+   *)
 Admitted.
   
 End Exercise4_6.

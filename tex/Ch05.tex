@@ -87,7 +87,7 @@ $e_{s} \defeq \lam{n}\idfunc{C}$.
 \coqdocnoindent
 \coqdockw{Section} \coqdef{Ch05.Ex2.Ex2}{Ex2}{\coqdocsection{Ex2}}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{Variables} (\coqdef{Ch05.Ex2.Ex2.C}{C}{\coqdocvariable{C}} : \coqdockw{Type}) (\coqdef{Ch05.Ex2.Ex2.c}{c}{\coqdocvariable{c}} : \coqdocvariable{C}).\coqdoceol
+\coqdockw{Variables} (\coqdef{Ch05.Ex2.Ex2.C}{C}{\coqdocvariable{C}} : \coqdockw{Type}) (\coqdef{Ch05.Ex2.Ex2.c}{c}{\coqdocvariable{c}} : \coqdocvar{C}).\coqdoceol
 \coqdocemptyline
 \coqdocindent{1.00em}
 \coqdockw{Definition} \coqdef{Ch05.Ex2.f}{f}{\coqdocdefinition{f}} (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) := \coqdocvariable{c}.\coqdoceol
@@ -156,7 +156,7 @@ the recurrences are not equal.
 \coqdocnoindent
 \coqdockw{Section} \coqdef{Ch05.Ex3.Ex3}{Ex3}{\coqdocsection{Ex3}}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{Variables} (\coqdef{Ch05.Ex3.Ex3.C}{C}{\coqdocvariable{C}} : \coqdockw{Type}) (\coqdef{Ch05.Ex3.Ex3.c}{c}{\coqdocvariable{c}} \coqdef{Ch05.Ex3.Ex3.c'}{c'}{\coqdocvariable{c'}} : \coqdocvariable{C}) (\coqdef{Ch05.Ex3.Ex3.p}{p}{\coqdocvariable{p}} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{c} \coqdocnotation{=} \coqdocvariable{c'}\coqdocnotation{)}).\coqdoceol
+\coqdockw{Variables} (\coqdef{Ch05.Ex3.Ex3.C}{C}{\coqdocvariable{C}} : \coqdockw{Type}) (\coqdef{Ch05.Ex3.Ex3.c}{c}{\coqdocvariable{c}} \coqdef{Ch05.Ex3.Ex3.c'}{c'}{\coqdocvariable{c'}} : \coqdocvar{C}) (\coqdef{Ch05.Ex3.Ex3.p}{p}{\coqdocvariable{p}} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvar{c} \coqdocnotation{=} \coqdocvar{c'}\coqdocnotation{)}).\coqdoceol
 \coqdocemptyline
 \coqdocindent{1.00em}
 \coqdockw{Definition} \coqdef{Ch05.Ex3.ez}{ez}{\coqdocdefinition{ez}} := \coqdocvariable{c}.\coqdoceol
@@ -218,7 +218,7 @@ the recurrences are not equal.
 \coqdocindent{2.00em}
 \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{s}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdocvar{contradiction}.\coqdoceol
+\coqdocvar{contradiction} \coqdocvariable{p}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
@@ -380,7 +380,7 @@ recurrences to the same function.  So we have derived a contradiction.
 \coqdocindent{2.00em}
 \coqdoctac{apply} (\coqref{Ch05.Ex3.ex5 3}{\coqdoclemma{Ex3.ex5\_3}} \coqdocinductive{Bool} \coqdocconstructor{true} \coqdocconstructor{false}). \coqdoctac{apply} \coqdocdefinition{true\_ne\_false}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdocvar{contradiction}.\coqdoceol
+\coqdocvar{contradiction} \coqdocvar{nH}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
@@ -390,10 +390,6 @@ Show that if we assume simple instead of dependent elimination for $\w$-types,
 the uniqueness property fails to hold.  That is, exhibit a type satisfying the
 recursion principle of a $\w$-type, but for which functions are not determined
 uniquely by their recurrence.
-
-
- \soln
-Let $\w'_{x:A}B(x)$ be a type such that
 
 
  \exer{5.7}{175} 
@@ -462,10 +458,7 @@ and for any $h : A^{L_{A} \to A}$, we have
   =
   h
 \]
-by function extensionality.  So we can recap the proof of Lawvere's fixed-point
-theorem with this $\phi$.
-
-
+So we can recap the proof of Lawvere's fixed-point theorem with this $\phi$.
 Suppose that $f : A \to A$, and define
 \begin{align*}
   q &\defeq \lam{\alpha:L_{A} \to A}f(\phi(\alpha, \alpha)) 
@@ -473,7 +466,7 @@ Suppose that $f : A \to A$, and define
   p &\defeq \rec{L_{A}}(A, q) 
      : L_{A} \to A
 \end{align*}
-So that
+so that $p$ lifts $q$:
 \[
   \phi(p)
   \equiv
@@ -483,39 +476,22 @@ So that
   =
   q
 \]
-This means that
+This make $\phi(p, p)$ a fixed point of $f$:
 \[
   f(\phi(p, p))
   = (\lam{\alpha : L_{A} \to A}f(\phi(\alpha, \alpha)))(p) 
   = q(p) 
   = \phi(p, p) 
 \]
-so $f(\phi(p, p)) = \phi(p, p)$, making $\phi(p, p)$ a fixed point of $f$.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Module} \coqdef{Ch05.Ex9}{Ex9}{\coqdocmodule{Ex9}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Section} \coqdef{Ch05.Ex9.Ex9}{Ex9}{\coqdocsection{Ex9}}.\coqdoceol
+\coqdockw{Definition} \coqdef{Ch05.onto}{onto}{\coqdocdefinition{onto}} \{\coqdocvar{X} \coqdocvar{Y}\} (\coqdocvar{f} : \coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}) := \coqdockw{\ensuremath{\forall}} \coqdocvar{y} : \coqdocvariable{Y}, \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{x} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{X} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{f} \coqdocvar{x} \coqdocnotation{=} \coqdocvariable{y}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Variable} (\coqdef{Ch05.Ex9.Ex9.L}{L}{\coqdocvariable{L}} \coqdef{Ch05.Ex9.Ex9.A}{A}{\coqdocvariable{A}} : \coqdockw{Type}).\coqdoceol
-\coqdocnoindent
-\coqdockw{Variable} \coqdef{Ch05.Ex9.Ex9.lawvere}{lawvere}{\coqdocvariable{lawvere}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{L}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Variable} \coqdef{Ch05.Ex9.Ex9.rec}{rec}{\coqdocvariable{rec}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{((}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Hypothesis} \coqdef{Ch05.Ex9.Ex9.rec comp}{rec\_comp}{\coqdocvariable{rec\_comp}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P} \coqdocvar{h} \coqdocvar{alpha}, \coqdocvariable{rec} \coqdocvariable{P} \coqdocvariable{h} (\coqdocvariable{lawvere} \coqdocvariable{alpha}) \coqdocnotation{=} \coqdocvariable{h} \coqdocvariable{alpha}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch05.Ex9.point surjective}{point\_surjective}{\coqdocdefinition{point\_surjective}} \{\coqdocvar{X} \coqdocvar{Y}\} (\coqdocvar{phi} : \coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}) :=\coqdoceol
+\coqdockw{Lemma} \coqdef{Ch05.LawvereFP}{LawvereFP}{\coqdoclemma{LawvereFP}} \{\coqdocvar{X} \coqdocvar{Y}\} (\coqdocvar{phi} : \coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) : \coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} \coqdocvar{q} : \coqdocvariable{Y}, \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{p} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{X} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{phi} \coqdocvar{p} \coqdocnotation{=} \coqdocvariable{q}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch05.Ex9.LawvereFP}{LawvereFP}{\coqdoclemma{LawvereFP}} \{\coqdocvar{X} \coqdocvar{Y}\} (\coqdocvar{phi} : \coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{X} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) : \coqdoceol
-\coqdocindent{1.00em}
-\coqref{Ch05.Ex9.point surjective}{\coqdocdefinition{point\_surjective}} \coqdocvariable{phi} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} (\coqdocvar{f} : \coqdocvariable{Y} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}), \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{y} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{Y} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{f} \coqdocvar{y} \coqdocnotation{=} \coqdocvar{y}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
+\coqref{Ch05.onto}{\coqdocdefinition{onto}} \coqdocvariable{phi} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} (\coqdocvar{f} : \coqdocvariable{Y} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Y}), \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{y} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{Y} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{f} \coqdocvar{y} \coqdocnotation{=} \coqdocvar{y}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
@@ -534,6 +510,20 @@ so $f(\phi(p, p)) = \phi(p, p)$, making $\phi(p, p)$ a fixed point of $f$.
 \coqdoctac{symmetry}. \coqdoctac{apply} (\coqdocdefinition{apD10} \coqdocvar{Hp}).\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Module} \coqdef{Ch05.Ex9}{Ex9}{\coqdocmodule{Ex9}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Section} \coqdef{Ch05.Ex9.Ex9}{Ex9}{\coqdocsection{Ex9}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} (\coqdef{Ch05.Ex9.Ex9.L}{L}{\coqdocvariable{L}} \coqdef{Ch05.Ex9.Ex9.A}{A}{\coqdocvariable{A}} : \coqdockw{Type}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Variable} \coqdef{Ch05.Ex9.Ex9.lawvere}{lawvere}{\coqdocvariable{lawvere}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{L}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Variable} \coqdef{Ch05.Ex9.Ex9.rec}{rec}{\coqdocvariable{rec}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{((}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{Ch05.Ex9.Ex9.rec comp}{rec\_comp}{\coqdocvariable{rec\_comp}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P} \coqdocvar{h} \coqdocvar{alpha}, \coqdocvariable{rec} \coqdocvariable{P} \coqdocvariable{h} (\coqdocvariable{lawvere} \coqdocvariable{alpha}) \coqdocnotation{=} \coqdocvariable{h} \coqdocvariable{alpha}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch05.Ex9.phi}{phi}{\coqdocdefinition{phi}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{((}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} :=\coqdoceol
@@ -561,14 +551,73 @@ so $f(\phi(p, p)) = \phi(p, p)$, making $\phi(p, p)$ a fixed point of $f$.
 \coqdockw{End} \coqref{Ch05}{\coqdocmodule{Ex9}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{5.10}{176} 
+\exerdone{5.10}{176} 
 Continuing from Exercise 5.9, consider $L_{\unit}$, which is not obviously
 inconsistent since $\unit$ does have the fixed-point property.  Formulate an
 induction principle for $L_{\unit}$ and its computation rule, analogously to
 its recursor, and using this, prove that it is contractible.
 
 
- \exer{5.11}{176} 
+ \soln
+The induction principle for $L_{\unit}$ is
+\[
+  \ind{L_{\unit}} 
+  : \prd{P : L_{\unit} \to \UU} 
+    \left(\prd{\alpha : L_{\unit} \to \unit} P(\mathsf{lawvere}(\alpha))\right)
+    \to \prd{\ell : L_{\unit}}P(\ell)
+\]
+and it has the computation rule
+\[
+  \ind{L_{\unit}}(P, f, \mathsf{lawvere}(\alpha)) \equiv f(\alpha)
+\]
+for all $f : \prd{\alpha : L_{\unit} \to \unit} P(\mathsf{lawvere}(\alpha))$
+and $\alpha : L_{\unit} \to \unit$.
+
+
+Let ${!} : L_{\unit} \to \unit$ be the unique terminal arrow.  I claim that
+$L_{\unit}$ is contractible with center $\mathsf{lawvere}({!})$.  By
+$\ind{L_{\unit}}$, it suffices to show that $\mathsf{lawvere}({!}) =
+\mathsf{lawvere}(\alpha)$ for any $\alpha : L_{\unit} \to \unit$.  And by the
+universal property of the terminal object, $\alpha = {!}$, so we're done.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Module} \coqdef{Ch05.Ex10}{Ex10}{\coqdocmodule{Ex10}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Section} \coqdef{Ch05.Ex10.Ex10}{Ex10}{\coqdocsection{Ex10}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} \coqdef{Ch05.Ex10.Ex10.L}{L}{\coqdocvariable{L}} : \coqdockw{Type}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Variable} \coqdef{Ch05.Ex10.Ex10.lawvere}{lawvere}{\coqdocvariable{lawvere}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{L} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Unit}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{L}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} \coqdef{Ch05.Ex10.Ex10.indL}{indL}{\coqdocvariable{indL}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{alpha}, \coqdocvariable{P} (\coqdocvariable{lawvere} \coqdocvariable{alpha})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{l}, \coqdocvariable{P} \coqdocvariable{l}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} \coqdef{Ch05.Ex10.Ex10.ind comp}{ind\_comp}{\coqdocvariable{ind\_comp}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P} \coqdocvar{f} \coqdocvar{alpha}, \coqdocvariable{indL} \coqdocvariable{P} \coqdocvariable{f} (\coqdocvariable{lawvere} \coqdocvariable{alpha}) \coqdocnotation{=} \coqdocvariable{f} \coqdocvariable{alpha}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch05.Ex10.ex5 10}{ex5\_10}{\coqdoclemma{ex5\_10}} : \coqdocabbreviation{Contr} \coqdocvariable{L}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocconstructor{BuildContr} \coqdocvariable{L} (\coqdocvariable{lawvere} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocconstructor{tt}))).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvariable{indL}; \coqdoctac{intro} \coqdocvar{alpha}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqdocvariable{lawvere}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch05.Ex10.Ex10}{\coqdocsection{Ex10}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch05}{\coqdocmodule{Ex10}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{5.11}{176} 
 In \S5.1 we defined the type $\lst{A}$ of finite lists of elements of some
 type $A$.  Consider a similiar inductive definition of a type $\lost{A}$, whose
 only constructor is
@@ -576,5 +625,52 @@ only constructor is
   \cons : A \to \lost{A} \to \lost{A}.
 \]
 Show that $\lost{A}$ is equivalent to $\emptyt$.
+
+
+ \soln
+Consider the recursor for $\lost{A}$, given by
+\[
+  \rec{\lost{A}} : \prd{P : \UU} (A \to \lost{A} \to P \to P) \to \lost{A} \to P
+\]
+with computation rule
+\[
+  \rec{\lost{A}}(P, f, \cons(h, t)) \equiv f(h, \rec{\lost{A}}(P, f, t))
+\]
+Now $\rec{\lost{A}}(\emptyt, \lam{a}{\ell}\idfunc{\emptyt}) : \lost{A} \to
+\emptyt$, so $\lnot \lost{A}$ is inhabited, thus $\lost{A} \eqvsym \emptyt$.
 \begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch05.not equiv empty}{not\_equiv\_empty}{\coqdoclemma{not\_equiv\_empty}} (\coqdocvar{A} : \coqdockw{Type}) : \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{nA}. \coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{nA} (\coqdocdefinition{Empty\_rect} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvar{A})) \coqdocvar{\_} \coqdocvar{\_});\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro}; \coqdocvar{contradiction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Module} \coqdef{Ch05.Ex11}{Ex11}{\coqdocmodule{Ex11}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Inductive} \coqdef{Ch05.Ex11.lost}{lost}{\coqdocinductive{lost}} (\coqdocvar{A} : \coqdockw{Type}) := \coqdef{Ch05.Ex11.cons}{cons}{\coqdocconstructor{cons}} : \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch05.lost}{\coqdocinductive{lost}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch05.lost}{\coqdocinductive{lost}} \coqdocvar{A}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch05.Ex11.ex5 11}{ex5\_11}{\coqdoclemma{ex5\_11}} (\coqdocvar{A} : \coqdockw{Type}) : \coqref{Ch05.Ex11.lost}{\coqdocinductive{lost}} \coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Empty}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch05.Ex11.not equiv empty}{\coqdoclemma{not\_equiv\_empty}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{l}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqref{Ch05.Ex11.lost rect}{\coqdocdefinition{lost\_rect}} \coqdocvar{A}). \coqdoctac{auto}. \coqdoctac{apply} \coqdocvar{l}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch05}{\coqdocmodule{Ex11}}.\coqdoceol
+\coqdocemptyline
 \end{coqdoccode}

@@ -1,0 +1,274 @@
+\begin{coqdoccode}
+\end{coqdoccode}
+\section{Higher Inductive Types}
+
+
+
+ \exerdone{6.1}{217} 
+Define concatenation of dependent paths, prove that application of dependent
+functions preserves concatenation, and write out the precise induction
+principle for the torus $T^{2}$ with its computation rules.
+
+
+ \soln
+I found
+\href{http://ncatlab.org/homotopytypetheory/files/torus.pdf}{Kristina
+Sojakova's answer posted to the HoTT Google group}
+helpful here, though I think my answer differs.
+
+
+Let $W : \UU$, $P : W \to \UU$, $x, y, z : W$, $u : P(x)$, $v : P(y)$, and $w :
+P(z)$ with $p : x = y$ and $q : y = z$.
+We define the map
+\[
+  \ctD : (\dpath{P}{p}{u}{v}) \to (\dpath{P}{q}{v}{w}) \to (\dpath{P}{p \ct q}{u}{w})
+\]
+by path induction.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.concatD}{concatD}{\coqdocdefinition{concatD}} \{\coqdocvar{A}\} \{\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}\} \coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{u} : \coqdocvariable{P} \coqdocvariable{x}\} \{\coqdocvar{v} : \coqdocvariable{P} \coqdocvariable{y}\} \{\coqdocvar{w} : \coqdocvariable{P} \coqdocvariable{z}\}\coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{p} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \{\coqdocvar{q} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z}\} :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{p} \coqdocnotation{\#} \coqdocvariable{u} \coqdocnotation{=} \coqdocvariable{v}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{q} \coqdocnotation{\#} \coqdocvariable{v} \coqdocnotation{=} \coqdocvariable{w}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocnotation{(}\coqdocvariable{p} \coqdocnotation{@} \coqdocvariable{q}\coqdocnotation{)} \coqdocnotation{\#} \coqdocvariable{u} \coqdocnotation{=} \coqdocvariable{w}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Notation} \coqdef{Ch06.:1124}{"}{"}p @D q" := (\coqref{Ch06.concatD}{\coqdocdefinition{concatD}} \coqdocvar{p} \coqdocvar{q})\%\coqdocvar{path} (\coqdoctac{at} \coqdockw{level} 20) : \coqdocvar{path\_scope}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\noindent
+To prove that application of dependent functions preserves concatenation,
+we must show that for any $f : \prd{x:A}P(x)$, $p : x = y$, and $q : y = z$,
+\[
+  \mapdep{f}{p \ct q} = \mapdep{f}{p} \ctD \mapdep{f}{q}
+\]
+which is immediate by path induction.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06.apD pp}{apD\_pp}{\coqdoclemma{apD\_pp}} \{\coqdocvar{A}\} \{\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\} (\coqdocvar{f} : \coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocvariable{A}, \coqdocvariable{P} \coqdocvariable{x}) \coqdoceol
+\coqdocindent{4.00em}
+\{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}\} (\coqdocvar{p} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) (\coqdocvar{q} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{apD} \coqdocvariable{f} (\coqdocvariable{p} \coqdocnotation{@} \coqdocvariable{q}) \coqdocnotation{=} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{(}}\coqdocdefinition{apD} \coqdocvariable{f} \coqdocvariable{p}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{)}} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{(}}\coqdocdefinition{apD} \coqdocvariable{f} \coqdocvariable{q}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{)}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\noindent
+Suppose that we have a family $P : T^{2} \to \UU$, a point $b' : P(b)$, paths
+$p' : \dpath{P}{p}{b'}{b'}$ and $q' : \dpath{P}{q}{b'}{b'}$ and a 2-path $t' :
+\dpath{P}{t}{p' \ctD q'}{q' \ctD p'}$.  Then the induction principle gives a
+section $f : \prd{x : T^{2}} P(x)$ such that $f(b) \equiv b'$, $f(p) = p'$, and
+$f(q) = q'$.  As discussed in the text, we should also have $\apdtwo{f}{t} =
+t'$, but this is not well-typed.  This is because $\apdtwo{f}{t} :
+\dpath{P}{t}{f(p \ct q)}{f(q \ct p)}$, in contrast to the type of $t'$, and the
+two types are not judgementally equal.
+
+
+To cast $\apdtwo{f}{t}$ as the right type, note first that, as just proven,
+$f(p \ct q) = f(p) \ctD f(q)$, and $f(q \ct p) = f(q) \ctD f(p)$.  The
+computation rules for the 1-paths can be lifted as follows.  
+Let $r, r' : \dpath{P}{p}{u}{v}$, and $s, s' : \dpath{P}{q}{v}{w}$.  Then we
+define a map
+\[
+  \ctdD : (r = r') \to (s = s') \to (r \ctD s = r' \ctD s')
+\]
+by path induction.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.concat2D}{concat2D}{\coqdocdefinition{concat2D}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\} \coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}\} \{\coqdocvar{p} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \{\coqdocvar{q} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z}\} \coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{u} : \coqdocvariable{P} \coqdocvariable{x}\} \{\coqdocvar{v} : \coqdocvariable{P} \coqdocvariable{y}\} \{\coqdocvar{w} : \coqdocvariable{P} \coqdocvariable{z}\}\coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{r} \coqdocvar{r'} : \coqdocvariable{p} \coqdocnotation{\#} \coqdocvariable{u} \coqdocnotation{=} \coqdocvariable{v}\} \{\coqdocvar{s} \coqdocvar{s'} : \coqdocvariable{q} \coqdocnotation{\#} \coqdocvariable{v} \coqdocnotation{=} \coqdocvariable{w}\} :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{r} \coqdocnotation{=} \coqdocvariable{r'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{s} \coqdocnotation{=} \coqdocvariable{s'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{r} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{s} \coqdocnotation{=} \coqdocvariable{r'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{s'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Notation} \coqdef{Ch06.:2903}{"}{"}p @@D q" := (\coqref{Ch06.concat2D}{\coqdocdefinition{concat2D}} \coqdocvar{p} \coqdocvar{q})\%\coqdocvar{path} (\coqdoctac{at} \coqdockw{level} 20) : \coqdocvar{path\_scope}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\noindent
+Thus by the computation rules for $p$ and $q$,
+we have for $\alpha : f(p) = p'$ and $\beta : f(q) = q'$,
+\begin{align*}
+  \alpha \ctdD \beta &: f(p) \ctD f(q) = p' \ctD q' \\
+  \beta \ctdD \alpha &: f(q) \ctD f(p) = q' \ctD p'
+\end{align*}
+At this point it's pretty clear how to assemble the computation rule.
+Let $N_{1} : f(p \ct q) = f(p) \ctD f(q)$ and $N_{2} : f(q \ct p) = f(q) \ctD
+f(p)$ be two instances of the naturality proof just given.  Then we have
+\[
+  (\alpha \ctdD \beta)^{-1} \ct N_{1} 
+  \ct \apdtwo{f}{t}
+  \ct (\transtwo{t}{b'} \leftwhisker N_{2})
+  \ct (\transtwo{t}{b'} \leftwhisker (\beta \ctdD \alpha))
+  :
+  \dpath{P}{t}{p' \ctD q'}{q' \ctD p'}
+\]
+which is the type of $t'$.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Module} \coqdockw{Export} \coqdef{Ch06.Torus}{Torus}{\coqdocmodule{Torus}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdocvar{Private} \coqdockw{Inductive} \coqdef{Ch06.Torus.T2}{T2}{\coqdocinductive{T2}} : \coqdockw{Type} :=\coqdoceol
+\coqdocnoindent
+\ensuremath{|} \coqdef{Ch06.Torus.Tb}{Tb}{\coqdocconstructor{Tb}} : \coqref{Ch06.T2}{\coqdocinductive{T2}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.Tp}{Tp}{\coqdocaxiom{Tp}} : \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.Tq}{Tq}{\coqdocaxiom{Tq}} : \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.Tt}{Tt}{\coqdocaxiom{Tt}} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{@} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{@} \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.Torus.T2 rect}{T2\_rect}{\coqdocdefinition{T2\_rect}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) \coqdoceol
+\coqdocindent{5.50em}
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+\coqdocindent{5.50em}
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)})\coqdoceol
+\coqdocindent{1.00em}
+: \coqdockw{\ensuremath{\forall}} (\coqdocvar{x} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}}), \coqdocvariable{P} \coqdocvariable{x}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{x}. \coqdoctac{destruct} \coqdocvar{x}. \coqdoctac{apply} \coqdocvar{b'}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tp}{T2\_rect\_beta\_Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+\coqdocindent{2.00em}
+\coqdocdefinition{apD} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{=} \coqdocvariable{p'}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tq}{T2\_rect\_beta\_Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+\coqdocindent{2.00em}
+\coqdocdefinition{apD} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqdocvariable{q'}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tt}{T2\_rect\_beta\_Tt}{\coqdocaxiom{T2\_rect\_beta\_Tt}} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+\coqdocindent{4.50em}
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{(}\coqref{Ch06.Torus.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}\coqdocnotation{)\^{}}\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.Torus.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}}\coqdocnotation{)\^{}} \coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{apD02} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}}\coqdocnotation{)}\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
+\coqdocindent{8.00em}
+(\coqref{Ch06.Torus.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}})\coqdocnotation{)}\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
+\coqdocindent{8.00em}
+(\coqref{Ch06.Torus.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'})\coqdocnotation{)}\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{=} \coqdocvariable{t'}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch06}{\coqdocmodule{Torus}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{6.2}{217} 
+Prove that $\susp\Sn^{1} \eqvsym \Sn^{2}$, using the explicit definition of
+$\Sn^{2}$ in terms of $\base$ and $\surf$ given in \S6.4.
+
+
+ \exer{6.3}{217} 
+Prove that the torus $T^{2}$ as defined in \S6.6 
+is equivalent to $\Sn^{1} \times \Sn^{1}$.
+
+
+ \exer{6.4}{217} 
+Define dependent $n$-loops and the action of dependent functions on $n$-loops,
+and write down the induction principle for the $n$-spheres as defined at the
+end of \S6.4.
+
+
+ \exer{6.5}{217}
+Prove that $\susp\Sn^{n} \eqvsym \Sn^{n+1}$, using the definition of $\Sn^{n}$
+in terms of $\Omega^{n}$ from \S6.4.
+
+
+ \exer{6.6}{217} 
+Prove that if the type $\Sn^{2}$ belongs to some universe $\UU$, then $\UU$ is
+not a 2-type.
+
+
+ \exer{6.7}{217} 
+Prove that if $G$ is a monoid and $x : G$, then $\sm{y:G}((x \cdot y = e)
+\times (y \cdot x = e))$ is a mere proposition.  Conclude, using the principle
+of unique choice, that it would be equivalent to define a group to be a monoid
+such that for every $x : G$, there merely exists a $y : G$ such that $x \cdot y
+= e$ and $y \cdot x = e$.
+
+
+ \exer{6.8}{217} 
+Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
+proof of Lemma 6.11.5.
+
+
+ \exer{6.9}{217} 
+Assuming $\LEM{}$, construct a family $f : \prd{X : \UU} (X \to X)$ such that
+$f_{\bool} : \bool \to \bool$ is the nonidentity automorphism.
+
+
+ \exer{6.10}{218} 
+Show that the map constructed in Lemma 6.3.2 is in fact a quasi-inverse to
+$\happly$, so that the interval type implies the full function extensionality
+axiom.
+
+
+ \exer{6.11}{218} 
+Prove the universal property of suspension:
+\[
+  \left(\susp A \to B \right)
+  \eqvsym
+  \left(\sm{b_{n} : B}\sm{b_{s} : B} (A \to (b_{n} = b_{s}))\right)
+\]
+
+
+ \exer{6.12}{218} 
+Show that $\Z \eqvsym \N + \unit + \N$.  Show that if we were to define $\Z$ as
+$\N + \unit + \N$, then we could obtain Lemma 6.10.12 with judgmental
+computation rules.
+\begin{coqdoccode}
+\end{coqdoccode}

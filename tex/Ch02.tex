@@ -824,7 +824,7 @@ which, assuming function extensionality, is inhabited.  So $(g,
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{apply} \coqdocvar{H}. \coqdoctac{unfold} \coqdocdefinition{pointwise\_paths}. \coqdoctac{intros}. \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdoctac{intros}. \coqdoctac{apply} \coqdocdefinition{path\_forall}. \coqdoctac{intro} \coqdocvar{z}. \coqdoctac{destruct} \coqdocvar{z}; \coqdoctac{reflexivity}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Qed}.\coqdoceol
 \coqdocemptyline
@@ -1086,7 +1086,7 @@ So we have an equivalence.
 \coqdockw{Section} \coqdef{Ch02.Exercise2 11}{Exercise2\_11}{\coqdocsection{Exercise2\_11}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Variables} (\coqdef{Ch02.Exercise2 11.A}{A}{\coqdocvariable{A}} \coqdef{Ch02.Exercise2 11.B}{B}{\coqdocvariable{B}} \coqdef{Ch02.Exercise2 11.C}{C}{\coqdocvariable{C}} \coqdef{Ch02.Exercise2 11.X}{X}{\coqdocvariable{X}} : \coqdockw{Type}) (\coqdef{Ch02.Exercise2 11.f}{f}{\coqdocvariable{f}}: \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdef{Ch02.Exercise2 11.g}{g}{\coqdocvariable{g}}: \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}).\coqdoceol
+\coqdockw{Variables} (\coqdef{Ch02.Exercise2 11.A}{A}{\coqdocvariable{A}} \coqdef{Ch02.Exercise2 11.B}{B}{\coqdocvariable{B}} \coqdef{Ch02.Exercise2 11.C}{C}{\coqdocvariable{C}} \coqdef{Ch02.Exercise2 11.X}{X}{\coqdocvariable{X}} : \coqdockw{Type}) (\coqdef{Ch02.Exercise2 11.f}{f}{\coqdocvariable{f}}: \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{C}) (\coqdef{Ch02.Exercise2 11.g}{g}{\coqdocvariable{g}}: \coqdocvar{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{C}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch02.P}{P}{\coqdocdefinition{P}} := \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{a}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{b}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}}\coqdocvariable{B} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{f} \coqdocvar{a} \coqdocnotation{=} \coqdocvariable{g} \coqdocvar{b}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}}}.\coqdoceol
@@ -1298,11 +1298,11 @@ equivalence iff $h$ is an equivalence, which is what was to be proved.
 \coqdockw{Section} \coqdef{Ch02.Exercise2 12}{Exercise2\_12}{\coqdocsection{Exercise2\_12}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Variables} (\coqdef{Ch02.Exercise2 12.A}{A}{\coqdocvariable{A}} \coqdef{Ch02.Exercise2 12.B}{B}{\coqdocvariable{B}} \coqdef{Ch02.Exercise2 12.C}{C}{\coqdocvariable{C}} \coqdef{Ch02.Exercise2 12.D}{D}{\coqdocvariable{D}} \coqdef{Ch02.Exercise2 12.E}{E}{\coqdocvariable{E}} \coqdef{Ch02.Exercise2 12.F}{F}{\coqdocvariable{F}} \coqdef{Ch02.Exercise2 12.X}{X}{\coqdocvariable{X}} : \coqdockw{Type}) (\coqdef{Ch02.Exercise2 12.ab}{ab}{\coqdocvariable{ab}}:\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{B}) (\coqdef{Ch02.Exercise2 12.ac}{ac}{\coqdocvariable{ac}}:\coqdocvariable{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{C}) (\coqdef{Ch02.Exercise2 12.bd}{bd}{\coqdocvariable{bd}}:\coqdocvariable{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{D})\coqdoceol
+\coqdockw{Variables} (\coqdef{Ch02.Exercise2 12.A}{A}{\coqdocvariable{A}} \coqdef{Ch02.Exercise2 12.B}{B}{\coqdocvariable{B}} \coqdef{Ch02.Exercise2 12.C}{C}{\coqdocvariable{C}} \coqdef{Ch02.Exercise2 12.D}{D}{\coqdocvariable{D}} \coqdef{Ch02.Exercise2 12.E}{E}{\coqdocvariable{E}} \coqdef{Ch02.Exercise2 12.F}{F}{\coqdocvariable{F}} \coqdef{Ch02.Exercise2 12.X}{X}{\coqdocvariable{X}} : \coqdockw{Type}) (\coqdef{Ch02.Exercise2 12.ab}{ab}{\coqdocvariable{ab}}:\coqdocvar{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{B}) (\coqdef{Ch02.Exercise2 12.ac}{ac}{\coqdocvariable{ac}}:\coqdocvar{A}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{C}) (\coqdef{Ch02.Exercise2 12.bd}{bd}{\coqdocvariable{bd}}:\coqdocvar{B}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{D})\coqdoceol
 \coqdocindent{5.00em}
-(\coqdef{Ch02.Exercise2 12.cd}{cd}{\coqdocvariable{cd}}:\coqdocvariable{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{D}) (\coqdef{Ch02.Exercise2 12.ce}{ce}{\coqdocvariable{ce}}:\coqdocvariable{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{E}) (\coqdef{Ch02.Exercise2 12.df}{df}{\coqdocvariable{df}}:\coqdocvariable{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{F}) (\coqdef{Ch02.Exercise2 12.ef}{ef}{\coqdocvariable{ef}}:\coqdocvariable{E}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvariable{F})\coqdoceol
+(\coqdef{Ch02.Exercise2 12.cd}{cd}{\coqdocvariable{cd}}:\coqdocvar{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{D}) (\coqdef{Ch02.Exercise2 12.ce}{ce}{\coqdocvariable{ce}}:\coqdocvar{C}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{E}) (\coqdef{Ch02.Exercise2 12.df}{df}{\coqdocvariable{df}}:\coqdocvar{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{F}) (\coqdef{Ch02.Exercise2 12.ef}{ef}{\coqdocvariable{ef}}:\coqdocvar{E}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}}\coqdocvar{F})\coqdoceol
 \coqdocindent{5.00em}
-(\coqdef{Ch02.Exercise2 12.l}{l}{\coqdocvariable{l}}: \coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{ab} \coqdocnotation{=} \coqdocvariable{cd} \coqdocnotation{o} \coqdocvariable{ac}) (\coqdef{Ch02.Exercise2 12.r}{r}{\coqdocvariable{r}}: \coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{cd} \coqdocnotation{=} \coqdocvariable{ef} \coqdocnotation{o} \coqdocvariable{ce}).\coqdoceol
+(\coqdef{Ch02.Exercise2 12.l}{l}{\coqdocvariable{l}}: \coqdocvar{bd} \coqdocnotation{o} \coqdocvar{ab} \coqdocnotation{=} \coqdocvar{cd} \coqdocnotation{o} \coqdocvar{ac}) (\coqdef{Ch02.Exercise2 12.r}{r}{\coqdocvariable{r}}: \coqdocvar{df} \coqdocnotation{o} \coqdocvar{cd} \coqdocnotation{=} \coqdocvar{ef} \coqdocnotation{o} \coqdocvar{ce}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch02.e}{e}{\coqdocdefinition{e}} : \coqdocvariable{df} \coqdocnotation{o} \coqdocvariable{bd} \coqdocnotation{o} \coqdocvariable{ab} \coqdocnotation{=} \coqdocvariable{ef} \coqdocnotation{o} \coqdocvariable{ce} \coqdocnotation{o} \coqdocvariable{ac}.\coqdoceol
@@ -1618,7 +1618,7 @@ beta\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 \coqdoctac{destruct} \coqdocvar{x}. \coqdoctac{pose} \coqdocvar{proof} (\coqref{Ch02.equiv not const}{\coqdoclemma{equiv\_not\_const}} \coqdocvar{equiv\_fun}) \coqdockw{as} \coqdocvar{H1}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_equiv}; \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{simpl}.\coqdoceol
+\coqdoctac{apply} \coqdocdefinition{path\_equiv}; \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{x}; \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{simpl}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{destruct} (\coqdocvar{equiv\_fun} \coqdocconstructor{false}); \coqdoctac{simpl};\coqdoceol
 \coqdocindent{2.00em}
@@ -2175,7 +2175,7 @@ equiv\_fun\coqdocindent{0.50em}
 \coqdocindent{2.00em}
 \coqdoctac{rewrite} \coqdocdefinition{transport\_const}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_universe\_uncurried} \coqdocvar{f}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_universe} (\coqdocprojection{equiv\_fun} \coqdocvar{A} \coqdocvar{A'} \coqdocvar{f})\coqdocnotation{)}).\coqdoceol
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_universe\_uncurried} \coqdocvar{f}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_universe} (\coqdocprojection{equiv\_fun} \coqdocvar{f})\coqdocnotation{)}).\coqdoceol
 \coqdocindent{2.00em}
 \coqdoctac{unfold} \coqdocdefinition{path\_universe}. \coqdoctac{destruct} \coqdocvar{f}. \coqdoctac{reflexivity}.\coqdoceol
 \coqdocindent{2.00em}
@@ -2183,7 +2183,7 @@ equiv\_fun\coqdocindent{0.50em}
 \coqdocindent{2.00em}
 \coqdoctac{rewrite} \coqdocdefinition{transport\_const}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_universe\_uncurried} \coqdocvar{g}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_universe} (\coqdocprojection{equiv\_fun} \coqdocvar{B} \coqdocvar{B'} \coqdocvar{g})\coqdocnotation{)}).\coqdoceol
+\coqdoctac{assert} (\coqdocnotation{(}\coqdocdefinition{path\_universe\_uncurried} \coqdocvar{g}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{path\_universe} (\coqdocprojection{equiv\_fun} \coqdocvar{g})\coqdocnotation{)}).\coqdoceol
 \coqdocindent{2.00em}
 \coqdoctac{unfold} \coqdocdefinition{path\_universe}. \coqdoctac{destruct} \coqdocvar{g}. \coqdoctac{reflexivity}.\coqdoceol
 \coqdocindent{2.00em}
