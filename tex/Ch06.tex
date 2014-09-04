@@ -129,83 +129,83 @@ which is the type of $t'$.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Module} \coqdockw{Export} \coqdef{Ch06.Torus}{Torus}{\coqdocmodule{Torus}}.\coqdoceol
+\coqdockw{Module} \coqdef{Ch06.Torus ex}{Torus\_ex}{\coqdocmodule{Torus\_ex}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdocvar{Private} \coqdockw{Inductive} \coqdef{Ch06.Torus.T2}{T2}{\coqdocinductive{T2}} : \coqdockw{Type} :=\coqdoceol
+\coqdocvar{Private} \coqdockw{Inductive} \coqdef{Ch06.Torus ex.T2}{T2}{\coqdocinductive{T2}} : \coqdockw{Type} :=\coqdoceol
 \coqdocnoindent
-\ensuremath{|} \coqdef{Ch06.Torus.Tb}{Tb}{\coqdocconstructor{Tb}} : \coqref{Ch06.T2}{\coqdocinductive{T2}}.\coqdoceol
+\ensuremath{|} \coqdef{Ch06.Torus ex.Tb}{Tb}{\coqdocconstructor{Tb}} : \coqref{Ch06.T2}{\coqdocinductive{T2}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.Tp}{Tp}{\coqdocaxiom{Tp}} : \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.Tp}{Tp}{\coqdocaxiom{Tp}} : \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.Tq}{Tq}{\coqdocaxiom{Tq}} : \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.Tq}{Tq}{\coqdocaxiom{Tq}} : \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}} \coqdocnotation{=} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.Tt}{Tt}{\coqdocaxiom{Tt}} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{@} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{@} \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}}.\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.Tt}{Tt}{\coqdocaxiom{Tt}} : \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{@} \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{@} \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch06.Torus.T2 rect}{T2\_rect}{\coqdocdefinition{T2\_rect}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) \coqdoceol
+\coqdockw{Definition} \coqdef{Ch06.Torus ex.T2 rect}{T2\_rect}{\coqdocdefinition{T2\_rect}} (\coqdocvar{P} : \coqref{Ch06.Torus ex.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) \coqdoceol
 \coqdocindent{5.50em}
-(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
 \coqdocindent{5.50em}
-(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)})\coqdoceol
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)})\coqdoceol
 \coqdocindent{1.00em}
-: \coqdockw{\ensuremath{\forall}} (\coqdocvar{x} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}}), \coqdocvariable{P} \coqdocvariable{x} :=\coqdoceol
+: \coqdockw{\ensuremath{\forall}} (\coqdocvar{x} : \coqref{Ch06.Torus ex.T2}{\coqdocinductive{T2}}), \coqdocvariable{P} \coqdocvariable{x} :=\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdockw{match} \coqdocvariable{x} \coqdockw{with} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}} \ensuremath{\Rightarrow} \coqdockw{fun} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvariable{b'} \coqdockw{end} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}.\coqdoceol
+\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdockw{match} \coqdocvariable{x} \coqdockw{with} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}} \ensuremath{\Rightarrow} \coqdockw{fun} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocvariable{b'} \coqdockw{end} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tp}{T2\_rect\_beta\_Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} :\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.T2 rect beta Tp}{T2\_rect\_beta\_Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} :\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus ex.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
 \coqdocindent{2.00em}
-\coqdocdefinition{apD} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{=} \coqdocvariable{p'}.\coqdoceol
+\coqdocdefinition{apD} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{=} \coqdocvariable{p'}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tq}{T2\_rect\_beta\_Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} :\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.T2 rect beta Tq}{T2\_rect\_beta\_Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} :\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus ex.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
 \coqdocindent{2.00em}
-\coqdocdefinition{apD} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqdocvariable{q'}.\coqdoceol
+\coqdocdefinition{apD} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{=} \coqdocvariable{q'}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Axiom} \coqdef{Ch06.Torus.T2 rect beta Tt}{T2\_rect\_beta\_Tt}{\coqdocaxiom{T2\_rect\_beta\_Tt}} :\coqdoceol
+\coqdockw{Axiom} \coqdef{Ch06.Torus ex.T2 rect beta Tt}{T2\_rect\_beta\_Tt}{\coqdocaxiom{T2\_rect\_beta\_Tt}} :\coqdoceol
 \coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{P} : \coqref{Ch06.Torus ex.T2}{\coqdocinductive{T2}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
+(\coqdocvar{b'} : \coqdocvariable{P} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}) (\coqdocvar{p'} : \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'}) (\coqdocvar{q'} : \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqdocnotation{\#} \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'})\coqdoceol
 \coqdocindent{4.50em}
-(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
+(\coqdocvar{t'} : \coqdocvariable{p'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{q'} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} \coqdocvariable{b'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocvariable{q'} \coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{@}}\coqref{Ch06.:path scope:x '@D' x}{\coqdocnotation{D}} \coqdocvariable{p'}\coqdocnotation{)}),\coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{(}\coqref{Ch06.Torus.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}\coqdocnotation{)\^{}}\coqdoceol
+\coqdocnotation{(}\coqref{Ch06.Torus ex.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus ex.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}\coqdocnotation{)\^{}}\coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.Torus.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}} \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}}\coqdocnotation{)\^{}} \coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.Torus ex.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}} \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}}\coqdocnotation{)\^{}} \coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{apD02} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}}\coqdocnotation{)}\coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{apD02} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}}\coqdocnotation{)}\coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
 \coqdocindent{8.00em}
-(\coqref{Ch06.Torus.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus.Tq}{\coqdocaxiom{Tq}} \coqref{Ch06.Torus.Tp}{\coqdocaxiom{Tp}})\coqdocnotation{)}\coqdoceol
+(\coqref{Ch06.Torus ex.apD pp}{\coqdoclemma{apD\_pp}} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'}) \coqref{Ch06.Torus ex.Tq}{\coqdocaxiom{Tq}} \coqref{Ch06.Torus ex.Tp}{\coqdocaxiom{Tp}})\coqdocnotation{)}\coqdoceol
 \coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} \coqdocvariable{P} \coqref{Ch06.Torus ex.Tt}{\coqdocaxiom{Tt}} (\coqref{Ch06.Torus ex.T2 rect}{\coqdocdefinition{T2\_rect}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.Torus ex.Tb}{\coqdocconstructor{Tb}}))\coqdoceol
 \coqdocindent{8.00em}
-(\coqref{Ch06.Torus.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'})\coqdocnotation{)}\coqdoceol
+(\coqref{Ch06.Torus ex.T2 rect beta Tq}{\coqdocaxiom{T2\_rect\_beta\_Tq}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'} \coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{@@}}\coqref{Ch06.:path scope:x '@@D' x}{\coqdocnotation{D}} \coqref{Ch06.Torus ex.T2 rect beta Tp}{\coqdocaxiom{T2\_rect\_beta\_Tp}} \coqdocvariable{P} \coqdocvariable{b'} \coqdocvariable{p'} \coqdocvariable{q'} \coqdocvariable{t'})\coqdocnotation{)}\coqdoceol
 \coqdocindent{2.00em}
 \coqdocnotation{=} \coqdocvariable{t'}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{End} \coqref{Ch06}{\coqdocmodule{Torus}}.\coqdoceol
+\coqdockw{End} \coqref{Ch06}{\coqdocmodule{Torus\_ex}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{6.2}{217} 
+\exerdone{6.2}{217} 
 Prove that $\susp\Sn^{1} \eqvsym \Sn^{2}$, using the explicit definition of
 $\Sn^{2}$ in terms of $\base$ and $\surf$ given in \S6.4.
 
@@ -242,10 +242,110 @@ $f(\south) \equiv \base_{2}$; and for all $x : \Sn^{1}$, $f(\merid(x)) = m(x)$.
 
 To go the other way, we use the recursion principle for the 2-sphere to obtain
 a function $g : \Sn^{2} \to \susp\Sn^{1}$ such that $g(\base_{2}) \equiv
-\north$ and $g(\surf) = \merid(\lloop) \ct \merid(\base_{1})^{-1}$,
-conjugated with proofs that $\merid(\base) \ct \merid(\lloop)^{-1} =
+\north$ and $\aptwo{g}{\surf} = \merid(\lloop) \rightwhisker \merid(\base_{1})^{-1}$,
+conjugated with proofs that $\merid(\base_{1}) \ct \merid(\base_{1})^{-1} =
 \refl{\north}$.
+
+
+Now, to show that this is an equivalence, we must show that the second map is a
+quasi-inverse to the first.  First we show $g \circ f \sim
+\idfunc{\susp\Sn^{1}}$.  For the poles we have
+\begin{align*}
+  g(f(\north)) &\equiv g(\base_{2}) \equiv \north \\
+  g(f(\south)) &\equiv g(\base_{2}) \equiv \north
+\end{align*}
+and concatenating the latter with $\merid(\base_{1})$ gives $g(f(\south)) =
+\south$.  Now we must show that for all $y : \Sn^{1}$, these equalities hold as
+$x$ varies along $\merid(y)$.  That is, we must produce a path
+\[
+  \transfib{x \mapsto g(f(x)) = x}{\merid(y)}{\refl{\north}} = \merid(\base_{1})
+\]
+or, by Theorem 2.11.3 and a bit of path algebra,
+\[
+  g(m(y))
+  =
+  \merid(y) \ct \merid(\base_{1})^{-1}
+\]
+We do this by induction on $\Sn^{1}$.  When $y \equiv \base_{1}$, we have
+\[
+  g(m(\base_{1})) 
+  = 
+  g(\refl{\base_{2}}) 
+  =
+  \refl{\base_{2}}
+  =
+  \merid(\base_{1}) \ct \merid(\base_{1})^{-1}
+\]
+When $y$ varies along $\lloop$, we have to show that this proof continues to
+hold.  By Theorem 2.11.3 and some path algebra, this in fact
+reduces to
+\[
+  \mapfunc{y \mapsto g(m(y))} \lloop
+  =
+  \merid(\lloop) \rightwhisker \merid(\base_{1})^{-1}
+\]
+modulo the proofs of $\merid(\base_{1}) \ct \merid(\base_{1})^{-1} =
+\refl{\north}$.  And this is essentially the computation rule for $g$.  Since
+the computation rules are propositional some extra proofs have to be carried
+around, though; see the second part of \coqref{Ch06.isequiv SS1 to S2}{\coqdoclemma{isequiv\_SS1\_to\_S2}} for the gory details.
+
+
+To show that $f \circ g \sim \idfunc{\Sn^{2}}$, note that
+\[
+  f(g(\base_{2})) \equiv f(\north) \equiv \base_{2}
+\]
+so we only need to show that as $x$ varies over the surface,
+\[
+  \dpath{x \mapsto f(g(x)) =
+  x}{\surf}{\refl{\refl{\base_{2}}}}{\refl{\refl{\base_{2}}}}
+\]
+which means
+\[
+ \refl{\refl{\base_{2}}} = \transtwo{\surf}{\refl{\base_{2}}}
+  \equiv
+  \mapfunc{p \mapsto p_{*} \refl{\base_{2}}}\surf
+\]
+So we need to show that
+\[
+  \refl{\refl{\base_{2}}} = \mapfunc{p \mapsto f(g(p^{-1})) \ct p} \surf
+\]
+which by naturality of $\mapfunc{}$ and the computation rule for $\Sn^{1}$ is
+\[
+  \refl{\refl{\base_{2}}} 
+  =
+  \left(\aptwo{f}{\aptwo{g}{\surf}}\right)^{-1}
+  \ct
+  \surf
+\]
+Naturality and the computation rules then give
+\[
+  \aptwo{f}{\aptwo{g}{\surf}} 
+  = \aptwo{f}{\merid(\lloop)} 
+  = m(\lloop)
+  = \surf
+\]
+and we're done.  The computation in Coq is long, since all of the homotopic
+corrections have to be done by hand.  I also spend a lot of moves on making the
+interactive version of the proof clear, and those could probably be eliminated.
 \begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch06.ap ap  ap02 ap}{ap\_ap\_\_ap02\_ap}{\coqdoclemma{ap\_ap\_\_ap02\_ap}} \{\coqdocvar{A} \coqdocvar{B} \coqdocvar{C} : \coqdockw{Type}\} \{\coqdocvar{a} : \coqdocvariable{A}\} \{\coqdocvar{b} : \coqdocvariable{B}\} \coqdoceol
+\coqdocindent{3.00em}
+(\coqdocvar{p} : \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a}) (\coqdocvar{f} : \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) (\coqdocvar{m} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocvariable{f} (\coqdocvariable{m} \coqdocvariable{x})) \coqdocvariable{p} \coqdocnotation{=} \coqdocdefinition{ap02} \coqdocvariable{f} (\coqdocdefinition{ap} \coqdocvariable{m} \coqdocvariable{p}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch06.whiskerR ap}{whiskerR\_ap}{\coqdoclemma{whiskerR\_ap}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} \{\coqdocvar{a} : \coqdocvariable{A}\} \{\coqdocvar{b} \coqdocvar{b'} : \coqdocvariable{B}\} \coqdoceol
+\coqdocindent{3.00em}
+(\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) (\coqdocvar{p} : \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a}) (\coqdocvar{q} : \coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{whiskerR} (\coqdocdefinition{ap} \coqdocvariable{f} \coqdocvariable{p}) \coqdocvariable{q} \coqdocnotation{=} \coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdocvariable{f} \coqdocvariable{x} \coqdocnotation{@} \coqdocvariable{q}) \coqdocvariable{p}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch06.SS1 to S2}{SS1\_to\_S2}{\coqdocdefinition{SS1\_to\_S2}} := \coqdocdefinition{Susp\_rect\_nd} \coqdocconstructor{base} \coqdocconstructor{base} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf}).\coqdoceol
@@ -255,30 +355,41 @@ conjugated with proofs that $\merid(\base) \ct \merid(\lloop)^{-1} =
 \coqdocindent{1.00em}
 \coqdocdefinition{S2\_rectnd} (\coqdocinductive{Susp} \coqdocinductive{S1}) \coqdocconstructor{North}\coqdoceol
 \coqdocindent{6.00em}
-(\coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)\^{}}\coqdoceol
+\coqdocnotation{((}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)\^{}}\coqdoceol
 \coqdocindent{6.50em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop}\coqdocnotation{)} \coqdocnotation{@@} \coqdocdefinition{inverse2} (\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop})\coqdocnotation{)}\coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerR} (\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop}) \coqdocnotation{(}\coqdocaxiom{merid} \coqdocconstructor{Circle.base}\coqdocnotation{)\^{}}\coqdocnotation{)}\coqdoceol
 \coqdocindent{6.50em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)}).\coqdoceol
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)}\coqdocnotation{)\^{}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch06.apD02 const}{apD02\_const}{\coqdoclemma{apD02\_const}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} \{\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \coqdoceol
+\coqdockw{Lemma} \coqdef{Ch06.ap concat}{ap\_concat}{\coqdoclemma{ap\_concat}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) (\coqdocvar{a} : \coqdocvariable{A}) (\coqdocvar{b} \coqdocvar{b'} \coqdocvar{b'{}'} : \coqdocvariable{B}) (\coqdocvar{p} : \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a}) \coqdoceol
 \coqdocindent{3.00em}
-(\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}) :\coqdoceol
+(\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) (\coqdocvar{g} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b'} \coqdocnotation{=} \coqdocvariable{b'{}'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) :\coqdoceol
 \coqdocindent{1.00em}
-\coqdocdefinition{apD02} \coqdocvariable{f} \coqdocvariable{r} \coqdocnotation{=} \coqdoceol
+\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdocvariable{f} \coqdocvariable{x} \coqdocnotation{@} \coqdocvariable{g} \coqdocvariable{x}) \coqdocvariable{p} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{ap} \coqdocvariable{f} \coqdocvariable{p}\coqdocnotation{)} \coqdocnotation{@@} \coqdocnotation{(}\coqdocdefinition{ap} \coqdocvariable{g} \coqdocvariable{p}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.concat2 V2p}{concat2\_V2p}{\coqdocdefinition{concat2\_V2p}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} \{\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}) :\coqdoceol
 \coqdocindent{1.00em}
-\coqdocnotation{(}\coqdoclemma{apD\_const} \coqdocvariable{f} \coqdocvariable{p} \coqdoceol
-\coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocvariable{r} (\coqdocvariable{f} \coqdocvariable{x}) \coqdocnotation{@@} \coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r}\coqdocnotation{))}\coqdoceol
-\coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{((}\coqdocdefinition{concat\_pp\_p} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocvariable{B}) \coqdocvariable{r} (\coqdocvariable{f} \coqdocvariable{x})) \coqdoceol
-\coqdocindent{9.50em}
-(\coqdocdefinition{transport\_const} \coqdocvariable{q} (\coqdocvariable{f} \coqdocvariable{x}))\coqdoceol
-\coqdocindent{9.50em}
-(\coqdocdefinition{ap} \coqdocvariable{f} \coqdocvariable{q})\coqdocnotation{)}\coqdoceol
-\coqdocindent{2.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocvariable{B}) \coqdocvariable{r} (\coqdocvariable{f} \coqdocvariable{x})) \coqdocnotation{(}\coqdoclemma{apD\_const} \coqdocvariable{f} \coqdocvariable{q}\coqdocnotation{)\^{}}\coqdocnotation{))}.\coqdoceol
+\coqdocnotation{(}\coqdocdefinition{concat\_Vp} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{inverse2} \coqdocvariable{r} \coqdocnotation{@@} \coqdocvariable{r}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_Vp} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{=} 1.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.ap inv}{ap\_inv}{\coqdocdefinition{ap\_inv}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} \{\coqdocvar{a} : \coqdocvariable{A}\} \{\coqdocvar{b} : \coqdocvariable{B}\} (\coqdocvar{p} : \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a}) (\coqdocvar{m} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}):\coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocvariable{m} \coqdocvariable{x}\coqdocnotation{)\^{}}) \coqdocvariable{p} \coqdocnotation{=} \coqdocdefinition{inverse2} (\coqdocdefinition{ap} \coqdocvariable{m} \coqdocvariable{p}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch06.bar}{bar}{\coqdoclemma{bar}} (\coqdocvar{A} \coqdocvar{B} \coqdocvar{C} : \coqdockw{Type}) (\coqdocvar{b} \coqdocvar{b'} : \coqdocvariable{B}) (\coqdocvar{m} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{b'}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}) (\coqdocvar{f} : \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C}) \coqdoceol
+\coqdocindent{3.00em}
+(\coqdocvar{a} : \coqdocvariable{A}) (\coqdocvar{p} : \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocvariable{f} (\coqdocvariable{m} \coqdocvariable{x})) \coqdocvariable{p} \coqdocnotation{=} \coqdocdefinition{ap02} \coqdocvariable{f} (\coqdocdefinition{ap} \coqdocvariable{m} \coqdocvariable{p}).\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
@@ -287,218 +398,53 @@ conjugated with proofs that $\merid(\base) \ct \merid(\lloop)^{-1} =
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch06.cancelL2}{cancelL2}{\coqdocdefinition{cancelL2}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}\} \{\coqdocvar{p} \coqdocvar{p'} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \{\coqdocvar{q} \coqdocvar{q'} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z}\}\coqdoceol
-\coqdocindent{1.00em}
-(\coqdocvar{a} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{p'}) (\coqdocvar{b} \coqdocvar{c} : \coqdocvariable{q} \coqdocnotation{=} \coqdocvariable{q'}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{(}\coqdocvariable{a} \coqdocnotation{@@} \coqdocvariable{b}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{a} \coqdocnotation{@@} \coqdocvariable{c}\coqdocnotation{)} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{b} \coqdocnotation{=} \coqdocvariable{c}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{a}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{b}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{p}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{q}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_1p} 1\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocdefinition{whiskerL} 1 \coqdocvar{c} \coqdocnotation{@} \coqdocdefinition{concat\_1p} 1).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{whiskerL\_1p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch06.concat p1 1}{concat\_p1\_1}{\coqdoclemma{concat\_p1\_1}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{p} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) : \coqdoceol
-\coqdocindent{1.00em}
-\coqdocdefinition{concat\_pp\_p} \coqdocvariable{p} 1 1 \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocvariable{p} \coqdocnotation{@} 1)\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} \coqdocvariable{p} (\coqdocdefinition{concat\_p1} 1)\coqdocnotation{)}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch06.S2 rectnd beta loop}{S2\_rectnd\_beta\_loop}{\coqdocdefinition{S2\_rectnd\_beta\_loop}} (\coqdocvar{P} : \coqdockw{Type}) (\coqdocvar{b} : \coqdocvariable{P}) (\coqdocvar{s} : \coqdocconstructor{idpath} \coqdocvariable{b} \coqdocnotation{=} \coqdocconstructor{idpath} \coqdocvariable{b})\coqdoceol
-\coqdocindent{1.00em}
-: \coqdocdefinition{ap02} (\coqdocdefinition{S2\_rectnd} \coqdocvariable{P} \coqdocvariable{b} \coqdocvariable{s}) \coqdocaxiom{surf} \coqdocnotation{=} \coqdocvariable{s}\coqdocnotation{\^{}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{change} (\coqdocdefinition{concat\_p1} 1) \coqdockw{with} (\coqdocconstructor{idpath} (\coqdocconstructor{idpath} \coqdocvar{b})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqdocdefinition{S2\_rectnd}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{set} (\coqdocvar{f} := (\coqdocdefinition{S2\_rect} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocvar{b}\coqdoceol
-\coqdocindent{12.50em}
-(\coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b})\coqdocnotation{)\^{}} \coqdoceol
-\coqdocindent{13.50em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{s}))).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{change} (\coqdocdefinition{S2\_rect} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocvar{b}\coqdoceol
-\coqdocindent{12.50em}
-(\coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b})\coqdocnotation{)\^{}} \coqdoceol
-\coqdocindent{13.50em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{s})) \coqdockw{with} \coqdocvar{f}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqref{Ch06.cancelL2}{\coqdocdefinition{cancelL2}} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base})) \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdoclemma{cancelL} (\coqdoclemma{apD\_const} \coqdocvar{f} 1) \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdoclemma{cancelR} \coqdocvar{\_} \coqdocvar{\_} \coqdoceol
-\coqdocindent{9.00em}
-(\coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base}))\coqdoceol
-\coqdocindent{5.00em}
-(\coqdocdefinition{transport\_const} 1 (\coqdocvar{f} \coqdocconstructor{base})) (\coqdocdefinition{ap} \coqdocvar{f} 1)\coqdocnotation{)} \coqdocnotation{@}\coqdoceol
-\coqdocindent{3.50em}
-\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base})) \coqdocnotation{(}\coqdoclemma{apD\_const} \coqdocvar{f} 1\coqdocnotation{)\^{}})\coqdoceol
-\coqdocindent{9.00em}
-\coqdocvar{\_}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocdefinition{apD02} \coqdocvar{f} \coqdocaxiom{surf}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{symmetry}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (\coqref{Ch06.apD02 const}{\coqdoclemma{apD02\_const}} \coqdocvar{f} \coqdocaxiom{surf}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqdocdefinition{transport\_const}, \coqdoclemma{apD\_const}. \coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base}) \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)} \coqdocnotation{@}\coqdoceol
-\coqdocindent{1.50em}
-\coqdocdefinition{concat\_pp\_p} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base})) 1 (\coqdocdefinition{ap} \coqdocvar{f} 1)).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{change} (\coqdocdefinition{apD02} \coqdocvar{f} \coqdocaxiom{surf}) \coqdockw{with} (\coqdocdefinition{apD02} (\coqdocdefinition{S2\_rect} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocvar{b}\coqdoceol
-\coqdocindent{4.50em}
-(\coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b})\coqdocnotation{)\^{}} \coqdocnotation{@}\coqdoceol
+\coqdockw{Definition} \coqdef{Ch06.ap03}{ap03}{\coqdocdefinition{ap03}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} \coqdoceol
 \coqdocindent{5.50em}
-\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{s})) \coqdocaxiom{surf}).\coqdoceol
+\{\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \{\coqdocvar{r} \coqdocvar{s} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}\} (\coqdocvar{t} : \coqdocvariable{r} \coqdocnotation{=} \coqdocvariable{s}) :\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocnotation{(}\coqdocaxiom{S2\_rect\_beta\_loop} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r} \coqdocnotation{=} \coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{s}\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveR\_pV}.\coqdoceol
+:= \coqdockw{match} \coqdocvariable{t} \coqdockw{with} \coqdocconstructor{idpath} \ensuremath{\Rightarrow} 1 \coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.ap pp pV}{ap\_pp\_pV}{\coqdocdefinition{ap\_pp\_pV}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) \coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} (\coqdocvar{p} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) :\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocvar{s}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocnotation{((}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b})\coqdocnotation{)\^{}} \coqdocnotation{@}\coqdoceol
-\coqdocindent{2.50em}
-\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{})\^{}}). \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocdefinition{ap\_pp} \coqdocvariable{f} \coqdocvariable{p} \coqdocvariable{p}\coqdocnotation{\^{}} \coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocnotation{(}\coqdocdefinition{concat\_pV} \coqdocvariable{p}\coqdocnotation{)\^{})\^{}} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocdefinition{ap} \coqdocvariable{f} \coqdocvariable{p})\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocnotation{(}1 \coqdocnotation{@@} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvariable{f} \coqdocvariable{p}\coqdocnotation{)}\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{((}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base}) \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)} \coqdocnotation{@}\coqdoceol
-\coqdocindent{2.00em}
-\coqdocdefinition{concat\_pp\_p} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} (\coqdocvar{f} \coqdocconstructor{base})) 1 1\coqdocnotation{)} \coqdocnotation{@}\coqdoceol
-\coqdocindent{1.50em}
-\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{apply} \coqdocdefinition{moveL\_pM}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveR\_Mp}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b}) 1 1\coqdocnotation{)\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}} \coqdoceol
-\coqdocindent{8.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocvar{s} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{))}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveL\_Vp}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}1 \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocnotation{(}\coqdocvar{s} \coqdocnotation{@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocnotation{(}\coqdocconstructor{idpath} (\coqdocconstructor{idpath} \coqdocvar{b})\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocdefinition{whiskerR} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}) 1).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport\_const} 1 \coqdocvar{b})\coqdocnotation{)}\coqdoceol
-\coqdocindent{8.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)}\coqdoceol
-\coqdocindent{8.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} \coqdocvar{\_} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@} \coqdocdefinition{transport\_const} 1 \coqdocvar{b})\coqdocnotation{)\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{concat2}. \coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{inverse2}. \coqdoctac{unfold} \coqdocdefinition{transport\_const}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.concat p1 1}{\coqdoclemma{concat\_p1\_1}} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{concat2}. \coqdocvar{hott\_simpl}. \coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdoctac{apply} \coqdocdefinition{moveR\_Mp}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport\_const} 1 \coqdocvar{b})\coqdocnotation{)\^{}} \coqdocnotation{@}\coqdoceol
-\coqdocindent{1.50em}
-\coqdocdefinition{whiskerR} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}) 1\coqdocnotation{)} \coqdocnotation{@}\coqdoceol
-\coqdocindent{2.00em}
-\coqdocdefinition{concat\_p1} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocinductive{S2} \ensuremath{\Rightarrow} \coqdocvar{P}) \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@} \coqdocdefinition{transport\_const} 1 \coqdocvar{b})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocnotation{(}\coqdocdefinition{whiskerR\_p1} \coqdocvar{\_}\coqdocnotation{)\^{}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}. \coqdocvar{hott\_simpl}. \coqdocvar{hott\_simpl}. \coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}1 \coqdocnotation{@} \coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)} \coqdocnotation{@@} \coqdocnotation{(}\coqdocvar{s} \coqdocnotation{@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}. \coqdoctac{symmetry}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{concat\_concat2} 1 (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}) \coqdocvar{s} \coqdocvar{s}\coqdocnotation{\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{whiskerR} \coqdocvar{\_} (\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{etransitivity} (\coqdocdefinition{whiskerL} 1 \coqdocvar{s}). \coqdoctac{apply} (\coqdocdefinition{concat2\_1p} \coqdocvar{s}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{etransitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_1p} 1\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocdefinition{whiskerL} 1 \coqdocvar{s} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_1p} 1\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}. \coqdoctac{apply} \coqdocdefinition{whiskerL\_1p}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{s}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b} \coqdocnotation{@@} \coqdocvar{s}\coqdocnotation{\^{}}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{whiskerR} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocaxiom{surf} \coqdocvar{b}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{s}\coqdocnotation{\^{}\^{}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{hott\_simpl}. \coqdoctac{symmetry}. \coqdoctac{apply} \coqdocdefinition{inv\_pp}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{reflexivity}. \coqdocvar{hott\_simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_p\_pp} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{symmetry}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch06.trans paths2}{trans\_paths2}{\coqdoclemma{trans\_paths2}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) (\coqdocvar{f} \coqdocvar{g} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}) \coqdoceol
-\coqdocindent{4.50em}
-(\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}) (\coqdocvar{s} : \coqdocvariable{f} \coqdocnotation{=} \coqdocvariable{g}),\coqdoceol
+\coqdockw{Definition} \coqdef{Ch06.ap02 V}{ap02\_V}{\coqdocdefinition{ap02\_V}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B})\coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} \{\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}) :\coqdoceol
 \coqdocindent{1.00em}
-\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{a} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocvariable{f} \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{a}) \coqdocvariable{r} (\coqdocdefinition{ap10} \coqdocvariable{s} \coqdocvariable{x}) \coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{=}\coqdoceol
-\coqdocindent{1.00em}
-\coqdoclemma{trans\_paths} \coqdocvariable{A} \coqdocvariable{B} \coqdocvariable{f} \coqdocvariable{g} \coqdocvariable{x} \coqdocvariable{y} \coqdocvariable{p} (\coqdocdefinition{ap10} \coqdocvariable{s} \coqdocvariable{x})\coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerR} (\coqdocdefinition{inverse2} (\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r})) (\coqdocdefinition{ap10} \coqdocvariable{s} \coqdocvariable{x}) \coqdocnotation{@@} \coqdocdefinition{ap02} \coqdocvariable{g} \coqdocvariable{r}\coqdocnotation{)}\coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{@} \coqdocnotation{(}\coqdoclemma{trans\_paths} \coqdocvariable{A} \coqdocvariable{B} \coqdocvariable{f} \coqdocvariable{g} \coqdocvariable{x} \coqdocvariable{y} \coqdocvariable{q} (\coqdocdefinition{ap10} \coqdocvariable{s} \coqdocvariable{x})\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r}\coqdocnotation{\^{}} \coqdocnotation{=} \coqdocnotation{(}\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r}\coqdocnotation{)\^{}}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{s}. \coqdoctac{induction} \coqdocvar{r}. \coqdoctac{induction} \coqdocvar{p}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
 \coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
+\coqdockw{Definition} \coqdef{Ch06.inv p2p}{inv\_p2p}{\coqdocdefinition{inv\_p2p}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}\} \coqdoceol
+\coqdocindent{5.50em}
+\{\coqdocvar{p} \coqdocvar{p'} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} \{\coqdocvar{q} \coqdocvar{q'} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z}\} (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{p'}) (\coqdocvar{s} : \coqdocvariable{q} \coqdocnotation{=} \coqdocvariable{q'}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocvariable{r} \coqdocnotation{@@} \coqdocvariable{s}\coqdocnotation{)\^{}} \coqdocnotation{=} \coqdocvariable{r}\coqdocnotation{\^{}} \coqdocnotation{@@} \coqdocvariable{s}\coqdocnotation{\^{}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06.baz}{baz}{\coqdocdefinition{baz}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}\} \{\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}\} (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q}) : \coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{concat\_pV} \coqdocvariable{p} \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{r} \coqdocnotation{@@} \coqdocdefinition{inverse2} \coqdocvariable{r}\coqdocnotation{)} \coqdocnotation{@} \coqdocdefinition{concat\_pV} \coqdocvariable{q}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Theorem} \coqdef{Ch06.isequiv SS1 to S2}{isequiv\_SS1\_to\_S2}{\coqdoclemma{isequiv\_SS1\_to\_S2}} : \coqdocclass{IsEquiv} (\coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}}).\coqdoceol
@@ -506,23 +452,388 @@ conjugated with proofs that $\merid(\base) \ct \merid(\lloop)^{-1} =
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{apply} \coqdocdefinition{isequiv\_adjointify} \coqdockw{with} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+SS1\_to\_S2\coqdocindent{0.50em}
+o\coqdocindent{0.50em}
+S2\_to\_SS1\coqdocindent{0.50em}
+==\coqdocindent{0.50em}
+id\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{S2\_rect} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{x}) \coqdocnotation{=} \coqdocvariable{x}) 1 \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqdocdefinition{transport2}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdockw{\ensuremath{\forall}} \coqdocvar{p} : \coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base},\coqdoceol
+\coqdocindent{3.00em}
+(\coqdockw{fun} \coqdocvar{p'} : \coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base} \ensuremath{\Rightarrow} \coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{x}) \coqdocnotation{=} \coqdocvariable{x}) \coqdocvariable{p'} 1) \coqdocvariable{p}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{=}\coqdoceol
+\coqdocindent{3.00em}
+(\coqdockw{fun} \coqdocvar{p'} : \coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{p'}\coqdocnotation{\^{}}) \coqdocnotation{@} \coqdocvariable{p'}) \coqdocvariable{p}\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_paths\_FFlr} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{whiskerR}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap\_V} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvar{p})\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}). \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocvar{H} 1\coqdocnotation{)} \coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{p} : \coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{p}\coqdocnotation{\^{}}) \coqdocnotation{@} \coqdocvariable{p}) \coqdocaxiom{surf}\coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocvar{H} 1\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (@\coqdocdefinition{concat\_Ap} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{H} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{hott\_simpl}. \coqdoctac{clear} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{p} : \coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{p}\coqdocnotation{\^{}}) \coqdocnotation{@} \coqdocvariable{p}) \coqdoceol
+\coqdocindent{9.50em}
+(\coqdocdefinition{ap} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf}) \coqdocaxiom{loop})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}. \coqdoctac{apply} \coqdocnotation{(}\coqdocdefinition{S1\_rectnd\_beta\_loop} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap\_compose} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{unfold} \coqdocdefinition{compose}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap concat}{\coqdoclemma{ap\_concat}} \coqdocinductive{S1} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} : \coqdocinductive{S1} \ensuremath{\Rightarrow} \coqdoceol
+\coqdocindent{11.00em}
+\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocnotation{(}\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvariable{x}\coqdocnotation{)\^{}})) \coqdocaxiom{loop} \coqdoceol
+\coqdocindent{9.50em}
+\coqdocnotation{@@} \coqdocaxiom{surf}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}. \coqdoctac{apply} \coqdocdefinition{S1\_rectnd\_beta\_loop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.concat2 V2p}{\coqdocdefinition{concat2\_V2p}} \coqdocaxiom{surf}\coqdocnotation{)}). \coqdocvar{hott\_simpl}. \coqdocvar{f\_ap}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+invert\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+equation\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{refine} (\coqdocdefinition{S2\_rect} \coqdocvar{\_} 1 \coqdocvar{\_}).\coqdoceol
+\coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocinductive{S1}, \coqdoceol
+\coqdocindent{3.00em}
+\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocnotation{(}\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvariable{x}\coqdocnotation{)\^{}})\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{=}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{(}\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvariable{x}))\coqdocnotation{)\^{}}\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{x}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{(}\coqdocvar{H} \coqdocconstructor{Circle.base}\coqdocnotation{)}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{@} \coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{x} : \coqdocinductive{S1} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvariable{x}))\coqdocnotation{)\^{}}) \coqdoceol
+\coqdocindent{4.00em}
+\coqdocaxiom{loop}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocvar{H} \coqdocconstructor{Circle.base}\coqdocnotation{)\^{}}\coqdoceol
+\coqdocindent{1.00em}
+).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{apply} (\coqdocdefinition{concat\_Ap} \coqdocvar{H} \coqdocaxiom{loop}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdocvar{hott\_simpl}. \coqdoctac{clear} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap inv}{\coqdocdefinition{ap\_inv}} \coqdocaxiom{loop} \coqdoceol
+\coqdocindent{9.00em}
+(\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvariable{x})))\coqdoceol
+\coqdocindent{9.00em}
+\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+reduce\coqdocindent{0.50em}
+to\coqdocindent{0.50em}
+SS1\_to\_S2\coqdocindent{0.50em}
+(S2\_to\_SS1\coqdocindent{0.50em}
+surf)\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+surf\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.bar}{\coqdoclemma{bar}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocaxiom{loop}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqref{Ch06.bar}{\coqdoclemma{bar}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocaxiom{loop})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqdocdefinition{S1\_rectnd\_beta\_loop} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}))\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+compute\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+action\coqdocindent{0.50em}
+of\coqdocindent{0.50em}
+S2\_to\_SS1\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqdocdefinition{S2\_rectnd\_beta\_surf} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap02\_pp} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap02\_pp} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveR\_Mp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqref{Ch06.whiskerR ap}{\coqdoclemma{whiskerR\_ap}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} (\coqref{Ch06.ap concat}{\coqdoclemma{ap\_concat}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocaxiom{merid} \coqdocvar{\_})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap02\_p2p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdocvar{hott\_simpl}. \coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+eliminate\coqdocindent{0.50em}
+\coqdocvar{ap\_pp}s\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap pp pV}{\coqdocdefinition{ap\_pp\_pV}} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{apply} \coqdocdefinition{moveL\_Mp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.ap pp pV}{\coqdocdefinition{ap\_pp\_pV}} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdoctac{repeat} (\coqdoctac{apply} \coqdocdefinition{moveR\_pM}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{inv\_pp} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{inv\_pp} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{repeat} (\coqdoctac{apply} \coqdocdefinition{moveL\_pM}). \coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_Mp}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.ap02 V}{\coqdocdefinition{ap02\_V}} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.ap03}{\coqdocdefinition{ap03}} \coqdocvar{\_} \coqdocnotation{(}\coqdocdefinition{inv\_V} \coqdocvar{\_}\coqdocnotation{)\^{}}\coqdocnotation{)}). \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{repeat} (\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_})). \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}. \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_Vp}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_concat2} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_Mp}. \coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.inv p2p}{\coqdocdefinition{inv\_p2p}} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveL\_pV}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_concat2} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+eliminate\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+\coqdocvar{concat\_pV}s\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{r} : (\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{assert} (\coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocvariable{x})\coqdocnotation{)} \coqdocnotation{=} \coqdocabbreviation{idmap}) \coqdockw{as} \coqdocvar{X}.\coqdoceol
+\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base}) \coqdocnotation{=} 1\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{change} 1 \coqdockw{with} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocconstructor{Circle.base}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{Susp\_comp\_nd\_merid} \coqdocconstructor{Circle.base}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{apply} \coqdocdefinition{moveL\_pM}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06.baz}{\coqdocdefinition{baz}} \coqdocvar{r}\coqdocnotation{)\^{}}). \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdoctac{apply} \coqdocdefinition{moveR\_Mp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.baz}{\coqdocdefinition{baz}} \coqdocvar{r}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{moveL\_Vp}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_concat2} \coqdocvar{\_} \coqdocvar{r} 1 (\coqdocdefinition{inverse2} \coqdocvar{r})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{simpl}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_Mp}. \coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.inv p2p}{\coqdocdefinition{inv\_p2p}} \coqdocvar{r} (\coqdocdefinition{inverse2} \coqdocvar{r})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_concat2} \coqdocvar{r}\coqdocnotation{\^{}} (\coqdocdefinition{ap02} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop}) \coqdocnotation{@} \coqdocvar{r}) \coqdocnotation{(}\coqdocdefinition{inverse2} \coqdocvar{r}\coqdocnotation{)\^{}} (\coqdocdefinition{inverse2} \coqdocvar{r})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+de-whisker\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat2\_p1} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)} \coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocnotation{((}\coqdocvar{r}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocdefinition{ap02} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop})\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{r}\coqdocnotation{)} \coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{apply} \coqdocdefinition{moveL\_Mp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_p\_pp} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{whiskerR\_p1}. \coqdoctac{simpl}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqdocvar{r}. \coqdoctac{clear} \coqdocvar{r}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+compute\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+action\coqdocindent{0.50em}
+of\coqdocindent{0.50em}
+SS1\_to\_S2\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.bar}{\coqdoclemma{bar}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocaxiom{merid} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{x}.\coqdoceol
+\coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocinductive{S1}, \coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocaxiom{merid} \coqdocvariable{x}) \coqdocnotation{=} \coqdocdefinition{S1\_rectnd} \coqdocvar{\_} 1 \coqdocaxiom{surf} \coqdocvariable{x}                        \coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{Susp\_comp\_nd\_merid}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{change} (\coqdocdefinition{Susp\_comp\_nd\_merid} \coqdocconstructor{Circle.base}) \coqdockw{with} (\coqdocvar{H} \coqdocconstructor{Circle.base}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdoctac{apply} \coqdocdefinition{moveL\_pV}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_Ap} \coqdocvar{H} \coqdocaxiom{loop}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{S1\_rectnd\_beta\_loop}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+S2\_to\_SS2\coqdocindent{0.50em}
+o\coqdocindent{0.50em}
+SS1\_to\_S2\coqdocindent{0.50em}
+==\coqdocindent{0.50em}
+id\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqdocdefinition{Sect}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{Susp\_rect} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} (\coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} \coqdocvariable{x}) \coqdocnotation{=} \coqdocvariable{x}) 1 (\coqdocaxiom{merid} \coqdocconstructor{Circle.base}) \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+make\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+goal\coqdocindent{0.50em}
+g(m(y))\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+merid(y)\coqdocindent{0.50em}
+@\coqdocindent{0.50em}
+merid(Circle.base)\^{}\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{x}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{unfold} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}}.\coqdoceol
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_paths\_FFlr} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{transitivity} (\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} \coqdocnotation{(}\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvar{x}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocaxiom{merid} \coqdocvar{x}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{repeat} \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{transitivity} \coqdocnotation{(}\coqdocdefinition{ap} \coqref{Ch06.SS1 to S2}{\coqdocdefinition{SS1\_to\_S2}} (\coqdocaxiom{merid} \coqdocvar{x})\coqdocnotation{)\^{}}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{inverse2}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{Susp\_comp\_nd\_merid}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{transitivity} \coqdocnotation{(}\coqdocdefinition{ap} \coqref{Ch06.S2 to SS1}{\coqdocdefinition{S2\_to\_SS1}} (\coqdocdefinition{S1\_rectnd} (\coqdocconstructor{base} \coqdocnotation{=} \coqdocconstructor{base}) 1 \coqdocaxiom{surf} \coqdocvar{x})\coqdocnotation{)\^{}}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{symmetry}. \coqdoctac{transitivity} \coqdocnotation{(}\coqdocaxiom{merid} \coqdocvar{x} \coqdocnotation{@} \coqdocnotation{(}\coqdocaxiom{merid} \coqdocconstructor{Circle.base}\coqdocnotation{)\^{})\^{}}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{symmetry}. \coqdoctac{apply} \coqdocdefinition{inv\_pV}. \coqdoctac{apply} \coqdocdefinition{inverse2}. \coqdoctac{symmetry}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{x}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+now\coqdocindent{0.50em}
+compute\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{S1\_rect} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}@\coqdocdefinition{transport\_paths\_FlFr} \coqdocinductive{S1} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocaxiom{loop} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdocvar{hott\_simpl}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{inv\_V} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{inverse2}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)\^{}}\coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerR} (\coqdocdefinition{ap} \coqdocaxiom{merid} \coqdocaxiom{loop}) \coqdocnotation{(}\coqdocaxiom{merid} \coqdocconstructor{Circle.base}\coqdocnotation{)\^{}}\coqdocnotation{)}\coqdoceol
+\coqdocindent{8.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} (\coqdocaxiom{merid} \coqdocconstructor{Circle.base})\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{inv\_V} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{S2\_rectnd\_beta\_surf} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqref{Ch06.ap ap  ap02 ap}{\coqdoclemma{ap\_ap\_\_ap02\_ap}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}. \coqdoctac{apply} \coqdocdefinition{S1\_rectnd\_beta\_loop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{inv\_pp} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{whiskerL}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{inv\_pp} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdocvar{hott\_simpl}. \coqdoctac{apply} \coqdocdefinition{whiskerR}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06.whiskerR ap}{\coqdoclemma{whiskerR\_ap}}.\coqdoceol
 \coqdocnoindent
-\coqdocvar{Admitted}.\coqdoceol
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
+\coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
 \exer{6.3}{217} 

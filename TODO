@@ -7,3 +7,5 @@
 * use HoTTBook.v for numbered lemmas & theorems
 * get the f from the PBL out of the global namespace
 * fix the nat_scope issues
+* fix type of S2_rect in hit/TwoSphere.v
+* fix the vertical spacing of the := in the formatted code
