@@ -884,7 +884,7 @@ Fixpoint nat_r (n : nat) : nat_code n n :=
   end.
 
 Definition nat_encode (n m : nat) (p : n = m) := 
-  transport (fun _ => nat_code n _) p (nat_r n).
+  transport (fun k => nat_code n k) p (nat_r n).
 
 Definition nat_decode : forall (n m : nat) (p : nat_code n m), n = m.
   induction n, m; intro.
@@ -895,7 +895,8 @@ Defined.
 Theorem Theorem2131 : forall n m, (nat_code n m) <~> (n = m).
 Proof.
   intros. 
-  (* Update to Coq broke this 
+  (* Update to Coq broke this --- 
+     9/5: it broke nat_encode; should be okay now
   refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _);
   intro p.
 

@@ -668,3 +668,140 @@ $\N + \unit + \N$, then we could obtain Lemma 6.10.12 with judgmental
 computation rules.
 *)
 
+(** %\soln%
+Let $\Z \defeq \sm{x : \N \times \N} (r(x) = x)$, where
+%\[
+  r(a, b) = \begin{cases}
+    (a - b, 0) & \text{if $a \geq b$} \\
+    (0, b - a) & \text{otherwise}
+ \end{cases}
+\]%
+To define the forward direction, let $((a, b), p) : \Z$.  If $a = b$, then
+produce $\star$.  Otherwise, if $a > b$, produce $\pred(a - b)$ in the right
+copy of $\N$.  Otherwise (i.e., when $a < b$), produce $\pred(b - a)$ in the
+left copy of $\N$.  To go the other way, we have three cases.  When $n$ is
+in the left, send it to $(0, \suc(n))$, along with the appropriate proof.  When
+$n \equiv \star$, produce $(0, 0)$.  When $n$ is in the right, send it to
+$(\suc(n), 0)$.  Clearly, these two constructions are quasi-inverses, since
+$\suc(\pred(n)) = n$ for all $n \neq 0$.
+*)
+
+Module Exercise6_12.
+
+
+Fixpoint monus n m :=
+  match m with
+    | O => n
+    | S m' => pred (monus n m')
+  end.
+
+Lemma monus_O_n : forall n, monus O n = O.
+Proof. induction n. reflexivity. simpl. change O with (pred O). f_ap. Defined.
+
+Lemma n_le_Sn : forall n, le n (S n).
+Proof. intro n. exists (S O). apply (plus_1_r n)^. Defined.
+
+Lemma monus_eq_O__n_le_m : forall n m, (monus n m = O) -> (le n m).
+Admitted.
+
+Lemma monus_Sn_m : forall n m, (le m n) -> monus (S n) m = S (monus n m).
+Proof.
+  induction m.
+    intros. reflexivity.
+    intros. simpl.
+    transparent assert (H' : (le m n)).
+    apply (le_trans m (S m) n). apply n_le_Sn. apply H.
+    refine ((ap pred (IHm H')) @ _). clear H'.
+    simpl. symmetry. apply S_pred_inv.
+    intro H'. 
+    apply monus_eq_O__n_le_m in H'.
+    apply le_antisymmetric in H'.
+    destruct H as [k p]. simpl in p.
+    transparent assert (H'' : (m = plus m (S k))). 
+      apply (H' @ p^ @ (plus_n_Sm _ _)).
+    apply Ch03.baz in H''. contradiction.
+    apply (le_trans m (S m) n). apply n_le_Sn. apply H.
+Defined.
+
+Lemma monus_self : forall n, monus n n = O.
+Admitted.
+  
+  
+
+Definition r : nat * nat -> nat * nat.
+  intro z. destruct z as [a b].
+  destruct (order_partitions b a).
+  apply (monus a b, O).
+  apply (O, monus b a).
+Defined.
+  
+Definition int := {x : nat * nat & r x = x}.
+
+Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
+  intro z. destruct z as [[a b] p]. destruct (nat_eq_decidable a b).
+  left. right. apply tt.
+  destruct (order_partitions b a).
+  right. apply (pred (monus a b)).
+  left. left. apply (pred (monus b a)).
+Defined.
+
+Definition nat_1_nat_to_int : (nat + Unit + nat) -> int.
+  intro z. destruct z as [[n | n] | n].
+  exists (O, S n). reflexivity.
+  exists (O, O). reflexivity.
+  exists (S n, O). reflexivity.
+Defined.
+
+Lemma lt_le : forall n m, (lt n m) -> (le n m).
+Proof.
+  intros n m p. destruct p as [k p]. exists (S k). 
+  apply ((plus_n_Sm _ _)^ @ p). 
+Defined.
+
+Lemma hset_prod : forall A, IsHSet A -> forall B, IsHSet B -> IsHSet (A * B).
+Proof.
+  intros A HA B HB.
+  intros z z'. apply hprop_allpath. apply allpath_hprop.
+Defined.
+
+Theorem ex6_12 : int <~> (nat + Unit + nat).
+Proof.
+  refine (equiv_adjointify int_to_nat_1_nat nat_1_nat_to_int _ _).
+  
+  intro z. destruct z as [[n | n] | n].
+  reflexivity. simpl. repeat f_ap. apply contr_unit. reflexivity.
+  
+  intro z. destruct z as [[a b] p].
+  apply path_sigma_uncurried.
+  assert (
+    (nat_1_nat_to_int (int_to_nat_1_nat ((a, b); p))).1 = ((a, b); p).1
+  ) as H.
+  unfold nat_1_nat_to_int, int_to_nat_1_nat.
+  destruct (nat_eq_decidable a b).
+  unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
+    apply path_prod. 
+    assert (b = O). apply (ap snd p)^. 
+    assert (a = O). apply (p0 @ X).
+    simpl. transitivity (monus a 0). simpl. apply X0^. f_ap. apply X^.
+    reflexivity.
+    reflexivity.
+    assert (a = O). apply (ap fst p)^. assert (b = O). apply (p0^ @ X).
+    simpl. transitivity (monus b 0). simpl. apply X0^. f_ap. apply X^.
+
+  unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
+    apply path_prod.
+    simpl. refine ((S_pred_inv _ _) @ _).
+    intro H. apply monus_eq_O__n_le_m in H. 
+    apply le_antisymmetric in H. symmetry in H. apply n in H. contradiction.
+    apply l. reflexivity. reflexivity. reflexivity.
+    simpl. refine ((S_pred_inv _ _) @ _).
+    intro H. 
+    assert (a = b). refine ((ap fst p)^ @ H^ @ (ap snd p)).  apply n in X.
+    contradiction. reflexivity. simpl in *.
+    
+    exists H.
+    assert (IsHSet (nat * nat)) as Hn. apply hset_prod; apply ishset_nat.
+    apply set_path2.
+Defined.
+
+End Exercise6_12.

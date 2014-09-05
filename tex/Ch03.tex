@@ -1270,7 +1270,7 @@ they be this long.
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.nat encode}{nat\_encode}{\coqdocdefinition{nat\_encode}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{p} : \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}) := \coqdoceol
 \coqdocindent{1.00em}
-\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvar{\_}) \coqdocvariable{p} (\coqref{Ch03.nat r}{\coqdocdefinition{nat\_r}} \coqdocvariable{n}).\coqdoceol
+\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{k} \ensuremath{\Rightarrow} \coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{k}) \coqdocvariable{p} (\coqref{Ch03.nat r}{\coqdocdefinition{nat\_r}} \coqdocvariable{n}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.nat decode}{nat\_decode}{\coqdocdefinition{nat\_decode}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{p} : \coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m}), \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}.\coqdoceol
@@ -1297,7 +1297,17 @@ to\coqdocindent{0.50em}
 Coq\coqdocindent{0.50em}
 broke\coqdocindent{0.50em}
 this\coqdocindent{0.50em}
+---\coqdocindent{0.50em}
 \coqdoceol
+\coqdocindent{2.50em}
+9/5:\coqdocindent{0.50em}
+it\coqdocindent{0.50em}
+broke\coqdocindent{0.50em}
+nat\_encode;\coqdocindent{0.50em}
+should\coqdocindent{0.50em}
+be\coqdocindent{0.50em}
+okay\coqdocindent{0.50em}
+now\coqdoceol
 \coqdocindent{1.00em}
 refine\coqdocindent{0.50em}
 (equiv\_adjointify\coqdocindent{0.50em}
@@ -2118,7 +2128,7 @@ mere proposition, we have an element
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Infix} \coqdef{Ch03.:46272}{"}{"}\ensuremath{\not=}" := (\coqdockw{fun} \coqdocvar{n} \coqdocvar{m} \ensuremath{\Rightarrow} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}) : \coqdocvar{nat\_scope}.\coqdoceol
+\coqdockw{Infix} \coqdef{Ch03.:46326}{"}{"}\ensuremath{\not=}" := (\coqdockw{fun} \coqdocvar{n} \coqdocvar{m} \ensuremath{\Rightarrow} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}) : \coqdocvar{nat\_scope}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.pred}{pred}{\coqdocdefinition{pred}} (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :=\coqdoceol
