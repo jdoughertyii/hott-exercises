@@ -57,13 +57,170 @@ Prove that if the type $\Sn^{2}$ belongs to some universe $\UU$, then $\UU$ is
 not a 2-type.
 *)
 
-(** %\exer{6.7}{217}% 
+(** %\exerdone{6.7}{217}% 
 Prove that if $G$ is a monoid and $x : G$, then $\sm{y:G}((x \cdot y = e)
 \times (y \cdot x = e))$ is a mere proposition.  Conclude, using the principle
 of unique choice, that it would be equivalent to define a group to be a monoid
 such that for every $x : G$, there merely exists a $y : G$ such that $x \cdot y
 = e$ and $y \cdot x = e$.
 *)
+
+(** %\soln%
+Suppose that $G$ is a monoid and $x : G$.  Since $G$ is a set, each of $x
+\cdot y = e$ and $y \cdot x = e$ are mere propositions.  The product preserves
+this, so our type is of the form $\sm{y : G} P(y)$ for a family of mere
+propositions $P : G \to \UU$.  Now, suppose that there is a point $u : \sm{y :
+G} P(y)$; we show that this implies that this type is contractible, hence the
+type is a mere proposition.  Since $P(y)$ is a mere proposition, we just need
+to show that for any point $v : \sm{y : G} P(y)$, $\fst u = \fst v$.  But this
+is just to say that if $\fst u$ has an inverse it is unique, and this is a
+basic fact about inverses.
+
+A group is defined to be a monoid together with an inversion function $i : G
+\to G$ such that for all $x : G$, $x \cdot i(x) = e$ and $i(x) \cdot x = e$.
+That is, the following type is inhabited:
+%\[
+  \sm{i : G \to G}\prd{x : G}\left(
+    (x \cdot i(x) = e) \times (i(x) \cdot x = e)
+  \right)
+\]%
+but this type is equivalent to the type
+%\[
+  \prd{x : G}\sm{y : G}
+  \left(
+    (x \cdot y = e) \times (y \cdot x = e)
+  \right)
+\]%
+And as we have just shown, this is of the form $\prd{x:G} Q(x)$ for $Q$ a
+family of mere propositions.  Thus, by the principle of unique choice, it
+suffices to demand that for each $x : G$ we have $\brck{Q(x)}$.  Thus these two
+requirements are equivalent.
+*)
+
+Class IsMonoid (A : Type) (m : A -> A -> A) (e : A) 
+  := BuildIsMonoid {
+         m_isset : IsHSet A ;
+         m_unitr : forall a : A, m a e = a ;
+         m_unitl : forall a : A, m e a = a ;
+         m_assoc : forall x y z : A, m x (m y z) = m (m x y) z
+       }.
+
+Record Monoid 
+  := BuildMonoid {
+         m_set :> Type ;
+         m_mult :> m_set -> m_set -> m_set ;
+         m_unit :> m_set ;
+         m_ismonoid :> IsMonoid m_set m_mult m_unit
+       }.
+
+Lemma hprop_prod :
+  forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
+Proof.
+  intros A HA B HB z z'.
+  apply (trunc_equiv (equiv_path_prod z z')).
+Defined.
+  
+Theorem hprop_inverse_exists (G : Monoid) (x : G) :
+  IsHProp {y : G & (G x y = G) * (G y x = G)}.
+Proof.
+  (* reduce to uniqueness of inverse *)
+  assert (forall y : G, IsHProp ((G x y = G) * (G y x = G))). intro y.
+  apply hprop_prod; intros p q; apply G.
+  apply hprop_inhabited_contr. intro u. exists u.
+  intro v. apply path_sigma_hprop.
+
+  (* inverse is unique *)
+  refine ((@m_unitr _ G G G _)^ @ _).
+  refine (_ @ (@m_unitl _ G G G _)). 
+  transitivity (G u.1 (G x v.1)). f_ap. symmetry. apply (fst v.2).
+  transitivity (G (G u.1 x) v.1). refine (@m_assoc G G G G _ _ _).
+  f_ap. apply (snd u.2).
+Defined.
+
+
+Class IsGroup (A : Monoid) (i : A -> A) 
+  := BuildIsGroup {
+         g_invr : forall a : A, (m_mult A) a (i a) = (m_unit A) ;
+         g_invl : forall a : A, (m_mult A) (i a) a = (m_unit A)
+       }.
+
+Record Group 
+  := BuildGroup {
+         g_monoid :> Monoid ;
+         g_inv :> (m_set g_monoid) -> (m_set g_monoid) ;
+         g_isgroup :> IsGroup g_monoid g_inv
+       }.
+
+Theorem issig_group : 
+  {G : Monoid & {i : G -> G & forall a, (G a (i a) = G) * (G (i a) a = G)}} 
+    <~>
+    Group.
+Proof.
+  apply (@equiv_compose' _ {G : Monoid & {i : G -> G & IsGroup G i}} _).
+  issig BuildGroup g_monoid g_inv g_isgroup.
+  apply equiv_functor_sigma_id. intro G.
+  apply equiv_functor_sigma_id. intro i.
+  apply (@equiv_compose' _
+                         {_ : forall a, (G a (i a) = G)
+                                & (forall a : G, G (i a) a = G)}
+                         _).
+  issig (BuildIsGroup G i) (@g_invr G i) (@g_invl G i).
+  refine (equiv_adjointify _ _ _ _); intro z.
+    apply (fun a => fst (z a); fun a => snd (z a)).
+    apply (fun a => (z.1 a, z.2 a)).
+    destruct z as [g h]. apply path_sigma_uncurried. exists 1. reflexivity.
+    apply path_forall; intro a. apply uppt.
+Defined.
+  
+(* this is a bad name for this, but I don't know what to call it and I
+   also don't think it's in the HoTT library, at least according to
+   HoTTBook.v *)
+Definition Book_2_15_6 (X : Type) (A : X -> Type) (P : forall x : X, A x -> Type) :
+  (forall x, {a : A x & P x a}) -> {g : forall x, A x & forall x, P x (g x)}.
+Proof.
+  intro g. exists (fun x => (g x).1). intro x. apply (g x).2.
+Defined.
+
+Theorem Book_2_15_7 (X : Type) (A : X -> Type) (P : forall x : X, A x -> Type) :
+  IsEquiv (Book_2_15_6 X A P).
+Proof.
+  refine (isequiv_adjointify _ _ _ _); intro z.
+    destruct z as [g h]. intro x. apply (g x; h x).
+    unfold Book_2_15_6. destruct z as [g h].
+    apply path_sigma_uncurried. simpl. exists 1. reflexivity.
+    apply path_forall; intro x. apply upst.
+Defined.
+
+
+Theorem ex6_7 :
+  {G : Monoid & forall x, Brck {y : G & (G x y = G) * (G y x = G)}}
+  <~>
+  Group.
+Proof.
+  apply (@equiv_compose' _
+                         {G : Monoid & 
+                          forall x : G, {y : G & (G x y = G) * (G y x = G)}} 
+                         _).
+  apply (@equiv_compose' _
+                         {G : Monoid & 
+                         {i : G -> G & 
+                          forall a, (G a (i a) = G) * (G (i a) a = G)}} 
+                         _).
+  apply issig_group. 
+  apply equiv_functor_sigma_id. intro G.
+  apply (BuildEquiv _ _ 
+                    (Book_2_15_6 _ _ (fun x y => (G x y = G) * (G y x = G)))).
+  apply Book_2_15_7.
+  apply equiv_functor_sigma_id. intro G.
+  apply equiv_functor_forall_id. intro x.
+  apply equiv_inverse.
+  apply (BuildEquiv _ _ min1).
+  refine IsEquivmin1.
+  apply hprop_inverse_exists.
+Defined.
+  
+  
+
 
 (** %\exerdone{6.8}{217}% 
 Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
@@ -192,13 +349,6 @@ latter is contractible by the induction hypothesis.  Contractibility is
 preserved by products, so the path space is contractible.
 *)
   
-Lemma hprop_prod :
-  forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
-Proof.
-  intros A HA B HB z z'.
-  apply (trunc_equiv (equiv_path_prod z z')).
-Defined.
-  
 Theorem set_list_is_set (A : Type) : IsHSet A -> IsHSet (list A).
 Proof.
   intros HA l.
@@ -224,22 +374,6 @@ First we must have, for all $\ell : \lst{A}$, $\ell \cdot \nil = \nil \cdot
 it clearly is.
 *)
 
-Class IsMonoid (A : Type) (m : A -> A -> A) (e : A) 
-  := BuildIsMonoid {
-         m_isset : IsHSet A ;
-         m_unitr : forall a : A, m a e = a ;
-         m_unitl : forall a : A, m e a = a ;
-         m_assoc : forall x y z : A, m x (m y z) = m (m x y) z
-       }.
-
-Record Monoid 
-  := BuildMonoid {
-         m_set :> Type ;
-         m_mult :> m_set -> m_set -> m_set ;
-         m_unit :> m_set ;
-         m_ismonoid :> IsMonoid m_set m_mult m_unit
-       }.
-                                                           
 (* move these elsewhere *)
 
 Theorem app_nil_r {A : Type} : forall l : list A, l ++ nil = l.
@@ -401,26 +535,27 @@ Proof.
   f_ap. apply (m_unit _). apply G.
 Defined.
 
-Theorem issig_ismonoidhom {A B : Monoid} (f : A -> B) :
-  {p : f (m_unit A) = m_unit B & 
-       forall a a', f ((m_mult A) a a') = (m_mult B) (f a) (f a')}
+Theorem isprod_ismonoidhom {A B : Monoid} (f : A -> B) :
+  (f (m_unit A) = m_unit B) 
+  * (forall a a', f ((m_mult A) a a') = (m_mult B) (f a) (f a'))
   <~>
   IsMonoidHom f.
 Proof.
+  (* I think this should be a judgemental equality, but it's not *)
+  etransitivity {_ : f A = B & forall a a' : A, f (A a a') = B (f a) (f a')}.
+  refine (equiv_adjointify _ _ _ _); intro z.
+    exists (fst z). apply (snd z). apply (z.1, z.2). apply upst. apply uppt.
+    
   issig (BuildIsMonoidHom A B f) (@hunit A B f) (@hmult A B f).
 Defined.
-                              
+  
 
 Theorem hprop_ismonoidhom {A B : Monoid} (f : A -> B) : IsHProp (IsMonoidHom f).
 Proof.
-  refine (trunc_equiv' (issig_ismonoidhom f)).
-  apply hprop_allpath. intros u v.
-  assert (
-    forall x : f A = B, IsHProp (forall a a' : A, f (A a a') = B (f a) (f a'))
-  ).
+  refine (trunc_equiv' (isprod_ismonoidhom f)).
+  apply hprop_prod.
+  intros p q. apply B.
   intro x. repeat (apply ishprop_dependent; intro). intros p q. apply B.
-  assert (IsHProp (f A = B)). intros p q. apply B.
-  apply path_sigma_hprop. apply allpath_hprop.
 Defined.
   
 Theorem issig_monoidhom (A B : Monoid) :
