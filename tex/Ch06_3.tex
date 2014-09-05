@@ -1,0 +1,722 @@
+\begin{coqdoccode}
+\coqdocemptyline
+\end{coqdoccode}
+\exer{6.3}{217} 
+Prove that the torus $T^{2}$ as defined in \S6.6 
+is equivalent to $\Sn^{1} \times \Sn^{1}$.
+
+
+ \soln
+We first define $f : T^{2} \to \Sn^{1} \times \Sn^{1}$ by torus recursion,
+using the maps
+\begin{align*}
+  b &\mapsto (\base, \base) \\
+  p &\mapsto \pair^{=}(\refl{\base}, \lloop)\\
+  q &\mapsto \pair^{=}(\lloop, \refl{\base})\\
+  \Phi(\alpha, \alpha) &: \lam{\alpha : x = x'}{\alpha' : y = y'}
+    \left(\pair^{=}(\refl{x}, \alpha') \ct \pair^{=}(\alpha, \refl{y'})\right)
+    =
+    \left(\pair^{=}(\alpha, \refl{y}) \ct \pair^{=}(\refl{x'}, \alpha')\right) \\
+  t &\mapsto \Phi(\lloop, \lloop)
+\end{align*}
+Where $\Phi$ is defined by recursion on $\alpha$ and $\alpha'$.  To define a
+function $f : \Sn^{1} \times \Sn^{1} \to T^{2}$, we need a function $\tilde{f}
+: \Sn^{1} \to \Sn^{1} \to T^{2}$, which we'll define by double circle
+recursion.  $\tilde{f}' : \Sn^{1} \to T^{2}$ is given by $b \mapsto \base$ and
+$\lloop \mapsto p$.  Then $\tilde{f}$ is defined by $b \mapsto \tilde{f}'$ and
+\begin{align*}
+  \lloop &\mapsto 
+\end{align*}
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.Phi}{Phi}{\coqdocdefinition{Phi}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{x} \coqdocvar{x'} \coqdocvar{y} \coqdocvar{y'} : \coqdocvariable{A}\} (\coqdocvar{alpha} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{x'}) (\coqdocvar{alpha'} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{y'}) \coqdoceol
+\coqdocnoindent
+: \coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} 1 \coqdocvariable{alpha'}\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocvariable{alpha} 1\coqdocnotation{)}\coqdocnotation{)} \coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{=} \coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocvariable{alpha} 1\coqdocnotation{)} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{y'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} 1 \coqdocvariable{alpha'}\coqdocnotation{)}\coqdocnotation{)}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{alpha}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{alpha'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{6.4}{217} 
+Define dependent $n$-loops and the action of dependent functions on $n$-loops,
+and write down the induction principle for the $n$-spheres as defined at the
+end of \S6.4.
+
+
+ \exer{6.5}{217}
+Prove that $\eqv{\susp\Sn^{n}}{\Sn^{n+1}}$, using the definition of $\Sn^{n}$
+in terms of $\Omega^{n}$ from \S6.4.
+
+
+ \exer{6.6}{217} 
+Prove that if the type $\Sn^{2}$ belongs to some universe $\UU$, then $\UU$ is
+not a 2-type.
+
+
+ \exer{6.7}{217} 
+Prove that if $G$ is a monoid and $x : G$, then $\sm{y:G}((x \cdot y = e)
+\times (y \cdot x = e))$ is a mere proposition.  Conclude, using the principle
+of unique choice, that it would be equivalent to define a group to be a monoid
+such that for every $x : G$, there merely exists a $y : G$ such that $x \cdot y
+= e$ and $y \cdot x = e$.
+
+
+ \exerdone{6.8}{217} 
+Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
+proof of Lemma 6.11.5.
+
+
+ \soln
+We first characterise the path space of $\lst{A}$, which goes just as $\N$.
+We define the codes
+\begin{align*}
+    \codefunc(\nil, \nil) &\defeq \unit \\
+    \codefunc(\cons(h, t), \nil) &\defeq \emptyt \\
+    \codefunc(\nil, \cons(h', t')) &\defeq \emptyt \\
+    \codefunc(\cons(h, t), \cons(h', t')) &\defeq (h=h') \times \codefunc(t, t')
+\end{align*}
+and the function $r : \prd{\ell : \lst{A}} \codefunc(\ell, \ell)$ by
+\begin{align*}
+        r(\nil) &\defeq \star \\
+        r(\cons(h, t)) &\defeq (\refl{h}, r(t))
+\end{align*}
+Now, for all $\ell, \ell' : \lst{A}$, $\eqv{(\ell = \ell')}{\codefunc(\ell,
+\ell')}$.  To prove this, we define
+\[
+  \encode(\ell, \ell', p) \defeq \transfib{\codefunc(\ell, -)}{p}{r(\ell)}
+\]
+and we define $\decode$ by double induction on $\ell, \ell'$.  When they're
+both $\nil$, send everything to $\refl{\nil}$.  When one is $\nil$ and the
+other a $\cons$, we use the eliminator for $\emptyt$.  When they're both a
+cons, we define
+\begin{align*}
+  \codefunc(\cons(h, t), \cons(h', t'))
+  &\equiv
+  (h = h') \times \codefunc(t, t') \\
+  &\xrightarrow{\idfunc{h=h'} \times \decode(t, t')}
+  (h = h') \times (t = t') \\
+  &\xrightarrow{\pair^{=}}
+  ((h, t) = (h', t')) \\
+  &\xrightarrow{\mapfunc{\lam{z}\cons(\fst z, \snd z)}}
+  (\cons(h, t) = \cons(h', t'))
+\end{align*}
+It follows easily from induction on everything and naturality that these are
+quasi-inverses.  The only point of note is that the fact that $A$ is a set is
+required in the proof of
+\[
+  \encode(\ell, \ell', \decode(\ell, \ell', z)) = z
+\]
+This is because our definition of $\encode$ involved an arbitrary choice in
+how $r$ acts on $\cons$, and this choice is only preserved up to homotopy.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Local}\coqdocindent{0.50em}
+\coqdockw{Open} \coqdockw{Scope} \coqdocvar{list\_scope}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdef{Ch06 3.list code}{list\_code}{\coqdocdefinition{list\_code}} \{\coqdocvar{A} : \coqdockw{Type}\} (\coqdocvar{l} \coqdocvar{l'} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) : \coqdockw{Type} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} \coqdocvariable{l} \coqdockw{with}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \ensuremath{\Rightarrow} \coqdockw{match} \coqdocvariable{l'} \coqdockw{with}\coqdoceol
+\coqdocindent{7.50em}
+\ensuremath{|} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \ensuremath{\Rightarrow} \coqdocinductive{Unit}\coqdoceol
+\coqdocindent{7.50em}
+\ensuremath{|} \coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'} \ensuremath{\Rightarrow} \coqdocinductive{Empty}\coqdoceol
+\coqdocindent{6.50em}
+\coqdockw{end}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t} \ensuremath{\Rightarrow} \coqdockw{match} \coqdocvariable{l'} \coqdockw{with}\coqdoceol
+\coqdocindent{10.00em}
+\ensuremath{|} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \ensuremath{\Rightarrow} \coqdocinductive{Empty}\coqdoceol
+\coqdocindent{10.00em}
+\ensuremath{|} \coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'} \ensuremath{\Rightarrow} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h} \coqdocnotation{=} \coqdocvar{h'}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} \coqdocvar{t} \coqdocvar{t'}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdoceol
+\coqdocindent{9.00em}
+\coqdockw{end}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Fixpoint} \coqdef{Ch06 3.list r}{list\_r}{\coqdocdefinition{list\_r}} \{\coqdocvar{A} : \coqdockw{Type}\} (\coqdocvar{l} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) : \coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} \coqdocvariable{l} \coqdocvariable{l} :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{match} \coqdocvariable{l} \coqdockw{with}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \ensuremath{\Rightarrow} \coqdocconstructor{tt}\coqdoceol
+\coqdocindent{2.00em}
+\ensuremath{|} \coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t} \ensuremath{\Rightarrow} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}1\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqref{Ch06 3.list r}{\coqdocdefinition{list\_r}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{end}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.list encode}{list\_encode}{\coqdocdefinition{list\_encode}} \{\coqdocvar{A} : \coqdockw{Type}\} (\coqdocvar{l} \coqdocvar{l'} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) (\coqdocvar{p} : \coqdocvariable{l} \coqdocnotation{=} \coqdocvariable{l'}) := \coqdoceol
+\coqdocindent{1.00em}
+\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} \coqdocvariable{l} \coqdocvariable{x}) \coqdocvariable{p} (\coqref{Ch06 3.list r}{\coqdocdefinition{list\_r}} \coqdocvariable{l}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.list decode}{list\_decode}{\coqdocdefinition{list\_decode}} \{\coqdocvar{A} : \coqdockw{Type}\} : \coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} (\coqdocvar{l} \coqdocvar{l'} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) (\coqdocvar{z} : \coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} \coqdocvariable{l} \coqdocvariable{l'}), \coqdocvariable{l} \coqdocnotation{=} \coqdocvariable{l'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [| \coqdocvar{h} \coqdocvar{t}]; \coqdoctac{destruct} \coqdocvar{l'} \coqdockw{as} [| \coqdocvar{h'} \coqdocvar{t'}]; \coqdoctac{intros}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{reflexivity}. \coqdocvar{contradiction}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (@\coqdocdefinition{ap} \coqdocvar{\_} \coqdocvar{\_} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvariable{x}) (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvariable{x})) \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_prod}. \coqdoctac{apply} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvar{z}). \coqdoctac{apply} \coqdocvar{IHt}. \coqdoctac{apply} (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvar{z}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.path list}{path\_list}{\coqdocdefinition{path\_list}} \{\coqdocvar{A} : \coqdockw{Type}\} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{h} \coqdocvar{h'} : \coqdocvariable{A}) (\coqdocvar{t} \coqdocvar{t'} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}),\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvariable{h} \coqdocnotation{=} \coqdocvariable{h'} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{t} \coqdocnotation{=} \coqdocvariable{t'} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvariable{t} \coqdocnotation{=} \coqdocvariable{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvariable{t'}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{h} \coqdocvar{h'} \coqdocvar{t} \coqdocvar{t'} \coqdocvar{ph} \coqdocvar{pt}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqref{Ch06 3.list decode}{\coqdocdefinition{list\_decode}} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{split}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocvar{ph}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqref{Ch06 3.list encode}{\coqdocdefinition{list\_encode}} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocvar{pt}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.equiv path list}{equiv\_path\_list}{\coqdoclemma{equiv\_path\_list}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{H} : \coqdocabbreviation{IsHSet} \coqdocvariable{A}\} (\coqdocvar{l} \coqdocvar{l'} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) : \coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} \coqdocvariable{l} \coqdocvariable{l'}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocvariable{l} \coqdocnotation{=} \coqdocvariable{l'}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} (\coqref{Ch06 3.list decode}{\coqdocdefinition{list\_decode}} \coqdocvar{l} \coqdocvar{l'}) (\coqref{Ch06 3.list encode}{\coqdocdefinition{list\_encode}} \coqdocvar{l} \coqdocvar{l'}) \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+lst\_decode\coqdocindent{0.50em}
+o\coqdocindent{0.50em}
+lst\_encode\coqdocindent{0.50em}
+==\coqdocindent{0.50em}
+id\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{induction} \coqdocvar{p}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [|\coqdocvar{h} \coqdocvar{t}]. \coqdoctac{reflexivity}. \coqdoctac{simpl} \coqdoctac{in} *.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap\_1} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} 1 1). \coqdocvar{f\_ap}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+lst\_encode\coqdocindent{0.50em}
+o\coqdocindent{0.50em}
+lst\_decode\coqdocindent{0.50em}
+==\coqdocindent{0.50em}
+id\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{l'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [|\coqdocvar{h} \coqdocvar{t}], \coqdocvar{l'} \coqdockw{as} [|\coqdocvar{h'} \coqdocvar{t'}]; \coqdoctac{intro} \coqdocvar{z}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocinstance{contr\_unit}. \coqdocvar{contradiction}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{simpl}. \coqdoctac{unfold} \coqref{Ch06 3.list encode}{\coqdocdefinition{list\_encode}}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdoclemma{transport\_compose} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_prod} \coqdoceol
+\coqdocindent{7.50em}
+(\coqdocdefinition{path\_prod} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvar{t'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} (\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvar{z}) (\coqref{Ch06 3.list decode}{\coqdocdefinition{list\_decode}} \coqdocvar{t} \coqdocvar{t'} (\coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvar{z})))\coqdoceol
+\coqdocindent{7.50em}
+\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}1\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqref{Ch06 3.list r}{\coqdocdefinition{list\_r}} \coqdocvar{t}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{destruct} \coqdocvar{z} \coqdockw{as} [\coqdocvar{p} \coqdocvar{c}].\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_prod}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_path\_prod} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{induction} \coqdocvar{p}. \coqdoctac{apply} (\coqdocvar{IHt} \coqdocvar{t'}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\noindent
+It's now easy to see that $\lst{A}$ is a set, by induction.
+If $\ell \equiv \ell' \equiv \nil$, then $\eqv{(\ell = \ell')}{\unit}$, which
+is contractible.
+Similarly, if only one is $\nil$ then $\eqv{(\ell = \ell')}{\emptyt}$, which
+is contractible.
+Finally, if both are $\cons$es, then the path space is $(h = h') \times
+\codefunc(t, t')$.  The former is contractible because $A$ is a set, and the
+latter is contractible by the induction hypothesis.  Contractibility is
+preserved by products, so the path space is contractible.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch06 3.hprop prod}{hprop\_prod}{\coqdoclemma{hprop\_prod}} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{A}, \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{B}, \coqdocabbreviation{IsHProp} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{A} \coqdocvar{HA} \coqdocvar{B} \coqdocvar{HB} \coqdocvar{z} \coqdocvar{z'}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqdocdefinition{equiv\_path\_prod} \coqdocvar{z} \coqdocvar{z'})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.set list is set}{set\_list\_is\_set}{\coqdoclemma{set\_list\_is\_set}} (\coqdocvar{A} : \coqdockw{Type}) : \coqdocabbreviation{IsHSet} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHSet} (\coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{HA} \coqdocvar{l}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [|\coqdocvar{h} \coqdocvar{t}].\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{l'}; \coqdoctac{destruct} \coqdocvar{l'} \coqdockw{as} [|\coqdocvar{h'} \coqdocvar{t'}].\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqref{Ch06 3.equiv path list}{\coqdoclemma{equiv\_path\_list}} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}})).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqref{Ch06 3.equiv path list}{\coqdoclemma{equiv\_path\_list}} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} (\coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'}))).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{l'}; \coqdoctac{destruct} \coqdocvar{l'} \coqdockw{as} [|\coqdocvar{h'} \coqdocvar{t'}].\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqref{Ch06 3.equiv path list}{\coqdoclemma{equiv\_path\_list}} (\coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t}) \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}})).\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{r} : (\coqdocabbreviation{IsHProp} (\coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} (\coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t}) (\coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'})))).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch06 3.hprop prod}{\coqdoclemma{hprop\_prod}}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{apply} \coqdocvar{HA}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} \coqdocnotation{(}\coqref{Ch06 3.equiv path list}{\coqdoclemma{equiv\_path\_list}} \coqdocvar{t} \coqdocvar{t'}\coqdocnotation{)\^{}-1}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqref{Ch06 3.equiv path list}{\coqdoclemma{equiv\_path\_list}} (\coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t}) (\coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'}))).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+Now, to show that $\lst{A}$ is a monoid, we must equip it with a
+multiplication function and a unit element.  For the multiplication function we
+use append, and for the unit we use $\nil$.  These must satisfy two properties.
+First we must have, for all $\ell : \lst{A}$, $\ell \cdot \nil = \nil \cdot
+\ell = \ell$, which we clearly do.  Second, append must be associative, which
+it clearly is.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Class} \coqdef{Ch06 3.IsMonoid}{IsMonoid}{\coqdocrecord{IsMonoid}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{m} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A}) (\coqdocvar{e} : \coqdocvariable{A}) \coqdoceol
+\coqdocindent{1.00em}
+:= \coqdef{Ch06 3.BuildIsMonoid}{BuildIsMonoid}{\coqdocconstructor{BuildIsMonoid}} \{\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m isset}{m\_isset}{\coqdocprojection{m\_isset}} : \coqdocabbreviation{IsHSet} \coqdocvariable{A} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m unitr}{m\_unitr}{\coqdocprojection{m\_unitr}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{a} : \coqdocvariable{A}, \coqdocvariable{m} \coqdocvariable{a} \coqdocvariable{e} \coqdocnotation{=} \coqdocvariable{a} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m unitl}{m\_unitl}{\coqdocprojection{m\_unitl}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{a} : \coqdocvariable{A}, \coqdocvariable{m} \coqdocvariable{e} \coqdocvariable{a} \coqdocnotation{=} \coqdocvariable{a} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m assoc}{m\_assoc}{\coqdocprojection{m\_assoc}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}, \coqdocvariable{m} \coqdocvariable{x} (\coqdocvariable{m} \coqdocvariable{y} \coqdocvariable{z}) \coqdocnotation{=} \coqdocvariable{m} (\coqdocvariable{m} \coqdocvariable{x} \coqdocvariable{y}) \coqdocvariable{z}\coqdoceol
+\coqdocindent{3.50em}
+\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Record} \coqdef{Ch06 3.Monoid}{Monoid}{\coqdocrecord{Monoid}} \coqdoceol
+\coqdocindent{1.00em}
+:= \coqdef{Ch06 3.BuildMonoid}{BuildMonoid}{\coqdocconstructor{BuildMonoid}} \{\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m set}{m\_set}{\coqdocprojection{m\_set}} :> \coqdockw{Type} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m mult}{m\_mult}{\coqdocprojection{m\_mult}} :> \coqref{Ch06 3.m set}{\coqdocmethod{m\_set}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch06 3.m set}{\coqdocmethod{m\_set}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch06 3.m set}{\coqdocmethod{m\_set}} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m unit}{m\_unit}{\coqdocprojection{m\_unit}} :> \coqref{Ch06 3.m set}{\coqdocmethod{m\_set}} ;\coqdoceol
+\coqdocindent{4.50em}
+\coqdef{Ch06 3.m ismonoid}{m\_ismonoid}{\coqdocprojection{m\_ismonoid}} :> \coqref{Ch06 3.IsMonoid}{\coqdocclass{IsMonoid}} \coqref{Ch06 3.m set}{\coqdocmethod{m\_set}} \coqref{Ch06 3.m mult}{\coqdocmethod{m\_mult}} \coqref{Ch06 3.m unit}{\coqdocmethod{m\_unit}}\coqdoceol
+\coqdocindent{3.50em}
+\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+move\coqdocindent{0.50em}
+these\coqdocindent{0.50em}
+elsewhere\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.app nil r}{app\_nil\_r}{\coqdoclemma{app\_nil\_r}} \{\coqdocvar{A} : \coqdockw{Type}\} : \coqdockw{\ensuremath{\forall}} \coqdocvar{l} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}, \coqdocvariable{l} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{++}} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}} \coqdocnotation{=} \coqdocvariable{l}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}. \coqdoctac{induction} \coqdocvar{l}. \coqdoctac{reflexivity}. \coqdoctac{simpl}. \coqdocvar{f\_ap}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.app assoc}{app\_assoc}{\coqdoclemma{app\_assoc}} \{\coqdocvar{A} : \coqdockw{Type}\} : \coqdockw{\ensuremath{\forall}} \coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A},\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvariable{x} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{++}} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{y} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{++}} \coqdocvariable{z}\coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdocnotation{=} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{x} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{++}} \coqdocvariable{y}\coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:list scope:x '++' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{++}} \coqdocvariable{z}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{x} \coqdocvar{y} \coqdocvar{z}. \coqdoctac{induction} \coqdocvar{x}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch06 3.path list}{\coqdocdefinition{path\_list}}. \coqdoctac{reflexivity}. \coqdoctac{apply} \coqdocvar{IHx}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.set list is monoid}{set\_list\_is\_monoid}{\coqdoclemma{set\_list\_is\_monoid}} \{\coqdocvar{A} : \coqdockw{Type}\} \{\coqdocvar{HA} : \coqdocabbreviation{IsHSet} \coqdocvariable{A}\} : \coqdoceol
+\coqdocindent{1.00em}
+\coqref{Ch06 3.IsMonoid}{\coqdocclass{IsMonoid}} (\coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) (@\coqexternalref{app}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{app}} \coqdocvariable{A}) \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06 3.BuildIsMonoid}{\coqdocconstructor{BuildIsMonoid}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06 3.set list is set}{\coqdoclemma{set\_list\_is\_set}}. \coqdoctac{apply} \coqdocvar{HA}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06 3.app nil r}{\coqdoclemma{app\_nil\_r}}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06 3.app assoc}{\coqdoclemma{app\_assoc}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+Now, Lemma 6.11.5 states that for any set $A$, the type $\lst{A}$ is the
+free monoid on $A$.  That is, there is an equivalence
+\[
+  \eqv{
+    \hom_{\text{Monoid}}(\lst{A}, G)
+  }{
+    (A \to G)
+  }
+\]
+There is an obvious inclusion $\eta : A \to \lst{A}$ defined by $a \mapsto
+\cons(a, \nil)$, and this defines a map $({-} \circ \eta)$ giving the forward
+direction of the equivalence.  For the other direction, suppose that $f : A \to
+G$.  We lift this to a map $\bar{f} : \lst{A} \to G$ by recursion:
+\begin{align*}
+  \bar{f}(\nil) &\defeq e \\
+  \bar{f}(\cons(h, t)) &\defeq f(h) \cdot \bar{f}(t)
+\end{align*}
+To show that this is a monoid homomorphism, we must show
+\begin{align*}
+  \bar{f}(\nil) &= e \\
+  \bar{f}(\ell \cdot \ell') &= \bar{f}(\ell) \cdot \bar{f}(\ell')
+\end{align*}
+The first is a judgemental equality, so we just need to show the second, which
+we do by induction on $\ell$.  When $\ell \equiv \nil$ we have
+\[
+  \bar{f}(\nil \cdot \ell')
+  \equiv
+  \bar{f}(\ell')
+  =
+  e \cdot \bar{f}(\ell')
+  \equiv
+  \bar{f}(\nil) \cdot \bar{f}(\ell')
+\]
+and when it is a cons,
+\begin{align*}
+  \bar{f}(\cons(h, t) \cdot \ell')
+  &=
+  \bar{f}(\cons(h, t \cdot \ell'))
+  =
+  f(h) \cdot \bar{f}(t \cdot \ell')
+  =
+  f(h) \cdot \bar{f}(t) \cdot \bar{f}(\ell')
+  =
+  f(\cons(h, t)) \cdot \bar{f}(\ell')
+\end{align*}
+by the induction hypothesis in the third equality.  So $\bar{f}$ is a monoid
+homomorphism.
+
+
+To show that these are quasi-inverses, suppose that $f :
+\hom_{\text{Monoid}}(\lst{A}, G)$.  Then we must show that
+\[
+  \overline{f \circ \eta} = f
+\]
+which we do by function extensionality and induction.  When $\ell \equiv \nil$,
+we have
+\[
+  \overline{f \circ \eta}(\nil) \equiv e = f(\nil)
+\]
+Since $f$ is a monoid homomorphism.  When $\ell \equiv \cons(h, t)$,
+\begin{align*}
+  \overline{f \circ \eta}(\cons(h, t))
+  &\equiv
+  f(\eta(h))
+  \cdot
+  \overline{f \circ \eta}(t)
+  =
+  f(\eta(h))
+  \cdot
+  f(t)
+  =
+  f(\cons(h, \nil) \cdot t)
+  \equiv
+  f(\cons(h, t))
+\end{align*}
+So by function extensionality $\overline{f \circ \eta} = f$.  We must
+also show that the proofs that $\overline{f \circ \eta}$ and $f$ are
+monoid homomorphisms are equal.  This turns out to be trivial,
+however: since monoids are structures on sets, all of the relevant
+proofs are of equalities in sets, so the structures are mere
+propositions, and equality of the underlying maps is equivalent to
+equality of the homomorphisms.
+
+
+For the other direction, suppose that $f : A \to G$.  We show that
+\[
+  \bar{f} \circ \eta = f
+\]
+again by function extensionality.  Suppose that $a : A$; then
+\[
+  \bar{f}(\eta(a)) 
+  \equiv \bar{f}(\cons(a, \nil))
+  \equiv f(a) \cdot \bar{f}(\nil)
+  \equiv f(a) \cdot e
+  = f(a)
+\]
+and we're done.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Notation} \coqdef{Ch06 3.:11987}{"}{"}[ ]" := \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Notation} \coqdef{Ch06 3.:12010}{"}{"}[ x ; .. ; y ]" := (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{x} .. (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{y} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}) ..).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Class} \coqdef{Ch06 3.IsMonoidHom}{IsMonoidHom}{\coqdocrecord{IsMonoidHom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) :=\coqdoceol
+\coqdocindent{1.00em}
+\coqdef{Ch06 3.BuildIsMonoidHom}{BuildIsMonoidHom}{\coqdocconstructor{BuildIsMonoidHom}} \{\coqdoceol
+\coqdocindent{3.00em}
+\coqdef{Ch06 3.hunit}{hunit}{\coqdocprojection{hunit}} : \coqdocvariable{f} (\coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvariable{A}) \coqdocnotation{=} \coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvariable{B} ;\coqdoceol
+\coqdocindent{3.00em}
+\coqdef{Ch06 3.hmult}{hmult}{\coqdocprojection{hmult}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{a} \coqdocvar{a'} : \coqdocvariable{A}, \coqdocvariable{f} ((\coqref{Ch06 3.m mult}{\coqdocprojection{m\_mult}} \coqdocvariable{A}) \coqdocvariable{a} \coqdocvariable{a'}) \coqdocnotation{=} (\coqref{Ch06 3.m mult}{\coqdocprojection{m\_mult}} \coqdocvariable{B}) (\coqdocvariable{f} \coqdocvariable{a}) (\coqdocvariable{f} \coqdocvariable{a'})\coqdoceol
+\coqdocindent{2.00em}
+\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Record} \coqdef{Ch06 3.MonoidHom}{MonoidHom}{\coqdocrecord{MonoidHom}} (\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) := \coqdoceol
+\coqdocindent{1.00em}
+\coqdef{Ch06 3.BuildMonoidHom}{BuildMonoidHom}{\coqdocconstructor{BuildMonoidHom}} \{\coqdoceol
+\coqdocindent{3.00em}
+\coqdef{Ch06 3.mhom fun}{mhom\_fun}{\coqdocprojection{mhom\_fun}} :> \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B} ;\coqdoceol
+\coqdocindent{3.00em}
+\coqdef{Ch06 3.mhom ismhom}{mhom\_ismhom}{\coqdocprojection{mhom\_ismhom}} :> \coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqref{Ch06 3.mhom fun}{\coqdocmethod{mhom\_fun}}\coqdoceol
+\coqdocindent{2.00em}
+\}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.homLAG to AG}{homLAG\_to\_AG}{\coqdocdefinition{homLAG\_to\_AG}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{HA} : \coqdocabbreviation{IsHSet} \coqdocvariable{A}) (\coqdocvar{G} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqref{Ch06 3.MonoidHom}{\coqdocrecord{MonoidHom}} (\coqref{Ch06 3.BuildMonoid}{\coqdocconstructor{BuildMonoid}} (\coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) \coqdocvar{\_} \coqdocvar{\_} \coqref{Ch06 3.set list is monoid}{\coqdoclemma{set\_list\_is\_monoid}}) \coqdocvariable{G} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{G}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}\coqdoceol
+\coqdocindent{1.00em}
+:= \coqdockw{fun} \coqdocvar{f} \coqdocvar{a} \ensuremath{\Rightarrow} (\coqref{Ch06 3.mhom fun}{\coqdocprojection{mhom\_fun}} \coqdocvar{\_} \coqdocvariable{G} \coqdocvariable{f}) \coqref{Ch06 3.::'[' x ';' '..' ';' x ']'}{\coqdocnotation{[}}\coqdocvariable{a}\coqref{Ch06 3.::'[' x ';' '..' ';' x ']'}{\coqdocnotation{]}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.AG to homLAG}{AG\_to\_homLAG}{\coqdocdefinition{AG\_to\_homLAG}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{HA} : \coqdocabbreviation{IsHSet} \coqdocvariable{A}) (\coqdocvar{G} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{G}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch06 3.MonoidHom}{\coqdocrecord{MonoidHom}} (\coqref{Ch06 3.BuildMonoid}{\coqdocconstructor{BuildMonoid}} (\coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) \coqdocvar{\_} \coqdocvar{\_} \coqref{Ch06 3.set list is monoid}{\coqdoclemma{set\_list\_is\_monoid}}) \coqdocvariable{G}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+lift\coqdocindent{0.50em}
+f\coqdocindent{0.50em}
+by\coqdocindent{0.50em}
+recursion\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqref{Ch06 3.BuildMonoidHom}{\coqdocconstructor{BuildMonoidHom}} \coqdocvar{\_} \coqdocvar{G} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{l}. \coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [|\coqdocvar{h} \coqdocvar{t}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvar{G}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} ((\coqref{Ch06 3.m mult}{\coqdocprojection{m\_mult}} \coqdocvar{\_}) (\coqdocvar{f} \coqdocvar{h}) \coqdocvar{IHt}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch06 3.BuildIsMonoidHom}{\coqdocconstructor{BuildIsMonoidHom}}.\coqdoceol
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+takes\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+unit\coqdocindent{0.50em}
+to\coqdocindent{0.50em}
+the\coqdocindent{0.50em}
+unit\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+respects\coqdocindent{0.50em}
+multiplication\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{intro} \coqdocvar{l}. \coqdoctac{induction} \coqdocvar{l}. \coqdoctac{intro} \coqdocvar{l'}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06 3.m unitl}{\coqdocmethod{m\_unitl}} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdoctac{reflexivity}. \coqdoctac{apply} \coqdocvar{G}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{l'}. \coqdoctac{simpl}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch06 3.m assoc}{\coqdocmethod{m\_assoc}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}. \coqdoctac{apply} (\coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvar{\_}). \coqdoctac{apply} \coqdocvar{G}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.issig ismonoidhom}{issig\_ismonoidhom}{\coqdoclemma{issig\_ismonoidhom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{p} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{f} (\coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvariable{A}) \coqdocnotation{=} \coqref{Ch06 3.m unit}{\coqdocprojection{m\_unit}} \coqdocvariable{B} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdoceol
+\coqdocindent{3.50em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{a} \coqdocvar{a'}, \coqdocvariable{f} ((\coqref{Ch06 3.m mult}{\coqdocprojection{m\_mult}} \coqdocvariable{A}) \coqdocvariable{a} \coqdocvariable{a'}) \coqdocnotation{=} (\coqref{Ch06 3.m mult}{\coqdocprojection{m\_mult}} \coqdocvariable{B}) (\coqdocvariable{f} \coqdocvariable{a}) (\coqdocvariable{f} \coqdocvariable{a'})\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{\ensuremath{\eqvsym}}\coqdoceol
+\coqdocindent{1.00em}
+\coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqdocvariable{f}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{issig} (\coqref{Ch06 3.BuildIsMonoidHom}{\coqdocconstructor{BuildIsMonoidHom}} \coqdocvar{A} \coqdocvar{B} \coqdocvar{f}) (@\coqref{Ch06 3.hunit}{\coqdocmethod{hunit}} \coqdocvar{A} \coqdocvar{B} \coqdocvar{f}) (@\coqref{Ch06 3.hmult}{\coqdocmethod{hmult}} \coqdocvar{A} \coqdocvar{B} \coqdocvar{f}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.hprop ismonoidhom}{hprop\_ismonoidhom}{\coqdoclemma{hprop\_ismonoidhom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) : \coqdocabbreviation{IsHProp} (\coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqdocvariable{f}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{trunc\_equiv'} (\coqref{Ch06 3.issig ismonoidhom}{\coqdoclemma{issig\_ismonoidhom}} \coqdocvar{f})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{u} \coqdocvar{v}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocvar{f} \coqdocvar{A} \coqdocnotation{=} \coqdocvar{B}, \coqdocabbreviation{IsHProp} (\coqdockw{\ensuremath{\forall}} \coqdocvar{a} \coqdocvar{a'} : \coqdocvar{A}, \coqdocvar{f} (\coqdocvar{A} \coqdocvariable{a} \coqdocvariable{a'}) \coqdocnotation{=} \coqdocvar{B} (\coqdocvar{f} \coqdocvariable{a}) (\coqdocvar{f} \coqdocvariable{a'}))\coqdoceol
+\coqdocindent{1.00em}
+).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{x}. \coqdoctac{repeat} (\coqdoctac{apply} \coqdoclemma{ishprop\_dependent}; \coqdoctac{intro}). \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{assert} (\coqdocabbreviation{IsHProp} (\coqdocvar{f} \coqdocvar{A} \coqdocnotation{=} \coqdocvar{B})). \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_hprop}. \coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.issig monoidhom}{issig\_monoidhom}{\coqdoclemma{issig\_monoidhom}} (\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{f} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqdocvar{f}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqdocnotation{\ensuremath{\eqvsym}} \coqref{Ch06 3.MonoidHom}{\coqdocrecord{MonoidHom}} \coqdocvariable{A} \coqdocvariable{B}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{issig} (\coqref{Ch06 3.BuildMonoidHom}{\coqdocconstructor{BuildMonoidHom}} \coqdocvar{A} \coqdocvar{B}) (@\coqref{Ch06 3.mhom fun}{\coqdocprojection{mhom\_fun}} \coqdocvar{A} \coqdocvar{B}) (@\coqref{Ch06 3.mhom ismhom}{\coqdocprojection{mhom\_ismhom}} \coqdocvar{A} \coqdocvar{B}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.equiv path monoidhom}{equiv\_path\_monoidhom}{\coqdoclemma{equiv\_path\_monoidhom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} \{\coqdocvar{f} \coqdocvar{g} : \coqref{Ch06 3.MonoidHom}{\coqdocrecord{MonoidHom}} \coqdocvariable{A} \coqdocvariable{B}\} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocnotation{(}\coqref{Ch06 3.mhom fun}{\coqdocprojection{mhom\_fun}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{f}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqref{Ch06 3.mhom fun}{\coqdocprojection{mhom\_fun}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvariable{g}\coqdocnotation{)}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocvariable{f} \coqdocnotation{=} \coqdocvariable{g}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqdocnotation{(}\coqref{Ch06 3.issig monoidhom}{\coqdoclemma{issig\_monoidhom}} \coqdocvar{A} \coqdocvar{B}\coqdocnotation{)\^{}-1} \coqdocvar{f} \coqdocnotation{=} \coqdocnotation{(}\coqref{Ch06 3.issig monoidhom}{\coqdoclemma{issig\_monoidhom}} \coqdocvar{A} \coqdocvar{B}\coqdocnotation{)\^{}-1} \coqdocvar{g}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (@\coqdocdefinition{equiv\_path\_sigma\_hprop} \coqdoceol
+\coqdocindent{6.00em}
+(\coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{B}) \coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqref{Ch06 3.hprop ismonoidhom}{\coqdoclemma{hprop\_ismonoidhom}}\coqdoceol
+\coqdocindent{6.00em}
+(\coqdocnotation{(}\coqref{Ch06 3.issig monoidhom}{\coqdoclemma{issig\_monoidhom}} \coqdocvar{A} \coqdocvar{B}\coqdocnotation{)\^{}-1} \coqdocvar{f}) (\coqdocnotation{(}\coqref{Ch06 3.issig monoidhom}{\coqdoclemma{issig\_monoidhom}} \coqdocvar{A} \coqdocvar{B}\coqdocnotation{)\^{}-1} \coqdocvar{g})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{equiv\_inverse}. \coqdoctac{apply} \coqdocdefinition{equiv\_ap}. \coqdoctac{refine} \coqdocvar{\_}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.list is free monoid}{list\_is\_free\_monoid}{\coqdoclemma{list\_is\_free\_monoid}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{HA} : \coqdocabbreviation{IsHSet} \coqdocvariable{A}) (\coqdocvar{G} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqref{Ch06 3.MonoidHom}{\coqdocrecord{MonoidHom}} (\coqref{Ch06 3.BuildMonoid}{\coqdocconstructor{BuildMonoid}} (\coqexternalref{list}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{list}} \coqdocvariable{A}) \coqdocvar{\_} \coqdocvar{\_} \coqref{Ch06 3.set list is monoid}{\coqdoclemma{set\_list\_is\_monoid}}) \coqdocvariable{G} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{G}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{HG} : (\coqref{Ch06 3.IsMonoid}{\coqdocclass{IsMonoid}} \coqdocvar{G} \coqdocvar{G} \coqdocvar{G})). \coqdoctac{apply} \coqdocvar{G}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} (\coqref{Ch06 3.homLAG to AG}{\coqdocdefinition{homLAG\_to\_AG}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}) (\coqref{Ch06 3.AG to homLAG}{\coqdocdefinition{AG\_to\_homLAG}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}) \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{apply} (\coqref{Ch06 3.m unitr}{\coqdocmethod{m\_unitr}} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} \coqref{Ch06 3.equiv path monoidhom}{\coqdoclemma{equiv\_path\_monoidhom}}. \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{l}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{l} \coqdockw{as} [|\coqdocvar{h} \coqdocvar{t}]; \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{symmetry}. \coqdoctac{apply} (@\coqref{Ch06 3.hunit}{\coqdocmethod{hunit}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{f}). \coqdoctac{apply} \coqdocvar{f}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocvar{G} (\coqref{Ch06 3.homLAG to AG}{\coqdocdefinition{homLAG\_to\_AG}} \coqdocvar{A} \coqdocvar{HA} \coqdocvar{G} \coqdocvar{f} \coqdocvar{h}) (\coqdocvar{f} \coqdocvar{t})). \coqdocvar{f\_ap}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqref{Ch06 3.homLAG to AG}{\coqdocdefinition{homLAG\_to\_AG}}. \coqdoctac{refine} \coqdocnotation{(}@\coqref{Ch06 3.hmult}{\coqdocmethod{hmult}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{f} \coqdocvar{\_} \coqref{Ch06 3.::'[' x ';' '..' ';' x ']'}{\coqdocnotation{[}}\coqdocvar{h}\coqref{Ch06 3.::'[' x ';' '..' ';' x ']'}{\coqdocnotation{]}} \coqdocvar{t}\coqdocnotation{)\^{}}. \coqdoctac{apply} \coqdocvar{f}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Local}\coqdocindent{0.50em}
+\coqdockw{Close} \coqdockw{Scope} \coqdocvar{list\_scope}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{6.9}{217} 
+Assuming $\LEM{}$, construct a family $f : \prd{X : \UU} (X \to X)$ such that
+$f_{\bool} : \bool \to \bool$ is the nonidentity automorphism.
+
+
+ \exer{6.10}{218} 
+Show that the map constructed in Lemma 6.3.2 is in fact a quasi-inverse to
+$\happly$, so that the interval type implies the full function extensionality
+axiom.
+
+
+ \exer{6.11}{218} 
+Prove the universal property of suspension:
+\[
+  \eqv{ \left(\susp A \to B \right) }{ \left(\sm{b_{n} : B}\sm{b_{s} : B} (A \to (b_{n} = b_{s}))\right) }
+\]
+
+
+ \exer{6.12}{218} 
+Show that $\eqv{\Z}{\N + \unit + \N}$.  Show that if we were to define $\Z$ as
+$\N + \unit + \N$, then we could obtain Lemma 6.10.12 with judgmental
+computation rules.
+\begin{coqdoccode}
+\end{coqdoccode}
