@@ -604,15 +604,67 @@ $\happly$, so that the interval type implies the full function extensionality
 axiom.
 *)
 
-(** %\exer{6.11}{218}% 
+(** %\exerdone{6.11}{218}% 
 Prove the universal property of suspension:
 %\[
   \eqv{ \left(\susp A \to B \right) }{ \left(\sm{b_{n} : B}\sm{b_{s} : B} (A \to (b_{n} = b_{s}))\right) }
 \]%
 *)
 
+(** %\soln%
+To construct an equivalence, suppose that $f : \susp A \to B$.  Then there are
+two elements $f(\north), f(\south) : B$ such that there is a map $A \to
+(f(\north) = f(\south))$; in particular for any element $a : A$ we have the
+element $\merid(a) : (\north = \south)$ which may be pushed forward to give
+$f(\merid(a)) : f(\north) = f(\south)$.  For the other direction, suppose that
+we have elements $b_{n}, b_{s} : B$ such that $f : A \to (b_{n} = b_{s})$.
+Then by suspension recursion we define a function $g : \susp A \to B$ such that
+$g(\north) \equiv b_{n}$, $g(\south) \equiv b_{s}$, and $g(\merid(a)) = f(a)$
+for all $a : \susp A$.
+
+To show that these are quasi-inverses, suppose that $f : \susp A \to B$.  We
+then construct the element $(f(\north), f(\south), \lam{a}f(\merid(a)))$ of the
+codomain, and going back gives a function $g : \susp A \to B$ such that
+$g(\north) \equiv f(\north)$, $g(\south) \equiv f(\south)$, and $g(\merid(a)) =
+f(\merid(a))$ for all $a : \susp A$.  But this just means that $g$ and $f$ have
+the same recurrence relation, so we're back where we started.
+
+For the other loop, suppose that we have an element $(b_{n}, b_{s}, f)$ of the
+right.  Then we get an arrow $g : \susp A \to B$ on the left such that
+$g(\north) = b_{n}$, $g(\south) = b_{s}$, and $g(\merid(a)) = f(a)$ for all $a
+: \susp A$.  Going back to the right, we have the element $(b_{n}, b_{s}, f)$,
+homotopic to the identity function.
+*)
+
+Theorem univ_prop_susp {A B : Type} :
+  (Susp A -> B) <~> {bn : B & {bs : B & A -> (bn = bs)}}.
+Proof.
+  refine (equiv_adjointify _ _ _ _).
+  intro f. exists (f North). exists (f South). intro a. apply (ap f (merid a)).
+  intro w. destruct w as [bn [bs f]]. apply (Susp_rect_nd bn bs f).
+
+  intro w. destruct w as [bn [bs f]]. 
+  apply path_sigma_uncurried. exists 1. 
+  apply path_sigma_uncurried. exists 1. 
+  apply path_forall; intro a. simpl.
+  apply Susp_comp_nd_merid.
+
+  intro f. apply path_forall.
+  refine (Susp_rect _ 1 1 _).
+  intro a. 
+  refine ((trans_paths _ _ _ _ _ _ _ _) @ _).
+  apply moveR_pM.
+  refine ((concat_p1 _) @ _). refine (_ @ (concat_1p _)^). apply inverse2.
+  refine ((Susp_comp_nd_merid _) @ _).
+  reflexivity.
+Defined.
+  
+
+  
+
 (** %\exer{6.12}{218}% 
 Show that $\eqv{\Z}{\N + \unit + \N}$.  Show that if we were to define $\Z$ as
 $\N + \unit + \N$, then we could obtain Lemma 6.10.12 with judgmental
 computation rules.
 *)
+

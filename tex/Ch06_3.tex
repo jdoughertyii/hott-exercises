@@ -988,16 +988,89 @@ $\happly$, so that the interval type implies the full function extensionality
 axiom.
 
 
- \exer{6.11}{218} 
+ \exerdone{6.11}{218} 
 Prove the universal property of suspension:
 \[
   \eqv{ \left(\susp A \to B \right) }{ \left(\sm{b_{n} : B}\sm{b_{s} : B} (A \to (b_{n} = b_{s}))\right) }
 \]
 
 
- \exer{6.12}{218} 
+ \soln
+To construct an equivalence, suppose that $f : \susp A \to B$.  Then there are
+two elements $f(\north), f(\south) : B$ such that there is a map $A \to
+(f(\north) = f(\south))$; in particular for any element $a : A$ we have the
+element $\merid(a) : (\north = \south)$ which may be pushed forward to give
+$f(\merid(a)) : f(\north) = f(\south)$.  For the other direction, suppose that
+we have elements $b_{n}, b_{s} : B$ such that $f : A \to (b_{n} = b_{s})$.
+Then by suspension recursion we define a function $g : \susp A \to B$ such that
+$g(\north) \equiv b_{n}$, $g(\south) \equiv b_{s}$, and $g(\merid(a)) = f(a)$
+for all $a : \susp A$.
+
+
+To show that these are quasi-inverses, suppose that $f : \susp A \to B$.  We
+then construct the element $(f(\north), f(\south), \lam{a}f(\merid(a)))$ of the
+codomain, and going back gives a function $g : \susp A \to B$ such that
+$g(\north) \equiv f(\north)$, $g(\south) \equiv f(\south)$, and $g(\merid(a)) =
+f(\merid(a))$ for all $a : \susp A$.  But this just means that $g$ and $f$ have
+the same recurrence relation, so we're back where we started.
+
+
+For the other loop, suppose that we have an element $(b_{n}, b_{s}, f)$ of the
+right.  Then we get an arrow $g : \susp A \to B$ on the left such that
+$g(\north) = b_{n}$, $g(\south) = b_{s}$, and $g(\merid(a)) = f(a)$ for all $a
+: \susp A$.  Going back to the right, we have the element $(b_{n}, b_{s}, f)$,
+homotopic to the identity function.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch06 3.univ prop susp}{univ\_prop\_susp}{\coqdoclemma{univ\_prop\_susp}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} :\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{(}\coqdocinductive{Susp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{bn} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{B} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{bs} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{B} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvar{bn} \coqdocnotation{=} \coqdocvar{bs}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}. \coqdoctac{\ensuremath{\exists}} (\coqdocvar{f} \coqdocconstructor{North}). \coqdoctac{\ensuremath{\exists}} (\coqdocvar{f} \coqdocconstructor{South}). \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqdocvar{f} (\coqdocaxiom{merid} \coqdocvar{a})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{bn} [\coqdocvar{bs} \coqdocvar{f}]]. \coqdoctac{apply} (\coqdocdefinition{Susp\_rect\_nd} \coqdocvar{bn} \coqdocvar{bs} \coqdocvar{f}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{bn} [\coqdocvar{bs} \coqdocvar{f}]].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{Susp\_comp\_nd\_merid}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} \coqdocdefinition{path\_forall}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{Susp\_rect} \coqdocvar{\_} 1 1 \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdoclemma{trans\_paths} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_1p} \coqdocvar{\_}\coqdocnotation{)\^{}}). \coqdoctac{apply} \coqdocdefinition{inverse2}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{Susp\_comp\_nd\_merid} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocemptyline
+\end{coqdoccode}
+\exer{6.12}{218} 
 Show that $\eqv{\Z}{\N + \unit + \N}$.  Show that if we were to define $\Z$ as
 $\N + \unit + \N$, then we could obtain Lemma 6.10.12 with judgmental
 computation rules.
 \begin{coqdoccode}
+\coqdocemptyline
 \end{coqdoccode}
