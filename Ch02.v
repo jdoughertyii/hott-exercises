@@ -369,25 +369,17 @@ this concatenation is an equivalence.
 Definition eq2_3_6 {A B : Type} {x y : A} (f : A -> B) (p : x = y) (q : f x = f y) : 
     (@transport _ (fun _ => B) _ _ p (f x) = f y) := 
     (transport_const p (f x)) @ q.
+
 Definition eq2_3_7 {A B : Type} {x y : A} (f : A -> B) (p : x = y)
   (q : @transport _ (fun _ => B) _ _ p (f x) = f y) : 
   (f x = f y) :=
   (transport_const p (f x))^ @ q.
 
-Definition alpha2_5 : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
-  (eq2_3_6 f p (eq2_3_7 f p q)) = q. 
-  unfold eq2_3_6, eq2_3_7. path_induction. reflexivity.
-Defined.
-
-Definition beta2_5 : forall {A B:Type} {x y : A} (f: A -> B) (p:x=y) q, 
-  (eq2_3_7 f p (eq2_3_6 f p q)) = q. 
-  unfold eq2_3_6, eq2_3_7. path_induction. reflexivity.
-Defined.
-
 Lemma isequiv_transportconst (A B:Type) (x y z : A) (f : A -> B) (p : x = y) : 
   IsEquiv (eq2_3_6 f p).
 Proof.
-  apply (isequiv_adjointify _ (eq2_3_7 f p) (alpha2_5 f p) (beta2_5 f p)).
+  refine (isequiv_adjointify _ (eq2_3_7 f p) _ _); intro q;
+    unfold eq2_3_6, eq2_3_7; path_induction; reflexivity.
 Qed.
 
 
@@ -430,17 +422,11 @@ which is inhabited by $\refl{q}$.  So $(p \ct -)$ has a quasi-inverse, hence it
 is an equivalence.
 *)
 
-Definition alpha2_6 {A:Type} {x y z:A} (p:x=y) (q:x=z) : p @ (p^ @ q) = q.
-  path_induction. reflexivity.
-Defined.
-
-Definition beta2_6 {A:Type} {x y z:A} (p:x=y) (q:y=z) : p^ @ (p @ q) = q.
-  path_induction. reflexivity.
-Defined.
 
 Lemma isequiv_eqcat (A:Type) (x y z : A) (p : x = y) : IsEquiv (fun q:(y=z) => p @ q).
 Proof.
-  apply (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) (alpha2_6 p) (beta2_6 p)).
+  refine (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) _ _); intro q;
+    by path_induction.
 Qed.
 
 (** %\exerdone{2.7}{104}% 
@@ -471,9 +457,9 @@ Which we'll construct by induction.  It suffices to consider the case where $x
 \equiv (a, b)$, $y \equiv (a', b')$, $p \equiv \refl{a}$, and $q \equiv
 \refl{b}$.  Then we need an object of type
 %\[
-  \left[(g(\refl{a}))_{*}(h(a, b)) = h(a', b')\right]
+  \left((g(\refl{a}))_{*}(h(a, b)) = h(a', b')\right)
   \equiv
-  \left[h(a, b) = h(a', b')\right]
+  \left(h(a, b) = h(a', b')\right)
 \]%
 which we can easily construct by applying $h$ to $p$ and $q$.  So by induction, we have an object
 %\[
@@ -492,28 +478,42 @@ by induction.  So let $x \equiv (a, b)$, $y \equiv (a', b')$, $p
   \refl{f((a, b))} = \refl{(g(a), h(a, b))}
 \]%
 But from the definition of $f$, this is a judgemental equality.  So we're done.
-
-Coq takes of a bit of coaxing to get the types right.
 *)
+
+Module Exercise2_7.
 
 Definition T {A A' : Type} {B : A -> Type} {B' : A' -> Type}
            {g : A -> A'} (h : forall a, B a -> B' (g a))
            {x y : {a:A & B a}}
            (p : x.1 = y.1) (q : p # x.2 = y.2)
   : (ap g p) # (h x.1 x.2) = h y.1 y.2.
-  transitivity (h y.1 (p # x.2));
-  destruct x; destruct y; simpl in *; induction p; [|rewrite q]; reflexivity.
+Proof.
+  destruct x as [a b], y as [a' b'].
+  simpl in p. induction p.
+  simpl in *. f_ap.
 Defined.
+
+
+Definition functor_sigma {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+           (g : A -> A') (h : forall a, B a -> B' (g a)) 
+  : {x : A & B x} -> {x : A' & B' x}
+  := fun z => (g z.1; h z.1 z.2).
 
 Theorem ex2_7 : forall {A A' : Type} {B : A -> Type} {B' : A' -> Type}
                        (g : A -> A') (h : forall a, B a -> B' (g a))
                        (x y : {a:A & B a})
                        (p : x.1 = y.1) (q : p # x.2 = y.2),
-let f z := (g z.1; h z.1 z.2) in
-  ap f (path_sigma B x y p q) = path_sigma B' (f x) (f y) (ap g p) (T h p q). 
-intros. unfold f, T. 
-destruct x. destruct y. simpl in *. induction p.  rewrite <- q. reflexivity.
+  ap (functor_sigma g h) (path_sigma B x y p q) 
+  = path_sigma B' (functor_sigma g h x) (functor_sigma g h y) 
+               (ap g p) (T h p q). 
+intros. 
+destruct x as [a b], y as [a' b']. 
+simpl in p. induction p. 
+simpl in q. induction q. 
+reflexivity.
 Defined.
+
+End Exercise2_7.
 
 
 
@@ -560,43 +560,21 @@ more explicitly in Coq, though the proof is the same as the one by
 hand.
 *)
 
-Definition code {A B : Type} (x : A + B) (y : A + B) :=
-  match x with
-  | inl a => match y with 
-             | inl a' => (a = a')
-             | inr b => Empty
-             end
-  | inr b => match y with
-             | inl a => Empty
-             | inr b' => (b = b')
-             end
-  end.
-                     
-Theorem ex2_8 : forall (A A' B B' : Type)
-                       (g : A -> A') (h : B -> B')
-                       (x y : A+B) (p : code x y),
-  let f z := match z with
-             | inl a => inl (g a)
-             | inr b => inr (h b)
-             end 
-  in 
-  ap f (path_sum x y p) = path_sum (f x) (f y) (
-        (match x return code x y -> code (f x) (f y) with
-         | inl a => match y return code (inl a) y -> code (inl (g a)) (f y) with
-                    | inl a' => ap g
-                    | inr b => idmap
-                    end
-         | inr b => match y return code (inr b) y -> code (inr (h b)) (f y) with
-                    | inl a => idmap
-                    | inr b' => ap h
-                    end
-         end) p).
+Theorem ap_functor_sum : forall (A A' B B' : Type)
+                                (g : A -> A') (h : B -> B')
+                                (x y : A+B) (p : x = y),
+  ap (functor_sum g h) (path_sum x y (path_sum_inv p)) 
+  = path_sum (functor_sum g h x) (functor_sum g h y)
+             (path_sum_inv (ap (functor_sum g h) p)).
 Proof.
-  intros. destruct x; destruct y; simpl in *; 
-    try (path_induction; reflexivity);
-    try (destruct p).
-Qed.
-
+  intros.
+  destruct x as [a | b], y as [a' | b'].
+  induction p. reflexivity.
+  contradiction ((equiv_path_sum _ _)^-1 p).
+  contradiction ((equiv_path_sum _ _)^-1 p).
+  induction p. reflexivity.
+Defined.
+  
      
 (** %\exerdone{2.9}{104}% 
 Prove that coproducts have the expected universal property,
@@ -651,21 +629,12 @@ Definition ex2_9_g {A B X : Type} (h : (A->X) * (B->X)) : A + B -> X :=
              | inr b => (snd h) b
            end.
 
-Lemma alpha2_9 {A B X: Type} : forall (h : (A -> X) * (B -> X)), 
-  ex2_9_f (ex2_9_g h) = h.
-Proof.
-  unfold ex2_9_f, ex2_9_g. destruct h as (x, y). reflexivity.
-Qed.
-
-Lemma beta2_9 `{Funext} {A B X: Type} : forall (h : A + B -> X), 
-  ex2_9_g (ex2_9_f h) = h.
-Proof.
-  intros. apply path_forall. intro z. destruct z; reflexivity.
-Qed.
 
 Theorem ex2_9 : forall A B X, (A + B->X) <~> (A->X) * (B->X).
 Proof.
-  intros. apply (equiv_adjointify ex2_9_f ex2_9_g alpha2_9 beta2_9).
+  intros. refine (equiv_adjointify ex2_9_f ex2_9_g _ _); intro h.
+  destruct h as (x, y). reflexivity.
+  apply path_forall. intro z. destruct z; reflexivity.
 Qed.
 
 (** All of this generalizes directly to the case of dependent functions. *)
@@ -1404,22 +1373,20 @@ Proof.
   unfold funext'. rewrite concat_pV. reflexivity.
 Defined.
 
-Definition isContr (X:Type) := {a : X & forall (x:X), a = x}.
-
-Lemma Lemma3118 {C} : forall (c:C), isContr {x:C & c = x}.
+Lemma Lemma3118 {C} : forall (c:C), Contr {x:C & c = x}.
 Proof.
   intro c. exists (c; 1).
   intro x. destruct x as [x p]. path_induction. reflexivity.
 Defined.
 
-Lemma Lemma3116 A B f : isContr (forall x:A, {y : B x & f x = y}).
+Lemma Lemma3116 A B f : Contr (forall x:A, {y : B x & f x = y}).
 Proof.
   exists (fun x:A => (f x; 1)).
   intro k. apply (funext' (fun x => (f x; 1)) k); intro x.
-  assert (isContr {y : B x & f x = y}). apply Lemma3118.
-  destruct X. destruct x0. rewrite <- (p (k x)).
-  apply path_sigma_uncurried. exists p0.
-  induction p0. reflexivity.
+  assert (Contr {y : B x & f x = y}). apply Lemma3118.
+  destruct X. destruct center. rewrite <- (contr (k x)).
+  apply path_sigma_uncurried. exists p.
+  induction p. reflexivity.
 Defined.  
 
 Definition choice {A B f} : 
@@ -1440,15 +1407,15 @@ Proof.
   apply path_sigma_uncurried; exists 1; reflexivity.
 Defined.
 
-Lemma contr_equiv_commute {A B} : A <~> B -> isContr A -> isContr B.
+Lemma contr_equiv_commute {A B} : A <~> B -> Contr A -> Contr B.
 Proof.
-  intros f k. unfold isContr in *.
-  exists (f k.1). intro x. transitivity (f (f^-1 x)).
-  apply (ap f). apply (k.2 (f^-1 x)).
+  intros f k.
+  exists (f (center A)). intro x. transitivity (f (f^-1 x)).
+  apply (ap f). apply (contr (f^-1 x)).
   apply eisretr.
 Defined.
 
-Lemma reduce_to_refl {A B f} : isContr {g : forall x:A, B x & f == g}.
+Lemma reduce_to_refl {A B f} : Contr {g : forall x:A, B x & f == g}.
 Proof.
   apply (@contr_equiv_commute (forall (x:A), {y : B x & f x = y})).
   refine (BuildEquiv _ _ choice Theorem2157).
@@ -1468,10 +1435,12 @@ Defined.
 Lemma total_equivalence {A B f} : IsEquiv(@total_happly A B f).
 Proof.
   refine (isequiv_adjointify total_happly total_happly_inv _ _); intro k.
-  - assert (isContr {g : forall x:A, B x & f == g}). apply reduce_to_refl.
-    destruct X. rewrite (p k)^. apply (p (total_happly (total_happly_inv x)))^.
-  - assert (isContr {g : forall x:A, B x & f = g}). apply Lemma3118.
-    destruct X. rewrite (p k)^. apply (p (total_happly_inv (total_happly x)))^.
+  - assert (Contr {g : forall x:A, B x & f == g}). apply reduce_to_refl.
+    destruct X. rewrite (contr k)^. 
+    apply (contr (total_happly (total_happly_inv center)))^.
+  - assert (Contr {g : forall x:A, B x & f = g}). apply Lemma3118.
+    destruct X. rewrite (contr k)^. 
+    apply (contr (total_happly_inv (total_happly center)))^.
 Defined.
 
 Definition total {A P Q} (f : forall (x:A), P x -> Q x) := fun w => (w.1; f w.1 w.2).

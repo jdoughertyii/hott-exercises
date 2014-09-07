@@ -9,3 +9,5 @@
 * fix the nat_scope issues
 * fix type of S2_rect in hit/TwoSphere.v
 * fix the vertical spacing of the := in the formatted code
+* get rid of rewrites
+* define monus in the usual way

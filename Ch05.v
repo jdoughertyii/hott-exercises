@@ -208,7 +208,7 @@ Proof.
   refine (isequiv_adjointify _ (Bool_rect_uncurried_inv E) _ _);
     unfold Bool_rect_uncurried, Bool_rect_uncurried_inv.
   intro f. apply path_forall; intro b. destruct b; reflexivity.
-  intro p. apply uppt.
+  intro p. apply eta_prod.
 Qed.
 
 (** %\exerdone{5.5}{175}% 

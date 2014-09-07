@@ -37,7 +37,7 @@ and
 %\[
 (h \circ g) \circ f 
 \equiv \lam{x:A}(h \circ g)(fx)
-\equiv \lam{x:A}(\lam{y:A}h(gy))(fx)
+\equiv \lam{x:A}(\lam{y:B}h(gy))(fx)
 \equiv \lam{x:A}h(g(fx))
 \]%
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have *)
@@ -57,41 +57,40 @@ Derive the recursion principle for products $\rec{A \times B}$ using only the
     same for $\Sigma$-types.  *)
 
 
-  (** %\soln% 
-    The recursion principle states that we can define a function $f : A
-    \times B \to C$ by giving its value on pairs.  Suppose that we have projection
-    functions $\fst : A \times B \to A$ and $\snd : A \times B \to B$.  Then we can
-    define a function of type
-    %\[
-    \rec{A\times B} : \prd{C : \UU} (A \to B \to C) \to A \times B \to C
-    \]%
+(** %\soln% 
+The recursion principle states that we can define a function $f : A \times B
+\to C$ by giving its value on pairs.  Suppose that we have projection functions
+$\fst : A \times B \to A$ and $\snd : A \times B \to B$.  Then we can define a
+function of type
+%\[
+  \rec{A\times B}' : \prd{C : \UU} (A \to B \to C) \to A \times B \to C
+\]%
 in terms of these projections as follows
 %\[
-\rec{A \times B}'(C, g, p) \defeq 
-g(\fst p)(\snd p)
+  \rec{A \times B}'(C, g, p) \defeq g(\fst p)(\snd p)
 \]%
 or, in Coq,
-   *)
-
+*)
 
 Section Exercise2a.
   Context {A B : Type}.
 
   Definition recprd (C : Type) (g : A -> B -> C) (p : A * B) := g (fst p) (snd p).
 
-  (** We must then show that
+(** We must then show that
 %\begin{align*}
-\rec{A\times B}'(C, g, (a, b)) 
-\equiv g(\fst (a, b))(\snd (a, b))
-\equiv g(a)(b)
+    \rec{A\times B}'(C, g, (a, b)) 
+    \equiv g(\fst (a, b))(\snd (a, b))
+    \equiv g(a)(b)
 \end{align*}%
-which in Coq is also trivial: *)
+which in Coq amounts to showing that these this equality is a reflexivity.
+*)
 
 
   Theorem recprd_correct : forall (C : Type) (g : A -> B -> C) (a : A) (b : B), 
     recprd C g (a, b) = g a b. 
   Proof.
-    trivial.
+    reflexivity.
   Defined.
 
 End Exercise2a.
@@ -101,44 +100,41 @@ Section Exercise2b.
   Context (A : Type).
   Context (B : A -> Type).
 
-  (** Now for the $\Sigma$-types.  Here we have a projection
+(** Now for the $\Sigma$-types.  Here we have a projection
 %\[
-\fst : \left(\sm{x : A} B(x) \right) \to A
+  \fst : \left(\sm{x : A} B(x) \right) \to A
 \]%
 and another
 %\[
-\snd : \prd{p : \sm{x : A} B(x)} B(\fst (p))
+  \snd : \prd{p : \sm{x : A} B(x)} B(\fst (p))
 \]%
 Define a function of type 
 %\[
-\rec{\sm{x:A}B(x)} : \prd{C:\UU} \left(\tprd{x:A} B(x) \to C \right) \to
-\left(\tsm{x:A}B(x) \right) \to C
+  \rec{\sm{x:A}B(x)}' : \prd{C:\UU} \left(\tprd{x:A} B(x) \to C \right) \to
+    \left(\tsm{x:A}B(x) \right) \to C
 \]%
 by
 %\[
-\rec{\sm{x:A}B(x)}(C, g, p)
-\defeq
-g(\fst p)(\snd p)
+  \rec{\sm{x:A}B(x)}'(C, g, p) \defeq g(\fst p)(\snd p)
 \]% 
-   *)
+*)
 
   Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : {x:A & B x}) := 
     g (p.1) (p.2).
 
-  (** 
-%\noindent%
+(** %\noindent%
 We then verify that
 %\begin{align*}
-\rec{\sm{x:A}B(x)}(C, g, (a, b))
-\equiv g(\fst (a, b))(\snd (a, b))
-\equiv g(a)(b)
+  \rec{\sm{x:A}B(x)}(C, g, (a, b))
+  \equiv g(\fst (a, b))(\snd (a, b))
+  \equiv g(a)(b)
 \end{align*}%
-which is again trivial in Coq: *)
+*)
 
   Theorem recsm_correct : forall (C:Type) (g : forall x, B x -> C) (a:A) (b:B a), 
     recsm C g (a; b) = g a b. 
   Proof.
-    trivial. 
+    reflexivity.
   Defined.
 
 End Exercise2b.
@@ -152,81 +148,71 @@ Derive the induction principle for products $\ind{A \times B}$ using only the
 Section Exercise3a.
   Context {A B : Type}.
 
-  (** %\soln% 
-    The induction principle has type
-    %\[
-    \ind{A\times B} : \prd{C: A\times B \to \UU}\left(\prd{x:A}\prd{y:B}C((x,
+(** %\soln% 
+The induction principle has type
+%\[
+  \ind{A\times B} : \prd{C: A\times B \to \UU}\left(\prd{x:A}\prd{y:B}C((x,
     y))\right) \to \prd{z:A\times B}C(z)
-    \]%
-    For a first pass, we can define
-    %\[
-    \ind{A\times B}(C, g, z)
-    \defeq
-    g(\fst z)(\snd z)
-    \]%
-    However, we have $g(\fst x)(\snd x) : C((\fst x, \snd x))$, so the type of this
-    $\ind{A \times B}$ is
-    %\[
-    \ind{A\times B} : \prd{C: A\times B \to \UU}\left(\prd{x:A}\prd{y:B}C((x,
+\]%
+For a first pass, we can define our new inductor as
+%\[
+  \lam{C}{g}{z}g(\fst z)(\snd z)
+\]%
+However, we have $g(\fst x)(\snd x) : C((\fst x, \snd x))$, so the type of this
+$\ind{A \times B}'$ is
+%\[
+  \prd{C: A\times B \to \UU}\left(\prd{x:A}\prd{y:B}C((x,
     y))\right) \to \prd{z:A\times B}C((\fst z, \snd z))
     \]%
-    To define $\ind{A \times B}$ with the correct type, we need the
-    $\mathsf{transport}$ operation from the next chapter.  The uniqueness principle
-    for product types is
-    %\[
-    \uppt : \prd{x : A \times B} \big((\fst x, \snd x) =_{A \times B} x\big)
-    \]%
-    By the transport principle, there is a function
-    %\[
-    (\uppt\, x)_{*} : C((\fst x, \snd x)) \to C(x)
-    \]%
-    so
-    %\[
-    \ind{A \times B}(C, g, z)
-    \defeq
-    (\uppt\, z)_{*}(g(\fst z)(\snd z))
-    \]%
-    has the right type.
-In Coq we first define $\uppt$, then use it with transport to give our
-$\ind{A\times B}$.  *)
-
-
-  Definition uppt (x : A * B) : (fst x, snd x) = x. 
-    destruct x. reflexivity.
-  Defined.
+To define $\ind{A \times B}'$ with the correct type, we need the
+$\mathsf{transport}$ operation from the next chapter.  The uniqueness principle
+for product types is
+%\[
+  \uppt : \prd{x : A \times B} \big((\fst x, \snd x) =_{A \times B} x\big)
+\]%
+By the transport principle, there is a function
+%\[
+  (\uppt\, x)_{*} : C((\fst x, \snd x)) \to C(x)
+\]%
+so
+%\[
+  \ind{A \times B}(C, g, z)
+  \defeq
+  (\uppt\, z)_{*}(g(\fst z)(\snd z))
+\]%
+has the right type.  In Coq we use [eta_prod], which is the name for
+$\uppt$, then use it with transport to give our $\ind{A\times B}'$.  *)
 
   Definition indprd (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (z : A * B) := 
-    (uppt z) # (g (fst z) (snd z)).
+    (eta_prod z) # (g (fst z) (snd z)).
 
-  (** 
+(** 
 We now have to show that
 %\[
-\ind{A \times B}(C, g, (a, b)) 
-\equiv g(a)(b)
+  \ind{A \times B}(C, g, (a, b)) \equiv g(a)(b)
 \]%
 Unfolding the left gives
 %\begin{align*}
-\ind{A \times B}(C, g, (a, b)) 
-&\equiv
-(\uppt\, (a, b))_{*}(g(\fst (a, b))(\snd (a, b)))
-\\&\equiv
-\ind{=_{A \times B}}(D, d, (a, b), (a, b), \uppt((a, b)))(g(a)(b))
-\\&\equiv
-\ind{=_{A \times B}}(D, d, (a, b), (a, b), \refl{(a, b)})
-(g(a)(b))
-\\&\equiv
-\mathsf{id}_{C((a, b))}(g(a)(b))
-\\&\equiv
-g(a)(b)
+  \ind{A \times B}(C, g, (a, b)) 
+  &\equiv
+  (\uppt\, (a, b))_{*}(g(\fst (a, b))(\snd (a, b)))
+  \\&\equiv
+  \ind{=_{A \times B}}(D, d, (a, b), (a, b), \uppt((a, b)))(g(a)(b))
+  \\&\equiv
+  \ind{=_{A \times B}}(D, d, (a, b), (a, b), \refl{(a, b)})
+  (g(a)(b))
+  \\&\equiv
+  \mathsf{id}_{C((a, b))}(g(a)(b))
+  \\&\equiv
+  g(a)(b)
 \end{align*}%
-which was to be proved.  In Coq, it's as trivial as always: *)
+which was to be proved. *)
 
-
-  Theorem indprd_correct : forall (C : A * B -> Type) 
-                                  (g : forall (x:A) (y:B), C (x, y)) (a : A) (b : B), 
-                             indprd C g (a, b) = g a b. 
+  Theorem indprd_correct : 
+    forall (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (a:A) (b:B), 
+      indprd C g (a, b) = g a b. 
   Proof.
-    trivial. 
+    reflexivity.
   Defined.
 
 End Exercise3a.
@@ -236,74 +222,66 @@ Section Exercise3b.
   Context {A : Type}.
   Context {B : A -> Type}.
 
-  (** For $\Sigma$-types, we define
+(** For $\Sigma$-types, we define
 %\[
-\ind{\tsm{x:A}B(x)} : \prd{C:(\tsm{x:A}B(x)) \to \UU}
-\left(\tprd{a:A}\tprd{b:B(a)}C((a, b))\right) \to \prd{p: \tsm{x:A}B(x)}C(p)
+  \ind{\tsm{x:A}B(x)}' : \prd{C:(\tsm{x:A}B(x)) \to \UU}
+  \left(\tprd{a:A}\tprd{b:B(a)}C((a, b))\right) \to \prd{p: \tsm{x:A}B(x)}C(p)
 \]%
 at first pass by
 %\[
-\ind{\tsm{x:A}B(x)}(C, g, p)
-\defeq
-g(\fst p)(\snd p)
+  \lam{C}{g}{p}g(\fst p)(\snd p)
 \]%
-We encounter a similar problem as before.  We need a uniqueness principle for
-$\Sigma$-types, which would be a function
+We encounter a similar problem as in the product case: this gives an output in
+$C((\fst p, \snd p))$, rather than $C(p)$.  So we need a uniqueness
+principle for $\Sigma$-types, which would be a function
 %\[
-\upst : \prd{p : \sm{x:A}B(x)} \big(
-(\fst p, \snd p) =_{\sm{x:A}B(x)} p
-\big)
+  \upst : \prd{p : \sm{x:A}B(x)} \big( (\fst p, \snd p) =_{\sm{x:A}B(x)} p \big)
 \]%
 As for product types, we can define
 %\[
-\upst((a, b)) \defeq \refl{(a, b)}
+  \upst((a, b)) \defeq \refl{(a, b)}
 \]%
 which is well-typed, since $\fst(a, b) \equiv a$ and $\snd(a, b) \equiv b$.
 Thus, we can write
 %\[
-\ind{\sm{x:A}B(x)}(C, g, p) \defeq (\upst\, p)_{*}(g(\fst p)(\snd p)).
+  \ind{\sm{x:A}B(x)}'(C, g, p) \defeq (\upst\, p)_{*}(g(\fst p)(\snd p)).
 \]%
 and in Coq, *)
 
 
-  Definition upst (p : {x:A & B x}) : (p.1; p.2) = p. 
-    destruct p. reflexivity. 
-  Defined.
-
-
   Definition indsm (C : {x:A & B x} -> Type) (g : forall (a:A) (b:B a), C (a; b)) (p : {x:A & B x}) :=
-    (upst p) # (g (p.1) (p.2)).
+    (eta_sigma p) # (g (p.1) (p.2)).
 
-  (** 
+(** 
 Now we must verify that
 %\[
-\ind{\sm{x:A}B(x)}(C, g, (a, b)) \equiv g(a)(b)
+  \ind{\sm{x:A}B(x)}'(C, g, (a, b)) \equiv g(a)(b)
 \]%
 We have
 %\begin{align*}
-\ind{\sm{x:A}B(x)}(C, g, (a, b))
-&\equiv
-(\uppt\, (a, b))_{*}(g(\fst(a, b))(\snd(a, b)))
-\\&\equiv
-\ind{=_{\sm{x:A}B(x)}}(D, d, (a, b), (a, b), \uppt\, (a, b))
-(g(a)(b))
-\\&\equiv
-\ind{=_{\sm{x:A}B(x)}}(D, d, (a, b), (a, b), \refl{(a, b)})
-(g(a)(b))
-\\&\equiv
-\mathsf{id}_{C((a, b))}
-(g(a)(b))
-\\&\equiv
-g(a)(b)
-\end{align*}% 
-which Coq finds trivial: *)
+  \ind{\sm{x:A}B(x)}'(C, g, (a, b))
+  &\equiv
+  (\uppt\, (a, b))_{*}(g(\fst(a, b))(\snd(a, b)))
+  \\&\equiv
+  \ind{=_{\sm{x:A}B(x)}}'(D, d, (a, b), (a, b), \uppt\, (a, b))
+  (g(a)(b))
+  \\&\equiv
+  \ind{=_{\sm{x:A}B(x)}}'(D, d, (a, b), (a, b), \refl{(a, b)})
+  (g(a)(b))
+  \\&\equiv
+  \mathsf{id}_{C((a, b))}
+  (g(a)(b))
+  \\&\equiv
+  g(a)(b)
+\end{align*}% *)
 
 
-  Theorem indsm_correct : forall (C : {x:A & B x} -> Type) 
-                                 (g : forall (a:A) (b:B a), C (a; b)) (a : A) (b : B a), 
-                            indsm C g (a; b) = g a b. 
+  Theorem indsm_correct : 
+        forall (C : {x:A & B x} -> Type) 
+               (g : forall (a:A) (b:B a), C (a; b)) (a : A) (b : B a), 
+          indsm C g (a; b) = g a b. 
   Proof.
-    trivial. 
+    reflexivity.
   Defined.
 
 End Exercise3b.
@@ -552,7 +530,7 @@ Section Exercise4.
 
   Theorem Phi'_correct1 : snd (Phi' 0) = c0. 
   Proof.
-    trivial.
+    reflexivity.
   Defined.
 
   Theorem Phi'_correct2 : forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))).
@@ -732,13 +710,20 @@ along with
     \right)(b)
     \\&\equiv
     g_{1}(b)
-    \end{align*}%
-    Trivial calculations, as Coq can attest: *)
+    \end{align*}% *)
 
 
-  Goal forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. trivial. Qed.
+  Theorem indcoprd_correct1 : 
+    forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. 
+  Proof.
+    reflexivity.
+  Qed.
 
-  Goal forall C g0 g1 b, indcoprd C g0 g1 (myinr b) = g1 b. trivial. Qed.
+  Theorem indcoprd_correct2 : 
+    forall C g0 g1 a, indcoprd C g0 g1 (myinr a) = g1 a. 
+  Proof.
+    reflexivity.
+  Qed.
 
 End Exercise5.
 
@@ -822,56 +807,55 @@ Section Exercise6.
     \to 
     ((\fst p, \snd p) =_{A \times B} p)
     \]%
-    We just need to show that the antecedent is inhabited, which we can do with
-        $\ind{\bool}$.  So consider the family
-        %\begin{align*}
-        E &\defeq 
-        \lam{x : \bool} 
-        ((p(0_{\bool}), p(1_{\bool}))(x) =_{\rec{\bool}(\UU, A, B, x)}  p(x)))
-        \\&\phantom{:}\equiv
-        \lam{x : \bool} 
-        (\ind{\bool}(\rec{\bool}(\UU, A, B), p(0_{\bool}), p(1_{\bool}), x)
-        =_{\rec{\bool}(\UU, A, B, x)} p(x))
-        \end{align*}%
-        We have
-        %\begin{align*}
-        E(0_{\bool})
-        &\equiv
-        (\ind{\bool}(\rec{\bool}(\UU, A, B),
-        p(0_{\bool}), p(1_{\bool}), 0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})}
-        p(0_{\bool}))
-        \\&\equiv
-        (p(0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})} p(0_{\bool}))
-        \end{align*}%
-        Thus $\refl{p(0_{\bool})} : E(0_{\bool})$.  The same argument goes through to
-        show that $\refl{p(1_{\bool})} : E(1_{\bool})$.  This means that
-        %\[
-        h \defeq
-        \ind{\bool}(E, \refl{p(0_{\bool})}, \refl{p(1_{\bool})})
-        :
-        \prd{x : \bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))
-        \]%
-        and thus
-        %\[
-        \funext(h) 
-        : 
-        (p(0_{\bool}), p(1_{\bool}))
-        =_{A \times B} 
-        p 
-        \]%
-        This allows us to define the uniqueness principle for products:
-        %\[
-        \uppt \defeq \lam{p}\funext(h)  
-        : \prd{p:A \times B} 
-        (\fst p, \snd p)
-        =_{A \times B} 
-        p 
-        \]%
-        where $\funext$ implicitly depends on $p$ in the way we've been assuming.
-    Now we can define $\ind{A\times B}$ as
-    %\[
-    \ind{A\times B}(C, g, p) \defeq (\uppt\, p)_{*}(g(\fst p)(\snd p))
-    \]%
+We just need to show that the antecedent is inhabited, which we can do with
+$\ind{\bool}$.  So consider the family
+%\begin{align*}
+E &\defeq 
+\lam{x : \bool} 
+((p(0_{\bool}), p(1_{\bool}))(x) =_{\rec{\bool}(\UU, A, B, x)}  p(x)))
+\\&\phantom{:}\equiv
+\lam{x : \bool} 
+(\ind{\bool}(\rec{\bool}(\UU, A, B), p(0_{\bool}), p(1_{\bool}), x)
+=_{\rec{\bool}(\UU, A, B, x)} p(x))
+\end{align*}%
+We have
+%\begin{align*}
+E(0_{\bool})
+&\equiv
+(\ind{\bool}(\rec{\bool}(\UU, A, B),
+p(0_{\bool}), p(1_{\bool}), 0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})}
+p(0_{\bool}))
+\\&\equiv
+(p(0_{\bool}) =_{\rec{\bool}(\UU, A, B, 0_{\bool})} p(0_{\bool}))
+\end{align*}%
+Thus $\refl{p(0_{\bool})} : E(0_{\bool})$.  The same argument goes through to
+show that $\refl{p(1_{\bool})} : E(1_{\bool})$.  This means that
+%\[
+h \defeq
+\ind{\bool}(E, \refl{p(0_{\bool})}, \refl{p(1_{\bool})})
+:
+\prd{x : \bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))
+\]%
+and thus
+%\[
+\funext(h) 
+: 
+(p(0_{\bool}), p(1_{\bool}))
+=_{A \times B} 
+p 
+\]%
+This allows us to define the uniqueness principle for products:
+%\[
+  \uppt \defeq \lam{p}\funext(h)  
+  : \prd{p:A \times B} 
+  (\fst p, \snd p)
+  =_{A \times B} 
+  p 
+\]%
+Now we can define $\ind{A\times B}$ as
+%\[
+  \ind{A\times B}(C, g, p) \defeq (\uppt\, p)_{*}(g(\fst p)(\snd p))
+\]%
 In Coq we can repeat this construction using [Funext]. *)
 
   Definition myuppt `{Funext} (p : prd) : mypair (myfst p) (mysnd p) = p.
@@ -1081,22 +1065,18 @@ Definition Lemma231 {A} (P : A -> Type) (x y : A) (p : x = y) : P(x) -> P(y).
   intro. rewrite <- p. apply X.
 Defined.
 
-Definition isContr (A : Type) := {a:A & forall (x:A), a = x}.
-
-Definition Lemma3118 {A} : forall (a:A), isContr {x:A & a=x}.
-  intro a. unfold isContr. exists (a; 1).
+Definition Lemma3118 {A} : forall (a:A), Contr {x:A & a=x}.
+  intro a. exists (a; 1).
   intro x. destruct x as [x p]. path_induction. reflexivity.
 Defined.
-
-Definition my_contr {A} (p:isContr A) := p.2.
 
 Definition ind' {A} : forall (a : A) (C : forall (x:A), a = x -> Type),
                         C a 1 -> forall (x:A) (p:a=x), C x p.
   intros.
-  assert (isContr {x:A & a=x}) as H. apply Lemma3118.
+  assert (Contr {x:A & a=x}) as H. apply Lemma3118.
   change (C x p) with ((fun c => C c.1 c.2) (x; p)).
-  apply Lemma231 with (x0:=(a; 1)) (y:=(x; p)).
-  transitivity (projT1 H). destruct H as [[a' p'] z]. simpl. 
+  apply (Lemma231 _ (a; 1) (x; p)).
+  transitivity (center {x : A & a = x}). destruct H as [[a' p'] z]. simpl. 
   rewrite <- p'. reflexivity.
   destruct H as [[a' p'] z]. simpl. rewrite <- p'. rewrite <- p. reflexivity.
   apply X.
@@ -1724,25 +1704,24 @@ Qed.
 Local Close Scope nat_scope.
 
 (** %\exerdone{1.9}{56}%  
-    Define the type family $\Fin : \mathbb{N} \to \UU$
-    mentioned at the end of %\S1.3%, and the dependent function $\fmax :
-    \prd{n : \mathbb{N}} \Fin(n + 1)$ mentioned in %\S1.4%. *)
+Define the type family $\Fin : \mathbb{N} \to \UU$ mentioned at the end of
+%\S1.3%, and the dependent function $\fmax : \prd{n : \mathbb{N}} \Fin(n + 1)$
+mentioned in %\S1.4%. *)
 
 Local Open Scope nat_scope.
 
 (** %\soln%  
-    $\Fin(n)$ is a type with exactly $n$ elements.  Consider $\Fin(n)$ from the
-    types-as-propositions point of view: $\Fin(n)$ is a
-    predicate that applies to exactly $n$ elements.  Recalling that
-    $\sm{m:\mathbb{N}}(m < n)$ may be regarded as ``the type of all elements $m :
-    \mathbb{N}$ such that $(m < n)$'', we note that there are $n$ such elements,
-    and define
-    %\[
-    \Fin(n) 
-    \defeq \sum_{m:\mathbb{N}} (m < n)
-    \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(m+ \suc(k) = n)
-    \]%
-    And in Coq, *)
+$\Fin(n)$ is a type with exactly $n$ elements.  Consider $\Fin(n)$ from the
+types-as-propositions point of view: $\Fin(n)$ is a predicate that applies to
+exactly $n$ elements.  Recalling that $\sm{m:\mathbb{N}}(m < n)$ may be
+regarded as ``the type of all elements $m : \mathbb{N}$ such that $(m < n)$'',
+we note that there are $n$ such elements, and define
+%\[
+  \Fin(n) 
+  \defeq \sum_{m:\mathbb{N}} (m < n)
+  \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(m+ \suc(k) = n)
+\]%
+And in Coq, *)
 
 Definition le (n m : nat) : Type := {k:nat & n + k = m}.
 Notation "n <= m" := (le n m)%nat (at level 70) : nat_scope.
@@ -1753,51 +1732,34 @@ Notation "n < m" := (lt n m)%nat (at level 70) : nat_scope.
 Definition Fin (n:nat) : Type := {m:nat & m < n}.
 
 (** %\noindent%
-    To prove that this definition is correct, we should show that for every $n :
-    \mathbb{N}$, $\Fin(n)$ has $n$ elements.  This is just to say that there is a
-    bijection between the set of numbers less than $n$ and the elements of
-    $\Fin(n)$.  One direction is obvious: for any $m : \Fin(n)$,
-    $\snd(\snd(m)):(\fst(m) < n)$.  For the other direction, suppose that $m :
-    \mathbb{N}$ and that $p : (m < n)$.  Then
-    %\[
-    (m, p) : \sum{m:\mathbb{N}}(m < n) \equiv \Fin(n)
-    \]%
-    Moreover, these two constructions are clearly inverses, so we have our
-    bijection.  To formalize this argument, I have to appeal to the fact that
-    equality in $\mathbb{N}$ is decidable as well as the notion of equivalence
-    introduced in the next chapter.  I prove it in Exercise 3.22.
-
-    To define $\fmax$, note that one can think of an element of $\Fin(n)$ as a
-    tuple $(m, (k, p))$, where $p : m + \suc(k) = n$.  The maximum element of
-    $\Fin(n+1)$ will have the greatest value in the first slot, so
-    %\[
-    \fmax(n) \defeq n_{n+1} \defeq (n, (0, \refl{n+1}))
-    : \sm{m:\mathbb{N}}\sm{k:\mathbb{N}} (m+\suc(k) = n+1)
-    \equiv \Fin(n+1)
-    \]% *)
+To define $\fmax$, note that one can think of an element of $\Fin(n)$ as a
+tuple $(m, (k, p))$, where $p : m + \suc(k) = n$.  The maximum element of
+$\Fin(n+1)$ will have the greatest value in the first slot, so
+%\[
+  \fmax(n) \defeq n_{n+1} \defeq (n, (0, \refl{n+1}))
+  : \sm{m:\mathbb{N}}\sm{k:\mathbb{N}} (m+\suc(k) = n+1)
+  \equiv \Fin(n+1)
+\]% *)
 
 
 Definition fmax (n:nat) : Fin(n+1) := (n; (0; idpath)).
 
 (** %\noindent%
-    Fully verifying that this definition is correct is tedious but straightforward.  We
-    need to show that
-    %\[
-    \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (\fst(m_{n+1}) \leq \fst(\fmax(n)))
-    \]%
-    is inhabited.  Unfolding this a bit, we get
-    %\[
-    \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (m \leq n)
-    \equiv
-    \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)}\sm{k:\mathbb{N}} (m + k = n)
-    \]%
-    Fix some such $n$ and $m_{n+1}$.  By the propositional uniqueness principle for
-    $\Sigma$-types, we can write $m_{n+1} = (m^{1}, (m^{2}, m^{3}))$, where $m^{3}
-    : m^{1} + \suc(m^{2}) = n + 1$.  Using the results of the previous exercise, we
-    can obtain from $m^{3}$ a proof $p : m^{1} + m^{2} = n$.  So $(m^{2}, p)$ is a
-    witness to our result. 
-    Coq requires a bit of finagling, since [inversion] isn't available.
- *)
+To verify that this definition is correct, we need to show that
+%\[
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (\fst(m_{n+1}) \leq \fst(\fmax(n)))
+\]%
+is inhabited.  Unfolding this a bit, we get
+%\[
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)} (m \leq n)
+  \equiv
+  \prd{n:\mathbb{N}}\prd{m_{n+1}:\Fin(n+1)}\sm{k:\mathbb{N}} (m + k = n)
+\]%
+Fix some such $n$ and $m_{n+1}$.  By the induction principle for
+$\Sigma$-types, we can write $m_{n+1} = (m^{1}, (m^{2}, m^{3}))$, where $m^{3}
+: m^{1} + \suc(m^{2}) = n + 1$.  Using the results of the previous exercise, we
+can obtain from $m^{3}$ a proof $p : m^{1} + m^{2} = n$.  So $(m^{2}, p)$ is a
+witness to our result.  *)
 
 
 Definition pred (n : nat) : nat :=
@@ -2038,8 +2000,7 @@ And discharging the first assumption gives
 \lam{x:((A\to\emptyt)\to\emptyt)\to\emptyt}{a:A}x(\lam{h : A \to
 \emptyt}h(a)) :
 (((A \to \emptyt) \to \emptyt) \to \emptyt) \to (A \to \emptyt)
-\]%
-This is automatic for Coq, though not trivial: *)
+\]% *)
 
 
 Goal forall A, ~ ~ ~ A -> ~A. auto. Qed.
@@ -2199,13 +2160,20 @@ f(x, \refl{x}) \defeq \refl{\refl{x}}\qquad?
 \]% *)
 
 (** %\soln%
-The problem is that $f$ is not well-typed in general; i.e., its purported type
-is not inhabited for all $A$, $x$, and $p$.  Read propositionally, $f :
-\prd{x:A}\prd{p:x=x}(p = \refl{x})$ means that for all $x:A$, the only witness
-to $x = x$ is $\refl{x}$, and this is not true.  One can have nontrivial
-homotopies, leading to $p : x = x$ such that $\lnot (p = \refl{x})$.
+To attempt to define this function by path induction, we'd need a
+family
+%\[
+  C \defeq \lam{x}{y}{p}(p = \refl{\refl{x}})
+\]%
+and a function
+%\[
+ c : \prd{x:A}(p = \refl{\refl{x}})
+\]%
+But there is not always such a function $c$, since it is not always the case
+that there is only one path in $x = x$.
+Because of the possiblity of nontrivial homotopies, one might fail to have $(p = p) = (p = \refl{x})$.
 
-Coq prevents this construction for this reason.  Attempting it would proceed as
+Attempting this proof in Coq would go as
 [[
 Definition f : forall (A : Type) (x : A) (p : x = x), p = 1.
 intros. path_induction.
@@ -2217,8 +2185,7 @@ which returns the error message
 The term "1" has type "p = p" while it is expected to have type "p = 1".
 ]]
 %\noindent%
-Because of the possiblity of nontrivial homotopies, one might fail to have $(p = p) = (p = \refl{x})$.
- *)
+*)
 
 
 (** %\exerdone{1.15}{57}% 
