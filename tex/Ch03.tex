@@ -1207,39 +1207,13 @@ and projecting out gives the function in the statement.
 
 I'm having just the damnedest time trying to work everything out in Coq.  At
 some point I'll sort out my loadpath to cut out the \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} lemmas.  I'm sure I'm
-overcomplicating the correctness proofs for \coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}}, though.  No way can
+overcomplicating the correctness proofs for \coqdocvar{bounded\_min}, though.  No way can
 they be this long.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Local}\coqdocindent{0.50em}
 \coqdockw{Open} \coqdockw{Scope} \coqdocvar{nat\_scope}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.le}{le}{\coqdocdefinition{le}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) := \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{k} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{n} \coqdocnotation{+} \coqdocvar{k} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Infix} \coqdef{Ch03.:29949}{"}{"}\ensuremath{\le}" := \coqref{Ch03.le}{\coqdocdefinition{le}} : \coqdocvar{nat\_scope}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.lt}{lt}{\coqdocdefinition{lt}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) := \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Infix} \coqdef{Ch03.:30019}{"}{"}<" := \coqref{Ch03.lt}{\coqdocdefinition{lt}} : \coqdocvar{nat\_scope}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Fixpoint} \coqdef{Ch03.leb}{leb}{\coqdocdefinition{leb}} \coqdocvar{n} \coqdocvar{m} :=\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{match} \coqdocvariable{n}, \coqdocvariable{m} \coqdockw{with}\coqdoceol
-\coqdocindent{2.00em}
-\ensuremath{|} \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}}, \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocconstructor{true}\coqdoceol
-\coqdocindent{2.00em}
-\ensuremath{|} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n'}, \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}} \ensuremath{\Rightarrow} \coqdocconstructor{false}\coqdoceol
-\coqdocindent{2.00em}
-\ensuremath{|} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n'}, \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{m'} \ensuremath{\Rightarrow} \coqref{Ch03.leb}{\coqdocdefinition{leb}} \coqdocvar{n'} \coqdocvar{m'}\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{end}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Infix} \coqdef{Ch03.:30167}{"}{"}<=?" := \coqref{Ch03.leb}{\coqdocdefinition{leb}} (\coqdoctac{at} \coqdockw{level} 70) : \coqdocvar{nat\_scope}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Fixpoint} \coqdef{Ch03.nat code}{nat\_code}{\coqdocdefinition{nat\_code}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :=\coqdoceol
@@ -1268,657 +1242,169 @@ they be this long.
 \coqdockw{end}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.nat encode}{nat\_encode}{\coqdocdefinition{nat\_encode}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{p} : \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}) := \coqdoceol
+\coqdockw{Definition} \coqdef{Ch03.nat encode}{nat\_encode}{\coqdocdefinition{nat\_encode}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{p} : \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}) : (\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m})\coqdoceol
 \coqdocindent{1.00em}
-\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{k} \ensuremath{\Rightarrow} \coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{k}) \coqdocvariable{p} (\coqref{Ch03.nat r}{\coqdocdefinition{nat\_r}} \coqdocvariable{n}).\coqdoceol
+:= \coqdocdefinition{transport} (\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n}) \coqdocvariable{p} (\coqref{Ch03.nat r}{\coqdocdefinition{nat\_r}} \coqdocvariable{n}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.nat decode}{nat\_decode}{\coqdocdefinition{nat\_decode}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{p} : \coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m}), \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}.\coqdoceol
+\coqdockw{Definition} \coqdef{Ch03.nat decode}{nat\_decode}{\coqdocdefinition{nat\_decode}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}), \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{induction} \coqdocvar{n}, \coqdocvar{m}; \coqdoctac{intro}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{reflexivity}. \coqdocvar{contradiction}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{X}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.Theorem2131}{Theorem2131}{\coqdoclemma{Theorem2131}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocnotation{(}\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}.\coqdoceol
+\coqdockw{Theorem} \coqdef{Ch03.equiv path nat}{equiv\_path\_nat}{\coqdoclemma{equiv\_path\_nat}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocnotation{(}\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} \coqdocvariable{n} \coqdocvariable{m}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{intros}.\coqdoceol
 \coqdocindent{1.00em}
-\begin{coqdoccomment}
-\coqdocindent{0.50em}
-Update\coqdocindent{0.50em}
-to\coqdocindent{0.50em}
-Coq\coqdocindent{0.50em}
-broke\coqdocindent{0.50em}
-this\coqdocindent{0.50em}
----\coqdocindent{0.50em}
-\coqdoceol
-\coqdocindent{2.50em}
-9/5:\coqdocindent{0.50em}
-it\coqdocindent{0.50em}
-broke\coqdocindent{0.50em}
-nat\_encode;\coqdocindent{0.50em}
-should\coqdocindent{0.50em}
-be\coqdocindent{0.50em}
-okay\coqdocindent{0.50em}
-now\coqdoceol
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} (\coqref{Ch03.nat decode}{\coqdocdefinition{nat\_decode}} \coqdocvar{n} \coqdocvar{m}) (\coqref{Ch03.nat encode}{\coqdocdefinition{nat\_encode}} \coqdocvar{n} \coqdocvar{m}) \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
 \coqdocindent{1.00em}
-refine\coqdocindent{0.50em}
-(equiv\_adjointify\coqdocindent{0.50em}
-(nat\_decode\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-m)\coqdocindent{0.50em}
-(nat\_encode\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-m)\coqdocindent{0.50em}
-\_\coqdocindent{0.50em}
-\_);\coqdoceol
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{induction} \coqdocvar{p}. \coqdoctac{simpl}.\coqdoceol
 \coqdocindent{1.00em}
-intro\coqdocindent{0.50em}
-p.\coqdoceol
-\coqdoceol
+\coqdoctac{induction} \coqdocvar{n}. \coqdoctac{reflexivity}. \coqdoctac{simpl}.\coqdoceol
 \coqdocindent{1.00em}
-induction\coqdocindent{0.50em}
-p.\coqdocindent{0.50em}
-simpl.\coqdocindent{0.50em}
-induction\coqdocindent{0.50em}
-n.\coqdocindent{0.50em}
-reflexivity.\coqdoceol
+\coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}) \coqdocvar{IHn}).\coqdoceol
+\coqdocemptyline
 \coqdocindent{1.00em}
-simpl.\coqdocindent{0.50em}
-rewrite\coqdocindent{0.50em}
-IHn.\coqdocindent{0.50em}
-reflexivity.\coqdoceol
-\coqdoceol
+\coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{m}.\coqdoceol
 \coqdocindent{1.00em}
-generalize\coqdocindent{0.50em}
-dependent\coqdocindent{0.50em}
-m.\coqdocindent{0.50em}
-generalize\coqdocindent{0.50em}
-dependent\coqdocindent{0.50em}
-n.\coqdoceol
+\coqdoctac{induction} \coqdocvar{n}. \coqdoctac{induction} \coqdocvar{m}.\coqdoceol
 \coqdocindent{1.00em}
-induction\coqdocindent{0.50em}
-n.\coqdocindent{0.50em}
-induction\coqdocindent{0.50em}
-m.\coqdocindent{0.50em}
-simpl\coqdocindent{0.50em}
-in\coqdocindent{0.50em}
-*.\coqdocindent{0.50em}
-apply\coqdocindent{0.50em}
-eta\_unit.\coqdocindent{0.50em}
-contradiction.\coqdocindent{0.50em}
-\coqdoceol
+\coqdoctac{intro} \coqdocvar{c}. \coqdoctac{apply} \coqdocdefinition{eta\_unit}.\coqdoceol
 \coqdocindent{1.00em}
-induction\coqdocindent{0.50em}
-m.\coqdocindent{0.50em}
-contradiction.\coqdoceol
+\coqdoctac{intro} \coqdocvar{c}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{1.00em}
-intro\coqdocindent{0.50em}
-p.\coqdocindent{0.50em}
-simpl.\coqdocindent{0.50em}
-unfold\coqdocindent{0.50em}
-nat\_encode.\coqdocindent{0.50em}
-rewrite\coqdocindent{0.50em}
-<-\coqdocindent{0.50em}
-transport\_compose.\coqdocindent{0.50em}
-simpl.\coqdocindent{0.50em}
-\coqdoceol
+\coqdoctac{induction} \coqdocvar{m}.\coqdoceol
 \coqdocindent{1.00em}
-change\coqdocindent{0.50em}
-(transport\coqdocindent{0.50em}
-(fun\coqdocindent{0.50em}
-x\coqdocindent{0.50em}
-:\coqdocindent{0.50em}
-nat\coqdocindent{0.50em}
-=>\coqdocindent{0.50em}
-nat\_code\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-x)\coqdocindent{0.50em}
-(nat\_decode\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-m\coqdocindent{0.50em}
-p)\coqdocindent{0.50em}
-(nat\_r\coqdocindent{0.50em}
-n))\coqdoceol
-\coqdocindent{4.50em}
-with\coqdocindent{0.50em}
-(nat\_encode\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-m\coqdocindent{0.50em}
-(nat\_decode\coqdocindent{0.50em}
-n\coqdocindent{0.50em}
-m\coqdocindent{0.50em}
-p)).\coqdoceol
+\coqdoctac{intro} \coqdocvar{c}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{1.00em}
-simpl\coqdocindent{0.50em}
-in\coqdocindent{0.50em}
-p.\coqdocindent{0.50em}
-apply\coqdocindent{0.50em}
-IHn.\coqdoceol
-\coqdocindent{1.50em}
-\end{coqdoccomment}
-\coqdoceol
+\coqdoctac{intro} \coqdocvar{c}. \coqdoctac{simpl}. \coqdoctac{unfold} \coqref{Ch03.nat encode}{\coqdocdefinition{nat\_encode}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdoclemma{transport\_compose} \coqdocvar{\_} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{apply} \coqdocvar{IHn}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.Sn neq O}{Sn\_neq\_O}{\coqdoclemma{Sn\_neq\_O}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqdocnotation{\ensuremath{\not=}} \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{n} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.nat encode}{\coqdocdefinition{nat\_encode}} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.plus cancelL}{plus\_cancelL}{\coqdoclemma{plus\_cancelL}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k}, \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m} \coqdocnotation{=} \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{k} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{m} \coqdocnotation{=} \coqdocvariable{k}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{n}. \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{trivial}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{m} \coqdocvar{k} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdoclemma{S\_inj} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.plus assoc}{plus\_assoc}{\coqdoclemma{plus\_assoc}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k}, \coqdocvariable{n} \coqdocnotation{+} \coqdocnotation{(}\coqdocvariable{m} \coqdocnotation{+} \coqdocvariable{k}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m}\coqdocnotation{)} \coqdocnotation{+} \coqdocvariable{k}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{n}. \coqdoctac{trivial}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{m} \coqdocvar{k}. \coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvar{IHn}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.plus O r}{plus\_O\_r}{\coqdoclemma{plus\_O\_r}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{n} \coqdocnotation{+} \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{n}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{IHn}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.le antisymmetric}{le\_antisymmetric}{\coqdoclemma{le\_antisymmetric}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{\ensuremath{\le}} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{m} \coqdocnotation{\ensuremath{\le}} \coqdocvariable{n}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{destruct} \coqdocvar{p} \coqdockw{as} [\coqdocvar{k} \coqdocvar{p}], \coqdocvar{q} \coqdockw{as} [\coqdocvar{k'} \coqdocvar{q}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{Hm} : (\coqdocvar{m} \coqdocnotation{+} \coqdocvar{k'} \coqdocnotation{+} \coqdocvar{k} \coqdocnotation{=} \coqdocvar{m})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{l} \ensuremath{\Rightarrow} \coqdocvariable{l} \coqdocnotation{+} \coqdocvar{k}) \coqdocvar{q}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{p}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{Hk} : (\coqdocvar{k'} \coqdocnotation{+} \coqdocvar{k} \coqdocnotation{=} 0)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqref{Ch03.plus cancelL}{\coqdoclemma{plus\_cancelL}} \coqdocvar{m}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocnotation{(}\coqref{Ch03.plus assoc}{\coqdoclemma{plus\_assoc}} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{Hm} \coqdocnotation{@} \coqdocnotation{(}\coqref{Ch03.plus O r}{\coqdoclemma{plus\_O\_r}} \coqdocvar{m}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{q}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap} (\coqdockw{fun} \coqdocvar{l} \ensuremath{\Rightarrow} \coqdocvariable{l} \coqdocnotation{+} \coqdocvar{k'}) \coqdocvar{p}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
 \coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.S inj}{S\_inj}{\coqdoclemma{S\_inj}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqdocnotation{=} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{induction} \coqdocvar{n}, \coqdocvar{m};\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{try}(\coqdoctac{reflexivity});\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{try}(\coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{H}; \coqdocvar{contradiction}).\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{change} (\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n})) (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{m}))) \coqdockw{with} (\coqref{Ch03.nat code}{\coqdocdefinition{nat\_code}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n}) (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{m})) \coqdoctac{in} \coqdocvar{H}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.Sn le Sm  n le m}{Sn\_le\_Sm\_\_n\_le\_m}{\coqdoclemma{Sn\_le\_Sm\_\_n\_le\_m}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{(}}\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}\coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{)}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{(}}\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m}\coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{destruct} \coqdocvar{H}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqdocnotation{(}\coqdocvar{x}\coqdocnotation{;} \coqdocvar{p}\coqdocnotation{)}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.n le m  Sn le Sm}{n\_le\_m\_\_Sn\_le\_Sm}{\coqdoclemma{n\_le\_m\_\_Sn\_le\_Sm}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{(}}\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}\coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{)}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{(}}\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m}\coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{)}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{destruct} \coqdocvar{H}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{x}. \coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.n neq Sn}{n\_neq\_Sn}{\coqdoclemma{n\_neq\_Sn}} (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}\coqdocnotation{)}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdocvar{contradiction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.Sn plus Sm  SS n plus m}{Sn\_plus\_Sm\_\_SS\_n\_plus\_m}{\coqdoclemma{Sn\_plus\_Sm\_\_SS\_n\_plus\_m}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m} \coqdocnotation{=} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m})).\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; [| \coqdoctac{simpl}; \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{IHn}]; \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.plus O r}{plus\_O\_r}{\coqdoclemma{plus\_O\_r}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{n}\coqdocnotation{+}0.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; [| \coqdoctac{simpl}; \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{IHn}]; \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.n plus Sm  Sn plus m}{n\_plus\_Sm\_\_Sn\_plus\_m}{\coqdoclemma{n\_plus\_Sm\_\_Sn\_plus\_m}} (\coqdocvar{n} \coqdocvar{m} :\coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqdocvariable{n} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m} \coqdocnotation{=} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{revert} \coqdocvar{m}. \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{IHn}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.plus assoc}{plus\_assoc}{\coqdoclemma{plus\_assoc}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k}, \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m}\coqdocnotation{)} \coqdocnotation{+} \coqdocvariable{k} \coqdocnotation{=} \coqdocvariable{n} \coqdocnotation{+} \coqdocnotation{(}\coqdocvariable{m} \coqdocnotation{+} \coqdocvariable{k}\coqdocnotation{)}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; [| \coqdoctac{simpl}; \coqdoctac{rewrite} \coqdocvar{IHn} ]; \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.O is id}{O\_is\_id}{\coqdoclemma{O\_is\_id}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m} \coqdocnotation{=} \coqdocvariable{n} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{m} \coqdocnotation{=} 0.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros} \coqdocvar{m} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.sum Ol}{sum\_Ol}{\coqdoclemma{sum\_Ol}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m} \coqdocnotation{=} 0 \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{n} \coqdocnotation{=} 0.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.leb le}{leb\_le}{\coqdoclemma{leb\_le}} \coqdocvar{n} \coqdocvar{m} : \coqdocnotation{(}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvariable{m}\coqdocnotation{)} \coqdocnotation{=} \coqdocconstructor{true} \coqexternalref{:type scope:x '<->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\leftrightarrow}}} \coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{revert} \coqdocvar{m}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; \coqdoctac{destruct} \coqdocvar{m}; \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-- \coqdoctac{split}; [\coqdoctac{\ensuremath{\exists}} 0|]; \coqdoctac{trivial}.\coqdoceol
-\coqdocindent{1.00em}
-- \coqdoctac{split}; \coqdoctac{trivial}. \coqdoctac{\ensuremath{\exists}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{m}). \coqdoctac{trivial}.\coqdoceol
-\coqdocindent{1.00em}
-- \coqdoctac{split}; \coqdoctac{intros}. \coqdoctac{apply} \coqdocdefinition{false\_ne\_true} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{destruct} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.sum Ol}{\coqdoclemma{sum\_Ol}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-- \coqdoctac{split}.\coqdoceol
-\coqdocindent{2.00em}
-+ \coqdoctac{intros}. \coqdoctac{apply} \coqref{Ch03.n le m  Sn le Sm}{\coqdoclemma{n\_le\_m\_\_Sn\_le\_Sm}}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocindent{2.00em}
-+ \coqdoctac{intros}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqref{Ch03.Sn le Sm  n le m}{\coqdoclemma{Sn\_le\_Sm\_\_n\_le\_m}}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.subtract on left}{subtract\_on\_left}{\coqdoclemma{subtract\_on\_left}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m} \coqdocnotation{=} \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{k}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{m} \coqdocnotation{=} \coqdocvariable{k}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.le antisymmetric}{le\_antisymmetric}{\coqdoclemma{le\_antisymmetric}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{m} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{n}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{I1} \coqdocvar{I2}. \coqdoctac{destruct} \coqdocvar{I1} \coqdockw{as} [\coqdocvar{k1} \coqdocvar{p1}], \coqdocvar{I2} \coqdockw{as} [\coqdocvar{k2} \coqdocvar{p2}].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{m}. \coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{n}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}, \coqdocvar{m}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p2}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p1}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p1}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p1}. \coqdoctac{apply} \coqdocvar{p1}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intros}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p2}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p2}. \coqdoctac{apply} \coqdocvar{p2}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.le refl}{le\_refl}{\coqdoclemma{le\_refl}} \coqdocvar{n} : \coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{n}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} 0. \coqdoctac{symmetry}. \coqdoctac{apply} \coqref{Ch03.plus O r}{\coqdoclemma{plus\_O\_r}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.le trans}{le\_trans}{\coqdoclemma{le\_trans}} \coqdocvar{n} \coqdocvar{m} \coqdocvar{k} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{m} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{k}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{k}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{H} \coqdocvar{H'}. \coqdoctac{destruct} \coqdocvar{H}, \coqdocvar{H'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} (\coqdocvar{x} \coqdocnotation{+} \coqdocvar{x0}). \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqref{Ch03.plus assoc}{\coqdoclemma{plus\_assoc}}. \coqdoctac{rewrite} \coqdocvar{p}. \coqdoctac{apply} \coqdocvar{p0}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch03.ishset nat}{ishset\_nat}{\coqdoclemma{ishset\_nat}} : \coqdocabbreviation{IsHSet} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdoclemma{hset\_decidable}. \coqdoctac{intros} \coqdocvar{n}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; \coqdoctac{intro} \coqdocvar{m}; \coqdoctac{destruct} \coqdocvar{m}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{left}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{destruct} (\coqdocvar{IHn} \coqdocvar{m}).\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{left}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Section} \coqdef{Ch03.Exercise3 19}{Exercise3\_19}{\coqdocsection{Exercise3\_19}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.decidable}{decidable}{\coqdocdefinition{decidable}} \{\coqdocvar{A}\} (\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) := \coqdockw{\ensuremath{\forall}} \coqdocvar{a}, (\coqdocvariable{P} \coqdocvariable{a} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{P} \coqdocvariable{a}).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.nat eq decidable}{nat\_eq\_decidable}{\coqdoclemma{nat\_eq\_decidable}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}), \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}.\coqdoceol
+\coqdockw{Module} \coqdef{Ch03.Exercise3 19}{Exercise3\_19}{\coqdocmodule{Exercise3\_19}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} (\coqdef{Ch03.Exercise3 19.P}{P}{\coqdocvariable{P}} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} (\coqdef{Ch03.Exercise3 19.H}{H}{\coqdocvariable{H}} : \coqref{Ch03.Exercise3 19.decidable}{\coqdocdefinition{decidable}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} (\coqdef{Ch03.Exercise3 19.HP}{HP}{\coqdocvariable{HP}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocabbreviation{IsHProp} (\coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvariable{n})).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch03.Exercise3 19.Q}{Q}{\coqdocdefinition{Q}} (\coqdocvar{w} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) := \coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{w'} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}, \coqdocvariable{w}\coqdocnotation{.1} \coqdocnotation{\ensuremath{\le}} \coqdocvariable{w'}\coqdocnotation{.1}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.Exercise3 19.hprop sigmaQ}{hprop\_sigmaQ}{\coqdoclemma{hprop\_sigmaQ}} : \coqdocabbreviation{IsHProp} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{w} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.Q}{\coqdocdefinition{Q}} \coqdocvar{w}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}).\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{n}.\coqdoceol
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{w} \coqdocvar{w'}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}; \coqdoctac{intro} \coqdocvar{m}; \coqdoctac{destruct} \coqdocvar{m}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{left}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{destruct} (\coqdocvar{IHn} \coqdocvar{m}).\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{left}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.order partitions}{order\_partitions}{\coqdoclemma{order\_partitions}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{m} \coqref{Ch03.:nat scope:x '<' x}{\coqdocnotation{<}} \coqdocvariable{n}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{intro} \coqdocvar{m}. \coqdoctac{left}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{m}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{m}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{right}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{n}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{destruct} \coqdocvar{IHm}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{left}. \coqdoctac{destruct} \coqdocvar{l}. \coqdoctac{\ensuremath{\exists}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{x}).\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{rewrite} \coqref{Ch03.Sn plus Sm  SS n plus m}{\coqdoclemma{Sn\_plus\_Sm\_\_SS\_n\_plus\_m}}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocindent{3.00em}
-\coqdoctac{destruct} (\coqdocvar{IHn} \coqdocvar{m}).\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{left}. \coqdoctac{apply} \coqref{Ch03.n le m  Sn le Sm}{\coqdoclemma{n\_le\_m\_\_Sn\_le\_Sm}}. \coqdoctac{apply} \coqdocvar{l0}.\coqdoceol
-\coqdocindent{4.00em}
-\coqdoctac{right}. \coqdoctac{destruct} \coqdocvar{l0}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{x}. \coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.Q}{Q}{\coqdocdefinition{Q}} \{\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}\} (\coqdocvar{w} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) := \coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} \coqdocvar{w'} : \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}, \coqdocvariable{w}\coqdocnotation{.1} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{w'}\coqdocnotation{.1}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.ishprop dependent}{ishprop\_dependent}{\coqdoclemma{ishprop\_dependent}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdocabbreviation{IsHProp} (\coqdocvariable{P} \coqdocvariable{a})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdocvariable{P} \coqdocvariable{a}).\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{HP}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{p} \coqdocvar{p'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{apply} \coqdocvar{HP}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.hprop Q}{hprop\_Q}{\coqdoclemma{hprop\_Q}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocabbreviation{IsHProp} (\coqdocvariable{P} \coqdocvariable{n})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdoceol
-\coqdocindent{1.00em}
-\coqdocabbreviation{IsHProp} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{w} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Q}{\coqdocdefinition{Q}} \coqdocvar{w}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{P}. \coqdoctac{intro} \coqdocvar{HP}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{w} \coqdocvar{w'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [[\coqdocvar{n} \coqdocvar{p}] \coqdocvar{q}], \coqdocvar{w'} \coqdockw{as} [[\coqdocvar{n'} \coqdocvar{p'}] \coqdocvar{q'}].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocnotation{(}\coqdocvar{n}\coqdocnotation{;} \coqdocvar{p}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvar{n'}\coqdocnotation{;} \coqdocvar{p'}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocvar{n} \coqdocnotation{=} \coqdocvar{n'}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocvar{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvar{n'}) \coqdockw{as} \coqdocvar{H}. \coqdoctac{apply} (\coqdocvar{q} \coqdocnotation{(}\coqdocvar{n'}\coqdocnotation{;} \coqdocvar{p'}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocvar{n'} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvar{n}) \coqdockw{as} \coqdocvar{H'}. \coqdoctac{apply} (\coqdocvar{q'} \coqdocnotation{(}\coqdocvar{n}\coqdocnotation{;} \coqdocvar{p}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{H} \coqdockw{as} [\coqdocvar{k} \coqdocvar{r}], \coqdocvar{H'} \coqdockw{as} [\coqdocvar{k'} \coqdocvar{r'}].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{r'} \coqdoctac{in} \coqdocvar{r}. \coqdoctac{rewrite} \coqref{Ch03.plus assoc}{\coqdoclemma{plus\_assoc}} \coqdoctac{in} \coqdocvar{r}. \coqdoctac{apply} \coqref{Ch03.O is id}{\coqdoclemma{O\_is\_id}} \coqdoctac{in} \coqdocvar{r}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.sum Ol}{\coqdoclemma{sum\_Ol}} \coqdoctac{in} \coqdocvar{r}. \coqdoctac{rewrite} \coqdocvar{r} \coqdoctac{in} \coqdocvar{r'}. \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{r'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqref{Ch03.plus O r}{\coqdoclemma{plus\_O\_r}} \coqdoctac{in} \coqdocvar{r'}. \coqdoctac{apply} \coqdocvar{r'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{X}. \coqdoctac{\ensuremath{\exists}} 1\%\coqdocvar{path}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocvar{HP} \coqdocvar{n}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} \coqdocvar{X}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocabbreviation{IsHProp} (\coqref{Ch03.Q}{\coqdocdefinition{Q}} \coqdocnotation{(}\coqdocvar{n'}\coqdocnotation{;} \coqdocvar{p'}\coqdocnotation{)})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch03.Q}{\coqdocdefinition{Q}}. \coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch03.ishprop dependent}{\coqdoclemma{ishprop\_dependent}}. \coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{n'{}'} \coqdocvar{p'{}'}].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{w} \coqdocvar{w'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{w}, \coqdocvar{w'}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocvar{x} \coqdocnotation{=} \coqdocvar{x0}). \coqdoctac{apply} \coqref{Ch03.subtract on left}{\coqdoclemma{subtract\_on\_left}} \coqdockw{with} (\coqdocvar{n} := \coqdocvar{n'}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocvar{p0} \coqdocnotation{@} \coqdocvar{p1}\coqdocnotation{\^{}}). \coqdoctac{\ensuremath{\exists}} \coqdocvar{X0}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{X0}. \coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch03.ishset nat}{\coqdoclemma{ishset\_nat}}. \coqdoctac{apply} \coqdocvar{X0}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.decidable to bool}{decidable\_to\_bool}{\coqdocdefinition{decidable\_to\_bool}} \{\coqdocvar{A}\} (\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Bool}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{a}. \coqdoctac{destruct} (\coqdocvar{H} \coqdocvar{a}). \coqdoctac{apply} \coqdocconstructor{true}. \coqdoctac{apply} \coqdocconstructor{false}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Fixpoint} \coqdef{Ch03.bounded min}{bounded\_min}{\coqdocdefinition{bounded\_min}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) (\coqdocvar{b} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} :=\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{match} \coqdocvariable{b} \coqdockw{with}\coqdoceol
-\coqdocindent{2.00em}
-\ensuremath{|} \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}} \ensuremath{\Rightarrow} \coqexternalref{O}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{O}}\coqdoceol
-\coqdocindent{2.00em}
-\ensuremath{|} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n} \ensuremath{\Rightarrow} \coqdockw{if} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvar{n}) \coqdockw{then} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvar{n}) \coqdockw{else}\coqdoceol
-\coqdocindent{7.50em}
-\coqdockw{if} ((\coqref{Ch03.decidable to bool}{\coqdocdefinition{decidable\_to\_bool}} \coqdocvariable{P} \coqdocvariable{H}) (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n})) \coqdockw{then} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n}) \coqdockw{else} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n}))\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{end}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.foo}{foo}{\coqdoclemma{foo}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{m}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{m} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{n}\coqdocnotation{)}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.le antisymmetric}{\coqdoclemma{le\_antisymmetric}} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{contradiction}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.bar}{bar}{\coqdoclemma{bar}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{n} \coqdocnotation{=} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n} \coqdocnotation{+} \coqdocvariable{m}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{m} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{m} \coqdocvar{p}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} (\coqdocvar{IHn} \coqdocvar{m}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.baz}{baz}{\coqdoclemma{baz}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n} \coqdocvar{m}, \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{n} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{m}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{n}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{m} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{p}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{m} \coqdocvar{p}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} (\coqdocvar{IHn} \coqdocvar{m}). \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.bmin short circuit}{bmin\_short\_circuit}{\coqdoclemma{bmin\_short\_circuit}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvariable{P} 0 \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvariable{n} \coqdocnotation{=} 0.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{simpl}. \coqdoctac{unfold} \coqref{Ch03.decidable to bool}{\coqdocdefinition{decidable\_to\_bool}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqdocvar{H} 0). \coqdoctac{reflexivity}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{assert} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvar{n} \coqdocnotation{=} \coqdocconstructor{true}). \coqdoctac{apply} \coqref{Ch03.leb le}{\coqdoclemma{leb\_le}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \coqdocvar{IHn}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{n}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \coqdocvar{X0}. \coqdoctac{apply} \coqdocvar{IHn}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.bmin correct i}{bmin\_correct\_i}{\coqdoclemma{bmin\_correct\_i}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvariable{P} \coqdocvariable{n} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvariable{n}).\coqdoceol
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdocvar{w}\coqdocnotation{.1} \coqdocnotation{=} \coqdocvar{w'}\coqdocnotation{.1})).\coqdoceol
 \coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline
+\coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.bmin correct'}{bmin\_correct'}{\coqdoclemma{bmin\_correct'}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvariable{P} \coqdocvariable{n} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{(}}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvariable{n}\coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{)}} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvariable{n}.\coqdoceol
+\coqdockw{Theorem} \coqdef{Ch03.Exercise3 19.ex3 19}{ex3\_19}{\coqdoclemma{ex3\_19}} : \coqref{Ch03.Exercise3 19.Brck}{\coqdocabbreviation{Brck}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqref{Ch03.decidable to bool}{\coqdocdefinition{decidable\_to\_bool}} \coqdocvar{P} \coqdocvar{H} 0 \coqdocnotation{=} \coqdocconstructor{true}) \coqdockw{as} \coqdocvar{HP0}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch03.decidable to bool}{\coqdocdefinition{decidable\_to\_bool}}. \coqdoctac{destruct} (\coqdocvar{H} 0). \coqdoctac{reflexivity}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} 0. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocemptyline
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{destruct} (\coqref{Ch03.order partitions}{\coqdoclemma{order\_partitions}} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n}) \coqdocvar{n}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.leb le}{\coqdoclemma{leb\_le}} \coqdoctac{in} \coqdocvar{l}. \coqdoctac{rewrite} \coqdocvar{l}. \coqdoctac{apply} \coqref{Ch03.leb le}{\coqdoclemma{leb\_le}} \coqdoctac{in} \coqdocvar{l}. \coqdoctac{destruct} \coqdocvar{l}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{x}). \coqdoctac{rewrite} \coqref{Ch03.n plus Sm  Sn plus m}{\coqdoclemma{n\_plus\_Sm\_\_Sn\_plus\_m}}. \coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}}). \coqdoctac{apply} \coqdocvar{p0}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} ( \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=' x}{\coqdocnotation{\ensuremath{\le}}} \coqdocvar{n}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.foo}{\coqdoclemma{foo}}. \coqdoctac{intro}. \coqdoctac{destruct} \coqdocvar{l}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{p0} \coqdoctac{in} \coqdocvar{H0}. \coqdoctac{apply} \coqref{Ch03.bar}{\coqdoclemma{bar}} \coqdoctac{in} \coqdocvar{H0}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{l}. \coqdoctac{\ensuremath{\exists}} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{x}). \coqdoctac{rewrite} \coqref{Ch03.n plus Sm  Sn plus m}{\coqdoclemma{n\_plus\_Sm\_\_Sn\_plus\_m}}. \coqdoctac{apply} \coqdocvar{p0}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} ( \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvar{n} \coqdocnotation{=} \coqdocconstructor{true}\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{H'}. \coqdoctac{apply} \coqdocvar{X}. \coqdoctac{apply} \coqref{Ch03.leb le}{\coqdoclemma{leb\_le}}. \coqdoctac{apply} \coqdocvar{H'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvar{n} \coqdocnotation{=} \coqdocconstructor{false}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqref{Ch03.:nat scope:x '<=?' x}{\coqdocnotation{<=?}} \coqdocvar{n}). \coqdoctac{assert} (\coqdocconstructor{true} \coqdocnotation{=} \coqdocconstructor{true}) \coqdoctac{by} \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{contradiction} \coqdocvar{X0}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \coqdocvar{X1}. \coqdoctac{unfold} \coqref{Ch03.decidable to bool}{\coqdocdefinition{decidable\_to\_bool}}. \coqdoctac{destruct} (\coqdocvar{H} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{n})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.le refl}{\coqdoclemma{le\_refl}}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch03.bmin unique}{bmin\_unique}{\coqdoclemma{bmin\_unique}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvariable{P} \coqdocvariable{n} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{m}, \coqdocvariable{P} \coqdocvariable{m} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocnotation{(}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvariable{n}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvariable{P} \coqdocvariable{H} \coqdocvariable{m}\coqdocnotation{)}.\coqdoceol
+\coqdoctac{intros}. \coqdoctac{apply} (@\coqdocabbreviation{pr1} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Exercise3 19.P}{\coqdocaxiom{P}} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqref{Ch03.Exercise3 19.Q}{\coqdocdefinition{Q}}).\coqdoceol
 \coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.ex3 19 arrow}{ex3\_19\_arrow}{\coqdocdefinition{ex3\_19\_arrow}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) : \coqdoceol
-\coqdocindent{1.00em}
-\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocabbreviation{IsHProp} (\coqdocvariable{P} \coqdocvariable{n})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{w} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Q}{\coqdocdefinition{Q}} \coqdocvar{w}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{HP} \coqdocvar{X}. \coqdoctac{destruct} \coqdocvar{X} \coqdockw{as} [\coqdocvar{n} \coqdocvar{p}].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} \coqdocnotation{((}\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n}\coqdocnotation{;} \coqref{Ch03.bmin correct i}{\coqdocaxiom{bmin\_correct\_i}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{n} \coqdocvar{p}\coqdocnotation{);} \coqdocvar{\_}\coqdocnotation{)}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch03.Q}{\coqdocdefinition{Q}}. \coqdoctac{intro} \coqdocvar{w'}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.le trans}{\coqdoclemma{le\_trans}} \coqdockw{with} (\coqdocvar{m}:=\coqref{Ch03.bounded min}{\coqdocdefinition{bounded\_min}} \coqdocvar{P} \coqdocvar{H} \coqdocvar{w'}\coqdocnotation{.1}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} 0. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqref{Ch03.plus O r}{\coqdoclemma{plus\_O\_r}}. \coqdoctac{apply} \coqref{Ch03.bmin unique}{\coqdocaxiom{bmin\_unique}}. \coqdoctac{apply} \coqdocvar{p}. \coqdoctac{apply} \coqdocvar{w'}\coqdocnotation{.2}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.bmin correct'}{\coqdoclemma{bmin\_correct'}}. \coqdoctac{apply} \coqdocvar{w'}\coqdocnotation{.2}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch03.ex3 19}{ex3\_19}{\coqdocdefinition{ex3\_19}} (\coqdocvar{P} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) (\coqdocvar{H} : \coqref{Ch03.decidable}{\coqdocdefinition{decidable}} \coqdocvariable{P}) \coqdoceol
-\coqdocindent{9.00em}
-(\coqdocvar{HP} : \coqdockw{\ensuremath{\forall}} \coqdocvar{n}, \coqdocabbreviation{IsHProp} (\coqdocvariable{P} \coqdocvariable{n})) : \coqdoceol
-\coqdocindent{1.00em}
-\coqref{Ch03.Brck}{\coqdocabbreviation{Brck}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvariable{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{apply} (@\coqdocabbreviation{pr1} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqref{Ch03.Q}{\coqdocdefinition{Q}}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocabbreviation{IsHProp} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{w} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{n} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{P} \coqdocvar{n}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqref{Ch03.Q}{\coqdocdefinition{Q}} \coqdocvar{w}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}) \coqdockw{as} \coqdocvar{H'}. \coqdoctac{apply} \coqref{Ch03.hprop Q}{\coqdoclemma{hprop\_Q}}. \coqdoctac{apply} \coqdocvar{HP}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{strip\_truncations}. \coqdoctac{apply} \coqref{Ch03.ex3 19 arrow}{\coqdocdefinition{ex3\_19\_arrow}}. \coqdoctac{apply} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{HP}. \coqdoctac{apply} \coqdocvar{X}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{End} \coqref{Ch03.Exercise3 19}{\coqdocsection{Exercise3\_19}}.\coqdoceol
+\coqdockw{End} \coqref{Ch03}{\coqdocmodule{Exercise3\_19}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
 \exerdone{3.20}{128}
@@ -2128,7 +1614,7 @@ mere proposition, we have an element
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Infix} \coqdef{Ch03.:46326}{"}{"}\ensuremath{\not=}" := (\coqdockw{fun} \coqdocvar{n} \coqdocvar{m} \ensuremath{\Rightarrow} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}) : \coqdocvar{nat\_scope}.\coqdoceol
+\coqdockw{Infix} \coqdef{Ch03.:38224}{"}{"}\ensuremath{\not=}" := (\coqdockw{fun} \coqdocvar{n} \coqdocvar{m} \ensuremath{\Rightarrow} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}) : \coqdocvar{nat\_scope}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.pred}{pred}{\coqdocdefinition{pred}} (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) :=\coqdoceol
@@ -2153,6 +1639,27 @@ mere proposition, we have an element
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch03.nat eq decidable}{nat\_eq\_decidable}{\coqdoclemma{nat\_eq\_decidable}} : \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} \coqdocvar{m} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}), \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{n} \coqdocnotation{=} \coqdocvariable{m}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{n}, \coqdocvar{m}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{left}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.nat encode}{\coqdocdefinition{nat\_encode}} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.nat encode}{\coqdocdefinition{nat\_encode}} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} (\coqdocvar{IHn} \coqdocvar{m}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{left}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{p}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{right}. \coqdoctac{intro} \coqdocvar{H}. \coqdoctac{apply} \coqdoclemma{S\_inj} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch03.cardF f}{cardF\_f}{\coqdocdefinition{cardF\_f}} \{\coqdocvar{n}\} : \coqdocdefinition{Fin} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}) \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocdefinition{Fin} \coqdocvariable{n}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocinductive{Unit}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{intro} \coqdocvar{x}. \coqdoctac{destruct} \coqdocvar{x} \coqdockw{as} [\coqdocvar{m} [\coqdocvar{k} \coqdocvar{p}]].\coqdoceol
@@ -2165,9 +1672,9 @@ mere proposition, we have an element
 \coqdocindent{1.00em}
 \coqdoctac{rewrite} \coqref{Ch03.S pred inv}{\coqdoclemma{S\_pred\_inv}}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_n\_Sm} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
+\coqdoctac{simpl} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_n\_Sm} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqdoclemma{S\_inj} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intro}. \coqdoctac{rewrite} \coqdocvar{H} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_1\_r} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}.\coqdoceol
+\coqdoctac{intro}. \coqdoctac{rewrite} \coqdocvar{H} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_1\_r} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqdoclemma{S\_inj} \coqdoctac{in} \coqdocvar{p}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdocvar{contradiction}.\coqdoceol
 \coqdocnoindent
@@ -2198,7 +1705,7 @@ mere proposition, we have an element
 \coqdocindent{1.00em}
 \coqdoctac{induction} \coqdocvar{n}. \coqdoctac{simpl}. \coqdoctac{apply} \coqdocabbreviation{idmap}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
+\coqdoctac{intros}. \coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdoclemma{S\_inj} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{IHn}. \coqdoctac{apply} \coqdocvar{H}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
@@ -2213,7 +1720,7 @@ mere proposition, we have an element
 \coqdocindent{1.00em}
 \coqdoctac{assert} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqdocvar{n} \coqdocnotation{+} \coqdocvar{k}) \coqdocnotation{=} 0). \coqdoctac{transitivity} (\coqdocvar{n} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{k}). \coqdoctac{apply} \coqdoclemma{plus\_n\_Sm}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{X}. \coqdocvar{contradiction}.\coqdoceol
+\coqdoctac{apply} \coqref{Ch03.equiv path nat}{\coqdoclemma{equiv\_path\_nat}} \coqdoctac{in} \coqdocvar{X}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{intro} \coqdocvar{e}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{1.00em}
@@ -2223,65 +1730,14 @@ mere proposition, we have an element
 \coqdocindent{1.00em}
 \coqdoctac{assert} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} (\coqdocvar{n} \coqdocnotation{+} \coqdocvar{k}) \coqdocnotation{=} 0). \coqdoctac{transitivity} (\coqdocvar{n} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{k}). \coqdoctac{apply} \coqdoclemma{plus\_n\_Sm}. \coqdoctac{apply} \coqdocvar{p}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.Theorem2131}{\coqdocaxiom{Theorem2131}} \coqdoctac{in} \coqdocvar{X}. \coqdocvar{contradiction}.\coqdoceol
+\coqdoctac{apply} \coqref{Ch03.equiv path nat}{\coqdoclemma{equiv\_path\_nat}} \coqdoctac{in} \coqdocvar{X}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Lemma} \coqdef{Ch03.cardF}{cardF}{\coqdoclemma{cardF}} \{\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}\} : \coqdocdefinition{Fin} (\coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvariable{n}) \coqdocnotation{\ensuremath{\eqvsym}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocdefinition{Fin} \coqdocvariable{n}\coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocinductive{Unit}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}. \coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqref{Ch03.cardF f}{\coqdocdefinition{cardF\_f}} \coqref{Ch03.cardF g}{\coqdocdefinition{cardF\_g}} \coqdocvar{\_} \coqdocvar{\_}); \coqdoctac{intros} \coqdocvar{x}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch03.cardF f}{\coqdocdefinition{cardF\_f}}, \coqref{Ch03.cardF g}{\coqdocdefinition{cardF\_g}}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{x}. \coqdoctac{simpl}. \coqdoctac{destruct} \coqdocvar{f} \coqdockw{as} [\coqdocvar{m} [\coqdocvar{k} \coqdocvar{p}]]. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqref{Ch03.nat eq decidable}{\coqdoclemma{nat\_eq\_decidable}} \coqdocvar{m} \coqdocvar{n}). \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{p} \coqdoctac{in} \coqdocvar{p0}. \coqdoctac{assert} (\coqdocvar{m} \coqdocnotation{\ensuremath{\not=}} \coqdocvar{m} \coqdocnotation{+} \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{k}). \coqdoctac{apply} \coqref{Ch03.baz}{\coqdoclemma{baz}}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inl}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inl}}). \coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{\ensuremath{\exists}} \coqdocconstructor{idpath}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{\ensuremath{\exists}} \coqdocconstructor{idpath}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch03.ishset nat}{\coqdoclemma{ishset\_nat}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqref{Ch03.nat eq decidable}{\coqdoclemma{nat\_eq\_decidable}} \coqdocvar{n} \coqdocvar{n}). \coqdoctac{apply} (\coqdocdefinition{ap} \coqexternalref{inr}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{inr}}). \coqdoctac{apply} \coqdocdefinition{path\_unit}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} \coqdocinductive{Empty}. \coqdoctac{apply} \coqdocvar{n0}. \coqdoctac{reflexivity}. \coqdocvar{contradiction}.\coqdoceol
-\coqdocemptyline
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch03.cardF f}{\coqdocdefinition{cardF\_f}}, \coqref{Ch03.cardF g}{\coqdocdefinition{cardF\_g}}. \coqdoctac{simpl}. \coqdoctac{destruct} \coqdocvar{x} \coqdockw{as} [\coqdocvar{m} [\coqdocvar{k} \coqdocvar{p}]].\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqref{Ch03.nat eq decidable}{\coqdoclemma{nat\_eq\_decidable}} \coqdocvar{m} \coqdocvar{n}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{p0}\coqdocnotation{\^{}}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{p0}. \coqdoctac{simpl}. \coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (0 \coqdocnotation{=} \coqdocvar{k}). \coqdoctac{symmetry}. \coqdoctac{apply} \coqref{Ch03.sum O r}{\coqdoclemma{sum\_O\_r}} \coqdockw{with} (\coqdocvar{n} := \coqexternalref{S}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{S}} \coqdocvar{m}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_n\_Sm} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocvar{p}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{X}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch03.ishset nat}{\coqdoclemma{ishset\_nat}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{\ensuremath{\exists}} \coqdocconstructor{idpath}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocvar{k} \coqdocnotation{\ensuremath{\not=}} 0). \coqdoctac{intro}. \coqdoctac{rewrite} \coqdocvar{X} \coqdoctac{in} \coqdocvar{p}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_n\_Sm} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{apply} \coqref{Ch03.S inj}{\coqdoclemma{S\_inj}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdoclemma{plus\_0\_r} \coqdoctac{in} \coqdocvar{p}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{contradiction}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} (\coqref{Ch03.S pred inv}{\coqdoclemma{S\_pred\_inv}} \coqdocvar{k} \coqdocvar{X}). \coqdoctac{apply} \coqref{Ch03.ishset nat}{\coqdoclemma{ishset\_nat}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
+\coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Theorem} \coqdef{Ch03.ex3 22}{ex3\_22}{\coqdoclemma{ex3\_22}} `\{\coqdocclass{Univalence}\}: \coqdockw{\ensuremath{\forall}} (\coqdocvar{n} : \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}) (\coqdocvar{A} : \coqdocdefinition{Fin} \coqdocvariable{n} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
@@ -2339,12 +1795,10 @@ n\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 \coqdoctac{intro} \coqdocvar{m}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{rewrite} \ensuremath{\leftarrow} (\coqdocmethod{eissect} \coqref{Ch03.cardF}{\coqdoclemma{cardF}} \coqdocvar{m}).\coqdoceol
+\coqdoctac{rewrite} \ensuremath{\leftarrow} (\coqdocmethod{eissect} \coqref{Ch03.cardF}{\coqdocaxiom{cardF}} \coqdocvar{m}).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqref{Ch03.cardF}{\coqdoclemma{cardF}} \coqdocvar{m}) \coqdockw{as} [\coqdocvar{em} \ensuremath{|} \coqdocvar{m\_m}]; \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{2.00em}
-\coqdoctac{apply} (\coqdocvar{w}\coqdocnotation{.1} \coqdocvar{em}).\coqdoceol
-\coqdocindent{2.00em}
+\coqdoctac{destruct} (\coqref{Ch03.cardF}{\coqdocaxiom{cardF}} \coqdocvar{m}) \coqdockw{as} [\coqdocvar{em} \ensuremath{|} \coqdocvar{m\_m}]; \coqdoctac{simpl}.\coqdoceol
+\coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline
 \coqdocemptyline

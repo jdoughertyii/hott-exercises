@@ -554,16 +554,16 @@ cases:
 
 - $x = \inr(b)$ and $y = \inr(b)$ proceeds just as in the first case.
 
-Since these are all the cases, we've proven the analogue to Theorem 2.6.5 for
-coproducts (though it was stated rather implicitly).  I'll have to state it
-more explicitly in Coq, though the proof is the same as the one by
-hand.
+Since these are all the cases, we've proven an analogue to Theorem 2.6.5 for
+coproducts.  A closer analogue would not involve $p : x = y$, but rather
+equalities $p : a =_{A} a'$ and $q : b =_{B} b'$, and then would show that for
+all the different cases, $\mapfunc{f}$ is functorial.  However, this follows
+from the version proven, which is more simply stated.
 *)
 
-Theorem ap_functor_sum : forall (A A' B B' : Type)
-                                (g : A -> A') (h : B -> B')
-                                (x y : A+B) (p : x = y),
-  ap (functor_sum g h) (path_sum x y (path_sum_inv p)) 
+Theorem ap_functor_sum : 
+  forall (A A' B B' : Type) (g : A -> A') (h : B -> B') (x y : A+B) (p : x = y),
+  ap (functor_sum g h) p
   = path_sum (functor_sum g h x) (functor_sum g h y)
              (path_sum_inv (ap (functor_sum g h) p)).
 Proof.
@@ -895,219 +895,250 @@ pullback square.
 *)
 
 (** %\soln%
-The good ol' pullback lemma---though since we've defined pullbacks in terms of
-equalizers, it's not the usual proof.  Let the arrows in the diagram be labeled
-$dc$, where $d$ is the domain and $c$ the codomain.  Since the diagram
-commutes, we have the equalities $r : ef \circ ce = df \circ cd$, 
-$\ell : cd \circ ac = bd \circ ab$, and $e : ef \circ ce \circ ac = df \circ bd
-\circ ab$.  Since the right hand square is a pullback, we have the equivalence
+Label the arrows
+%\[\xymatrix{
+  A \ar[r] \ar[d] & C \ar[r] \ar[d] & E \ar[d]^{f} \\
+  B \ar[r]_{h} & D \ar[r]_{g} & F
+}\]%
+and suppose that the right square is a pullback.  That is, for all $X$ there is
+an equivalence
 %\[
-  f : (X \to C) \eqvsym (X \to D) \times_{X \to F} (X \to E)
+  e : \eqv{(X \to C)}{(X \to D) \times_{X \to F} (X \to E)}
 \]%
-This equivalence allows us to express the universal property of the pulback in
-a slightly more familiar way.  Suppose that $k : (X \to D) \times_{X \to F}
-(X \to E)$.  Then we have
+There are two obvious maps
 %\begin{align*}
-  cd \circ f^{-1}(k) &= \proj{3}^{1}(f(f^{-1}(k))) = \proj{3}^{1}(k) \\
-  ce \circ f^{-1}(k) &= \proj{3}^{2}(f(f^{-1}(k))) = \proj{3}^{2}(k)
+  (X \to A) &\to (X \to B) \times_{X \to D} (X \to C) \\
+  (X \to A) &\to (X \to B) \times_{X \to F} (X \to E)
 \end{align*}%
-
-Now for the pullback lemma, relating the obvious maps
-%\begin{align*}
-  g &: (X \to A) \to (X \to B) \times_{X \to D} (X \to C) \\
-  h &: (X \to A) \to (X \to B) \times_{X \to F} (X \to E)
-\end{align*}%
-We want to show that $g$ is an equivalence iff $h$ is.
-
-Suppose that $k : (X \to B) \times_{X \to D} (X \to C)$.  Since
-$\proj{3}^{3}(k) : bd \circ \proj{3}^{1}(k) = cd \circ \proj{3}^{2}(k)$, we
-have
+and we want to show that the first is an equivalence iff the second is.  To do
+this, we show that 
 %\[
-  E(\proj{3}^{3}(k))
+  \eqv{
+    (X \to B) \times_{X \to D} (X \to C)
+  }{
+    (X \to B) \times_{X \to F} (X \to E)
+  }
+\]%
+and then use the fact that $\eqvsym$ is an equivalence relation.
+
+So suppose that $k : (X \to B) \times_{X \to D} (X \to C)$.  We can construct
+two maps of the correct signature by composition:
+%\[
+  \left(\proj{3}^{1}(k), \proj{3}^{2}(e(\proj{3}^{2}(k))), -\right)
   :
-  df \circ bd \circ \proj{3}^{1}(k) 
-  = df \circ cd \circ \proj{3}^{2}(k)
-  = ef \circ ce \circ \proj{3}^{2}(k)
-\]%
-where the first equality results from $\proj{3}^{3}(k)$ and the second from the
-commutative diagram.  So define
-%\[
-  \phi : k \mapsto (\proj{3}^{1}(k), ce \circ \proj{3}^{2}(k),
-  E(\proj{3}^{3}(k)))
-\]%
-We want to show that this is an equivalence.  For a quasi-inverse, consider
-$k' : (X \to B) \times_{X \to F} (X \to E)$.  Then 
-%\[
-    \tilde{k}'
-    \defeq
-    (bd \circ \proj{3}^{1}(k'), \proj{3}^{2}(k'), \proj{3}^{3}(k'))
-    :
-    (X \to D) \times_{X \to F} (X \to E)
-\]%
-so $f^{-1}(\tilde{k}') : X \to C$.  Thus, if we can construct some
-%\[
-  q : bd \circ \proj{3}^{1}(k') = cd \circ f^{-1}(\tilde{k}')
-\]%
-then we will have a candidate for $\phi^{-1}$.  Using the universal property of
-$f$, we have
-%\[
-  cd \circ f^{-1}(\tilde{k}')
-  = \proj{3}^{1}(\tilde{k}')
-  = bd \circ \proj{3}^{1}(k')
-\]%
-which is the required equality, meaning that we have our backward map,
-%\[
-  \phi^{-1} : k' \mapsto (\proj{3}^{1}(k'), f^{-1}(\tilde{k}'), E'(\proj{3}^{3}(k')))
-\]%
-
-Now to show that these are quasi-inverses.  Ignore the equality for now.
-If $k : (X \to B) \times_{X\to D} (X \to C)$, then applying $\phi^{-1} \circ
-\phi$ gives
-%\[
-  \left(
-    \proj{3}^{1}(k),
-    f^{-1}(bd \circ \proj{3}^{1}(k),
-           ce \circ \proj{3}^{2}(k),
-           E(\proj{3}^{3}(k))),
-    E'(E(\proj{3}^{3}(k)))
-  \right)
-\]%
-By function extensionality, this is equal to the identity if the second slot is
-equal to $\proj{3}^{2}(k)$ and the third slot to $\proj{3}^{3}(k)$.  We have
-%\[
-  f(k) = (cd \circ \proj{3}^{1}(k), ce \circ \proj{3}^{2}(k), E(\proj{3}^{3}(k)))
-\]%
-by the definition of $f$, so the second slot agrees.
-
-To go the other way, suppose that $k' : (X \to B) \times_{X\to F} (X \to E)$.
-Then applying $\phi \circ \phi^{-1}$ gives
-%\[
-  \left(
-    \proj{3}^{1}(k'),
-    ce \circ f^{-1}(bd \circ \proj{3}^{1}(k'), \proj{3}^{2}(k'), \proj{3}^{3}(k)),
-    E(E'(\proj{3}^{3}(k')))
-  \right)
-\]%
-and the universal property of $f$ makes it obvious that the first two slots are
-what we need by function extensionality.
-
-I am too lazy to work out the equalities by hand right now.  Since $E$ and $E'$
-are both constructed out of function applications and concatenations, and both
-of these are functorial, induction on $\proj{3}^{3}(k)$ is going to make
-everything reduce to reflexivities.
-
-At this point we have shown that
-%\[
-  (X \to B) \times_{X \to D} (X \to C)
-  \eqvsym
   (X \to B) \times_{X \to F} (X \to E)
 \]%
-Since equivalence is an equivalence relation, this means that $g$ is an
-equivalence iff $h$ is an equivalence, which is what was to be proved.
+So we just need a proof that these commute correctly.  We have
+%\begin{align*}
+  \proj{3}^{3}(e(\proj{3}^{2}(k))) &: 
+    f \circ g^{*}f \circ \proj{3}^{2}(k)
+    =
+    g \circ f^{*}g \circ \proj{3}^{2}(k)
+    \\
+  \proj{3}^{3}(k) &:
+  h \circ \proj{3}^{1}(k)
+  =
+  f^{*}g \circ \proj{3}^{2}(k)
+\end{align*}%
+which we can straightforwardly combine to obtain the desired equality:
+%\[
+  \proj{3}^{3}(e(\proj{3}^{2}(k))) \ct \mapfunc{g \circ
+  -}(\proj{3}^{3}(k))^{-1}
+  :
+  f \circ g^{*}f \circ \proj{3}^{2}(k)
+  =
+  g \circ h \circ \proj{3}^{1}(k)
+\]%                              
+giving us a forward map
+%\[
+\phi : k \mapsto
+  \left(\proj{3}^{1}(k), \proj{3}^{2}(e(\proj{3}^{2}(k))), 
+  \proj{3}^{3}(e(\proj{3}^{2}(k))) \ct \mapfunc{g \circ
+  -}(\proj{3}^{3}(k))^{-1}
+  \right)
+\]%
+
+To go the other way, suppose that $k : (X \to B) \times_{X \to F} (X \to E)$.
+As before, the first entry of our output will just be $\proj{3}^{1}(k)$ again.
+The second we'll have to build using $e^{-1}$:
+%\[
+  e^{-1}\left(h \circ \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
+  :
+  X \to C
+\]%
+And now we must prove that we have the needed commutation relation:
+%\[
+  h \circ \proj{3}^{1}(k) = f^{*}g \circ e^{-1}\left(h \circ \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
+\]%
+note that by definition of $e$, this is judgementally equivalent to
+%\[
+  h \circ \proj{3}^{1}(k) = \proj{3}^{1}\left(e\left(e^{-1}\left(h \circ
+  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right) \right)\right)
+\]%
+which, since $\alpha : e \circ e^{-1} \sim \idfunc{}$, is equal to
+%\[
+  h \circ \proj{3}^{1}(k) = \proj{3}^{1}\left(h \circ
+  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
+\]%
+a definitional equality.  So our backward map is
+%\[
+  \phi^{-1} : k \mapsto
+  \left(\proj{3}^{1}(k),
+  e^{-1}\left(h \circ
+  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right),
+  \mapfunc{\proj{3}^{1}}\alpha^{-1}
+  \right)
+\]%
+
+To show that these are quasi-inverses, suppose that $k : (X \to B) \times_{X
+\to F} (X \to E)$, which we may assume is of the form $(k_{1}, k_{2}, p)$.
+Then
+%\[
+  \phi(\phi^{-1}(k))
+  \equiv
+  \left(
+    k_{1},
+    \proj{3}^{2}\left(e\left(e^{-1}\left(h \circ k_{1}, k_{2},
+    p\right)\right)\right),
+  \proj{3}^{3}\left(e\left(e^{-1}\left(h \circ k_{1}, k_{2}, p\right)\right)\right) \ct \mapfunc{g \circ
+  -}\left(\mapfunc{\proj{3}^{1}}\alpha^{-1}\right)^{-1}
+  \right)
+\]%
+Which, since $e$ is an equivalence and by the way $\mapfunc{}$ interacts with
+inverses, is equal (up to homotopy) to
+%\[
+  \phi(\phi^{-1}(k))
+  =
+  \left(
+    k_{1},
+    k_{2},
+    p \ct \mapfunc{g \circ
+  -}\mapfunc{\proj{3}^{1}}\alpha
+  \right)
+\]%
+But $\mapfunc{g \circ -}\mapfunc{\proj{3}^{1}}\alpha$ is equal to reflexivity,
+up to the inverse of the former homotopy.  So we have
+%\[
+  \phi(\phi^{-1}(k)) = k
+\]%
+by the universal property of $\Sigma$ types.
+
+For the other direction, suppose that $k : (X \to B) \times_{X \to D} (X \to
+C)$, which we may assume is of the form $(k_{1}, k_{2}, p)$.  Then
+%\[
+  \phi^{-1}(\phi(k))
+  \equiv
+  \left(
+    k_{1}, 
+    e^{-1}\left(h \circ k_{1}, \proj{3}^{2}(e(k_{2})), 
+    \proj{3}^{3}(e(k_{2})) \ct \mapfunc{g\circ-}p^{-1}
+    \right),
+    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+  \right)
+\]%
+which, by definition of $e$, reduces to
+%\[
+  \phi^{-1}(\phi(k))
+  \equiv
+  \left(
+    k_{1}, 
+    e^{-1}\left(h \circ k_{1}, f^{*}g \circ k_{2}, 
+    \proj{3}^{3}(e(k_{2})) \ct \mapfunc{g\circ-}p^{-1}
+    \right),
+    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+  \right)
+\]%
+Now, by $p$, we have $h \circ k_{1} = g^{*}f \circ k_{2}$, so the second term
+may be written
+%\[
+  \phi^{-1}(\phi(k))
+  =
+  \left(
+    k_{1}, 
+    e^{-1}(e(k_{2})),
+    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+  \right)
+\]%
+and since $e$ is an equivalence we have up to homotopy
+%\[
+  \phi^{-1}(\phi(k))
+  \equiv
+  \left(
+    k_{1}, 
+    k_{2},
+    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+  \right)
+\]%
+which by a similar argument as the previous case gives $\phi^{-1}(\phi(k)) =
+k$.  In neither case is the argument particularly convincing.  That's what Coq
+is for, I guess.
 *)
 
 Section Exercise2_12.
 
-Variables (A B C D E F X : Type) (ab:A->B) (ac:A->C) (bd:B->D)
-          (cd:C->D) (ce:C->E) (df:D->F) (ef:E->F)
-          (l: bd o ab = cd o ac) (r: df o cd = ef o ce).
+Context {A B C D E F X : Type} (f : E -> F) (g : D -> F) (h : B -> D)
+        (gsf : C -> D) (fsg : C -> E) (r : g o gsf = f o fsg).
 
-Definition e : df o bd o ab = ef o ce o ac.
-  transitivity (df o cd o ac).
-  apply (ap (compose df) l).
-  apply (ap (fun (f: C -> F) => f o ac) r).
+
+Definition e : (X -> C) -> {a : X -> D & {b : X -> E & g o a = f o b}}.
+Proof.
+  intro k.
+  exists (gsf o k).
+  exists (fsg o k).
+  apply ((ap (fun z => z o k) r)).
 Defined.
 
-Definition f (k : X->C) : pullback (@compose X _ _ df) (@compose X _ _ ef) :=
-  (cd o k; (ce o k; ap10 (ap compose r) k)).
+Hypothesis isequiv_e : IsEquiv e.
 
-Hypothesis right_pullback : IsEquiv(f).
+Definition left_to_outer : 
+  {a : X -> B & {b : X -> C & h o a = gsf o b}}
+  -> {a : X -> B & {b : X -> E & g o h o a = f o b}}
+  := fun k =>
+       (k.1; ((e k.2.1).2.1; (ap (compose g) k.2.2) @ (e k.2.1).2.2)).
 
-Lemma comp_cd_is_pr1 : forall (k : pullback (@compose X _ _ df) 
-                                              (@compose X _ _ ef)),
-                           cd o f^-1 k = k.1.
+Definition outer_to_left :
+  {a : X -> B & {b : X -> E & g o h o a = f o b}}
+  -> {a : X -> B & {b : X -> C & h o a = gsf o b}}
+  := fun k =>
+       (k.1; (e^-1 (h o k.1; k.2); ap pr1 (eisretr e (h o k.1; k.2))^)).
+
+Theorem left_equiv_outer :
+  {a : X -> B & {b : X -> C & h o a = gsf o b}}
+  <~> {a : X -> B & {b : X -> E & g o h o a = f o b}}.
 Proof.
-  intros.
-  change (cd o f^-1 k) with (f (f^-1 k)).1.
-  apply (ap pr1 (eisretr f k)).
-Defined.
-
-Lemma comp_ce_is_pr2 : forall (k : pullback (@compose X _ _ df) 
-                                              (@compose X _ _ ef)),
-                           ce o f^-1 k = k.2.1.
-Proof.
-  intros.
-  change (ce o f^-1 k) with (f (f^-1 k)).2.1.
-  apply (ap ((fun (k : pullback (@compose X _ _ df) (@compose X _ _ ef))
-                   => k.2.1))
-             (@eisretr (X -> C) 
-                       (pullback (@compose X _ _ df) (@compose X _ _ ef))
-                       f 
-                       right_pullback
-                       k)).
-Defined.
-
-Definition phi (k: pullback (@compose X _ _ bd) (@compose X _ _ cd))
-: pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef) :=
-  (k.1; (ce o k.2.1; (ap (compose df) k.2.2) @ (ap10 (ap compose r) k.2.1))).
-
-Definition phi_inv (k: pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef))
-: pullback (@compose X _ _ bd) (@compose X _ _ cd) :=
-  (k.1; (f^-1 (bd o k.1; k.2); (base_path (eisretr f (bd o k.1; k.2)))^)).
-
-Lemma ex2_12_alpha : forall k, phi (phi_inv k) = k.
-Proof.
-  unfold phi, phi_inv. intro k.
-  apply path_sigma_uncurried. exists 1. simpl.
-  apply path_sigma_uncurried. simpl. exists (comp_ce_is_pr2 (bd o k.1; k.2)).
-  unfold comp_ce_is_pr2.
-  rewrite trans_paths. rewrite ap_const. simpl. rewrite concat_1p.
-  rewrite <- ap_apply_Fl.
-Admitted.
+  refine (equiv_adjointify left_to_outer outer_to_left _ _).
+  intro k. 
+  apply path_sigma_uncurried. exists 1.
+  apply path_sigma_uncurried. simpl. 
+  transparent assert (H : (fsg o e^-1 (h o k.1; k.2) = k.2.1)).
+  change (fsg o e^-1 (h o k.1; k.2))
+         with (e (e^-1 (h o k.1; k.2))).2.1.
+  change k.2.1 with (pr1 (@pr2 (X -> D) 
+                            (fun a => {b : X -> E & g o a = f o b})
+                            (h o k.1; k.2))).
+  admit.
+  admit.
 
 
-Lemma ex2_12_beta : forall k, phi_inv (phi k) = k.
-Proof.
-  intro k. unfold phi_inv, phi. simpl.
+  (* outer_to_left o left_to_outer == id *)
+  intro k. destruct k as [k1 [k2 p]].
   apply path_sigma_uncurried. exists 1. simpl.
   apply path_sigma_uncurried. simpl.
-  assert (f^-1 (bd o k .1; 
-                (ce o k.2.1; 
-                 ap (compose df) k.2.2 @ ap10 (ap compose r) k.2.1)) 
-          = k.2.1).
+  transparent assert (H : (
+    e^-1 (h o k1; (fsg o k2; 
+                   ap (compose g) p @ ap (fun z : C -> F => z o k2) r)) 
+    = k2
+  )).
+  apply (ap e)^-1.
+  refine ((eisretr e _) @ _). unfold e.
+  apply path_sigma_uncurried. simpl. 
+  exists p. simpl.
+  apply path_sigma_uncurried. simpl.
+  admit. admit.
 Admitted.
   
-  
-  
-   
-
-Theorem ex2_12_helper : 
-  pullback (@compose X _ _ bd) (@compose X _ _ cd)
-  <~> pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef).
-Proof.
-  apply (equiv_adjointify phi phi_inv ex2_12_alpha ex2_12_beta).
-Defined.
-  
-Theorem ex2_12 : 
-  (X -> A) <~> pullback (@compose X _ _ bd) (@compose X _ _ cd)
-  <->
-  (X -> A) <~> pullback (@compose X _ _ (df o bd)) (@compose X _ _ ef).
-Proof.
-  split. 
-
-  intros. 
-  apply (@equiv_compose' _ (pullback (@compose X _ _ bd) (@compose X _ _ cd))).
-  apply ex2_12_helper. apply X0.
-
-  intros.
-  apply (@equiv_compose' _ (pullback (@compose X _ _ (df o bd))
-                                     (@compose X _ _ ef))).
-  apply (equiv_inverse ex2_12_helper). apply X0.
-Defined.
-  
-
-  
 End Exercise2_12.
+
 
 
 (** %\exerdone{2.13}{104}% 

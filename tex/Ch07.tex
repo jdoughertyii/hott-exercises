@@ -1,0 +1,190 @@
+\begin{coqdoccode}
+\end{coqdoccode}
+\section{Homotopy $n$-types}
+
+
+
+ \exer{7.1}{250} 
+(i) Use Theorem 7.2.2 to show that if $\brck{A} \to A$ for every type $A$, then
+    every type is a set.
+(ii) Show that if every surjective function (purely) splits, i.e.~if
+    $\prd{b:B}\brck{\hfib{f}{b}} \to \prd{b:B}\hfib{f}{b}$ for every $f : A \to
+    B$, then every type is a set.
+
+
+ \soln
+(i)  Suppose that $f : \prd{A:\UU}\brck{A} \to A$, and let $X$ be some type. To
+apply Theorem 7.2.2, we need a reflexive mere relation on $X$ that implies
+identity.  Let $R(x, y) \defeq \brck{x = y}$, which is clearly a reflexive mere
+relation.  Moreoever, it implies the identity, since for any $x, y : X$ we have
+\[
+  f(x = y) : R(x, y) \to (x = y)
+\]
+So by Theorem 7.2.2, $X$ is a set.
+
+
+(ii)  Again, let $X$ be a typeV and $R$ the relation $R(x, y) \defeq \brck{x =
+y}$.  Suppose that $p : R(x, y)$.  Then for all $a : A$, there merely exists an
+$a' : A$ such that $a' = a$.  But since every surjective function purely
+splits, that means that for every $a : A$ there exists some $a' : A$ such that
+$a' = a$.  So, in particular, 
+
+
+
+
+ \exer{7.2}{250}  \exer{7.3}{250}  \exer{7.4}{250}  \exer{7.5}{250}  \exer{7.6}{250}  \exer{7.7}{250}  \exer{7.8}{250}  \exer{7.9}{251}  \exer{7.10}{251}  \exer{7.11}{251} 
+
+ \exerdone{7.12}{251} 
+Show that $X \mapsto (\lnot \lnot X)$ is a modality.
+
+
+ \soln
+We must show that there are
+\begin{enumerate}
+  \item functions $\eta^{\lnot \lnot}_{A} : A \to \lnot\lnot A$ for every type
+  $A$,
+  \item for every $A : \UU$ and every family $B : \lnot\lnot A \to \UU$, a
+  function
+  \[
+    \ind{\lnot\lnot} : 
+    \left(\prd{a : A}\lnot\lnot(B(\eta^{\lnot\lnot}_{A}(a)))\right)
+    \to
+    \prd{z : \lnot\lnot A}\lnot\lnot(B(z))
+  \]
+  \item A path $\ind{\lnot\lnot}(f)(\eta^{\lnot\lnot}_{A}(a)) = f(a)$ for each
+  $f : \prd{a : A}\lnot\lnot(B(\eta^{\lnot\lnot}_{A}(a)))$, and
+  \item For any $z, z' : \lnot \lnot A$, the function $\eta^{\lnot\lnot}_{z =
+  z'} : (z = z') \to \lnot\lnot(z = z')$ is an equivalence.
+\end{enumerate}
+Some of this has already been done.  The functions $\eta^{\lnot\lnot}_{A}$ were
+given in Exercise 1.12; recall:
+\[
+  \eta^{\lnot\lnot}_{A} \defeq \lam{a}{f}f(a)
+\]
+Now suppose that we have an element $f$ of the antecedent of
+$\ind{\lnot\lnot}$, and let $z : \lnot\lnot A$.  Suppose furthermore
+that $g : \lnot B(z)$; we derive a contradiction.  It suffices to
+construct an element of $\lnot A$, for then we can apply $z$ to obtain
+an element of $\emptyt$.  So suppose that $a : A$.  Then 
+\[
+  f(a) : \lnot \lnot B(\eta^{\lnot\lnot}_{A}(a))
+\]
+but $\lnot X$ is a mere proposition for any type $X$, so $z =
+\eta^{\lnot\lnot}_{A}(a)$, and transporting gives an element of $\lnot \lnot
+B(z)$.  Applying this to $g$ gives a contradiction.
+
+
+For (iii), suppose that $a : A$ and $f : \prd{a :
+A}\lnot\lnot(B(\eta^{\lnot\lnot}_{A}(a)))$.  Then $f(a) : \lnot \lnot
+(B(\eta^{\lnot\lnot}_{A}(a)))$, making this type contractible, giving a
+canonical path $\ind{\lnot\lnot}(f)(\eta^{\lnot\lnot}_{A}(a)) = f(a)$.
+
+
+Finally, for (iv), let $z, z' : \lnot\lnot A$.  Since $\lnot\lnot A$ is a mere
+proposition, so is $z = z'$.  $\lnot\lnot(z = z')$ is also a mere proposition,
+so if there is an arrow $\lnot\lnot(z = z') \to (z = z')$, then it is
+automatically a quasi-inverse to $\eta^{\lnot\lnot}_{z = z'}$.  Such an arrow
+is immediate from the fact that $\lnot \lnot A$ is a mere proposition.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch07.eta nn}{eta\_nn}{\coqdocdefinition{eta\_nn}} (\coqdocvar{A} : \coqdockw{Type}) : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A} := \coqdockw{fun} \coqdocvar{a} \coqdocvar{f} \ensuremath{\Rightarrow} \coqdocvariable{f} \coqdocvariable{a}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch07.hprop arrow}{hprop\_arrow}{\coqdoclemma{hprop\_arrow}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) : \coqdocabbreviation{IsHProp} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{HB}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{f} \coqdocvar{g}. \coqdoctac{apply} \coqdocdefinition{path\_forall}. \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{apply} \coqdocvar{HB}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch07.hprop neg}{hprop\_neg}{\coqdoclemma{hprop\_neg}} \{\coqdocvar{A} : \coqdockw{Type}\} : \coqdocabbreviation{IsHProp} (\coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch07.hprop arrow}{\coqdoclemma{hprop\_arrow}}. \coqdoctac{apply} \coqdocinstance{hprop\_Empty}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch07.ind nn}{ind\_nn}{\coqdocdefinition{ind\_nn}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{B} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) : \coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{a} : \coqdocvariable{A}, \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{B} (\coqref{Ch07.eta nn}{\coqdocdefinition{eta\_nn}} \coqdocvariable{A} \coqdocvariable{a})\coqdocnotation{)}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{z} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A}, \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{B} \coqdocvariable{z}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{f} \coqdocvar{z}. \coqdoctac{intro} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvar{z}. \coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} ((\coqdocdefinition{transport} (\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvar{B} \coqdocvariable{x}\coqdocnotation{)}) \coqdoceol
+\coqdocindent{10.00em}
+(@\coqdoclemma{allpath\_hprop} \coqdocvar{\_} \coqref{Ch07.hprop neg}{\coqdoclemma{hprop\_neg}} \coqdocvar{\_} \coqdocvar{\_})\coqdoceol
+\coqdocindent{10.00em}
+(\coqdocvar{f} \coqdocvar{a})) \coqdocvar{g}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch07.nn modality iii}{nn\_modality\_iii}{\coqdocdefinition{nn\_modality\_iii}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{B} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type})\coqdoceol
+\coqdocindent{1.00em}
+(\coqdocvar{a} : \coqdocvariable{A}) (\coqdocvar{f} : \coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{(}\coqdocvariable{B} (\coqref{Ch07.eta nn}{\coqdocdefinition{eta\_nn}} \coqdocvariable{A} \coqdocvariable{a})\coqdocnotation{)}) :\coqdoceol
+\coqdocindent{2.00em}
+\coqref{Ch07.ind nn}{\coqdocdefinition{ind\_nn}} \coqdocvariable{A} \coqdocvariable{B} \coqdocvariable{f} (\coqref{Ch07.eta nn}{\coqdocdefinition{eta\_nn}} \coqdocvariable{A} \coqdocvariable{a}) \coqdocnotation{=} \coqdocvariable{f} \coqdocvariable{a}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch07.isequiv hprop}{isequiv\_hprop}{\coqdoclemma{isequiv\_hprop}} (\coqdocvar{P} \coqdocvar{Q} : \coqdockw{Type}) (\coqdocvar{HP} : \coqdocabbreviation{IsHProp} \coqdocvariable{P}) (\coqdocvar{HQ} : \coqdocabbreviation{IsHProp} \coqdocvariable{Q})\coqdoceol
+\coqdocindent{3.00em}
+(\coqdocvar{f} : \coqdocvariable{P} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Q}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{Q} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocclass{IsEquiv} \coqdocvariable{f}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{g}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{isequiv\_adjointify} \coqdocvar{f} \coqdocvar{g} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{q}. \coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Lemma} \coqdef{Ch07.hprop hprop path}{hprop\_hprop\_path}{\coqdoclemma{hprop\_hprop\_path}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{HA} : \coqdocabbreviation{IsHProp} \coqdocvariable{A}) (\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}) : \coqdocabbreviation{IsHProp} (\coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{hprop\_allpath}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{set\_path2}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch07.nn modality iv}{nn\_modality\_iv}{\coqdocdefinition{nn\_modality\_iv}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{z} \coqdocvar{z'} : \coqdocnotation{\ensuremath{\lnot}} \coqdocnotation{\ensuremath{\lnot}} \coqdocvariable{A}) : \coqdocclass{IsEquiv} (\coqref{Ch07.eta nn}{\coqdocdefinition{eta\_nn}} (\coqdocvariable{z} \coqdocnotation{=} \coqdocvariable{z'})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch07.isequiv hprop}{\coqdoclemma{isequiv\_hprop}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqref{Ch07.hprop hprop path}{\coqdoclemma{hprop\_hprop\_path}}. \coqdoctac{apply} \coqref{Ch07.hprop neg}{\coqdoclemma{hprop\_neg}}. \coqdoctac{apply} \coqref{Ch07.hprop neg}{\coqdoclemma{hprop\_neg}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} \coqref{Ch07.hprop neg}{\coqdoclemma{hprop\_neg}}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{7.13}{251}  \exer{7.14}{251}  \exer{7.15}{251} \begin{coqdoccode}
+\end{coqdoccode}

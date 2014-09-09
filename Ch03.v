@@ -853,22 +853,6 @@ they be this long.
 
 Local Open Scope nat_scope.
 
-Definition le (n m : nat) := {k : nat & n + k = m}.
-Infix "<=" := le : nat_scope.
-
-Definition lt (n m : nat) := S n <= m.
-Infix "<" := lt : nat_scope.
-
-Fixpoint leb n m :=
-  match n, m with
-    | O, _ => true
-    | S n', O => false
-    | S n', S m' => leb n' m'
-  end.
-
-Infix "<=?" := leb (at level 70) : nat_scope.
-
-
 Fixpoint nat_code (n m : nat) :=
   match n, m with
     | O, O => Unit
@@ -883,307 +867,96 @@ Fixpoint nat_r (n : nat) : nat_code n n :=
     | S n' => nat_r n'
   end.
 
-Definition nat_encode (n m : nat) (p : n = m) := 
-  transport (fun k => nat_code n k) p (nat_r n).
+Definition nat_encode (n m : nat) (p : n = m) : (nat_code n m)
+  := transport (nat_code n) p (nat_r n).
 
-Definition nat_decode : forall (n m : nat) (p : nat_code n m), n = m.
+Definition nat_decode : forall (n m : nat), (nat_code n m) -> (n = m).
+Proof.
   induction n, m; intro.
   reflexivity. contradiction. contradiction.
-  apply (ap S). apply IHn. apply p.
+  apply (ap S). apply IHn. apply X.
 Defined.
+
+Theorem equiv_path_nat : forall n m, (nat_code n m) <~> (n = m).
+Proof.
+  intros.
+  refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _).
   
-Theorem Theorem2131 : forall n m, (nat_code n m) <~> (n = m).
+  intro p. induction p. simpl.
+  induction n. reflexivity. simpl.
+  apply (ap (ap S) IHn).
+
+  generalize dependent m.
+  induction n. induction m.
+  intro c. apply eta_unit.
+  intro c. contradiction.
+  induction m.
+  intro c. contradiction.
+  intro c. simpl. unfold nat_encode.
+  refine ((transport_compose _ S _ _)^ @ _).
+  simpl. apply IHn.
+Defined.
+        
+Lemma Sn_neq_O : forall n, S n <> O.
 Proof.
-  intros. 
-  (* Update to Coq broke this --- 
-     9/5: it broke nat_encode; should be okay now
-  refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _);
-  intro p.
-
-  induction p. simpl. induction n. reflexivity.
-  simpl. rewrite IHn. reflexivity.
-
-  generalize dependent m. generalize dependent n.
-  induction n. induction m. simpl in *. apply eta_unit. contradiction. 
-  induction m. contradiction.
-  intro p. simpl. unfold nat_encode. rewrite <- transport_compose. simpl. 
-  change (transport (fun x : nat => nat_code n x) (nat_decode n m p) (nat_r n))
-         with (nat_encode n m (nat_decode n m p)).
-  simpl in p. apply IHn.
-   *)
-Admitted.
-
-Theorem S_inj : forall n m, S n = S m -> n = m.
-Proof.
-  intros. induction n, m;
-    try(reflexivity);
-    try(apply Theorem2131 in H; contradiction).
-    apply Theorem2131 in H.
-    change (nat_code (S (S n)) (S (S m))) with (nat_code (S n) (S m)) in H.
-    apply Theorem2131 in H. apply H.
+  intros n H. apply nat_encode in H. contradiction.
 Defined.
 
-Lemma Sn_le_Sm__n_le_m (n m : nat) : (S n) <= (S m) -> n <= m.
-  intros. destruct H. simpl in p. apply S_inj in p. apply (x; p).
-Defined.
-
-Lemma n_le_m__Sn_le_Sm (n m : nat) : n <= m -> (S n) <= (S m).
-  intros. destruct H. exists x. simpl. apply (ap S). apply p.
-Defined.
-
-Lemma n_neq_Sn (n : nat) : ~ (n = S n).
+Lemma plus_cancelL : forall n m k, n + m = n + k -> m = k.
 Proof.
-  induction n.
-    intro p. apply Theorem2131 in p. contradiction.
-    intro p. apply Theorem2131 in p. simpl in p. apply Theorem2131 in p.
-      contradiction.
+  intro n. induction n. trivial.
+  intros m k H.
+  simpl in H. apply S_inj in H. apply IHn. apply H.
 Defined.
 
-Theorem Sn_plus_Sm__SS_n_plus_m (n m : nat) : S n + S m = S (S (n + m)).
+Lemma plus_assoc : forall n m k, n + (m + k) = (n + m) + k.
 Proof.
-  induction n; [| simpl; rewrite <- IHn]; reflexivity.
+  induction n. trivial.
+  intros m k. simpl. apply (ap S).
+  apply IHn.
 Defined.
 
-Theorem plus_O_r : forall n, n = n+0.
+Lemma plus_O_r : forall n, n = n + O.
 Proof.
-  induction n; [| simpl; rewrite <- IHn]; reflexivity.
-Defined.
-
-Theorem n_plus_Sm__Sn_plus_m (n m :nat) : n + S m = S n + m.
-Proof.
-  revert m. induction n. reflexivity.
-  intros. simpl. apply (ap S). simpl in IHn. apply IHn.
-Defined.
-
-Theorem plus_assoc : forall n m k, (n + m) + k = n + (m + k).
-Proof.
-  intros n m k.
-  induction n; [| simpl; rewrite IHn ]; reflexivity.
-Defined.
-
-Lemma O_is_id : forall n m, n + m = n -> m = 0.
-Proof.
-  induction n.
-    intros. apply H.
-    intros m H. apply IHn. simpl in H. apply S_inj in H. apply H.
-Defined.
-
-Lemma sum_Ol : forall n m, n + m = 0 -> n = 0.
-Proof.
-  intros. induction n. reflexivity. 
-  simpl in H. apply Theorem2131 in H. contradiction.
-Defined.
-
-Lemma leb_le n m : (n <=? m) = true <-> n <= m.
-Proof.
-  revert m.
-  induction n; destruct m; simpl.
-  - split; [exists 0|]; trivial.
-  - split; trivial. exists (S m). trivial.
-  - split; intros. apply false_ne_true in H. contradiction. 
-    destruct H. apply sum_Ol in p. apply Theorem2131 in p. contradiction.
-  - split. 
-    + intros. apply n_le_m__Sn_le_Sm. apply IHn. apply H.
-    + intros. apply IHn. apply Sn_le_Sm__n_le_m. apply H.
-Defined.
-
-Lemma subtract_on_left : forall n m k, (n + m = n + k) -> (m = k).
-Proof.
-  induction n. 
-  intros. apply H.
-  intros. simpl in H. apply S_inj in H. apply IHn. apply H.
+  induction n. reflexivity.
+  simpl. apply (ap S). apply IHn.
 Defined.
 
 Lemma le_antisymmetric (n m : nat) : (n <= m) -> (m <= n) -> (n = m).
 Proof.
-  intros I1 I2. destruct I1 as [k1 p1], I2 as [k2 p2].
-  generalize dependent m. generalize dependent n.
-  induction n, m. 
-    reflexivity. 
-    intros. apply Theorem2131 in p2. contradiction.
-    intros. apply Theorem2131 in p1. contradiction.
-    intros. apply (ap S). apply IHn. simpl in p1. apply S_inj in p1. apply p1.
-    intros. simpl in p2. apply S_inj in p2. apply p2.
-Defined.
-
-Lemma le_refl n : n <= n.
-Proof.
-  exists 0. symmetry. apply plus_O_r.
-Defined.
-
-Lemma le_trans n m k : (n <= m) -> (m <= k) -> (n <= k).
-Proof.
-  intros H H'. destruct H, H'.
-  exists (x + x0). rewrite <- plus_assoc. rewrite p. apply p0.
-Defined.
-
-Theorem ishset_nat : IsHSet nat.
-Proof.
-  apply hset_decidable. intros n.
-  induction n; intro m; destruct m.
-      left. reflexivity.
-      right. intro p. apply Theorem2131 in p. contradiction.
-      right. intro p. apply Theorem2131 in p. contradiction.
-      destruct (IHn m).
-        left. apply (ap S). apply p.
-        right. intro p. apply S_inj in p. contradiction.
-Defined.
-        
-Section Exercise3_19.
+  intros p q. destruct p as [k p], q as [k' q].
+  transparent assert (Hm : (m + k' + k = m)).
+  apply ((ap (fun l => l + k) q) @ p).
+  transparent assert (Hk : (k' + k = 0)).
+  apply (plus_cancelL m).
+  apply ((plus_assoc _ _ _) @ Hm @ (plus_O_r m)).
+  refine (q^ @ _). refine ((ap (fun l => l + k') p)^ @ _).
+Admitted.
 
 Definition decidable {A} (P : A -> Type) := forall a, (P a + ~ P a).
 
-Lemma nat_eq_decidable : forall (n m : nat), (n = m) + ~ (n = m).
-Proof.
-  intro n.
-  induction n; intro m; destruct m.
-      left. reflexivity.
-      right. intro p. apply Theorem2131 in p. contradiction.
-      right. intro p. apply Theorem2131 in p. contradiction.
-      destruct (IHn m).
-        left. apply (ap S). apply p.
-        right. intro p. apply S_inj in p. contradiction.
-Defined.
+Module Exercise3_19.
 
-Lemma order_partitions : forall n m, (n <= m) + (m < n).
-Proof.
-  induction n.
-    intro m. left. exists m. reflexivity.
-  induction m.
-    right. exists n. reflexivity.
-    destruct IHm.
-      left. destruct l. exists (S x).
-      rewrite Sn_plus_Sm__SS_n_plus_m. apply (ap S). apply p.
-      destruct (IHn m). 
-        left. apply n_le_m__Sn_le_Sm. apply l0.
-        right. destruct l0. exists x. simpl. apply (ap S). apply p.
-Defined.
-      
-Definition Q {P : nat -> Type} (w : {n : nat & P n}) := 
+Variable (P : nat -> Type).
+Hypothesis (H : decidable P).
+Hypothesis (HP : forall n, IsHProp (P n)).
+
+Definition Q (w : {n : nat & P n}) := 
   forall w' : {n : nat & P n}, w.1 <= w'.1. 
 
-Lemma ishprop_dependent (A : Type) (P : A -> Type) :
-  (forall a, IsHProp (P a)) -> IsHProp (forall a, P a).
+Lemma hprop_sigmaQ : IsHProp ({w : {n : nat & P n} & Q w}).
 Proof.
-  intro HP. apply hprop_allpath. intros p p'.
-  apply path_forall; intro a. apply HP.
-Defined.
-  
-Lemma hprop_Q : forall P, (forall n, IsHProp (P n)) -> 
-  IsHProp {w : {n : nat & P n} & Q w}.
-Proof.
-  intro P. intro HP. apply hprop_allpath. intros w w'.
-  destruct w as [[n p] q], w' as [[n' p'] q'].
-  apply path_sigma_uncurried. simpl. 
-  assert ((n; p) = (n'; p')).
-  apply path_sigma_uncurried. simpl.
-  assert (n = n').
-  assert (n <= n') as H. apply (q (n'; p')).
-  assert (n' <= n) as H'. apply (q' (n; p)).
-  destruct H as [k r], H' as [k' r'].
-  rewrite <- r' in r. rewrite plus_assoc in r. apply O_is_id in r.
-  apply sum_Ol in r. rewrite r in r'. symmetry in r'. 
-  rewrite <- plus_O_r in r'. apply r'.
-  induction X. exists 1%path. simpl.
-  apply (HP n).
-  exists X.
-  assert (IsHProp (Q (n'; p'))).
-  unfold Q. simpl. apply ishprop_dependent. intro w. destruct w as [n'' p''].
-  simpl. apply hprop_allpath. intros w w'.
-  apply path_sigma_uncurried.
-  destruct w, w'. simpl. 
-  assert (x = x0). apply subtract_on_left with (n := n').
-  apply (p0 @ p1^). exists X0.
-  induction X0. simpl. apply ishset_nat. apply X0.
-Defined.
-  
-Definition decidable_to_bool {A} (P : A -> Type) (H : decidable P) : A -> Bool.
-  intro a. destruct (H a). apply true. apply false.
-Defined.
-
-Fixpoint bounded_min (P : nat -> Type) (H : decidable P) (b : nat) : nat :=
-  match b with
-    | O => O
-    | S n => if (bounded_min P H n <=? n) then (bounded_min P H n) else
-               if ((decidable_to_bool P H) (S n)) then (S n) else (S (S n))
-  end.
-
-Lemma foo : forall n m, ~ (n = m) -> (n <= m) -> ~ (m <= n).
-  intros. intro p. apply le_antisymmetric in H. symmetry in H.
-  contradiction. apply p.
-Defined.
-
-Lemma bar : forall n m, ~ n = S n + m.
-  induction n.
-  intros m p. apply Theorem2131 in p. contradiction.
-  intros m p. simpl in p. apply S_inj in p. apply (IHn m). apply p.
-Defined.
-
-Lemma baz : forall n m, ~ n = n + S m.
-  induction n.
-  intros m p. apply Theorem2131 in p. contradiction.
-  intros m p. simpl in p. apply S_inj in p. apply (IHn m). apply p.
-Defined.
-
-Lemma bmin_short_circuit (P : nat -> Type) (H : decidable P) :
-  P 0 -> forall n, bounded_min P H n = 0.
-Proof.
-  intros. induction n. simpl. unfold decidable_to_bool. 
-  destruct (H 0). reflexivity. contradiction.
-  simpl. assert (bounded_min P H n <=? n = true). apply leb_le.
-  rewrite IHn. exists n. reflexivity.
-  rewrite X0. apply IHn.
-Defined.
-
-Lemma bmin_correct_i (P : nat -> Type) (H : decidable P) (n : nat) :
-  P n -> P (bounded_min P H n).
-Admitted.
-
-Lemma bmin_correct' (P : nat -> Type) (H : decidable P) (n : nat) :
-  P n -> (bounded_min P H n) <= n.
-Proof.
-  intro p. induction n. simpl.
-  assert (decidable_to_bool P H 0 = true) as HP0.
-  unfold decidable_to_bool. destruct (H 0). reflexivity. contradiction.
-  exists 0. reflexivity.
-  
-  simpl. destruct (order_partitions (bounded_min P H n) n).
-  apply leb_le in l. rewrite l. apply leb_le in l. destruct l.
-  exists (S x). rewrite n_plus_Sm__Sn_plus_m. simpl. apply (ap S). apply p0.
-  assert ( ~ (bounded_min P H n <= n)).
-  apply foo. intro. destruct l. rewrite <- p0 in H0. apply bar in H0.
-  contradiction.
-  destruct l. exists (S x). rewrite n_plus_Sm__Sn_plus_m. apply p0.
-  assert ( ~ (bounded_min P H n <=? n = true)).
-  intro H'. apply X. apply leb_le. apply H'.
-  assert (bounded_min P H n <=? n = false).
-  destruct (bounded_min P H n <=? n). assert (true = true) by reflexivity.
-  contradiction X0. reflexivity.
-  rewrite X1. unfold decidable_to_bool. destruct (H (S n)). 
-  apply le_refl. contradiction.
-Defined.
-
-Lemma bmin_unique (P : nat -> Type) (H : decidable P) (n : nat) :
-  P n -> forall m, P m -> (bounded_min P H n) = (bounded_min P H m).
+  apply hprop_allpath. intros w w'.
+  transparent assert (H : (w.1 = w'.1)).
 Admitted.
   
-Definition ex3_19_arrow (P : nat -> Type) (H : decidable P) : 
-  (forall n, IsHProp (P n)) -> {n : nat & P n} -> {w : {n : nat & P n} & Q w}.
-  intros HP X. destruct X as [n p].
-  refine ((bounded_min P H n; bmin_correct_i P H n p); _).
-  unfold Q. intro w'. simpl.
-  apply le_trans with (m:=bounded_min P H w'.1).
-  exists 0. rewrite <- plus_O_r. apply bmin_unique. apply p. apply w'.2.
-  apply bmin_correct'. apply w'.2.
-Defined.
+  
 
-Definition ex3_19 (P : nat -> Type) (H : decidable P) 
-                  (HP : forall n, IsHProp (P n)) : 
-  Brck {n : nat & P n} -> {n : nat & P n}.
-  intros. apply (@pr1 {n : nat & P n} Q). 
-  assert (IsHProp {w : {n : nat & P n} & Q w}) as H'. apply hprop_Q. apply HP.
-  strip_truncations. apply ex3_19_arrow. apply H. apply HP. apply X.
-Defined.  
+Theorem ex3_19 : Brck {n : nat & P n} -> {n : nat & P n}.
+Proof.
+  intros. apply (@pr1 {n : nat & P n} Q).
+Admitted.
+
   
 End Exercise3_19.
   
@@ -1374,6 +1147,17 @@ Proof.
 Defined.
 
 
+Lemma nat_eq_decidable : forall (n m : nat), (n = m) + ~ (n = m).
+Proof.
+  induction n, m.
+  left. reflexivity.
+  right. intro H. apply nat_encode in H. contradiction.
+  right. intro H. apply nat_encode in H. contradiction.
+  destruct (IHn m). 
+    left. apply (ap S p).
+    right. intro H. apply S_inj in H. contradiction.
+Defined.
+
 Definition cardF_f {n} : Fin (S n) -> (Fin n) + Unit.
   intro x. destruct x as [m [k p]].
   destruct (nat_eq_decidable m n).
@@ -1406,42 +1190,16 @@ Proof.
   refine (equiv_adjointify _ _ _ _).
   intro n. destruct n as [n [k p]]. 
   assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
-  apply Theorem2131 in X. contradiction.
+  apply equiv_path_nat in X. contradiction.
   intro e. contradiction.
   intro e. contradiction.
   intro n. destruct n as [n [k p]].
   assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
-  apply Theorem2131 in X. contradiction.
+  apply equiv_path_nat in X. contradiction.
 Defined.
 
 Lemma cardF {n : nat} : Fin (S n) <~> (Fin n) + Unit.
-Proof.
-  intros. refine (equiv_adjointify cardF_f cardF_g _ _); intros x.
-  unfold cardF_f, cardF_g. simpl.
-  destruct x. simpl. destruct f as [m [k p]]. simpl.
-  destruct (nat_eq_decidable m n). simpl.
-  rewrite <- p in p0. assert (m <> m + S k). apply baz. contradiction.
-  simpl. apply (ap inl). apply path_sigma_uncurried. simpl. exists idpath.
-  simpl. apply path_sigma_uncurried. simpl. exists idpath.
-  simpl. apply ishset_nat.
-  destruct (nat_eq_decidable n n). apply (ap inr). apply path_unit.
-  assert Empty. apply n0. reflexivity. contradiction.
-
-  unfold cardF_f, cardF_g. simpl. destruct x as [m [k p]].
-  destruct (nat_eq_decidable m n).
-  apply path_sigma_uncurried. simpl. exists p0^. simpl.
-  induction p0. simpl. apply path_sigma_uncurried. simpl.
-  assert (0 = k). symmetry. apply sum_O_r with (n := S m). 
-  rewrite <- plus_n_Sm in p. simpl.
-  apply p. exists X.
-  apply ishset_nat.
-  apply path_sigma_uncurried. simpl. exists idpath. simpl. 
-  apply path_sigma_uncurried. simpl.
-  assert (k <> 0). intro. rewrite X in p.
-  rewrite <- plus_n_Sm in p. apply S_inj in p. rewrite <- plus_0_r in p.
-  contradiction.
-  exists (S_pred_inv k X). apply ishset_nat.
-Defined.
+Admitted.
 
 Theorem ex3_22 `{Univalence}: forall (n : nat) (A : Fin n -> Type)
                         (P : forall (m : Fin n), A m -> Type),
@@ -1466,8 +1224,7 @@ Proof.
   intro m. 
   rewrite <- (eissect cardF m). 
   destruct (cardF m) as [em | m_m]; simpl.
-    apply (w.1 em).
-    Admitted.
+Admitted.
     
   
 
