@@ -182,26 +182,6 @@ Proof.
     apply path_forall; intro a. apply eta_prod.
 Defined.
   
-(* this is a bad name for this, but I don't know what to call it and I
-   also don't think it's in the HoTT library, at least according to
-   HoTTBook.v *)
-Definition Book_2_15_6 (X : Type) (A : X -> Type) (P : forall x : X, A x -> Type) :
-  (forall x, {a : A x & P x a}) -> {g : forall x, A x & forall x, P x (g x)}.
-Proof.
-  intro g. exists (fun x => (g x).1). intro x. apply (g x).2.
-Defined.
-
-Theorem Book_2_15_7 (X : Type) (A : X -> Type) (P : forall x : X, A x -> Type) :
-  IsEquiv (Book_2_15_6 X A P).
-Proof.
-  refine (isequiv_adjointify _ _ _ _); intro z.
-    destruct z as [g h]. intro x. apply (g x; h x).
-    unfold Book_2_15_6. destruct z as [g h].
-    apply path_sigma_uncurried. simpl. exists 1. reflexivity.
-    apply path_forall; intro x. apply eta_sigma.
-Defined.
-
-
 Theorem ex6_7 :
   {G : Monoid & forall x, Brck {y : G & (G x y = G) * (G y x = G)}}
   <~>
@@ -882,11 +862,11 @@ Proof.
 
   unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
     apply path_prod.
-    simpl. refine ((S_pred_inv _ _) @ _).
+    simpl. refine ((Spred _ _) @ _).
     intro H. apply monus_eq_O__n_le_m in H. 
     apply le_antisymmetric in H. symmetry in H. apply n in H. contradiction.
     apply l. reflexivity. reflexivity. reflexivity.
-    simpl. refine ((S_pred_inv _ _) @ _).
+    simpl. refine ((Spred _ _) @ _).
     intro H. 
     assert (a = b). refine ((ap fst p)^ @ H^ @ (ap snd p)).  apply n in X.
     contradiction. reflexivity. simpl in *.

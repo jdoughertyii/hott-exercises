@@ -1610,15 +1610,15 @@ In the interest of masochism, I'll do them explicitly.  We start with
 In Coq we'll do things a touch out of order, so as to appeal to (viii) in the
 proof of (vi). *)
 
-Theorem plus_0_r : forall (n : nat), n = plus n 0.
+Theorem plus_O_r : forall (n : nat), n = plus n 0.
 Proof.
-  induction n; [| simpl; rewrite <- IHn]; reflexivity.
-Qed.
+  induction n. reflexivity. apply (ap S IHn).
+Defined.
 
 Theorem ex1_8_i : forall (n : nat), 
                     (0 + n = n) /\ (n = n + 0) /\ (0 + n = n + 0).
 Proof.
-  split; [| split; rewrite <- plus_0_r]; reflexivity.
+  split; [| split; rewrite <- plus_O_r]; reflexivity.
 Qed.
 
 Theorem mult_0_r : forall (n : nat), 0 = n * 0.
@@ -1639,7 +1639,7 @@ Qed.
 
 Theorem mult_1_l : forall (n : nat), 1 * n = n.
 Proof.
-  simpl; intro n; rewrite <- plus_0_r; reflexivity.
+  simpl; intro n; rewrite <- plus_O_r; reflexivity.
 Qed.
 
 Theorem ex1_8_iii : forall (n : nat),
@@ -1654,20 +1654,19 @@ Qed.
 Theorem plus_n_Sm : forall (n m : nat), S (n + m) = n + (S m).
 Proof.
   intros n m.
-  induction n; [| simpl; rewrite IHn]; reflexivity.
-Qed.
+  induction n. reflexivity.
+  simpl. apply (ap S). apply IHn.
+Defined.
 
-Theorem ex1_8_iv : forall (n m : nat), n + m = m + n.
+Theorem plus_comm : forall (n m : nat), n + m = m + n.
 Proof.
   intros n m.
-  induction n; [ rewrite <- plus_0_r
-               | simpl; rewrite <- plus_n_Sm; rewrite IHn]; 
-  reflexivity.
-Qed.
+  induction n. apply plus_O_r.
+  refine (_ @ (plus_n_Sm _ _)). apply (ap S IHn).
+Defined.
+  
 
-Definition plus_comm := ex1_8_iv.
-
-Theorem ex1_8_v : forall (n m k : nat),
+Theorem plus_assoc : forall (n m k : nat),
                     (n + m) + k = n + (m + k).
 Proof.
   intros n m k.
@@ -1678,8 +1677,10 @@ Theorem ex1_8_viii : forall (n m k : nat),
                        (n + m) * k = (n * k) + (m * k).
 Proof.
   intros n m k.
-  induction n; [| simpl; rewrite IHn; rewrite ex1_8_v]; reflexivity.
-Qed.
+  induction n. reflexivity. simpl. 
+  refine (_ @ (plus_assoc _ _ _)^).
+  apply (ap (plus k) IHn).
+Defined.
 
 Theorem ex1_8_vi : forall (n m k : nat),
                      (n * m) * k = n * (m * k).
@@ -1693,13 +1694,14 @@ Theorem ex1_8_vii : forall (n m k : nat),
                       n * (m + k) = (n * m) + (n * k).
 Proof.
   intros n m k.
-  induction n; [reflexivity|].
-  simpl. rewrite IHn. rewrite <- ex1_8_v. rewrite <- ex1_8_v.
-  cut (m + n * m + k =  m + k + n * m). intro H. rewrite H. reflexivity.
-  rewrite ex1_8_v.
-  cut (n * m + k = k + n * m). intro H. rewrite H. rewrite <- ex1_8_v. reflexivity.
-  rewrite ex1_8_iv. reflexivity.
-Qed.
+  induction n. reflexivity.
+  simpl.
+  refine (_ @ (plus_assoc _ _ _)^).
+  refine ((plus_assoc _ _ _) @ _). apply (ap (plus m)).
+  refine (_ @ (plus_comm _ _)).
+  refine (_ @ (plus_assoc _ _ _)^).
+  apply (ap (plus k)). refine (IHn @ _). apply plus_comm.
+Defined.
 
 Local Close Scope nat_scope.
 
@@ -1771,10 +1773,9 @@ Definition pred (n : nat) : nat :=
 Theorem S_inj : forall (n m : nat), S n = S m -> n = m.
 Proof.
   intros. 
-  cut (pred (S n) = pred (S m)). intros.
-  simpl in X. apply X.
-  rewrite H. reflexivity.
-Qed.
+  change n with (pred (S n)). change m with (pred (S m)).
+  apply (ap pred). apply H.
+Defined.
 
 Theorem plus_1_r : forall n, S n = n + 1.
 Proof.

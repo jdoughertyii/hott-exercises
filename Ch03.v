@@ -898,11 +898,6 @@ Proof.
   intros n H. apply nat_encode in H. contradiction.
 Defined.
 
-Lemma plus_O_r (n : nat) : n = n + O.
-Proof. 
-  induction n. reflexivity. apply (ap S IHn).
-Defined.
-
 Lemma plus_eq_O (n m : nat) : n + m = O -> (n = O) /\ (m = O).
 Proof.
   destruct n.
@@ -910,13 +905,6 @@ Proof.
   intro H. simpl in H. apply nat_encode in H. contradiction.
 Defined.
   
-Lemma plus_assoc : forall n m k, (n + m) + k = n + (m + k).
-  intros n m k.
-  induction n. reflexivity.
-  apply (ap S IHn).
-Defined.
-  
-
 Lemma le_trans : forall n m k, (n <= m) -> (m <= k) -> (n <= k).
 Proof.
   intros n m k Hnm Hmk.
@@ -946,11 +934,11 @@ Proof.
   transparent assert (q : (n + (k + k') = n + O)).
     refine ((plus_assoc _ _ _)^ @ _).
     refine ((ap (fun s => s + k') p) @ _).
-    refine (_ @ (plus_0_r _)).
+    refine (_ @ (plus_O_r _)).
     apply p'.
   apply plus_cancelL in q.
   apply plus_eq_O in q.
-  refine ((plus_0_r _) @ _).
+  refine ((plus_O_r _) @ _).
   refine ((ap (plus n) (fst q))^ @ _).
   apply p.
 Defined.
@@ -1573,6 +1561,8 @@ Proof.
 Defined.
 
 End Exercise3_19.
+
+Local Close Scope nat_scope.
         
 (** %\exerdone{3.20}{128}%
 Prove Lemma 3.11.9(ii): if $A$ is contractible with center $a$, then
@@ -1637,7 +1627,7 @@ Then $e(x) = e(y)$, since $\brck{P}$ is a proposition, and applying $e^{-1}$ to
 each side gives $x = y$.  Thus $P$ is a mere proposition.
 *)
 
-Theorem ex3_31 (P : Type) : IsHProp P <~> (P <~> Brck P).
+Theorem ex3_21 (P : Type) : IsHProp P <~> (P <~> Brck P).
 Proof.
   assert (IsHProp (P <~> Brck P)). apply hprop_allpath; intros e1 e2.
   apply path_equiv. apply path_forall; intro p.
@@ -1654,7 +1644,7 @@ Proof.
 Defined.
   
 
-(** %\exer{3.22}{128}%
+(** %\exerdone{3.22}{128}%
 As in classical set theory, the finite version of the axiom of choice is a
 theorem.  Prove that the axiom of choice holds when $X$ is a finite type
 $\Fin(n)$.
@@ -1669,156 +1659,554 @@ $P$ a family of propositions, then
     \prd{m_{n} : \Fin(n)} \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
   \right)
   \to
-  \left\lVert
+  \brck{
     \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
         P(m_{n}, g(m_{n}))
-  \right\rVert.
+  }
 \]%
 
-We proceed by induction.  For the base case, suppose that $n \equiv 0$, so we
-are interested in $\Fin(0) \defeq \sm{n:\mathbb{N}}(m < 0)$, which is
-equivalent to $\emptyt$.  Then we have $\ind{\emptyt}(A) : \prd{m_{0} :
-\Fin(0)} A(m_{0})$, so
+We proceed by induction on $n$.  Note first that $\eqv{\Fin(0)}{\emptyt}$ and
+that $\eqv{\Fin(n + 1)}{\Fin(n) + \unit}$, which follow quickly from the fact
+that $\N$ is a set.  In particular, we'll use the equivalence which sends
+$n_{n+1}$ to $\star$ and $m_{n+1}$ to $m_{n}$ for $m < n$.
+
+For the base case, $n \equiv 0$, everything is easily provided by ex falso
+quodlibet.  
+For the induction step, we can define a new family of sets $A' : (\Fin(n) +
+\unit) \to \UU$ as follows:
+%\begin{align*}
+  A'(z) &= \begin{cases}
+             A(m_{n+1}) & \text{if $z \equiv m_{n}$} \\
+             A(n_{n+1}) & \text{if $z \equiv \star$}
+           \end{cases}
+\end{align*}%
+And if $e : \eqv{\Fin(n+1)}{\Fin(n) + \unit}$, then we clearly have
+$h : \eqv{A(z)}{A'(e(z))}$ for all $z : \Fin(n+1)$.  Similarly, we can define
+%\begin{align*}
+  P'(z, a) &= \begin{cases}
+                P(m_{n+1},  h^{-1}(a)) & \text{if $z \equiv m_{n}$} \\
+                P(n_{n+1}, h^{-1}(a)) & \text{if $z \equiv \star$}
+              \end{cases}
+\end{align*}%
+For which we clearly have $g : \eqv{P(z, a)}{P'(e(z), h(a))}$ for all $z$ and
+$a$.  So, by the functorality of equivalence (Ex.%~%2.17), we have
 %\[
-  \left(
-    \ind{\emptyt}(A),
-    \ind{\emptyt}(\lam{m_{0}}P(m_{0}, \ind{\emptyt}(A, m_{0})))
-  \right)
+  \eqv{
+    \prd{m_{n+1} : \Fin(n + 1)} \brck{\sm{a : A(m_{n+1})} P(m_{n+1}, a)}
+  }{
+    \prd{z : \Fin(n) + \unit} \brck{\sm{a : A'(z)} P'(z, a)}
+  }
 \]%
-is an element of the codomain.
-
-For the induction step, suppose that we have an element
+But, since the induction principle for the sum type is an equivalence, we also
+have
 %\[
-  f : \prd{m_{n+1} : \Fin(n+1)} 
-        \left\lVert \sm{a:A(m_{n+1})} P(m_{n+1}, a)\right\rVert
+  \eqv{
+    \prd{z : \Fin(n) + \unit} \brck{\sm{a : A'(z)} P'(z, a)}
+  }{
+    \left(\prd{z : \Fin(n)} \brck{\sm{a : A'(\inl(z))} P'(\inl(z), a)}\right)
+    \times
+    \left(\prd{z : \unit} \brck{\sm{a : A'(\inr(z))} P'(\inr(z), a)}\right)
+  }
 \]%
-which can be modified in the obvious way to give a function
+And to construct an arrow out of this, we just need to give an arrow out of
+each one.  Now, by the same equivalences, we can rewrite the conclusion as
 %\[
-  \tilde{f} : \prd{m_{n} : \Fin(n)} 
-        \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
+  \brck{
+    \sm{g : \prd{z : \Fin(n) + \unit} A'(z)}
+    \prd{z : \Fin(n) + \unit}
+    P'(z, g(z))
+  }
 \]%
-So by the induction step, and since the element we're trying to construct is a
-mere proposition, we have an element
+Using the universal property of $\Sigma$ types, we get
 %\[
-    w : \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
-        P(m_{n}, g(m_{n}))
+  \brck{
+    \prd{z : \Fin(n) + \unit} \sm{a : A'(z)} P'(z, a)
+  }
 \]%
-
-Now, we need to construct an element of
+and the functorality of the induction principle for the sum gives
 %\[
-\left\lVert
-    \sm{g : \prd{m_{n+1} : \Fin(n+1)} A(m_{n+1})} \prd{m_{n+1} : \Fin(n+1)}
-        P(m_{n+1}, g(m_{n+1}))
-\right\rVert
+  \brck{
+    \left(\prd{z : \Fin(n)} \sm{a : A'(\inl(z))} P'(\inl(z), a)\right)
+    \times
+    \left(\prd{z : \unit} \sm{a : A'(\inr(z))} P'(\inr(z), a)\right)
+  }
 \]%
-To construct the first slot, suppose that $k : \Fin(n + 1)$.  Then because we
-have $e : \Fin(n+1) \eqvsym \Fin(n) + \unit$, there are two cases: either $e(k)
-: \Fin(n)$ or $e(k) = *$.  In the first case, we set $g(e(k)) \defeq (\fst
-w)(e(k))$.  In the second, we 
-
-
-
-Suppose the first.  Then we can modify $f$ in the
-obvious way to obtain
+Since this is only a finite product, we can take it outside of the truncation,
+giving
 %\[
-  \tilde{f} : \prd{m_{n} : \Fin(n)} 
-        \left\lVert \sm{a:A(m_{n})} P(m_{n}, a)\right\rVert
+  \brck{
+    \prd{z : \Fin(n)} \sm{a : A'(\inl(z))} P'(\inl(z), a)
+  }
+    \times
+  \brck{
+    \prd{z : \unit} \sm{a : A'(\inr(z))} P'(\inr(z), a)
+  }
 \]%
-So by the induction step, and since the element we're trying to construct is a
-mere proposition, we have an element
+and using the universal property of $\Sigma$ types to go back once more, we
+finally arrive at
 %\[
-    w : \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})} \prd{m_{n} : \Fin(n)}
-        P(m_{n}, g(m_{n}))
+  \brck{
+    \sm{g : \prd{z : \Fin(n)} A'(\inl(z))} 
+    \prd{z : \Fin(n)} 
+    P'(\inl(z), g(z))
+  }
+    \times
+  \brck{
+    \prd{z : \unit} 
+    \sm{a : A'(\inr(z))}
+    P'(\inr(z), a)
+  }
 \]%
-
-
-
-
+Since each of the domain and codomain are products, we can produce the required
+map by giving one between the first items of each product and one between the
+second.  So first we need an arrow
+%\[
+  \prd{m_{n} : \Fin(n)} \brck{\sm{a : A'(\inl(m_{n}))} P'(\inl(m_{n}), a)}
+  \to
+  \brck{
+    \sm{g : \prd{m_{n} : \Fin(n)} A'(\inl(m_{n}))}
+    \prd{m_{n} : \Fin(n)}
+    P'(\inl(m_{n}), g(m_{n}))
+  }
+\]%
+but by definition of $A'$ and $P'$, this is just
+%\[
+  \prd{m_{n} : \Fin(n)} \brck{\sm{a : A(m_{n})} P(m_{n}, a)}
+  \to
+  \brck{
+    \sm{g : \prd{m_{n} : \Fin(n)} A(m_{n})}
+    \prd{m_{n} : \Fin(n)}
+    P(m_{n}, g(m_{n}))
+  }
+\]%
+which is the induction hypothesis. For the second map, we need
+%\[
+  \prd{z : \unit}\brck{\sm{a : A'(\inr(z))} P'(\inr(z), a)}
+  \to
+  \brck{\prd{z : \unit}\sm{a : A'(\inr(z))} P'(\inr(z), a)}
+\]%
+which by the computation rules for $A'$ and $P'$ is
+%\[
+  \left(\unit \to \brck{\sm{a : A(n_{n+1})} P(n_{n+1}, a)}\right)
+  \to
+  \brck{\unit \to \sm{a : A(n_{n+1})} P(n_{n+1}, a)}
+\]%
+and this is easily constructed using the recursor for truncation.
 *)
 
-Infix "<>" := (fun n m => ~ (n = m)) : nat_scope. 
-
-Definition pred (n : nat) :=
-  match n with
-    | O => O
-    | S n' => n'
-  end.
-
-Lemma S_pred_inv : forall n, (n <> O) -> S (pred n) = n.
+Definition cardO : Fin O -> Empty.
 Proof.
-  induction n. intros. contradiction X. reflexivity.
-  intros. reflexivity.
+  intro w. destruct w as [n [k p]].
+  apply plus_eq_O in p. apply (nat_encode (S k) O). apply (snd p).
 Defined.
 
+Theorem isequiv_cardO : IsEquiv cardO.
+Proof.
+  refine (isequiv_adjointify _ _ _ _).
+  apply Empty_rect.
 
-Definition cardF_f {n} : Fin (S n) -> (Fin n) + Unit.
-  intro x. destruct x as [m [k p]].
+  (* Section *)
+  intro w. contradiction.
+
+  (* Retraction *)
+  intro w. destruct w as [n [k p]].
+  assert Empty.
+  apply (nat_encode (S k) O).
+  apply (@snd (n = O) _).
+  apply plus_eq_O.
+  apply p.
+  contradiction.
+Defined.
+  
+Definition cardF {n : nat} : Fin (S n) -> Fin n + Unit.
+Proof.
+  intro w. 
+  destruct w as [m [k p]].
   destruct (decidable_paths_nat m n).
   right. apply tt.
   left. exists m. exists (pred k). 
-  rewrite S_pred_inv.
-  simpl in p. rewrite <- plus_n_Sm in p. apply S_inj in p. apply p. 
-  intro. rewrite H in p.  rewrite <- plus_1_r in p. apply S_inj in p. 
-  contradiction.
+  apply S_inj. refine (_ @ p).
+  refine ((plus_n_Sm _ _) @ _). f_ap. f_ap. apply Spred.
+  intro H. apply n0. apply S_inj. refine (_ @ p).
+  refine ((plus_O_r _) @ _). refine ((plus_n_Sm _ _) @ _). f_ap. f_ap.
+  apply H^.
 Defined.
 
-Definition Fin_incl {n : nat} : Fin n -> Fin (S n).
-  intros m. destruct m as [m [k p]].
-  exists m. exists (S k). apply ((plus_n_Sm m (S k))^ @ (ap S p)).
+Lemma plus_cancelR (n m k : nat) : plus m n = plus k n -> m = k.
+Proof.
+  intro H.
+  apply (plus_cancelL n).
+  refine ((plus_comm _ _) @ _). refine (H @ _). apply (plus_comm _ _)^.
 Defined.
 
-Definition cardF_g {n} : (Fin n) + Unit -> Fin (S n).
-  intro x. destruct x as [m | t]. apply (Fin_incl m).
-  exists n. exists 0. apply (plus_1_r n)^.
+Lemma hprop_lt (n m : nat) : IsHProp (lt n m).
+Proof.
+  apply hprop_allpath. intros x y.
+  transparent assert (H : (
+    forall k : nat, IsHProp ((n + S k)%nat = m)
+  )).
+  intro k. apply hprop_allpath. apply (@set_path2 nat hset_nat).
+  apply path_sigma_hprop.
+  destruct x as [x p], y as [y p'].
+  simpl. apply S_inj. apply (plus_cancelL n). apply (p @ p'^).
+Defined.
+
+Lemma path_Fin (n : nat) (w w' : Fin n) : (w.1 = w'.1) -> w = w'.
+Proof.
+  intro p.
+  destruct w as [m w], w' as [m' w'].
+  simpl. apply path_sigma_uncurried. exists p.
+  set (H := hprop_lt m' n).
+  apply allpath_hprop.
+Defined.
+
+Theorem isequiv_cardF : forall n, IsEquiv (@cardF n).
+Proof.
+  intro n.
+  refine (isequiv_adjointify _ _ _ _).
+
+  (* inverse *)
+  intro H. destruct H as [w | t]. destruct w as [m [k p]].
+  exists m. exists (S k). refine ((plus_n_Sm _ _)^ @ _). apply (ap S). apply p.
+  exists n. exists O. apply (plus_1_r _)^.
+
+  (* Section *)
+  intro H. destruct H as [w | t]. destruct w as [m [k p]]. simpl.
+  destruct (decidable_paths_nat m n).
+  assert Empty. apply (nat_encode (S k) O). apply (plus_cancelL m).
+  refine (_ @ (plus_O_r _)). refine (_ @ p0^). apply p. contradiction.
+  apply (ap inl). 
+  apply path_Fin. reflexivity.
+
+  simpl. destruct (decidable_paths_nat n n). apply (ap inr). apply contr_unit.
+  contradiction (n0 1).
+
+  (* Retraction *)
+  intro w. destruct w as [m [k p]]. simpl.
+  destruct (decidable_paths_nat m n).
+  apply path_Fin. apply p0^.
+  apply path_Fin. reflexivity.
+Defined.
+
+Lemma eq_lt__lt (n m k : nat) : (n = m) -> (lt m k) -> (lt n k).
+Proof.
+  intros p w.
+  destruct w as [l q].
+  exists l. refine (_ @ q). f_ap.
+Defined.
+
+Lemma pred_inj (n m : nat) : n <> O -> m <> O -> (pred n = pred m) -> n = m.
+Proof.
+  intros Hn Hm H.
+  refine ((Spred n Hn)^ @ _). refine (_ @ (Spred m Hm)).
+  apply (ap S). apply H.
+Defined.
+
+Lemma pn_lt_n (n : nat) : n <> O -> (lt (pred n) n).
+Proof.
+  intro H. exists O. refine ((plus_1_r _)^ @ _). apply Spred. apply H.
+Defined.
+
+Lemma brck_equiv (A B : Type) : (A <~> B) -> (Brck A <~> Brck B).
+Proof.
+  intro e.
+  apply equiv_iff_hprop.
+  intro a'. strip_truncations. apply min1. apply e. apply a'.
+  intro b'. strip_truncations. apply min1. apply e^-1. apply b'.
+Defined.
+
+Definition Book_2_15_6 (X : Type) (A : X -> Type) (P : forall x, A x -> Type) :
+  (forall x, {a : A x & P x a}) 
+  ->
+  {g : forall x, A x & forall x, P x (g x)}.
+Proof.
+  intro f.
+  exists (fun x => (f x).1).
+  intro x. apply (f x).2.
+Defined.
+
+Theorem Book_2_15_7 (X : Type) (A : X -> Type) (P : forall x, A x -> Type) :
+  IsEquiv (Book_2_15_6 X A P).
+Proof.
+  refine (isequiv_adjointify _ _ _ _).
+  intros f x. apply (f.1 x; f.2 x).
+
+  (* Section *)
+  intro w. unfold Book_2_15_6.
+  apply path_sigma_uncurried. simpl. exists 1.
+  simpl. reflexivity.
+
+  (* Retraction *)
+  intro f. apply path_forall; intro x.
+  unfold Book_2_15_6. simpl. apply eta_sigma.
+Defined.
+
+Theorem brck_functor_prod (A B : Type) : Brck (A * B) <~> Brck A * Brck B.
+Proof.
+  apply equiv_iff_hprop.
+  intro x. split; strip_truncations; apply min1. apply (fst x). apply (snd x).
+  intro x. destruct x as [a b]. strip_truncations. apply min1. apply (a, b).
+Defined.
+
+(* The induction step of the proof *)
+Section ISFAC.
+Context {n : nat} {A : Fin (S n) -> Type} {P : forall m, A m -> Type}.
+
+Local Definition A' := A o (@equiv_inv _ _ cardF (isequiv_cardF n)).
+Local Definition P' : forall m, A' m -> Type.
+Proof.
+  intros m a.
+  refine (P _ _).
+  apply (@equiv_inv _ _ cardF (isequiv_cardF n)).
+  apply m. apply a.
+Defined.
+
+Theorem domain_trans :
+  (forall m, Brck {a : A m & P m a})
+  <~>
+  (forall z, Brck {a : A ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z))
+                         & P ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)) a})
+  *
+  (forall z : Unit, Brck {a : A (n; (O; (plus_1_r _)^)) & 
+                                P (n; (O; (plus_1_r _)^)) a}).
+Proof.
+  equiv_via (forall z, Brck {a : A' z & P' z a}).
+  refine (equiv_functor_forall' _ _).
+  apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
+  intro z.
+  apply brck_equiv.
+  refine (equiv_functor_sigma _ _).
+  unfold A'. unfold compose. apply (ap A). reflexivity.
+  unfold P'. f_ap.
+  
+  equiv_via (
+    (forall z, Brck {a : A' (inl z) & P' (inl z) a})
+    *
+    (forall z, Brck {a : A' (inr z) & P' (inr z) a})
+  ).
+  apply equiv_inverse. 
+  refine (equiv_sum_rect _).
+  
+  apply equiv_functor_prod'; apply equiv_idmap.
 Defined.
   
-Lemma sum_O_r (n m : nat) : n + m = n -> m = 0.
+
+Theorem codomain_trans :
+  Brck {g : forall m, A m & forall m, P m (g m)}
+  <~>
+  Brck {g : forall z, (A o (@equiv_inv _ _ cardF (isequiv_cardF n)) o inl) z
+            & forall z, 
+                   P ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)) (g z)}
+  *
+  Brck (forall z : Unit, {a : A (n; (O; (plus_1_r _)^)) &
+                                P (n; (O; (plus_1_r _)^)) a}).
 Proof.
-  induction n. simpl. apply idmap.
-  intros. simpl in H. apply S_inj in H. apply IHn. apply H.
+  equiv_via (Brck {g : forall z, A' z & forall z, P' z (g z)}).
+  apply brck_equiv.
+  refine (equiv_functor_sigma' _ _).
+  refine (equiv_functor_forall' _ _).
+  apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
+  intro z. apply equiv_idmap.
+  intro g. refine (equiv_functor_forall' _ _).
+  apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
+  intro z. apply equiv_idmap.
+  
+  equiv_via (Brck (forall z, {a : A' z & P' z a})).
+  apply brck_equiv.
+  apply equiv_inverse. 
+  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ _)).
+  
+  equiv_via (Brck ((forall z, {a : A' (inl z) & P' (inl z) a})
+                   *
+                   (forall z, {a : A' (inr z) & P' (inr z) a}))).
+  apply brck_equiv.
+  apply equiv_inverse. refine (equiv_sum_rect _).
+  
+  equiv_via (Brck (forall z : Fin n, {a : A' (inl z) & P' (inl z) a}) 
+             * 
+             Brck (forall z : Unit, {a : A' (inr z) & P' (inr z) a})).
+  apply brck_functor_prod.
+
+  refine (equiv_functor_prod' _ _).
+  apply brck_equiv.
+  unfold A', P', compose.
+  apply (BuildEquiv _ _ 
+                    (Book_2_15_6 _ _ _) 
+                    (Book_2_15_7 _ _ (fun z a => P (cardF^-1 (inl z)) a))).
+  apply brck_equiv. apply equiv_idmap.
 Defined.
 
-Lemma cardFO : Fin O <~> Empty.
-Proof.
-  refine (equiv_adjointify _ _ _ _).
-  intro n. destruct n as [n [k p]]. 
-  assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
-  apply equiv_path_nat in X. contradiction.
-  intro e. contradiction.
-  intro e. contradiction.
-  intro n. destruct n as [n [k p]].
-  assert (S (n + k) = 0). transitivity (n + S k). apply plus_n_Sm. apply p.
-  apply equiv_path_nat in X. contradiction.
-Defined.
+End ISFAC.
 
-Lemma cardF {n : nat} : Fin (S n) <~> (Fin n) + Unit.
-Admitted.
 
-Theorem ex3_22 `{Univalence}: forall (n : nat) (A : Fin n -> Type)
-                        (P : forall (m : Fin n), A m -> Type),
-  (forall n, IsHSet (A n)) -> (forall m a, IsHProp (P m a)) ->
-  (forall m, Brck {a : A m & P m a}) -> 
-  Brck {g : forall m, A m & forall k, P k (g k)}.
+Theorem finite_AC (n : nat) (A : Fin n -> Type) (P : forall m, A m -> Type) : 
+  (forall m, Brck {a : A m & P m a}) 
+  -> Brck {g : forall m, A m & forall m, P m (g m)}.
 Proof.
   induction n.
-  
-  (* case n = 0 *)
-  intros A P HA HP f. apply min1.
-  assert (forall m, A m). intros. contradiction (cardFO m).
-  exists X. intro. contradiction (cardFO k).
+  intro H. apply min1.
+  exists (fun m : Fin 0 => Empty_rect (fun _ => A m) (cardO m)).
+  intro m. contradiction (cardO m).
 
-  (* case n = S n *)
-  intros A P HA HP f.
-  assert (forall k : Fin n, Brck {a : A (Fin_incl k) & P (Fin_incl k) a}) as w.
-  intros. apply (f (Fin_incl k)).
-  apply IHn in w. 
-  strip_truncations.
-  assert (forall m : Fin (S n), A m) as g.
-  intro m. 
-  rewrite <- (eissect cardF m). 
-  destruct (cardF m) as [em | m_m]; simpl.
-Admitted.
-    
-  
+  intro f.
+  apply domain_trans in f.
+  destruct f as [fn f1].
+  apply codomain_trans.
+  split.
+  apply (IHn _ ((fun z a =>
+                 P ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)) a))).
+  apply fn.
+  set (z := tt).
+  apply f1 in z. strip_truncations. apply min1. intro t. apply z.
+Defined.
 
-Local Close Scope nat_scope.
+(**
+There's also a shorter proof by way of Lemma 3.8.2.  It suffices to show 
+for all $n : \N$ and $Y : \Fin(n) \to \UU$
+%\[
+  \left(\prd{m_{n} : \Fin(n)} \brck{Y(m_{n})}\right)
+  \to
+  \brck{\prd{m_{n} : \Fin(n)} Y(x)}
+\]%
+Things proceed by induction, as before.  For $n \equiv 0$ everything follows
+from a contradiction.  For the induction step, we can define a new family $Y' :
+(\Fin(n) + \unit) \to \UU$ as before.  Then
+%\[
+  \prd{m_{n+1} : \Fin(n+1)} \brck{Y(m_{n+1})}
+  \eqvsym
+  \prd{z : \Fin(n) + \unit} \brck{Y'(z)}
+  \eqvsym
+  \left(\prd{z : \Fin(n)} \brck{Y'(\inl(z))}\right)
+  \times
+  \left(\prd{z : \unit} \brck{Y'(\inr(z))}\right)
+\]%
+and
+%\begin{align*}
+  \brck{\prd{m_{n+1} : \Fin(n+1)} Y(m_{n+1})}
+  &\eqvsym
+  \brck{\prd{z : \Fin(n) + \unit} Y'(z)}
+  \\&\eqvsym
+  \brck{\left(\prd{z : \Fin(n)} Y'(\inl(z))\right)
+  \times
+  \left(\prd{z : \unit} Y'(\inr(z))\right)}
+  \\&\eqvsym
+  \brck{\prd{z : \Fin(n)} Y'(\inl(z))}
+  \times
+  \brck{\prd{z : \unit} Y'(\inr(z))}
+\end{align*}%
+As before, we pair the induction hypothesis with a trivially constructed map to
+produce the required arrow.
+*)
+
+(* the induction step *)
+Section ISFAC'.
+Context {n : nat} {Y : Fin (S n) -> Type}.
+
+Local Definition Y' := Y o (@equiv_inv _ _ cardF (isequiv_cardF n)).
+
+Theorem domain_trans' :
+  (forall m, Brck (Y m))
+  <~>
+  (forall z, Brck (Y ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)))) 
+  * (forall z : Unit, Brck (Y (n; (O; (plus_1_r _)^)))).
+Proof.
+  equiv_via (forall z, Brck (Y' z)).
+  refine (equiv_functor_forall' _ _).
+  apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
+  intro b. apply equiv_idmap.
+
+  equiv_via ((forall z, Brck (Y' (inl z))) * (forall z, Brck (Y' (inr z)))).
+  apply equiv_inverse. refine (equiv_sum_rect _).
+  
+  apply equiv_idmap.
+Defined.
+
+Theorem codomain_trans' : 
+  Brck (forall z, Y ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)))
+  *
+  Brck (forall z : Unit, Y (n; (O; (plus_1_r _)^)))
+  <~>
+  Brck (forall m, Y m).
+Proof.
+  equiv_via (Brck (forall z, Y' (inl z)) * Brck (forall z : Unit, Y' (inr z))).
+  apply equiv_idmap.
+  
+  equiv_via (Brck ((forall z, Y' (inl z)) * (forall z, Y' (inr z)))).
+  apply equiv_inverse. apply brck_functor_prod. 
+
+  equiv_via (Brck (forall z, Y' z)).
+  apply brck_equiv. refine (equiv_sum_rect _).
+
+  apply brck_equiv. refine (equiv_functor_forall' _ _).
+  apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
+  intro b. unfold Y', compose. apply equiv_path.
+  f_ap. apply eissect.
+Defined.
+
+End ISFAC'.
+
+Theorem finite_AC' (n : nat) (Y : Fin n -> Type) :
+  (forall m, Brck (Y m)) -> Brck (forall m, Y m).
+Proof.
+  induction n.
+  intro H. apply min1. intro m. contradiction (cardO m).
+  
+  intro f.
+  apply domain_trans' in f. destruct f as [fn f1].
+  apply codomain_trans'. split.
+  
+  apply IHn. apply fn.
+  set (z := tt). apply f1 in z. strip_truncations. apply min1. intro t. apply z.
+Defined.
+
+Theorem finite_AC_eqv_finite_AC' : 
+  (forall (n : nat) (A : Fin n -> Type) P, 
+     (forall m, Brck {a : A m & P m a})
+     ->
+     Brck {g : forall m, A m & forall m, P m (g m)})
+  <~>
+  (forall (n : nat) (Y : Fin n -> Type),
+     (forall m, Brck (Y m)) -> Brck (forall m, Y m)).
+Proof.
+  apply equiv_iff_hprop.
+
+  (* forward *)
+  intros H n Y f.
+  transparent assert (e : (
+    Brck {g : forall m : Fin n, Y m & forall m, (fun z a => Unit) m (g m)}
+    <~>
+    Brck (forall m : Fin n, Y m)
+  )).
+  equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
+  apply brck_equiv. apply equiv_inverse.
+  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ (fun z a => Unit))).
+  apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
+  intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
+  apply e. clear e.
+  apply (H n Y (fun z a => Unit)).
+  intro m. assert (Brck (Y m)). apply (f m).
+  strip_truncations. apply min1. exists X. apply tt.
+
+  (* back *)
+  intros H n A P f.
+  transparent assert (e : (
+    Brck (forall m, (fun x => {a : A x & P x a}) m)
+    <~>
+    Brck {g : forall m : Fin n, A m & forall m : Fin n, P m (g m)}
+  )).
+  apply brck_equiv.
+  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ _)).
+  apply e. clear e.
+  apply H. apply f.
+Defined.
+
+Theorem finite_AC_alt (n : nat) (A : Fin n -> Type) 
+        (P : forall m, A m -> Type) : 
+  (forall m, Brck {a : A m & P m a}) 
+  -> Brck {g : forall m, A m & forall m, P m (g m)}.
+Proof.
+  generalize dependent n.
+  apply finite_AC_eqv_finite_AC'.
+  apply finite_AC'.
+Defined.
+
