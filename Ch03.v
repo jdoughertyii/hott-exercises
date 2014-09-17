@@ -786,7 +786,7 @@ Qed.
   
   
 
-(** %\exer{3.19}{128}%
+(** %\exerdone{3.19}{128}%
 Suppose $P : \mathbb{N} \to \UU$ is a decidable family of mere propositions.
 Prove that
 %\[
@@ -824,8 +824,8 @@ Then we have
   \prd{w' : \sm{n:\mathbb{N}}P(n)} \fst(w) \leq \fst(w')
 \]%
 which we must show to be a mere proposition.  Suppose that $w$ and $w'$ are two
-elements of this type.  By $\snd(w)$ and $\snd(w')$, we have $\fst(w) \leq
-\fst(w')$ and $\fst(w') \leq \fst(w)$, so $\fst(w) = \fst(w')$.  Since
+elements of this type.  By $\snd(w)$ and $\snd(w')$, we have $\fst(\fst(w)) \leq
+\fst(\fst(w'))$ and $\fst(\fst(w')) \leq \fst(\fst(w))$, so $\fst(\fst(w)) = \fst(\fst(w'))$.  Since
 $\mathbb{N}$ has decidable equality, $\fst(w) \leq \snd(w')$ is a mere
 proposition for all $w$ and $w'$, meaning that $Q(w)$ is a mere proposition.
 So $w = w'$, meaning that our type is contractible.
@@ -845,10 +845,6 @@ constructed type, so we've constructed a map
 \]%
 and projecting out gives the function in the statement.
 
-I'm having just the damnedest time trying to work everything out in Coq.  At
-some point I'll sort out my loadpath to cut out the [nat] lemmas.  I'm sure I'm
-overcomplicating the correctness proofs for [bounded_min], though.  No way can
-they be this long.
 *)
 
 Local Open Scope nat_scope.
@@ -896,71 +892,688 @@ Proof.
   refine ((transport_compose _ S _ _)^ @ _).
   simpl. apply IHn.
 Defined.
-        
+
 Lemma Sn_neq_O : forall n, S n <> O.
 Proof.
   intros n H. apply nat_encode in H. contradiction.
 Defined.
 
+Lemma plus_O_r (n : nat) : n = n + O.
+Proof. 
+  induction n. reflexivity. apply (ap S IHn).
+Defined.
+
+Lemma plus_eq_O (n m : nat) : n + m = O -> (n = O) /\ (m = O).
+Proof.
+  destruct n.
+  intro H. split. reflexivity. apply H.
+  intro H. simpl in H. apply nat_encode in H. contradiction.
+Defined.
+  
+Lemma plus_assoc : forall n m k, (n + m) + k = n + (m + k).
+  intros n m k.
+  induction n. reflexivity.
+  apply (ap S IHn).
+Defined.
+  
+
+Lemma le_trans : forall n m k, (n <= m) -> (m <= k) -> (n <= k).
+Proof.
+  intros n m k Hnm Hmk.
+  destruct Hnm as [l p].
+  destruct Hmk as [l' p'].
+  exists (l + l').
+  refine ((plus_assoc _ _ _)^ @ _).
+  refine (_ @ p'). f_ap.
+Defined.  
+
+Lemma le_Sn_le (n m : nat) : S n <= m -> n <= m.
+Proof.
+  intro H. apply (le_trans n (S n) m). exists 1. apply (plus_1_r _)^. apply H.
+Defined.
+  
 Lemma plus_cancelL : forall n m k, n + m = n + k -> m = k.
 Proof.
   intro n. induction n. trivial.
   intros m k H.
-  simpl in H. apply S_inj in H. apply IHn. apply H.
-Defined.
-
-Lemma plus_assoc : forall n m k, n + (m + k) = (n + m) + k.
-Proof.
-  induction n. trivial.
-  intros m k. simpl. apply (ap S).
-  apply IHn.
-Defined.
-
-Lemma plus_O_r : forall n, n = n + O.
-Proof.
-  induction n. reflexivity.
-  simpl. apply (ap S). apply IHn.
+  apply S_inj in H. apply IHn. apply H.
 Defined.
 
 Lemma le_antisymmetric (n m : nat) : (n <= m) -> (m <= n) -> (n = m).
 Proof.
-  intros p q. destruct p as [k p], q as [k' q].
-  transparent assert (Hm : (m + k' + k = m)).
-  apply ((ap (fun l => l + k) q) @ p).
-  transparent assert (Hk : (k' + k = 0)).
-  apply (plus_cancelL m).
-  apply ((plus_assoc _ _ _) @ Hm @ (plus_O_r m)).
-  refine (q^ @ _). refine ((ap (fun l => l + k') p)^ @ _).
-Admitted.
+  intro H. destruct H as [k p].
+  intro H. destruct H as [k' p'].
+  transparent assert (q : (n + (k + k') = n + O)).
+    refine ((plus_assoc _ _ _)^ @ _).
+    refine ((ap (fun s => s + k') p) @ _).
+    refine (_ @ (plus_0_r _)).
+    apply p'.
+  apply plus_cancelL in q.
+  apply plus_eq_O in q.
+  refine ((plus_0_r _) @ _).
+  refine ((ap (plus n) (fst q))^ @ _).
+  apply p.
+Defined.
+  
+Lemma decidable_paths_nat : decidable_paths nat.
+Proof.
+  intros n m. 
+  generalize dependent m.
+  generalize dependent n.
+  induction n, m.
+  left. reflexivity.
+  right. intro H. apply nat_encode in H. contradiction.
+  right. intro H. apply nat_encode in H. contradiction.
+  destruct (IHn m). 
+    left. apply (ap S p).
+    right. intro H. apply S_inj in H. contradiction.
+Defined.
 
-Definition decidable {A} (P : A -> Type) := forall a, (P a + ~ P a).
+Lemma hset_nat : IsHSet nat.
+Proof. apply hset_decidable. apply decidable_paths_nat. Defined.
 
-Module Exercise3_19.
+Lemma hprop_le (n m : nat) : IsHProp (n <= m).
+Proof.
+  apply hprop_allpath. intros p q.
+  refine (path_sigma_hprop _ _ _).
+  intro k. apply hprop_allpath. refine set_path2. apply hset_nat.
+  destruct p as [k p], q as [k' p']. simpl.
+  apply (plus_cancelL n).
+  apply (p @ p'^).
+Defined.
 
-Variable (P : nat -> Type).
-Hypothesis (H : decidable P).
-Hypothesis (HP : forall n, IsHProp (P n)).
+Lemma hprop_dependent (A : Type) (P : A -> Type) :
+  (forall a, IsHProp (P a)) -> IsHProp (forall a, P a).
+Proof.
+  intro HP. 
+  apply hprop_allpath. intros p p'. apply path_forall; intro a. apply HP.
+Defined.
 
-Definition Q (w : {n : nat & P n}) := 
-  forall w' : {n : nat & P n}, w.1 <= w'.1. 
+Definition n_le_n (n : nat) : n <= n := (O; (plus_O_r n)^).
+Definition n_le_Sn (n : nat) : n <= S n := (S O; (plus_1_r n)^).
 
-Lemma hprop_sigmaQ : IsHProp ({w : {n : nat & P n} & Q w}).
+Lemma Spred (n : nat) : (n <> O) -> S (pred n) = n.
+Proof.
+  induction n; intro H; [contradiction H|]; reflexivity.
+Defined.
+
+Lemma le_partitions (n : nat) : forall m, (m <= n) + (n <= m).
+Proof.
+  induction n.
+  intro m. right. exists m. reflexivity.
+
+  intro m.
+  destruct (IHn m) as [IHnm | IHnm].
+  left. apply (le_trans _ n). apply IHnm. apply n_le_Sn.
+  destruct IHnm as [k p].
+  destruct (decidable_paths_nat n m).
+  left. exists 1. refine ((plus_1_r _)^ @ _). apply (ap S p0^).
+  right. exists (pred k). refine ((plus_n_Sm _ _) @ _). refine (_ @ p).
+  f_ap. apply Spred.
+  intro H. apply n0.
+  refine ((plus_O_r _) @ _). refine ((ap (plus n) H^) @ _). apply p.
+Defined.
+
+
+Lemma le_neq__lt (n m : nat) : (n <= m) -> (n <> m) -> (n < m).
+Proof.
+  intros H1 H2. destruct H1 as [k p].
+  exists (pred k). refine (_ @ p). f_ap.
+  apply Spred. intro Hk. apply H2. 
+  refine (_ @ p). refine ((plus_O_r _) @ _). f_ap.
+  apply Hk^.
+Defined.
+
+Lemma lt_partitions (n m : nat) : (n < m) + (n = m) + (m < n).
+Proof.
+  destruct (decidable_paths_nat n m).
+  left. right. apply p.
+  destruct (le_partitions n m).
+  right. apply le_neq__lt. apply l. intro H. apply n0. apply H^.
+  left. left. apply le_neq__lt. apply l. apply n0.
+Defined.
+
+Lemma p_nnp : forall P, P -> ~ ~ P.
+Proof. auto. Defined.
+
+Lemma n_nlt_n (n : nat) : ~ (n < n).
+Proof.
+  intros H. destruct H as [k p].
+  apply (nat_encode (S k) O).
+  apply (plus_cancelL n).
+  apply (p @ (plus_O_r _)). 
+Defined.
+
+Lemma n_neq_Sn (n : nat) : n <> S n.
+Proof.
+  induction n.
+  intro H. apply nat_encode in H. contradiction.
+  intro H. apply IHn. apply S_inj in H. apply H.
+Defined.
+
+Lemma n_lt_Sm__n_le_m (n m : nat) : (n < S m) -> (n <= m).
+Proof.
+  intro H. destruct H as [k p]. exists k.
+  apply S_inj. refine (_ @ p).
+  apply plus_n_Sm.
+Defined.
+
+Lemma le_O (n : nat) : n <= O -> n = O.
+Proof.
+  intro H. destruct H as [k p].
+  apply plus_eq_O in p. apply (fst p).
+Defined.
+
+Lemma lt_1 (n : nat) : n < 1 -> n = O.
+Proof.
+  intro H.
+  apply le_O. apply n_lt_Sm__n_le_m. apply H.
+Defined.
+
+Lemma lt_le (n m : nat) : n < m -> n <= m.
+Proof.
+  intro H. destruct H as [k p].
+  exists (S k). apply p.
+Defined.
+
+Lemma Sn_lt_Sm__n_lt_m (n m : nat) : S n < S m -> n < m.
+Proof.
+  intro H. destruct H as [k p]. exists k.
+  simpl in p. apply S_inj in p. apply p.
+Defined.
+
+Lemma lt_neq (n m : nat) : n < m -> n <> m.
+Proof.
+  generalize dependent m.
+  induction n.
+  intros m H HX.
+  destruct H as [k p]. simpl in p.
+  apply (nat_encode (S k) O).
+  apply (p @ HX^).
+
+  induction m.
+  intros H HX.
+  apply (nat_encode (S n) O). apply HX.
+  intros H Hx.
+  apply Sn_lt_Sm__n_lt_m in H.
+  apply IHn in H. apply H. apply S_inj. apply Hx.
+Defined.
+  
+Lemma lt_trans (n m k : nat) : n < m -> m < k -> n < k.
+Proof.
+  intros H1 H2.
+  destruct H1 as [l p], H2 as [l' p'].
+  exists (l + S l').
+  refine (_ @ p').
+  change (S (l + S l')) with (S l + S l').
+  refine ((plus_assoc _ _ _)^ @ _). f_ap.
+Defined.
+  
+Lemma n_lt_Sn (n : nat) : n < S n.
+Proof.
+  exists O. apply (plus_1_r _)^.
+Defined.
+
+Lemma bound_up (n m : nat) : (n <= m) -> (n <> m) -> (S n <= m).
+Proof.
+  intros H1 H2.
+  apply le_neq__lt in H1.
+  destruct H1 as [k p]. exists k.
+  refine ((plus_n_Sm _ _) @ _). apply p. apply H2.
+Defined.
+
+Lemma le_lt__lt (n m k : nat) : n <= m -> m < k -> n < k.
+Proof.
+  intros H1 H2.
+  destruct (decidable_paths_nat n m).
+  destruct H2 as [l q].
+  exists l. refine (_ @ q). f_ap.
+  apply (lt_trans _ m).
+  apply le_neq__lt. apply H1. apply n0. apply H2.
+Defined.
+
+Lemma lt_le__lt (n m k : nat) : n < m -> m <= k -> n < k.
+Proof.
+  intros H1 H2.
+  destruct (decidable_paths_nat m k).
+  destruct H1 as [l q].
+  exists l. refine (_ @ p). apply q.
+  apply (lt_trans _ m).
+  apply H1. apply le_neq__lt. apply H2. apply n0.
+Defined.
+
+Lemma le_eq__le (n m k : nat) : (n <= m) -> (m = k) -> (n <= k).
+Proof.
+  intros H1 H2.
+  destruct H1 as [l p].
+  exists l. apply (p @ H2).
+Defined.
+
+Lemma n_le_m__Sn_le_Sm (n m : nat) : n <= m -> (S n <= S m).
+Proof.
+  intro H. destruct H as [k p]. exists k. simpl. apply (ap S). apply p.
+Defined.
+
+Lemma Sn_le_Sm__n_le_m (n m : nat) : S n <= S m -> n <= m.
+Proof.
+  intro H. destruct H as [k p]. exists k.
+  simpl in p. apply S_inj in p. apply p.
+Defined.
+
+Lemma n_nlt_O (n : nat) : ~ (n < O).
+Proof.
+  induction n. apply n_nlt_n.
+  intro H. destruct H as [k p]. apply nat_encode in p. contradiction.
+Defined.
+
+Lemma O_lt_n (n : nat) : (n <> O) -> (O < n).
+Proof.
+  intro H.
+  exists (pred n).
+  apply Spred. apply H.
+Defined.
+
+Lemma n_lt_m__Sn_lt_Sm (n m : nat) : n < m -> S n < S m.
+Proof.
+  intro H. destruct H as [k p]. exists k. simpl. apply (ap S). apply p.
+Defined.
+
+Lemma n_lt_m__n_le_Sm (n m : nat) : n < m -> n <= S m.
+Proof.
+  intro H. destruct H as [k p].
+  exists (S (S k)). apply (ap S) in p. refine (_ @ p).
+  symmetry. apply plus_n_Sm.
+Defined.
+
+
+Lemma lt_bound_down (n m : nat) : n < S m -> (n <> m) -> n < m.
+Proof.
+  intros. destruct H as [k p].
+  exists (pred k). refine ((plus_n_Sm _ _)^ @ _).
+  refine ((plus_n_Sm _ _) @ _). apply S_inj. refine (_ @ p).
+  refine ((plus_n_Sm _ _) @ _). f_ap. apply (ap S). apply Spred.
+  intro H. apply X. apply S_inj. refine (_ @ p).
+  refine (_ @ (plus_n_Sm _ _)). apply (ap S). refine ((plus_O_r _) @ _). f_ap.
+  apply H^.
+Defined.
+
+Lemma lt_bound_up (n m : nat) : n < m -> (S n <> m) -> S n < m.
+Proof.
+  intros.
+  destruct H as [k p]. exists (pred k). refine (_ @ p).
+  refine ((plus_n_Sm _ _) @ _). f_ap. f_ap. apply Spred. intro H.
+  apply X. refine (_ @ p). refine ((plus_1_r _) @ _). f_ap. f_ap. apply H^.
+Defined.
+
+Lemma pred_n_eq_O : forall n, pred n = O -> (n = O) + (n = 1).
+Proof.
+  induction n.
+  intros. left. reflexivity.
+  intros H. simpl in H. right. apply (ap S H).
+Defined.
+
+Lemma bound_down (n m : nat) : (n <= S m) -> (n <> S m) -> (n <= m).
+Proof.
+  intros H1 H2.
+  apply le_neq__lt in H1.
+  destruct H1 as [k p]. exists k.
+  apply S_inj. refine ((plus_n_Sm _ _) @ _). apply p. apply H2.
+Defined.
+
+Lemma nle_lt (n m : nat) : ~ (n <= m) -> (m < n).
+Proof.
+  generalize dependent m.
+  induction n.
+  intros m H. assert Empty. apply H. exists m. reflexivity. contradiction.
+  intros m H. destruct m. 
+    exists n. reflexivity.
+    apply n_lt_m__Sn_lt_Sm. apply IHn. intro H'. apply H.
+    destruct H' as [k p]. exists k. simpl. apply (ap S). apply p.
+Defined.
+
+Lemma Sn_neq_n (n : nat) : S n <> n.
+Proof.
+  intro H.
+  apply (nat_encode 1 0).
+  apply (plus_cancelL n).
+  refine ((plus_1_r _)^ @ _). refine (_ @ (plus_O_r _)).
+  apply H.
+Defined.
+
+Lemma lt_antisymmetric (n m : nat) : n < m -> ~ (m < n).
+Proof.
+  intros H HX.
+  destruct H as [k p], HX as [k' p'].
+  transparent assert (H : (S k + S k' = O)).
+  apply (plus_cancelL n). refine (_ @ (plus_O_r _)).
+  refine (_ @ p'). refine ((plus_assoc _ _ _)^ @ _). f_ap.
+  apply nat_encode in H. contradiction.
+Defined.
+
+Lemma lt_eq__lt (n m k : nat) : (n < m) -> (m = k) -> (n < k).
+Proof.
+  intros H1 H2.
+  destruct H1 as [l p].
+  exists l. refine (p @ _). apply H2.
+Defined.
+
+Lemma nlt_le (n m : nat) : ~ (n < m) -> (m <= n).
+Proof.
+  generalize dependent m.
+  induction n.
+  intros m H. destruct (decidable_paths_nat m O). exists O. refine (_ @ p).
+  symmetry. apply plus_O_r.
+  assert Empty. apply H. apply O_lt_n. apply n. contradiction.
+  
+  induction m.
+  intro H. exists (S n). reflexivity.
+  intro H. apply n_le_m__Sn_le_Sm. apply IHn.
+  intro H'. apply H. apply n_lt_m__Sn_lt_Sm. apply H'.
+Defined.
+  
+Lemma n_lt_m__Sn_le_m (n m : nat) : (n < m) -> (S n <= m).
+Proof.
+  intro H.
+  apply n_lt_m__Sn_lt_Sm in H.
+  apply n_lt_Sm__n_le_m in H.
+  apply H.
+Defined.
+
+Lemma n_le_m__n_lt_Sm (n m : nat) : n <= m -> n < S m.
+Proof.
+  intro H.
+  destruct H as [k p].
+  exists k. refine ((plus_n_Sm _ _)^ @ _). f_ap.
+Defined.
+
+Section Exercise3_19.
+
+Context {P : nat -> Type} {HP : forall n, IsHProp (P n)}
+        {DP : forall n, P n + ~ P n}.
+
+Local Definition Q (w : {n : nat & P n}) : Type := 
+  forall w' : {n : nat & P n}, w.1 <= w'.1.
+
+Lemma hprop_Q : forall w, IsHProp (Q w).
+Proof.
+  intro w. unfold Q. apply hprop_dependent. intro w'. apply hprop_le.
+Defined.
+
+Lemma hprop_sigma_Q : IsHProp {w : {n : nat & P n} & Q w}.
 Proof.
   apply hprop_allpath. intros w w'.
-  transparent assert (H : (w.1 = w'.1)).
-Admitted.
-  
-  
+  refine (path_sigma_hprop _ _ _). apply hprop_Q.
+  apply path_sigma_hprop. apply le_antisymmetric.
+  apply (w.2 w'.1). apply (w'.2 w.1).
+Defined.
 
-Theorem ex3_19 : Brck {n : nat & P n} -> {n : nat & P n}.
+Definition bmin (bound : nat) : nat.
 Proof.
-  intros. apply (@pr1 {n : nat & P n} Q).
-Admitted.
+  induction bound as [|z].
+  destruct (DP O). apply O. apply 1.
 
+  destruct (lt_partitions IHz (S z)) as [[Ho | Ho] | Ho].
+  apply IHz.
+  destruct (DP (S z)).
+    apply (S z).
+    apply (S (S z)).
+  apply (S (S z)).
+Defined.
+
+Lemma bmin_correct_O (n : nat) : P O -> bmin n = O.
+Proof.
+  intro H.
+  induction n. simpl. destruct (DP O). reflexivity. apply n in H. contradiction.
+  simpl. rewrite IHn. reflexivity.
+Defined.
+
+Lemma bmin_correct_self_P (n : nat) : bmin n = n -> P n.
+Proof.
+  induction n.
+  intros. simpl in H. 
+  destruct (DP O). 
+    apply p. 
+    apply nat_encode in H. contradiction.
+  intro H.
+  simpl in H.
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho]. 
+  rewrite H in Ho. apply n_nlt_n in Ho. contradiction.
+  destruct (DP (S n)). apply p.
+  transparent assert (X : Empty).
+    apply (n_neq_Sn (S n)). apply H^.
+  contradiction.
+  transparent assert (X : Empty).
+    apply (n_neq_Sn (S n)). apply H^.
+  contradiction.
+Defined.
+
+Lemma bmin_correct_bound (n : nat) : bmin n <= S n.
+Proof.
+  induction n.
+  simpl.
+  destruct (DP O). exists 1. reflexivity.
+  exists O. apply plus_n_Sm.
   
+  simpl.
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+    apply (le_trans _ (S n)). apply IHn. apply n_le_Sn.
+    destruct (DP (S n)).
+      apply n_le_Sn.
+      apply n_le_n.
+    apply n_le_n.
+Defined.
+  
+Lemma bmin_correct_nPn (n : nat) : bmin n = S n -> ~ P n.
+Proof.
+  induction n.
+  intros H HX.
+  apply (bmin_correct_O O) in HX.
+  apply (nat_encode 1 O). refine (H^ @ _). refine (_ @ HX). reflexivity.
+
+  intros H HX. simpl in H.
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+  rewrite H in Ho. apply (n_nlt_n (S (S n))).
+  apply (lt_trans _ (S n)). apply Ho. apply n_lt_Sn.
+  destruct (DP (S n)).
+  apply (n_neq_Sn (S n)). apply H.
+  apply n0. apply HX.
+  clear H.
+  
+  apply (n_nlt_n (bmin n)).
+  apply (le_lt__lt _ (S n)).
+  apply bmin_correct_bound.
+  apply Ho.
+Defined.
+
+Lemma bmin_correct_success (n : nat) : bmin n < S n -> P (bmin n).
+Proof.
+  induction n.
+  intro H. apply lt_1 in H. apply bmin_correct_self_P in H.
+  apply ((bmin_correct_O _ H)^ # H).
+  
+  simpl.
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+  intro H. apply IHn. apply Ho.
+  destruct (DP (S n)). 
+  intro H. apply p.
+  intro H. apply n_nlt_n in H. contradiction.
+  intro H. apply n_nlt_n in H. contradiction.
+Defined.
+
+Lemma bmin_correct_i (n : nat) : forall m, (m < n) -> (m < bmin n) -> ~ P m.
+Proof.
+  induction n.
+  intros m H1 H2.
+  apply n_nlt_O in H1. contradiction.
+  
+  induction m. intro H. clear H.
+  destruct (decidable_paths_nat n O).
+  (* Case: n = O *)
+  (* we just want the contrapositive of bmin_correct_O *)
+  intro H.
+  apply (contrapositive (bmin_correct_O (S n))).
+  intro H'. rewrite H' in H. apply n_nlt_n in H. contradiction.
+  (* Case: n <> O *)
+  intro H. apply IHn. apply O_lt_n. apply n0.
+  simpl in H.
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+  (* Case: bmin n < S n *)
+  apply H.
+  (* Case: bmin n = S n *)
+  rewrite Ho. apply O_lt_n. apply Sn_neq_O.
+  apply (lt_trans _ (S n)). apply O_lt_n. apply Sn_neq_O. apply Ho.
+
+  intros H1. apply Sn_lt_Sm__n_lt_m in H1. simpl. 
+  destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+  (* Case: bmin n < S n *)
+  intro H. apply IHn.
+  destruct (decidable_paths_nat (bmin n) n).
+  rewrite <- p. apply H. 
+  apply lt_bound_down in Ho.
+  apply (lt_trans _ (bmin n)). apply H. apply Ho. apply n0. apply H.
+  
+  (* Case: bmin n = S n *)
+  intro H.
+  destruct (decidable_paths_nat (S m) n).
+  apply bmin_correct_nPn. rewrite p. apply Ho.
+  apply lt_bound_up in H1. apply IHn. apply H1.
+  apply (lt_trans _ n). apply H1. rewrite Ho. apply n_lt_Sn.
+  apply n0.
+  
+  (* Case: bmin n > S n *)
+  set (H := (bmin_correct_bound n)).
+  assert Empty. apply (n_nlt_n (S n)).
+  apply (lt_le__lt _ (bmin n)).
+  apply Ho. apply H. contradiction.
+Defined.
+
+Lemma bmin_correct_i' (n : nat) : forall m, (m <= n) -> (m < bmin n) -> ~ P m.
+Proof.
+  intros m H.
+  destruct (decidable_paths_nat m n).
+  clear H.
+  intro H. 
+  set (H' := (bmin_correct_nPn n)). rewrite p. apply H'. clear H'.
+  set (H' := (bmin_correct_bound n)). rewrite p in H.
+  apply le_antisymmetric. apply H'. destruct H as [k q].
+  exists k. refine ((plus_n_Sm _ _) @ _). apply q.
+
+  apply le_neq__lt in H. generalize H. apply bmin_correct_i. apply n0.
+Defined.
+
+Lemma bmin_correct_leb (n : nat) : P n -> (bmin n <= n).
+Proof.
+  induction n.
+  intro H. apply (bmin_correct_O O) in H.
+  exists O. refine (_ @ H). symmetry. apply plus_O_r.
+
+  intro H.
+  simpl. destruct (lt_partitions (bmin n) (S n)) as [[Ho | Ho] | Ho].
+  destruct Ho as [k p]. exists (S k). apply p.
+  destruct (DP (S n)). exists O. symmetry. apply plus_O_r.
+  apply n0 in H. contradiction.
+  apply (le_trans _ (bmin n)).
+  apply n_lt_m__Sn_le_m. apply Ho.
+  apply (bmin_correct_bound n).
+Defined.
+  
+  
+Lemma bmin_correct_i_cp (n m : nat) : P m -> (bmin n <= m).
+Proof.
+  intro H.
+  transparent assert (H' : (
+  forall n m : nat, (m < n /\ m < bmin n) -> ~ P m
+  )).
+  intros n' m' H'. apply (bmin_correct_i n'). apply (fst H'). apply (snd H').
+  transparent assert (H'' : (~ ~ P m)). apply p_nnp. apply H.
+  apply (contrapositive (H' n m)) in H''.
+  transparent assert (H''' : (sum (~ (m < n)) (~ (m < bmin n)))).
+    destruct (lt_partitions n m) as [[Ho | Ho] | Ho].
+    left. apply lt_antisymmetric. apply Ho.
+    left. intro H'''. apply (n_nlt_n n). apply (lt_eq__lt m n m) in H'''.
+    apply (n_nlt_n m) in H'''. contradiction.
+    apply Ho.
+    right. intro H'''.
+    apply H''. split. apply Ho. apply H'''.
+  destruct H'''; clear H'' H'.
+  apply nlt_le in n0.
+  apply nlt_le. intro H'.
+  set (H'' := (bmin_correct_bound n)).
+  transparent assert (Heq : (n = m)).
+  apply le_antisymmetric. apply n0. apply n_lt_Sm__n_le_m.
+  apply (lt_le__lt _ (bmin n) _). apply H'. apply H''.
+  transparent assert (Hle : (m <= n)).
+  exists O. refine (_ @ Heq^). symmetry. apply plus_O_r.
+  generalize H. change (P m -> Empty) with (~ P m).
+  apply (bmin_correct_i' n). apply Hle. apply H'.
+  
+  apply nlt_le in n0. apply n0.
+Defined.
+
+Lemma bmin_correct (bound : nat) : 
+  {n : nat & P n /\ n <= bound} -> forall n, P n -> bmin bound <= n.
+Proof.
+  induction bound.
+  intros w n p.
+  destruct w as [w [a b]].
+  apply le_O in b. 
+  exists n. transitivity (O + n). f_ap. apply bmin_correct_O. apply (b # a).
+  reflexivity.
+
+  intros w n p. simpl.
+  destruct (lt_partitions (bmin bound) (S bound)) as [[Ho | Ho] | Ho].
+  (* bmin bound < S bound *)
+  apply IHbound. exists (bmin bound). split.
+  apply bmin_correct_success. apply Ho.
+  destruct Ho as [k q]. exists k. apply S_inj. refine (_ @ q).
+  refine ((plus_n_Sm _ _) @ _). reflexivity.
+  apply p.
+  
+  (* bmin bound = S bound *)
+  destruct w as [w [a b]].
+  destruct (decidable_paths_nat w (S bound)).
+  destruct (DP (S bound)).
+  apply nlt_le. intro H.
+  generalize p. change (P n -> Empty) with (~ P n).
+  apply (bmin_correct_i' bound).
+  apply n_lt_Sm__n_le_m. apply H. rewrite Ho. apply H.
+  rewrite <- p0 in n0. apply n0 in a. contradiction.
+  
+  apply le_neq__lt in b.
+  apply n_lt_Sm__n_le_m in b.
+  transparent assert (Hlt : (w < bmin bound)).
+    apply (lt_eq__lt _ (S bound)).
+    apply n_le_m__n_lt_Sm. apply b. apply Ho^.
+  assert Empty. generalize a. change (P w -> Empty) with (~ P w).
+  apply (bmin_correct_i' bound). apply b. apply Hlt. contradiction. apply n0.
+                      
+  (* S bound < bmin bound *)
+  set (H := (bmin_correct_bound bound)).
+  apply (lt_le__lt _ _ (S bound)) in Ho.
+  apply n_nlt_n in Ho. contradiction.
+  apply H.
+Defined.
+
+
+Lemma ex3_19 : Brck {n : nat & P n} -> {n : nat & P n}.
+Proof.
+  intro w.
+  apply (@pr1 _ Q).
+  set (H := hprop_sigma_Q).
+  strip_truncations.
+  transparent assert (w' : {n : nat & P n}).
+  exists (bmin w.1).
+  apply bmin_correct_success.
+  apply n_le_m__n_lt_Sm. apply bmin_correct_leb. apply w.2.
+  exists w'.
+  unfold Q.
+  intro w''.
+  apply bmin_correct.
+  exists w.1. split. apply w.2. apply n_le_n. apply w''.2.
+Defined.
+
 End Exercise3_19.
-  
-
+        
 (** %\exerdone{3.20}{128}%
 Prove Lemma 3.11.9(ii): if $A$ is contractible with center $a$, then
 $\sm{x:A}P(x)$ is equivalent to $P(a)$.
@@ -990,21 +1603,12 @@ The first of these is given by the fact that $A$ is contractible.  The second
 results from the functorality of transport.
 *)
 
-Definition ex3_20_f (A : Type) (P : A -> Type) (HA : Contr A) : 
-  {x : A & P x} -> P (center A).
-  intros. apply (transport _ (contr X.1)^). apply X.2.
-Defined.
-
-Definition ex3_20_g (A : Type) (P : A -> Type) (HA : Contr A) : 
-  P (center A) -> {x : A & P x}.
-  intros. apply (center A; X).
-Defined.
-  
-Theorem ex3_20 (A : Type) (P : A -> Type) (HA : Contr A) : 
+Theorem equiv_sigma_contr_base (A : Type) (P : A -> Type) (HA : Contr A) : 
   {x : A & P x} <~> P (center A).
 Proof.
-  refine (equiv_adjointify (ex3_20_f A P HA) (ex3_20_g A P HA)_ _); 
-  unfold ex3_20_f, ex3_20_g.
+  refine (equiv_adjointify _ _ _ _).
+  intro w. apply (transport _ (contr w.1)^). apply w.2.
+  intro p. apply (center A; p).
 
   intro p. simpl. 
   assert (Contr (center A = center A)). apply contr_paths_contr.
@@ -1147,20 +1751,9 @@ Proof.
 Defined.
 
 
-Lemma nat_eq_decidable : forall (n m : nat), (n = m) + ~ (n = m).
-Proof.
-  induction n, m.
-  left. reflexivity.
-  right. intro H. apply nat_encode in H. contradiction.
-  right. intro H. apply nat_encode in H. contradiction.
-  destruct (IHn m). 
-    left. apply (ap S p).
-    right. intro H. apply S_inj in H. contradiction.
-Defined.
-
 Definition cardF_f {n} : Fin (S n) -> (Fin n) + Unit.
   intro x. destruct x as [m [k p]].
-  destruct (nat_eq_decidable m n).
+  destruct (decidable_paths_nat m n).
   right. apply tt.
   left. exists m. exists (pred k). 
   rewrite S_pred_inv.

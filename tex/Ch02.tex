@@ -1360,7 +1360,11 @@ is for, I guess.
 \coqdocindent{1.00em}
 \coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdocvariable{fsg} \coqdocnotation{o} \coqref{Ch02.e}{\coqdocdefinition{e}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{.1})).\coqdoceol
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H} : (\coqdoceol
+\coqdocindent{2.00em}
+\coqdocvariable{fsg} \coqdocnotation{o} \coqref{Ch02.e}{\coqdocdefinition{e}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{).1}\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{change} (\coqdocvariable{fsg} \coqdocnotation{o} \coqref{Ch02.e}{\coqdocdefinition{e}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)})\coqdoceol
 \coqdocindent{4.50em}
@@ -1372,7 +1376,25 @@ is for, I guess.
 \coqdocindent{14.00em}
 \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)})).\coqdoceol
 \coqdocindent{1.00em}
-\coqdocvar{admit}.\coqdoceol
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{H'} : (\coqref{Ch02.e}{\coqdocdefinition{e}} (\coqref{Ch02.e}{\coqdocdefinition{e}}\coqdocnotation{\ensuremath{^{-1}}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)}) \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocmethod{eisretr}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{rewrite} \coqdocvar{H'}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_paths\_Fr} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdoctac{apply} \coqdocdefinition{moveR\_pM}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{transitivity} (\coqdocdefinition{ap} (\coqdocdefinition{compose} \coqdocvariable{g}) \coqdocnotation{(}\coqdocdefinition{ap} \coqdocabbreviation{pr1} (\coqdocmethod{eisretr} \coqref{Ch02.e}{\coqdocdefinition{e}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)})\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{f\_ap}. \coqdoctac{apply} (\coqdocdefinition{ap\_V} \coqdocabbreviation{pr1} (\coqdocmethod{eisretr} \coqref{Ch02.e}{\coqdocdefinition{e}} \coqdocnotation{(}\coqdocvariable{h} \coqdocnotation{o} \coqdocvar{k}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvar{k}\coqdocnotation{.2}\coqdocnotation{)})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap\_V} (\coqdocdefinition{compose} \coqdocvariable{g}) \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
 \coqdocindent{1.00em}
 \coqdocvar{admit}.\coqdoceol
 \coqdocemptyline

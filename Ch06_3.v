@@ -561,14 +561,6 @@ Proof.
 Defined.
   
 
-Theorem hprop_dependent (A : Type) (P : A -> Type) :
-  (forall a, IsHProp (P a)) -> IsHProp (forall a, P a).
-Proof.
-  intro HP. apply hprop_allpath. intros p p'.
-  apply path_forall; intro a. apply HP.
-Defined.
-
-
 Theorem hprop_ismonoidhom {A B : Monoid} (f : A -> B) : IsHProp (IsMonoidHom f).
 Proof.
   refine (trunc_equiv' (isprod_ismonoidhom f)).
@@ -822,7 +814,7 @@ Defined.
 Definition int := {x : nat * nat & r x = x}.
 
 Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
-  intro z. destruct z as [[a b] p]. destruct (nat_eq_decidable a b).
+  intro z. destruct z as [[a b] p]. destruct (decidable_paths_nat a b).
   left. right. apply tt.
   destruct (order_partitions b a).
   right. apply (pred (monus a b)).
@@ -877,7 +869,7 @@ Proof.
     (nat_1_nat_to_int (int_to_nat_1_nat ((a, b); p))).1 = ((a, b); p).1
   ) as H.
   unfold nat_1_nat_to_int, int_to_nat_1_nat.
-  destruct (nat_eq_decidable a b).
+  destruct (decidable_paths_nat a b).
   unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
     apply path_prod. 
     assert (b = O). apply (ap snd p)^. 

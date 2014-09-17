@@ -1110,14 +1110,26 @@ Proof.
   intro k. 
   apply path_sigma_uncurried. exists 1.
   apply path_sigma_uncurried. simpl. 
-  transparent assert (H : (fsg o e^-1 (h o k.1; k.2) = k.2.1)).
+  transparent assert (H : (
+    fsg o e^-1 (h o k.1; k.2) = (k.2).1
+  )).
   change (fsg o e^-1 (h o k.1; k.2))
          with (e (e^-1 (h o k.1; k.2))).2.1.
   change k.2.1 with (pr1 (@pr2 (X -> D) 
                             (fun a => {b : X -> E & g o a = f o b})
                             (h o k.1; k.2))).
+  transparent assert (H' : (e (e^-1 (h o k.1; k.2)) = (h o k.1; k.2))).
+  apply eisretr.
+  rewrite H'. reflexivity.
+  exists H.
+  simpl in H.
+  refine ((transport_paths_Fr _ _) @ _).
+  apply moveR_pM. apply moveR_pM.
+  transitivity (ap (compose g) (ap pr1 (eisretr e (h o k.1; k.2)))^).
+  f_ap. apply (ap_V pr1 (eisretr e (h o k.1; k.2))).
+  refine ((ap_V (compose g) _) @ _).
   admit.
-  admit.
+  
 
 
   (* outer_to_left o left_to_outer == id *)

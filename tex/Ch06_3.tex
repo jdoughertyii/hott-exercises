@@ -918,19 +918,6 @@ not\coqdocindent{0.50em}
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch06 3.hprop dependent}{hprop\_dependent}{\coqdoclemma{hprop\_dependent}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{P} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{Type}) :\coqdoceol
-\coqdocindent{1.00em}
-\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdocabbreviation{IsHProp} (\coqdocvariable{P} \coqdocvariable{a})\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdocvariable{P} \coqdocvariable{a}).\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{HP}. \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{intros} \coqdocvar{p} \coqdocvar{p'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{apply} \coqdocvar{HP}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
 \coqdockw{Theorem} \coqdef{Ch06 3.hprop ismonoidhom}{hprop\_ismonoidhom}{\coqdoclemma{hprop\_ismonoidhom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) : \coqdocabbreviation{IsHProp} (\coqref{Ch06 3.IsMonoidHom}{\coqdocclass{IsMonoidHom}} \coqdocvariable{f}).\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
@@ -941,7 +928,7 @@ not\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{repeat} (\coqdoctac{apply} \coqref{Ch06 3.hprop dependent}{\coqdoclemma{hprop\_dependent}}; \coqdoctac{intro}). \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
+\coqdoctac{repeat} (\coqdoctac{apply} \coqdoclemma{hprop\_dependent}; \coqdoctac{intro}). \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
@@ -1313,7 +1300,7 @@ $\suc(\pred(n)) = n$ for all $n \neq 0$.
 \coqdocnoindent
 \coqdockw{Definition} \coqdef{Ch06 3.Exercise6 12.int to nat 1 nat}{int\_to\_nat\_1\_nat}{\coqdocdefinition{int\_to\_nat\_1\_nat}} : \coqref{Ch06 3.Exercise6 12.int}{\coqdocdefinition{int}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocinductive{Unit} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{z}. \coqdoctac{destruct} \coqdocvar{z} \coqdockw{as} [[\coqdocvar{a} \coqdocvar{b}] \coqdocvar{p}]. \coqdoctac{destruct} (\coqdoclemma{nat\_eq\_decidable} \coqdocvar{a} \coqdocvar{b}).\coqdoceol
+\coqdoctac{intro} \coqdocvar{z}. \coqdoctac{destruct} \coqdocvar{z} \coqdockw{as} [[\coqdocvar{a} \coqdocvar{b}] \coqdocvar{p}]. \coqdoctac{destruct} (\coqdoclemma{decidable\_paths\_nat} \coqdocvar{a} \coqdocvar{b}).\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{left}. \coqdoctac{right}. \coqdoctac{apply} \coqdocconstructor{tt}.\coqdoceol
 \coqdocindent{1.00em}
@@ -1414,7 +1401,7 @@ $\suc(\pred(n)) = n$ for all $n \neq 0$.
 \coqdocindent{1.00em}
 \coqdoctac{unfold} \coqref{Ch06 3.Exercise6 12.nat 1 nat to int}{\coqdocdefinition{nat\_1\_nat\_to\_int}}, \coqref{Ch06 3.Exercise6 12.int to nat 1 nat}{\coqdocdefinition{int\_to\_nat\_1\_nat}}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqdoclemma{nat\_eq\_decidable} \coqdocvar{a} \coqdocvar{b}).\coqdoceol
+\coqdoctac{destruct} (\coqdoclemma{decidable\_paths\_nat} \coqdocvar{a} \coqdocvar{b}).\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{unfold} \coqref{Ch06 3.Exercise6 12.r}{\coqdocdefinition{r}} \coqdoctac{in} \coqdocvar{p}. \coqdoctac{simpl}. \coqdoctac{destruct} (\coqref{Ch06 3.Exercise6 12.order partitions}{\coqdoclemma{order\_partitions}} \coqdocvar{b} \coqdocvar{a}); \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocvar{p});\coqdoceol
 \coqdocindent{2.00em}
@@ -1443,7 +1430,7 @@ $\suc(\pred(n)) = n$ for all $n \neq 0$.
 \coqdocindent{2.00em}
 \coqdoctac{intro} \coqdocvar{H}. \coqdoctac{apply} \coqref{Ch06 3.Exercise6 12.monus eq O  n le m}{\coqdocaxiom{monus\_eq\_O\_\_n\_le\_m}} \coqdoctac{in} \coqdocvar{H}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{apply} \coqdocaxiom{le\_antisymmetric} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{n} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
+\coqdoctac{apply} \coqdoclemma{le\_antisymmetric} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{symmetry} \coqdoctac{in} \coqdocvar{H}. \coqdoctac{apply} \coqdocvar{n} \coqdoctac{in} \coqdocvar{H}. \coqdocvar{contradiction}.\coqdoceol
 \coqdocindent{2.00em}
 \coqdoctac{apply} \coqdocvar{l}. \coqdoctac{reflexivity}. \coqdoctac{reflexivity}. \coqdoctac{reflexivity}.\coqdoceol
 \coqdocindent{2.00em}
