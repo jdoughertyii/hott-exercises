@@ -743,6 +743,18 @@ in the left, send it to $(0, \suc(n))$, along with the appropriate proof.  When
 $n \equiv \star$, produce $(0, 0)$.  When $n$ is in the right, send it to
 $(\suc(n), 0)$.  Clearly, these two constructions are quasi-inverses, since
 $\suc(\pred(n)) = n$ for all $n \neq 0$.
+
+Now define $\Z \defeq \N + \unit + \N$.  I just can't seem to get the right
+computation rules!  I can get
+%\[
+  f(\suc(\suc(n)))
+  \equiv
+  d_{+}(\suc(n), f(\suc(n)))
+\]%
+and so on, but this isn't what we want.  The problem has to do with the
+apparent necessity of $\pred$ in the encoding of the integers.  I suppose I
+could try a different encoding.
+
 *)
 
 Module Exercise6_12.
@@ -875,5 +887,7 @@ Proof.
     assert (IsHSet (nat * nat)) as Hn. apply hset_prod; apply hset_nat.
     apply set_path2.
 Defined.
+
+Definition int' := nat + Unit + nat.
 
 End Exercise6_12.

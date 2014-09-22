@@ -1146,6 +1146,20 @@ in the left, send it to $(0, \suc(n))$, along with the appropriate proof.  When
 $n \equiv \star$, produce $(0, 0)$.  When $n$ is in the right, send it to
 $(\suc(n), 0)$.  Clearly, these two constructions are quasi-inverses, since
 $\suc(\pred(n)) = n$ for all $n \neq 0$.
+
+
+Now define $\Z \defeq \N + \unit + \N$.  I just can't seem to get the right
+computation rules!  I can get
+\[
+  f(\suc(\suc(n)))
+  \equiv
+  d_{+}(\suc(n), f(\suc(n)))
+\]
+and so on, but this isn't what we want.  The problem has to do with the
+apparent necessity of $\pred$ in the encoding of the integers.  I suppose I
+could try a different encoding.
+
+
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
@@ -1383,6 +1397,9 @@ $\suc(\pred(n)) = n$ for all $n \neq 0$.
 \coqdoctac{apply} \coqdoclemma{set\_path2}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 3.Exercise6 12.int'}{int'}{\coqdocdefinition{int'}} := \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqdocinductive{Unit} \coqexternalref{:type scope:x '+' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{+}} \coqexternalref{nat}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocinductive{nat}}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{End} \coqref{Ch06 3}{\coqdocmodule{Exercise6\_12}}.\coqdoceol

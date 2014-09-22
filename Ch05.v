@@ -427,7 +427,7 @@ and it has the computation rule
 for all $f : \prd{\alpha : L_{\unit} \to \unit} P(\mathsf{lawvere}(\alpha))$
 and $\alpha : L_{\unit} \to \unit$.
 
-Let ${!} : L_{\unit} \to \unit$ be the unique terminal arrow.  I claim that
+Let ${!} : L_{\unit} \to \unit$ be the unique terminal arrow.  
 $L_{\unit}$ is contractible with center $\mathsf{lawvere}({!})$.  By
 $\ind{L_{\unit}}$, it suffices to show that $\mathsf{lawvere}({!}) =
 \mathsf{lawvere}(\alpha)$ for any $\alpha : L_{\unit} \to \unit$.  And by the
