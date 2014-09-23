@@ -4,7 +4,7 @@
 
 
 
- \exer{4.1}{147} 
+ \exerdone{4.1}{147} 
 Consider the type of ``two-sided adjoint equivalence data'' for $f : A \to B$,
 \[
   \sm{g:B \to A} 
@@ -19,7 +19,246 @@ inhabited.  Give a characterization of this type analogous to Lemma 4.1.1.
 Give an example showing that this type is not generally a mere proposition.
 
 
- \exerdone{4.2}{147} 
+ \soln
+If $f : A \to B$ is an equivalence, then this type is equivalent to
+$\prd{x:A}(\refl{x} = \refl{x})$.  The idea is that the extra half-adjoint
+data pins down the path $x = x$ to $\refl{x}$, but the further data allows for
+nontrivial paths $\refl{x} = \refl{x}$. To fix this one would have to
+add another higher coherence condition.
+
+
+To prove this, suppose that $e : \isequiv(f)$, so $(f, e) : \eqv{A}{B}$.  By
+univalence, we may assume that $(f, e)$ is of the form $\idtoeqv(r)$ for some
+$r : A = B$, and by path induction we can assume this is $\refl{A}$, so
+$\idtoeqv(r)$ is $\idfunc{A}$.  Now our type reduces to
+\[
+  \sm{g:A \to A} 
+  \sm{\eta : g \sim \idfunc{A}}
+  \sm{\epsilon : g \sim \idfunc{A}}
+  \left(\eta \sim \epsilon \right)
+    \times
+  \left((\lam{x}g(\epsilon x)) \sim (\lam{x}\eta(g x))\right)
+\]
+and by function extensionality and associativity of $\Sigma$ types this is
+equivalent to 
+\[
+  \sm{h : \sm{g:A \to A} (g = \idfunc{A})}
+  \sm{\epsilon : \fst(h) = \idfunc{A}}
+  \left(\snd(h) = \epsilon \right)
+    \times
+  \left((\lam{x}(\fst(h))(\epsilon x)) = (\lam{x}(\snd(h))((\fst(h)) x))\right)
+\]
+But $\sm{g : A \to A}(g = \idfunc{A})$ is contractible with center
+$(\idfunc{A}, \refl{\idfunc{A}})$, so our type is equivalent to
+\[
+  \sm{\epsilon : \idfunc{A} = \idfunc{A}}
+  \left(\refl{\idfunc{A}} = \epsilon \right)
+    \times
+  \left(\epsilon = \refl{\idfunc{A}}\right)
+\]
+again by associativity, this is equivalent to 
+\[
+  \sm{h: \sm{\epsilon : \idfunc{A} = \idfunc{A}} (\epsilon =
+  \refl{\idfunc{A}})}
+  \left(\fst(h) = \refl{\idfunc{A}}\right)
+\]
+and again we can apply 3.11.9 to obtain the equivalent $\refl{\idfunc{A}} =
+\refl{\idfunc{A}}$.  By function extensionality, this is equivalent to
+\[
+  \prd{x:A}(\refl{x} = \refl{x})
+\]
+
+
+This type is generally not a mere proposition.  It suffices to give an example
+of some $X$ such that $\prd{x:X}(\refl{x}=\refl{x})$ isn't a mere proposition.
+Consider the 2-sphere $\Sn^{2}$.  Then $\refl{\refl{\base}} : \refl{\base} =
+\refl{\base}$, but we also have $\surf : \refl{\base} = \refl{\base}$.  Since
+$\surf \not= \refl{\refl{\base}}$, $(\refl{\base} = \refl{\base})$ isn't a
+mere proposition, hence neither is $\prd{x:\Sn^{2}}(\refl{x} = \refl{x})$,
+hence neither is our type.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch04.ex4 1}{ex4\_1}{\coqdoclemma{ex4\_1}} `\{\coqdocclass{Univalence}\} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) (\coqdocvar{f} : \coqdocvariable{A} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocvariable{B}) :\coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{g} \coqdocnotation{o} \coqdocvariable{f} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{f} \coqdocnotation{o} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}}\coqdoceol
+\coqdocindent{2.00em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{x}, \coqdocdefinition{ap} \coqdocvariable{f} (\coqdocvar{h} \coqdocvariable{x}) \coqdocnotation{=} \coqdocvar{e} (\coqdocvariable{f} \coqdocvariable{x})\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdockw{\ensuremath{\forall}} \coqdocvar{y}, \coqdocdefinition{ap} \coqdocvar{g} (\coqdocvar{e} \coqdocvariable{y}) \coqdocnotation{=} \coqdocvar{h} (\coqdocvar{g} \coqdocvariable{y})\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}\}}}\coqdoceol
+\coqdocindent{1.00em}
+\coqdocnotation{\ensuremath{\eqvsym}}\coqdoceol
+\coqdocindent{1.00em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{x} : \coqdocvariable{A}, @\coqdocconstructor{idpath} \coqdocvar{\_} \coqdocvariable{x} \coqdocnotation{=} @\coqdocconstructor{idpath} \coqdocvar{\_} \coqdocvariable{x}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{f}. \coqdoctac{generalize} \coqdoctac{dependent} \coqdocvar{B}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdoclemma{equiv\_rect}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}}\coqdoceol
+\coqdocindent{2.00em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h} \coqdocnotation{\ensuremath{\sim}} \coqdocvar{e}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdoceol
+\coqdocindent{1.00em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocvar{g} (\coqdocvar{e} \coqdocvariable{y})\coqdocnotation{)} \coqdocnotation{\ensuremath{\sim}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocvar{h} (\coqdocvar{g} \coqdocvariable{y})\coqdocnotation{)}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{g}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{h}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{e}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_prod'} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_forall'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{b}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap\_idmap} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{eq}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{apply} (\coqdocnotation{(}\coqdocdefinition{ap\_idmap} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{eq}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdocvar{hott\_simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_idmap}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}}\coqdoceol
+\coqdocindent{1.50em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocvar{g} (\coqdocvar{e} \coqdocvariable{y})\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocvar{h} (\coqdocvar{g} \coqdocvariable{y})\coqdocnotation{)}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{g}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{h}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{e}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_prod'} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_path\_forall}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{equiv\_path\_forall}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{h}\coqdocnotation{.1} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}}\coqdoceol
+\coqdocindent{1.50em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{h}\coqdocnotation{.2} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocvar{h}\coqdocnotation{.1} (\coqdocvar{e} \coqdocvariable{y})\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocvar{h}\coqdocnotation{.2} (\coqdocvar{h}\coqdocnotation{.1} \coqdocvariable{y})\coqdocnotation{)}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_sigma\_assoc} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{HC} : (\coqdocabbreviation{Contr} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocnotation{(}\coqdocabbreviation{idmap}\coqdocnotation{;} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} 1\coqdocnotation{))}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{h}. \coqdoctac{destruct} \coqdocvar{h} \coqdockw{as} [\coqdocvar{g} \coqdocvar{h}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} (\coqdocdefinition{path\_forall} (\coqdockw{fun} \coqdocvar{x} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvariable{x}) \coqdocvar{g} (\coqdockw{fun} \coqdocvar{x} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocvar{h} \coqdocvariable{x}\coqdocnotation{)\^{}})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqdocdefinition{pointwise\_paths}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_forall\_constant} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdoclemma{path\_forall\_1\_beta} \coqdocvar{\_} (\coqdockw{fun} \coqdocvar{z} \ensuremath{\Rightarrow} \coqdocvariable{z} \coqdocnotation{=} \coqdocvar{a}) \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_paths\_l} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{inv\_V}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).1} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}}\coqdoceol
+\coqdocindent{1.50em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).2} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqdoceol
+\coqdocindent{1.50em}
+\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).1} (\coqdocvar{e} \coqdocvariable{y})\coqdocnotation{)} \coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).2} \coqdoceol
+\coqdocindent{10.50em}
+(\coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{g} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvar{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{A} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocvar{g} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).1} \coqdocvariable{y})\coqdocnotation{)}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdoclemma{equiv\_sigma\_contr\_base} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{simpl}. \coqdoctac{clear} \coqdocvar{H}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvariable{x}\coqdocnotation{)} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdoceol
+\coqdocindent{6.50em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{p} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} 1\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{e} \coqdoceol
+\coqdocindent{6.50em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{(}}\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocabbreviation{idmap} (\coqdocvar{e} \coqdocvariable{y})\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{)\}\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{e}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}); \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{apply} \coqdocnotation{(}\coqexternalref{fst}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{fst}} \coqdocvar{p}\coqdocnotation{;} \coqexternalref{snd}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocdefinition{snd}} \coqdocvar{p}\coqdocnotation{)}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{split}. \coqdoctac{apply} \coqdocvar{p}\coqdocnotation{.1}. \coqdoctac{apply} \coqdocvar{p}\coqdocnotation{.2}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{simpl}. \coqdoctac{apply} \coqdocdefinition{eta\_sigma}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{p}. \coqdoctac{simpl}. \coqdoctac{apply} \coqdocdefinition{eta\_prod}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x}:\coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvariable{x}\coqdocnotation{)} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} \ensuremath{\Rightarrow} 1\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqdoceol
+\coqdocindent{10.00em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocdefinition{ap} \coqdocabbreviation{idmap} (\coqdocvar{h}\coqdocnotation{.1} \coqdocvariable{y})\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_sigma\_assoc} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{h} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x}:\coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvariable{x}\coqdocnotation{)} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}} \coqdoceol
+\coqdocindent{10.00em}
+\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvar{h}\coqdocnotation{.1} \coqdocvariable{y}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_functor\_sigma'} \coqdocvar{\_} \coqdocvar{\_}). \coqdoctac{apply} \coqdocdefinition{equiv\_idmap}. \coqdoctac{intro} \coqdocvar{e}. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}); \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{apD10} \coqdocvar{eq} \coqdocvar{a}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocnotation{(}\coqdocdefinition{ap\_idmap} \coqdocvar{\_}\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{ap\_idmap} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{apD10} \coqdocvar{eq} \coqdocvar{a}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{eta\_path\_forall} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{path\_forall} \coqdocvar{\_} \coqdocvar{\_})). \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_Vp}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{apD10\_path\_forall} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{a}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{eq}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{eta\_path\_forall} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{path\_forall} \coqdocvar{\_} \coqdocvar{\_})). \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{a}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_Mp}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{apD10\_path\_forall} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{a}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{reflexivity}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdocvar{equiv\_via} (\coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} \coqdocnotation{(}\coqdocmethod{center} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{e} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x}:\coqdocvar{A} \ensuremath{\Rightarrow} \coqdocvariable{x}\coqdocnotation{)} \coqdocnotation{\ensuremath{\sim}} \coqdocabbreviation{idmap} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{x} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{e}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}\coqdocnotation{).1} \coqdocvariable{y}\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdockw{fun} \coqdocvar{y} : \coqdocvar{A} \ensuremath{\Rightarrow} 1\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdoclemma{equiv\_sigma\_contr\_base} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocconstructor{BuildEquiv} \coqdocvar{\_} \coqdocvar{\_} \coqdocdefinition{apD10} (\coqdocaxiom{isequiv\_apD10} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_})).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{4.2}{147} 
 Show that for any $A, B : \UU$, the following type is equivalent to $A \eqvsym
 B$.
 \[
@@ -307,32 +546,9 @@ it too is a mere proposition.
 \end{coqdoccode}
 \exer{4.3}{147} 
 Reformulate the proof of Lemma 4.1.1 without using univalence.
-\begin{coqdoccode}
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch04.ex4 3 f}{ex4\_3\_f}{\coqdocdefinition{ex4\_3\_f}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} \{\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}\} : \coqref{Ch04.qinv}{\coqdocdefinition{qinv}} \coqdocvariable{f} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} (\coqdocvar{x}:\coqdocvariable{A}), \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{x}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{X} \coqdockw{as} [\coqdocvar{g} [\coqdocvar{alpha} \coqdockw{beta}]].\coqdoceol
-\coqdocindent{1.00em}
-\coqdocvar{etransitivity} (\coqdocvar{g} (\coqdocvar{f} \coqdocvar{x})).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocnotation{(}\coqdockw{beta} \coqdocvar{x}\coqdocnotation{)\^{}}. \coqdoctac{apply} (\coqdockw{beta} \coqdocvar{x}).\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch04.Theorem411}{Theorem411}{\coqdoclemma{Theorem411}} \{\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{Ch04.qinv}{\coqdocdefinition{qinv}} \coqdocvariable{f}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{(}\coqref{Ch04.qinv}{\coqdocdefinition{qinv}} \coqdocvariable{f}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdockw{\ensuremath{\forall}} \coqdocvar{x}:\coqdocvariable{A}, \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{x}\coqdocnotation{)}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocnoindent
-\coqdocvar{Admitted}.\coqdoceol
-\coqdocemptyline
-\end{coqdoccode}
-\exer{4.4}{147} 
+
+
+ \exer{4.4}{147} 
 Suppose $f : A \to B$ and $g : B \to C$ and $b : B$.
 \begin{itemize}
   \item[(i)] Show that there is a natural map $\hfib{g \circ f}{g(b)} \to
@@ -359,33 +575,6 @@ notation again, we're looking for an equivalence
 \]
 
 
-For the arrow, suppose that $(w, p)$ is an element of the domain, so that $w :
-\hfib{g \circ f}{g(b)}$ and $q : f^{*}(w) = (b, \refl{g(b)})$.  By the
-induction principle for $\hfib{g \circ f}{g(b)}$, it suffices to consider the
-case where $w \equiv (a, p)$, for $a : A$ and $p : g(f(a)) = g(b)$.  Then
-\[
-  q : 
-  (f^{*}(a, p) = (b, \refl{g(b)})) 
-  \equiv
-  ((f(a), p) = (b, \refl{g(b)})) 
-\]
-thus $(a, \fst q) : \hfib{f}{b}$.  Explicitly, our map is
-\[
-  z \mapsto (\fst(\fst z), \fst (\snd z))
-\]
-
-
-For a quasi-inverse, suppose that $(a, p) : \hfib{f}{b}$.  Then $(a,
-g(p)) : \hfib{g \circ f}{g(b)}$.  We need a proof that
-\[
-  (f^{*}(a, g(p)) = (b, \refl{g(b)})) 
-  \equiv
-  ((f(a), g(p)) = (b, \refl{g(b)})) 
-\]
-$p$ provides the proof of equality for the first slots.  For the
-second, by induction we can consider the case where $f(a) \equiv b$
-and $p \equiv \refl{b}$.  Then $g(p) \equiv \refl{g(b)}$, and the
-proof we seek is just reflexivity.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
@@ -400,165 +589,85 @@ proof we seek is just reflexivity.
 \coqdocnotation{(}\coqdocvariable{f} \coqdocvariable{z}\coqdocnotation{.1}\coqdocnotation{;} \coqdocvariable{z}\coqdocnotation{.2}\coqdocnotation{)}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch04.ex4 4 f}{ex4\_4\_f}{\coqdocdefinition{ex4\_4\_f}} (\coqdocvar{z} : (\coqdocdefinition{hfiber} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}} \coqdocnotation{(}\coqdocvariable{b}\coqdocnotation{;} 1\coqdocnotation{)})) : (\coqdocdefinition{hfiber} \coqdocvariable{f} \coqdocvariable{b}) :=\coqdoceol
-\coqdocindent{1.00em}
-\coqdocnotation{(}\coqdocvariable{z}\coqdocnotation{.1.1}\coqdocnotation{;} \coqdocnotation{(}\coqdocdefinition{base\_path} \coqdocvariable{z}\coqdocnotation{.2}\coqdocnotation{))}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch04.ex4 4 g}{ex4\_4\_g}{\coqdocdefinition{ex4\_4\_g}} (\coqdocvar{w} : (\coqdocdefinition{hfiber} \coqdocvariable{f} \coqdocvariable{b})) : (\coqdocdefinition{hfiber} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}} \coqdocnotation{(}\coqdocvariable{b}\coqdocnotation{;} 1\coqdocnotation{)}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} \coqdocnotation{((}\coqdocvar{w}\coqdocnotation{.1}\coqdocnotation{;} \coqdocdefinition{ap} \coqdocvariable{g} \coqdocvar{w}\coqdocnotation{.2}\coqdocnotation{);} \coqdocvar{\_}\coqdocnotation{)}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{w}\coqdocnotation{.2}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{w}\coqdocnotation{.2}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch04.ex4 4 alpha}{ex4\_4\_alpha}{\coqdoclemma{ex4\_4\_alpha}} : \coqdocdefinition{Sect} \coqref{Ch04.ex4 4 g}{\coqdocdefinition{ex4\_4\_g}} \coqref{Ch04.ex4 4 f}{\coqdocdefinition{ex4\_4\_f}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch04.ex4 4 f}{\coqdocdefinition{ex4\_4\_f}}, \coqref{Ch04.ex4 4 g}{\coqdocdefinition{ex4\_4\_g}}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{a} \coqdocvar{p}]. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}; \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{\ensuremath{\exists}} 1. \coqdoctac{simpl}. \coqdoctac{unfold} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}} \coqdoctac{in} *.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{induction} \coqdocvar{p}. \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch04.ex4 4 beta}{ex4\_4\_beta}{\coqdoclemma{ex4\_4\_beta}} : \coqdocdefinition{Sect} \coqref{Ch04.ex4 4 f}{\coqdocdefinition{ex4\_4\_f}} \coqref{Ch04.ex4 4 g}{\coqdocdefinition{ex4\_4\_g}}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqref{Ch04.ex4 4 f}{\coqdocdefinition{ex4\_4\_f}}, \coqref{Ch04.ex4 4 g}{\coqdocdefinition{ex4\_4\_g}}, \coqref{Ch04.f star}{\coqdocdefinition{f\_star}}. \coqdoctac{intro} \coqdocvar{w}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{assert} (\coqdocnotation{(}\coqdocvar{w}\coqdocnotation{.1.1}\coqdocnotation{;} \coqdocdefinition{ap} \coqdocvariable{g} (\coqdocdefinition{base\_path} \coqdocvar{w}\coqdocnotation{.2})\coqdocnotation{)} \coqdocnotation{=} \coqdocvar{w}\coqdocnotation{.1}).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{unfold} \coqdocdefinition{hfiber} \coqdoctac{in} \coqdocvar{w}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (@\coqdocdefinition{path\_sigma} \coqdocvariable{A} (\coqdockw{fun} \coqdocvar{x}:\coqdocvariable{A} \ensuremath{\Rightarrow} (\coqdocvariable{g} \coqdocnotation{o} \coqdocvariable{f}) \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{b}) \coqdoceol
-\coqdocindent{10.50em}
-\coqdocnotation{(}\coqdocvar{w}\coqdocnotation{.1.1}\coqdocnotation{;} \coqdocdefinition{ap} \coqdocvariable{g} (\coqdocdefinition{base\_path} \coqdocvar{w}\coqdocnotation{.2})\coqdocnotation{)}\coqdoceol
-\coqdocindent{10.50em}
-\coqdocvar{w}\coqdocnotation{.1}\coqdoceol
-\coqdocindent{10.50em}
-1).\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\begin{coqdoccomment}
-\coqdoceol
-\coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-(@hfiber\_triangle\coqdocindent{0.50em}
-B\coqdocindent{0.50em}
-C\coqdocindent{0.50em}
-g\coqdocindent{0.50em}
-(g\coqdocindent{0.50em}
-b)\coqdocindent{0.50em}
-(b;\coqdocindent{0.50em}
-1)\coqdocindent{0.50em}
-(f\coqdocindent{0.50em}
-w.1.1;\coqdocindent{0.50em}
-w.1.2)\coqdocindent{0.50em}
-w.2\^{}).\coqdoceol
-\coqdocindent{10.50em}
-\coqdoceol
-\coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-path\_sigma\_uncurried.\coqdocindent{0.50em}
-exists\coqdocindent{0.50em}
-1.\coqdocindent{0.50em}
-simpl.\coqdoceol
-\coqdocindent{1.00em}
-destruct\coqdocindent{0.50em}
-w\coqdocindent{0.50em}
-as\coqdocindent{0.50em}
-[\coqdocvar{a} \coqdocvar{p}] \coqdocvar{q}.\coqdocindent{0.50em}
-simpl\coqdocindent{0.50em}
-in\coqdocindent{0.50em}
-*.\coqdoceol
-\coqdocindent{1.00em}
-transitivity\coqdocindent{0.50em}
-((ap\coqdocindent{0.50em}
-g\coqdocindent{0.50em}
-(base\_path\coqdocindent{0.50em}
-q))\^{})\^{}.\coqdocindent{0.50em}
-symmetry.\coqdocindent{0.50em}
-apply\coqdocindent{0.50em}
-inv\_V.\coqdoceol
-\coqdocindent{1.00em}
-transitivity\coqdocindent{0.50em}
-(ap\coqdocindent{0.50em}
-g\coqdocindent{0.50em}
-(base\_path\coqdocindent{0.50em}
-q)\^{})\^{}.\coqdocindent{0.50em}
-hott\_simpl.\coqdoceol
-\coqdocindent{1.00em}
-transitivity\coqdocindent{0.50em}
-(ap\coqdocindent{0.50em}
-g\coqdocindent{0.50em}
-(base\_path\coqdocindent{0.50em}
-q\^{}))\^{}.\coqdocindent{0.50em}
-unfold\coqdocindent{0.50em}
-base\_path.\coqdocindent{0.50em}
-hott\_simpl.\coqdoceol
-\coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-moveR\_V1.\coqdoceol
-\coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-symmetry.\coqdoceol
-\coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-(@hfiber\_triangle\coqdocindent{0.50em}
-B\coqdocindent{0.50em}
-C\coqdocindent{0.50em}
-g\coqdocindent{0.50em}
-(g\coqdocindent{0.50em}
-b)\coqdocindent{0.50em}
-(b;\coqdocindent{0.50em}
-1)\coqdocindent{0.50em}
-(f\coqdocindent{0.50em}
-a;\coqdocindent{0.50em}
-p)\coqdocindent{0.50em}
-q\^{}).\coqdoceol
-\coqdocindent{1.00em}
-exists\coqdocindent{0.50em}
-X.\coqdoceol
-\coqdocindent{1.00em}
-destruct\coqdocindent{0.50em}
-w\coqdocindent{0.50em}
-as\coqdocindent{0.50em}
-[\coqdocvar{a} \coqdocvar{p}] \coqdocvar{q}.\coqdocindent{0.50em}
-simpl\coqdocindent{0.50em}
-in\coqdocindent{0.50em}
-*.\coqdoceol
-\coqdocindent{1.00em}
-\end{coqdoccomment}
-\coqdoceol
-\coqdocnoindent
-\coqdocvar{Admitted}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
 \coqdockw{Theorem} \coqdef{Ch04.ex4 4}{ex4\_4}{\coqdoclemma{ex4\_4}} : \coqdocnotation{(}\coqdocdefinition{hfiber} (\coqref{Ch04.f star}{\coqdocdefinition{f\_star}}) \coqdocnotation{(}\coqdocvariable{b}\coqdocnotation{;} 1\coqdocnotation{)}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocnotation{(}\coqdocdefinition{hfiber} \coqdocvariable{f} \coqdocvariable{b}\coqdocnotation{)}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{equiv\_adjointify} \coqref{Ch04.ex4 4 f}{\coqdocdefinition{ex4\_4\_f}} \coqref{Ch04.ex4 4 g}{\coqdocdefinition{ex4\_4\_g}} \coqref{Ch04.ex4 4 alpha}{\coqdoclemma{ex4\_4\_alpha}} \coqref{Ch04.ex4 4 beta}{\coqdocaxiom{ex4\_4\_beta}}).\coqdoceol
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+forward\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [[\coqdocvar{a} \coqdocvar{q}] \coqdocvar{p}]. \coqdoctac{\ensuremath{\exists}} \coqdocvar{a}. \coqdoctac{apply} (\coqdocdefinition{ap} \coqdocabbreviation{pr1} \coqdocvar{p}).\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+back\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{a} \coqdocvar{p}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocnotation{(}\coqdocvar{a}\coqdocnotation{;} \coqdocdefinition{ap} \coqdocvariable{g} \coqdocvar{p}\coqdocnotation{)}. \coqdoctac{unfold} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}}. \coqdoctac{simpl}. \coqdoctac{induction} \coqdocvar{p}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+section\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [\coqdocvar{a} \coqdocvar{p}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{unfold} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}}. \coqdoctac{induction} \coqdocvar{p}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+retract\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{w}. \coqdoctac{destruct} \coqdocvar{w} \coqdockw{as} [[\coqdocvar{a} \coqdocvar{q}] \coqdocvar{p}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{simpl}. \coqdoctac{unfold} \coqref{Ch04.f star}{\coqdocdefinition{f\_star}}, \coqdocdefinition{compose} \coqdoctac{in} *. \coqdoctac{simpl} \coqdoctac{in} *.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{r} : (\coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{(}\coqexternalref{existT}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocabbreviation{existT}} (\coqdockw{fun} \coqdocvar{a} \ensuremath{\Rightarrow} \coqdocvariable{g} (\coqdocvariable{f} \coqdocvariable{a}) \coqdocnotation{=} \coqdocvariable{g} \coqdocvariable{b}) \coqdocvar{a} (\coqdocdefinition{ap} \coqdocvariable{g} (\coqdocdefinition{ap} \coqdocabbreviation{pr1} \coqdocvar{p}))\coqdocnotation{)} \coqdocnotation{=} \coqdocnotation{(}\coqdocvar{a}\coqdocnotation{;} \coqdocvar{q}\coqdocnotation{)}\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{path\_sigma\_uncurried}. \coqdoctac{\ensuremath{\exists}} 1. \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{fiber\_path} \coqdocvar{p}\coqdocnotation{\^{}}\coqdocnotation{)}). \coqdoctac{simpl}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{transport\_paths\_Fl} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_p1} \coqdocvar{\_}\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{ap} \coqdocvariable{g})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{ap\_V} \coqdocvar{\_} (\coqdocvar{p}\coqdocnotation{\^{}})\coqdocnotation{)}). \coqdoctac{apply} (\coqdocdefinition{ap} (\coqdocdefinition{ap} \coqdocabbreviation{pr1})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocnotation{(}\coqdocdefinition{inv\_V} \coqdocvar{\_}\coqdocnotation{)\^{}}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{\ensuremath{\exists}} \coqdocvar{r}.\coqdoceol
+\coqdocemptyline
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{transport\_paths\_Fl} \coqdocvar{r} \coqdocvar{\_}\coqdocnotation{)} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{admit}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
+\coqdocvar{Admitted}.\coqdoceol
+\coqdocemptyline
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{End} \coqref{Ch04.Exercise4 4}{\coqdocsection{Exercise4\_4}}.\coqdoceol

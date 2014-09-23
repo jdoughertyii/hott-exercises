@@ -38,6 +38,56 @@ $\acc(\inl(a))$, consider any $z' : A + B$, which is either of the form $z'
 Inductive acc {A : hSet} {L : A -> A -> hProp} : A -> Type :=
   | accL : forall a : A, (forall b : A, (L b a) -> acc b) -> acc a.
 
+Lemma hprop_acc {A : hSet} {L : A -> A -> hProp} 
+  : forall a, IsHProp (@acc _ L a).
+Proof.
+  intro a. apply hprop_allpath. intros s1 s2.
+  induction s1 as [a1 h1 k1]. 
+  induction s2 as [a2 h2 k2]. apply (ap (accL a2)).
+  apply path_forall; intro b. apply path_forall; intro l.
+  apply k1.
+Defined.
+
+Definition well_founded {A : hSet} (L : A -> A -> hProp) := 
+  forall a : A, @acc A L a.
+
+Definition WFRel := {A : hSet & {L : A -> A -> hProp & @well_founded A L}}.
+
+Lemma hprop_wf {A : hSet} (L : A -> A -> hProp) : IsHProp (well_founded L).
+Proof.
+  apply hprop_dependent. apply hprop_acc.
+Defined.
+
+Lemma path_wfrel (AL BL : WFRel) (p : AL.1 = BL.1) : 
+  (transport _ p AL.2).1 = BL.2.1 -> AL = BL.
+Proof.
+  intro q. apply path_sigma_uncurried. exists p.
+  apply (@path_sigma_hprop _ _ (hprop_wf) _).
+  apply q.
+Defined.
+
+Lemma path_wfrel_uncurried (AL BL : WFRel) :
+  {p : AL.1 = BL.1 & (transport _ p AL.2).1 = BL.2.1} -> AL = BL.
+Proof.
+  intro H. destruct H as [p q]. apply (path_wfrel _ _ p q).
+Defined.
+
+Definition extensional (AL : WFRel)
+  := forall a a', (forall c, (AL.2.1 c a) <-> (AL.2.1 c a')) -> (a = a').
+
+Lemma hprop_extensional (AL : WFRel) : IsHProp (extensional AL).
+Proof.
+  apply hprop_dependent; intro a.
+  apply hprop_dependent; intro b.
+  apply hprop_arrow. apply hprop_allpath. apply set_path2.
+Defined.
+
+Definition ExtWFRel := {AL : WFRel & extensional AL}.
+
+
+Definition strict_nat_order : nat -> nat -> hProp
+  := fun n m => hp (lt n m) (hprop_lt n m).
+
 Definition set_sum (A B : hSet) := default_HSet (A + B) hset_sum.
 
 Definition sum_order {A B : hSet} (LA : A -> A -> hProp) 
@@ -55,42 +105,26 @@ Definition sum_order {A B : hSet} (LA : A -> A -> hProp)
      end.
 
 
-Definition well_founded {A : hSet} (L : A -> A -> hProp) := 
-  forall a : A, @acc A L a.
-
-Theorem wf_sum (A B : hSet) (LA : A -> A -> hProp) (LB : B -> B -> hProp) 
-        (HA : well_founded LA) (HB : well_founded LB)
-        : well_founded (sum_order LA LB).
-Proof.
-Admitted.
-  
-
-Definition extensional {A : hSet} (LA : A -> A -> hProp) `{well_founded LA}
-  := forall a a', (forall c, (LA c a) <-> (LA c a')) -> (a = a').
-
-Theorem ext_sum (A B : hSet) (LA : A -> A -> hProp) (LB : B -> B -> hProp)
-        (HA : well_founded LA) (HB : well_founded LB)
-        (HApB : well_founded (sum_order LA LB))
-        (H'A : @extensional _ LA HA) (H'B : @extensional _ LB HB)
-        : @extensional _ (sum_order LA LB) HApB.
-Proof.
-  intros z z' H.
-  destruct z as [a | b], z' as [a' | b']. simpl in *.
-  apply (ap inl). apply H'A. intros a''. apply (H (inl a'')).
-  admit. admit.
-  
-
-  apply (ap inr). apply H'B. intros b''. apply (H (inr b'')).
-Defined.
-
-  
-  
-  
-
 
 (** %\exer{10.5}{365}% *)
 (** %\exer{10.6}{365}% *)
-(** %\exer{10.7}{365}% *)
+(** %\exer{10.7}{365}% 
+Note that $\bool$ is an ordinal, under the obvious relation $<$ such that
+$0_{\bool} < 1_{\bool}$ only.
+%\begin{enumerate}
+  \item Define a relation $<$ on $\prop$ which makes it into an ordinal.
+  \item Show that $\bool =_{\ord} \prop$ if and only if $\LEM{}$ holds.
+\end{enumerate}%
+*)
+
+(** %\soln%
+For $P, Q : \prop$, define $(P < Q) \defeq (P \to Q)$.  We must show that this
+$<$ is well-founded, extensional, and transitive.  To show that it's
+well-founded, suppose that $Q : \prop$; we show that $P$ is accessible for all
+$P < Q$.
+*)
+
+
 (** %\exer{10.8}{365}% *)
 (** %\exer{10.9}{365}% *)
 (** %\exer{10.10}{365}% *)

@@ -6,7 +6,7 @@ Require Export HoTT Ch03.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Equivalences *)
 
-(** %\exer{4.1}{147}% 
+(** %\exerdone{4.1}{147}% 
 Consider the type of ``two-sided adjoint equivalence data'' for $f : A \to B$,
 %\[
   \sm{g:B \to A} 
@@ -20,6 +20,158 @@ By Lemma 4.2.2, we know that if $f$ is an equivalence, then this type is
 inhabited.  Give a characterization of this type analogous to Lemma 4.1.1.
 Give an example showing that this type is not generally a mere proposition.
 *)
+
+(** %\soln%
+If $f : A \to B$ is an equivalence, then this type is equivalent to
+$\prd{x:A}(\refl{x} = \refl{x})$.  The idea is that the extra half-adjoint
+data pins down the path $x = x$ to $\refl{x}$, but the further data allows for
+nontrivial paths $\refl{x} = \refl{x}$. To fix this one would have to
+add another higher coherence condition.
+
+To prove this, suppose that $e : \isequiv(f)$, so $(f, e) : \eqv{A}{B}$.  By
+univalence, we may assume that $(f, e)$ is of the form $\idtoeqv(r)$ for some
+$r : A = B$, and by path induction we can assume this is $\refl{A}$, so
+$\idtoeqv(r)$ is $\idfunc{A}$.  Now our type reduces to
+%\[
+  \sm{g:A \to A} 
+  \sm{\eta : g \sim \idfunc{A}}
+  \sm{\epsilon : g \sim \idfunc{A}}
+  \left(\eta \sim \epsilon \right)
+    \times
+  \left((\lam{x}g(\epsilon x)) \sim (\lam{x}\eta(g x))\right)
+\]%
+and by function extensionality and associativity of $\Sigma$ types this is
+equivalent to 
+%\[
+  \sm{h : \sm{g:A \to A} (g = \idfunc{A})}
+  \sm{\epsilon : \fst(h) = \idfunc{A}}
+  \left(\snd(h) = \epsilon \right)
+    \times
+  \left((\lam{x}(\fst(h))(\epsilon x)) = (\lam{x}(\snd(h))((\fst(h)) x))\right)
+\]%
+But $\sm{g : A \to A}(g = \idfunc{A})$ is contractible with center
+$(\idfunc{A}, \refl{\idfunc{A}})$, so our type is equivalent to
+%\[
+  \sm{\epsilon : \idfunc{A} = \idfunc{A}}
+  \left(\refl{\idfunc{A}} = \epsilon \right)
+    \times
+  \left(\epsilon = \refl{\idfunc{A}}\right)
+\]%
+again by associativity, this is equivalent to 
+%\[
+  \sm{h: \sm{\epsilon : \idfunc{A} = \idfunc{A}} (\epsilon =
+  \refl{\idfunc{A}})}
+  \left(\fst(h) = \refl{\idfunc{A}}\right)
+\]%
+and again we can apply 3.11.9 to obtain the equivalent $\refl{\idfunc{A}} =
+\refl{\idfunc{A}}$.  By function extensionality, this is equivalent to
+%\[
+  \prd{x:A}(\refl{x} = \refl{x})
+\]%
+
+This type is generally not a mere proposition.  It suffices to give an example
+of some $X$ such that $\prd{x:X}(\refl{x}=\refl{x})$ isn't a mere proposition.
+Consider the 2-sphere $\Sn^{2}$.  Then $\refl{\refl{\base}} : \refl{\base} =
+\refl{\base}$, but we also have $\surf : \refl{\base} = \refl{\base}$.  Since
+$\surf \not= \refl{\refl{\base}}$, $(\refl{\base} = \refl{\base})$ isn't a
+mere proposition, hence neither is $\prd{x:\Sn^{2}}(\refl{x} = \refl{x})$,
+hence neither is our type.
+*)
+
+Theorem ex4_1 `{Univalence} (A B : Type) (f : A <~> B) :
+  {g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
+    (forall x, ap f (h x) = e (f x)) 
+  * (forall y, ap g (e y) = h (g y))}}}
+  <~>
+  forall x : A, @idpath _ x = @idpath _ x.
+Proof.
+  generalize dependent f. generalize dependent B.
+  apply equiv_rect.
+
+  equiv_via ({g : A -> A & {h : g == idmap & {e : g == idmap &
+    (h == e) 
+  * ((fun y => ap g (e y)) == (fun y => h (g y)))}}}).
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  refine (equiv_functor_prod' _ _). 
+  refine (equiv_functor_forall' _ _). apply equiv_idmap. intro b. simpl.
+  refine (equiv_adjointify _ _ _ _). 
+    intro eq. apply ((ap_idmap _)^ @ eq).
+    intro eq. apply ((ap_idmap _) @ eq).
+    intro eq. hott_simpl.
+    intro eq. hott_simpl.
+  apply equiv_idmap.
+  
+  equiv_via ({g : A -> A & {h : g == idmap & {e : g == idmap &
+   (h = e) * ((fun y => ap g (e y)) = (fun y => h (g y)))}}}).
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  refine (equiv_functor_prod' _ _). 
+  apply equiv_path_forall.
+  apply equiv_path_forall.
+
+  equiv_via ({h : {g : A -> A & g == idmap} & {e : h.1 == idmap &
+   (h.2 = e) * ((fun y => ap h.1 (e y)) = (fun y => h.2 (h.1 y)))}}).
+  refine (equiv_sigma_assoc _ _).
+
+  transparent assert (HC : (Contr {g : A -> A & g == idmap})).
+  exists (idmap; (fun x => 1)).
+  intro h. destruct h as [g h].
+  apply path_sigma_uncurried. simpl.
+  exists (path_forall (fun x : A => x) g (fun x : A => (h x)^)).
+  unfold pointwise_paths.
+  apply path_forall; intro a.
+  refine ((transport_forall_constant _ _ _) @ _).
+  refine ((path_forall_1_beta _ (fun z => z = a) _ _) @ _).
+  refine ((transport_paths_l _ _) @ _).
+  refine ((concat_p1 _) @ _).
+  apply inv_V.
+  equiv_via ({e : (center {g : A -> A & g == idmap}).1 == idmap &
+   ((center {g : A -> A & g == idmap}).2 = e) 
+   * ((fun y => ap (center {g : A -> A & g == idmap}).1 (e y)) 
+      = (fun y => (center {g : A -> A & g == idmap}).2 
+                     ((center {g : A -> A & g == idmap}).1 y)))}).
+  refine (equiv_sigma_contr_base _ _ _).
+  simpl. clear H.
+  
+  equiv_via ({e : (fun x : A => x) == idmap & 
+             {p : (fun x => 1) = e 
+             & ((fun y : A => ap idmap (e y)) = (fun y : A => 1))}}).
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e.
+  refine (equiv_adjointify _ _ _ _); simpl.
+  intro p. apply (fst p; snd p).
+  intro p. split. apply p.1. apply p.2.
+  intro p. simpl. apply eta_sigma.
+  intro p. simpl. apply eta_prod.
+
+  equiv_via ({h : {e : (fun x:A => x) == idmap & (fun x => 1) = e} 
+                    & (fun y : A => ap idmap (h.1 y)) = (fun y : A => 1)}).
+  refine (equiv_sigma_assoc _ _).
+
+  equiv_via ({h : {e : (fun x:A => x) == idmap & (fun x : A => 1) = e} 
+                    & (fun y : A => h.1 y) = (fun y : A => 1)}).
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  refine (equiv_adjointify _ _ _ _); simpl.
+  intro eq. apply path_forall; intro a. refine (_ @ (apD10 eq a)).
+    apply (ap_idmap _)^.
+  intro eq. apply path_forall; intro a. refine ((ap_idmap _) @ _).
+    apply (apD10 eq a).
+  intro eq. refine (_ @ (eta_path_forall _ _ _)).
+    apply (ap (path_forall _ _)). apply path_forall; intro a.
+    apply moveR_Vp. refine ((apD10_path_forall _ _ _ a) @ _).
+    reflexivity.
+  intro eq. refine (_ @ (eta_path_forall _ _ _)).
+    apply (ap (path_forall _ _)). apply path_forall; intro a.
+    apply moveR_Mp. refine ((apD10_path_forall _ _ _ a) @ _).
+    reflexivity.
+
+  equiv_via ((fun y : A => (center {e : (fun x:A => x) == idmap & (fun x : A => 1) = e}).1 y) = (fun y : A => 1)).
+  refine (equiv_sigma_contr_base _ _ _).
+  apply (BuildEquiv _ _ apD10 (isequiv_apD10 _ _ _ _)).
+Defined.
+  
 
 
 (** %\exerdone{4.2}{147}% 
@@ -213,17 +365,6 @@ Defined.
 Reformulate the proof of Lemma 4.1.1 without using univalence.
 *) 
 
-Definition ex4_3_f {A B : Type} {f : A -> B} : qinv f -> forall (x:A), x = x. 
-  intros.
-  destruct X as [g [alpha beta]].
-  etransitivity (g (f x)).
-  apply (beta x)^. apply (beta x).
-Defined.
-
-Theorem Theorem411 {A B : Type} (f : A -> B) : (qinv f) -> 
-  (qinv f) <~> (forall x:A, x = x).
-Proof.
-Admitted.
 
 (** %\exer{4.4}{147}% 
 Suppose $f : A \to B$ and $g : B \to C$ and $b : B$.
@@ -251,32 +392,6 @@ notation again, we're looking for an equivalence
   \left(\sm{a:A} (f(a) = b)\right)
 \]%
 
-For the arrow, suppose that $(w, p)$ is an element of the domain, so that $w :
-\hfib{g \circ f}{g(b)}$ and $q : f^{*}(w) = (b, \refl{g(b)})$.  By the
-induction principle for $\hfib{g \circ f}{g(b)}$, it suffices to consider the
-case where $w \equiv (a, p)$, for $a : A$ and $p : g(f(a)) = g(b)$.  Then
-%\[
-  q : 
-  (f^{*}(a, p) = (b, \refl{g(b)})) 
-  \equiv
-  ((f(a), p) = (b, \refl{g(b)})) 
-\]%
-thus $(a, \fst q) : \hfib{f}{b}$.  Explicitly, our map is
-%\[
-  z \mapsto (\fst(\fst z), \fst (\snd z))
-\]%
-
-For a quasi-inverse, suppose that $(a, p) : \hfib{f}{b}$.  Then $(a,
-g(p)) : \hfib{g \circ f}{g(b)}$.  We need a proof that
-%\[
-  (f^{*}(a, g(p)) = (b, \refl{g(b)})) 
-  \equiv
-  ((f(a), g(p)) = (b, \refl{g(b)})) 
-\]%
-$p$ provides the proof of equality for the first slots.  For the
-second, by induction we can consider the case where $f(a) \equiv b$
-and $p \equiv \refl{b}$.  Then $g(p) \equiv \refl{g(b)}$, and the
-proof we seek is just reflexivity.
 *)
 
 Section Exercise4_4.
@@ -285,60 +400,44 @@ Variables (A B C D : Type) (f : A -> B) (g : B -> C) (b : B).
 
 Definition f_star (z : ((hfiber (g o f) (g b)))) : (hfiber g (g b)) := 
   (f z.1; z.2).
-    
-Definition ex4_4_f (z : (hfiber f_star (b; 1))) : (hfiber f b) :=
-  (z.1.1; (base_path z.2)).
-
-Definition ex4_4_g (w : (hfiber f b)) : (hfiber f_star (b; 1)).
-  refine ((w.1; ap g w.2); _).
-  unfold f_star. simpl.
-  apply path_sigma_uncurried. exists w.2. simpl.
-  induction w.2. reflexivity.
-Defined.
-
-Lemma ex4_4_alpha : Sect ex4_4_g ex4_4_f.
-Proof.
-  unfold ex4_4_f, ex4_4_g. 
-  intro w. destruct w as [a p]. simpl.
-  apply path_sigma_uncurried; simpl. 
-  exists 1.  simpl. unfold f_star in *.
-  induction p. reflexivity.
-Defined.
-
-Lemma ex4_4_beta : Sect ex4_4_f ex4_4_g.
-Proof.
-  unfold ex4_4_f, ex4_4_g, f_star. intro w.
-  apply path_sigma_uncurried. simpl.
-  assert ((w.1.1; ap g (base_path w.2)) = w.1).
-  unfold hfiber in w.
-  apply (@path_sigma A (fun x:A => (g o f) x = g b) 
-                     (w.1.1; ap g (base_path w.2))
-                     w.1
-                     1).
-  simpl. 
-  (*
-  apply (@hfiber_triangle B C g (g b) (b; 1) (f w.1.1; w.1.2) w.2^).
-                     
-  apply path_sigma_uncurried. exists 1. simpl.
-  destruct w as [[a p] q]. simpl in *.
-  transitivity ((ap g (base_path q))^)^. symmetry. apply inv_V.
-  transitivity (ap g (base_path q)^)^. hott_simpl.
-  transitivity (ap g (base_path q^))^. unfold base_path. hott_simpl.
-  apply moveR_V1.
-  apply symmetry.
-  apply (@hfiber_triangle B C g (g b) (b; 1) (f a; p) q^).
-  exists X.
-  destruct w as [[a p] q]. simpl in *.
-  *)
-Admitted.
-  
-
-
 
 Theorem ex4_4 : (hfiber (f_star) (b; 1)) <~> (hfiber f b).
 Proof.
-  apply (equiv_adjointify ex4_4_f ex4_4_g ex4_4_alpha ex4_4_beta).
-Defined.
+  refine (equiv_adjointify _ _ _ _).
+  
+  (* forward *)
+  intro w. destruct w as [[a q] p]. exists a. apply (ap pr1 p).
+
+  (* back *)
+  intro w. destruct w as [a p].
+  exists (a; ap g p). unfold f_star. simpl. induction p. reflexivity.
+
+  (* section *)
+  intro w. destruct w as [a p].
+  apply path_sigma_uncurried. exists 1. simpl.
+  unfold f_star. induction p. reflexivity.
+
+  (* retract *)
+  intro w. destruct w as [[a q] p].
+  apply path_sigma_uncurried. simpl. unfold f_star, compose in *. simpl in *.
+  transparent assert (r : (
+    (existT (fun a => g (f a) = g b) a (ap g (ap pr1 p))) = (a; q)
+  )).
+  apply path_sigma_uncurried. exists 1. simpl.
+  refine (_ @ (fiber_path p^)). simpl.
+  refine (_ @ (transport_paths_Fl _ _)^).
+  refine (_ @ (concat_p1 _)^).
+  refine (_ @ (ap_V _ _)). apply (ap (ap g)).
+  refine (_ @ (ap_V _ (p^))). apply (ap (ap pr1)).
+  apply (inv_V _)^.
+  exists r.
+
+  refine ((transport_paths_Fl r _) @ _).
+  admit.
+Admitted.
+  
+         
+
 
 End Exercise4_4.
 
