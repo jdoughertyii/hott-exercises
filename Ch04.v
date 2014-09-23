@@ -22,7 +22,7 @@ Give an example showing that this type is not generally a mere proposition.
 *)
 
 
-(** %\exer{4.2}{147}% 
+(** %\exerdone{4.2}{147}% 
 Show that for any $A, B : \UU$, the following type is equivalent to $A \eqvsym
 B$.
 %\[
@@ -35,15 +35,183 @@ Extract from this a definition of a type satisfying the three desiderata of
 $\isequiv(f)$.
 *)
 
-(** %\exer{4.3}{147}% 
-Reformulate the proof of Lemma 4.1.1 without using univalence.
-*) 
+(** %\soln%
+Suppose that this type is inhabited; by induction we may suppose that the
+inhabitant breaks down into
+%\begin{align*}
+  R &: A \to B \to \UU \\
+  f &: \prd{a:A} \iscontr\left(\sm{b:B}R(a, b)\right) \\
+  g &: \prd{b:B} \iscontr\left(\sm{a:A}R(a, b)\right)
+\end{align*}%
+We have to construct an element $e : \eqv{A}{B}$.  For the forward map, suppose
+that $a : A$.  Then
+%\[
+  f(a) : \iscontr\left(\sm{b:B}R(a, b)\right)
+\]%
+so there is some $(b, p) : \sm{b:B}R(a,b)$, and we set $e(a) \defeq b$.  For
+the inverse, suppose that $b:B$.  Then $g(b) : \iscontr(\sm{a:A}R(a, b))$, so
+there is some center $(a, p) : \sm{a:A}R(a,b)$, and we set $e^{-1}(b) \defeq
+a$.  To prove that these are quasi-inverses, suppose that $a : A$.  Then $f(a)
+: \iscontr(\sm{b:B}R(a,b))$, so the center is $(b, p) : \sm{b:B}R(a,b)$ and
+$e(a) \equiv b$.  But then $g(e(a)) : \iscontr(\sm{a:A}R(a, b))$, and the
+center of this is $(a', q) : \sm{a:A}R(a,b)$, so $e^{-1}(e(a)) = a'$.  But
+now we have $(a, p) : \sm{a:A}R(a, b)$, and since this type is contractible we
+have $(a, q) = (a', p)$, hence $e^{-1}(e(a)) = a' = a$.  The other direction
+goes just the same way.
+
+For the other direction, suppose that $e : \eqv{A}{B}$, and consider the
+relation $R \defeq \lam{a}{b}(e(a) = b) : A \to B \to \UU$.  For any $a : A$,
+$\sm{b:B}(e(a) = b)$ is contractible by Lemma 3.11.8.  For any $b:B$,
+$\sm{a:A}(e(a) = b)$ is equivalent to $\sm{a:A}(e^{-1}(b) = a)$, and this is
+also contractible by Lemma 3.11.8.  So we have an element of the type above.
+
+To show that these are quasi-inverses, let $e : \eqv{A}{B}$, and take it once
+around the loop to get an equivalence with underlying map $e : A \to B$.  Since
+an equivalence is determined by its underlying map, we're back where we
+started.  For the other direction, suppose that we have an element of the type
+in the problem statement, and take it once around the loop.  Since
+contractibility is a mere proposition and products preserve these, it suffices
+to show that the first components are equal, or that $(b' = b) = R(a, b)$ for
+$b'$ the center of $\sm{b:B}R(a, b)$.  By univalence it suffices to show that
+these are equivalent, and since they are mere propositions it suffices to show
+that they logically imply one another.  Transport gives us the first
+direction, and the other is given by the contractibility of $\sm{b:B}R(a, b)$.
+So we've established an equivalence.
+
+For $f : A \to B$, define 
+%\[
+  \isequiv'(f) \defeq
+  \left(\prd{a:A}\iscontr\left(\sm{b:B}(f(a) = b)\right)\right)
+  \times
+  \left(\prd{b:B}\iscontr\left(\sm{a:A}(f(a) = b)\right)\right)
+\]%
+To show that desideratum (i) is satisfied, suppose that $p : \qinv(f)$.  Then
+$\isequiv(f)$ is inhabited, so $\eqv{A}{B}$ is as well.  But then the
+equivalence just established gives us an element whose second entry is an
+element of $\isequiv'(f)$.  So we have an arrow $\qinv(f) \to \isequiv'(f)$.
+For the other direction, suppose that we have an element $p : \isequiv'(f)$.
+Then $\lam{a}{b}(f(a) = b)$ gives us an element that our equivalence takes to
+$\eqv{A}{B}$, and the second element of this is of type $\isequiv(f)$.  But
+then we have $\isequiv(f) \to \qinv(f)$, so our desideratum is satisfied.
+Finally, $\isequiv'(f)$ is constructed out of products of mere propositions, so
+it too is a mere proposition.
+*)
+
+Definition equiv_to_contr_rel_equiv (A B : Type) :
+  (A <~> B)
+  ->
+  {R : A -> B -> Type & (forall a, Contr {b : B & R a b})
+                      * (forall b, Contr {a : A & R a b})}.
+Proof.
+  intro e.
+  exists (fun a b => (e a = b)). split. 
+  intro a. apply contr_basedpaths.
+  intro b. refine (@contr_equiv' {a : A & e^-1 b = a} _ _ _).
+  refine (equiv_functor_sigma' _ _).
+  apply equiv_idmap. intro a. simpl.
+  refine (equiv_adjointify _ _ _ _).
+  intro eq. refine (_ @ (eisretr e b)). apply (ap e). apply eq^.
+  intro eq. refine (_ @ (eissect e a)). apply (ap e^-1). apply eq^.
+  intro eq. induction eq. simpl. 
+  apply moveR_pM. refine (_ @ (concat_1p _)^). refine ((ap_V _ _) @ _).
+  apply inverse2. refine ((ap_pp _ _ _) @ _).
+  apply moveR_pM. refine ((ap_1 _ _ ) @ _). apply moveL_pV.
+  refine ((concat_1p _) @ _). apply (eisadj e a)^.
+
+  intro eq. induction eq. simpl.
+  apply moveR_pM. refine ((ap_V _ _) @ _). refine (_ @ (concat_1p _)^).
+  apply inverse2. refine ((ap_pp _ _ _) @ _). apply moveR_pM.
+  refine ((ap_1 _ _) @ _). apply moveL_pV. refine ((concat_1p _) @ _).
+  apply (other_adj _)^.
+Defined.
+
+Theorem isequiv_equiv_to_contr_rel_equiv `{Univalence} (A B : Type) :
+  IsEquiv (equiv_to_contr_rel_equiv A B).
+Proof.
+  refine (isequiv_adjointify _ _ _ _).
+  intro R. destruct R as [R [f g]].
+  refine (equiv_adjointify _ _ _ _).
+  intro a. apply (center _ (f a)).1.
+  intro b. apply (center _ (g b)).1.
+  
+  intro b. simpl. 
+  destruct (center {a : A & R a b}) as [a p]. simpl.
+  destruct (center {b0 : B & R a b0}) as [b' q]. change b with (b; p).1.
+  apply (ap pr1). apply allpath_hprop.
+
+  intro a. simpl.
+  destruct (center {b : B & R a b}) as [b q]. simpl.
+  destruct (center {a0 : A & R a0 b}) as [a' p]. 
+  change a with (@pr1 _ (fun a' => R a' b) (a; q)).
+  apply (ap pr1). apply allpath_hprop.
+
+  intro R. apply path_sigma_hprop. destruct R as [R [f g]]. simpl.
+  apply path_forall; intro a. apply path_forall; intro b.
+  destruct (center {b0 : B & R a b0}) as [b' p]. simpl. 
+  apply path_universe_uncurried.
+  refine (equiv_adjointify _ _ _ _).
+  intro eq. apply (transport _ eq). apply p.
+  intro q. change b with (b; q).1. change b' with (b'; p).1. apply (ap pr1).
+  refine (path_contr _ _). apply (f a).
+  intro q. refine ((fiber_path (path_contr (b'; p) (b; q))) @ _). reflexivity.
+  intro eq. induction eq. simpl. refine (_ @ (ap_1 _ _)). f_ap.
+  refine (path_contr _ _). refine (contr_paths_contr _ _). apply (f a).
+
+  intro e. simpl. apply path_equiv. simpl. reflexivity.
+Defined.
 
 Definition qinv {A B : Type} (f : A -> B) :=
   {g : B -> A & (f o g == idmap) * (g o f == idmap)}.
 
-Axiom qinv_isequiv : forall A B (f : A -> B), qinv f -> IsEquiv f.
-Axiom isequiv_qinv : forall A B (f : A -> B), IsEquiv f -> qinv f.
+Definition qinv_isequiv A B (f : A -> B) (p : qinv f) : IsEquiv f
+  := isequiv_adjointify f p.1 (fst p.2) (snd p.2).
+
+Definition isequiv_qinv : forall A B (f : A -> B), IsEquiv f -> qinv f.
+Proof.
+  intros A B f p. destruct p.
+  exists equiv_inv. split. apply eisretr. apply eissect.
+Defined.
+
+Definition isequiv' {A B} (f : A -> B) :=
+  (forall a, Contr {b : B & f a = b}) * (forall b, Contr {a : A & f a = b}).
+
+Theorem ex4_2_i A B (f : A -> B) : qinv f -> isequiv' f.
+Proof.
+  intro p. apply qinv_isequiv in p. 
+  set (Hf := BuildEquiv A B f p).
+  set (HR := equiv_to_contr_rel_equiv A B Hf).
+  set (R := pr1 HR). 
+  set (Q := pr2 HR).
+  split. apply (fst Q). apply (snd Q).
+Defined.
+
+Theorem ex4_2_ii A B (f : A -> B) : isequiv' f -> qinv f.
+Proof.
+  intro p. destruct p as [sect retr].
+  transparent assert (g : (B -> A)).
+  intro b. destruct (retr b). apply center.1.
+  exists g. split.
+  unfold compose, g. intro b. destruct (retr b). apply center.2.
+  unfold compose, g. intro a. destruct (retr (f a)). 
+  change a with (a; 1).1. apply (ap pr1 (contr (a; 1))).
+Defined.
+
+Lemma hprop_prod : forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
+Proof.
+  intros A HA B HB z z'.
+  apply (trunc_equiv (equiv_path_prod z z')).
+Defined.
+
+Theorem ex4_2_iii A B (f : A -> B) : IsHProp (isequiv' f).
+Proof.
+  unfold isequiv'.
+  apply hprop_prod; apply hprop_dependent; intro; apply hprop_contr.
+Defined.
+  
+
+(** %\exer{4.3}{147}% 
+Reformulate the proof of Lemma 4.1.1 without using univalence.
+*) 
 
 Definition ex4_3_f {A B : Type} {f : A -> B} : qinv f -> forall (x:A), x = x. 
   intros.

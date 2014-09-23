@@ -644,7 +644,148 @@ that just need to show that the triangle identity holds here.  We have
   =
   1_{G}
 \end{align*}
+and so $(G, \eta^{-1}, \epsilon^{-1})$ makes $F$ a left adjoint, hence an
+equivalence of categories.
 
 
- \exer{9.4}{334}  \exer{9.5}{334}  \exer{9.6}{334}  \exer{9.7}{334}  \exer{9.8}{334}  \exer{9.9}{334}  \exer{9.10}{335}  \exer{9.11}{335}  \exer{9.12}{335} \begin{coqdoccode}
+ \exer{9.4}{334} 
+Define the notion of pre-2-category.  Show that precategories, functors, and
+natural transformations as defined in \S9.2 form a pre-2-category.  Similarly,
+define a pre-bicategory by replacing the equalities (such as those in Lemmas
+9.2.9 and 9.2.11) with natural isomorphisms satisfying analogous coherence
+conditions.  Define a function from pre-2-categories to pre-bicategories, and
+show that it becomes an equivalence when restricted and corestricted to those
+whose hom-precategories are categories.
+
+
+ \soln
+A pre-2-category $A$ consists of
+\begin{enumerate}
+  \item A type $A_{0}$ of 0-cells
+  \item For all $a, b : A$, a precategory $C(a, b)$ whose objects are 1-cells
+  and whose morphisms are 2-cells.  Composition in this precategory is denoted
+  $\circ_{1}$ and called vertical composition.
+  \item For all $a : A$, an object $1_{a} : C(a, a)$.
+  \item For all $a, b, c : A$, a functor $\circ_{0} : C(b, c) \to C(a, b) \to
+  C(a, c)$ called horizontal composition, which is associative and takes
+  $1_{A}$ and $1_{1_{A}}$ as identities, for which the analogues of Lemmata
+  9.2.10 and 9.2.11 hold.
+\end{enumerate}
+
+
+To check that precategories, functors, and natural transformations form a
+pre-2-category, let precategories form the type of 0-cells.  To each pair of
+precategories $A, B$, we have the functor precategory $B^{A}$, given by
+definition 9.2.3.  For all precatgories $A$, let $1_{A} : A^{A}$ be the
+identity functor.  For horizontal composition we have composition of functors,
+which is associative by Lemma 9.2.9 and takes $1_{A}$ as an identity by Lemma
+9.2.11.  So we're done.
+
+
+A pre-bicategory $A$ consists of
+\begin{enumerate}
+  \item A type $A_{0}$ of 0-cells
+  \item For all $a, b : A$, a precategory $C(a, b)$ whose objects are 1-cells
+  and whose morphisms are 2-cells.  Composition in this precategory is denoted
+  $\circ_{1}$ and called vertical composition.
+  \item For all $a : A$, an object $1_{a} : C(a, a)$.
+  \item For all $a, b, c : A$, a functor $\circ_{0} : C(b, c) \to C(a, b) \to
+  C(a, c)$ called horizontal composition.
+  \item For all $a, b : A$ and $f : C(a, b)$, isomorphisms $\rho_{f} : f
+  \circ_{0} 1_{a} \cong f$ and $\lambda_{f} : 1_{b} \circ_{0} f \cong f$.
+  \item For all $a, b, c, d : A$, $f : C(a, b)$, $g : C(b, c)$, and $h : C(c,
+  d)$, an isomorphism $\alpha_{h, g, f} : (h \circ_{0} g) \circ_{0} f \cong h
+  \circ_{0} (g \circ_{0} f)$.
+  \item Mac Lane's pentagon commutes.  For all $a, b, c, d, e : A$
+  $f : C(a, b)$, $g : C(b, c)$, $h : C(c, d)$, and $i : C(d, e)$,
+  \[\xymatrix@=1in{
+    ((i \circ_{0} h) \circ_{0} g) \circ_{0} f
+    \ar[r]^{\alpha_{i, h, g}\circ_{0} 1_{f}}
+    \ar[d]_{\alpha_{i \circ_{0} h, g, f}}
+    & 
+    (i \circ_{0} (h \circ_{0} g)) \circ_{0} f 
+    \ar[r]^{\alpha_{i, h \circ_{0} g, f}}  
+    &
+    i \circ_{0} ((h \circ_{0} g) \circ_{0} f)
+    \ar[d]^{1_{i} \circ_{0} \alpha_{h, g, f}} \\
+    (i \circ_{0} h) \circ_{0} (h \circ_{0} f)
+    \ar[rr]_{\alpha_{i, h, g \circ_{0} f}}
+    & & 
+    i \circ_{0} (h \circ_{0} (g \circ_{0} f))
+  }\]
+  \item Identity and associativity commute:
+  \[\xymatrix{
+  (g \circ_{0} 1_{b}) \circ_{0} f
+  \ar[rr]^{\alpha_{g, 1_{b}, f}}
+  \ar[rd]_{\rho_{g}\circ_{0} 1_{f}}
+  & &
+  g \circ_{0} (1_{b} \circ_{0} f)
+  \ar[dl]^{1_{b} \circ_{0} \lambda_{f}} \\
+  & g \circ_{0} f
+  }\]
+\end{enumerate}
+The last two conditions can also be seen as Lemmata 9.2.10 and 9.2.11 with the
+equalities replaced by isomorphisms.
+
+
+Given a pre-2-category $A$, we can obtain a pre-bicategory using $\idtoiso$.
+The type of 0-cells is the same, as are the precategories $C(a, b)$, the
+identities $1_{a}$, and the functor $\circ_{0}$.  For a pre-2-category we have
+$\bar{\rho}_{f} : f \circ_{0} 1_{a} = f$ and $\bar{\lambda}_{f} : 1_{b}
+\circ_{0} f = f$, so $\rho_{f} \defeq \idtoiso(\bar{\rho}_{f}) : f \circ_{0}
+1_{a} \cong f$ and $\lambda_{f} \defeq \idtoiso(\bar{\lambda}_{f}) : 1_{b}
+\circ_{0} f \cong f$.  Similarly, we have $\bar{\alpha}_{h, g, f} : (h
+\circ_{0} g) \circ_{0} f = h \circ_{0} (g \circ_{0} f)$ and $\alpha_{h, g, f}
+\defeq \idtoiso(\bar{\alpha}_{h, g, f}) : (h
+\circ_{0} g) \circ_{0} f \cong h \circ_{0} (g \circ_{0} f)$.  The coherence
+conditions follow from Lemmata 9.2.10 and 9.2.11; since $\idtoiso(p \ct q) =
+\idtoiso(q) \circ \idtoiso(p)$, applying $\idtoiso$ everywhere in these lemmata
+give the commuting pentagon and triangle.
+
+
+Finally, restrict and corestrict to pre-2-categories and pre-bicategories whose
+hom-precategories are categories.  We need to construct a quasi-inverse to the
+map just given, which will basically be systematic application of $\isotoid$.
+The type of 0-cells, $C(a, b)$, $1_{a}$, and $\circ_{0}$ remain the same.  From
+(v) we have $\rho_{f} : f \circ_{0} 1_{a} \cong f$, hence $\bar{\rho}_{f}
+\defeq \isotoid(\rho_{f}) : f \circ_{0} 1_{a} = f$, and $\lambda_{f} : 1_{b}
+\circ_{0} f \cong f$, hence $\bar{\lambda_{f}} \defeq \isotoid(\lambda_{f}) :
+1_{b} \circ_{0} f = f$.  Applying $\isotoid$ to everything in sight gives the
+rest of condition (iv) on pre-2-categories.
+
+
+These two processes are clearly quasi-inverses, which follows from the fact
+that $\idtoiso$ is an equivalence.
+
+
+ \exer{9.5}{334} 
+Define a 2-category to be a pre-2-category satisfying a condition analogous to
+that of Definition 9.1.6.  Verify that the pre-2-category of categories $\ucat$
+is a 2-category.  How much of this chapter can be done internally to an
+arbitrary 2-category?
+
+
+ \exer{9.6}{334}  \exer{9.7}{334}  \exer{9.8}{334} 
+
+ \exer{9.9}{334} 
+Prove that a function $X \to Y$ is an equivalence if and only if its image in
+the homotopy category of Example 9.9.7 is an isomorphism.  Show that the type
+of objects of this category is $\brck{\UU}_{1}$.
+
+
+ \exer{9.10}{335}  \exer{9.11}{335} 
+
+ \exer{9.12}{335} 
+Let $X$ and $Y$ be sets and $p : Y \to X$ a surjection
+\begin{enumerate}
+  \item Define, for any precategory $A$, the category $\mathrm{Desc}(A, p)$ of
+  descent data in $A$ relative to $p$.
+  \item  Show that any precategory $A$ is a prestack for $p$, i.e.~the
+  canonical functor $A^{X} \to \mathrm{Desc}(A, p)$ is fully faithful.
+  \item Show that if $A$ is a category, then it is a stack for $p$,
+      i.e.~$A^{X} \to \mathrm{Desc}(A, p)$ is an equivalence.
+  \item Show that the statement ``every strict category is a stack for every
+      surjection of sets'' is equivalent to the axiom of choice.
+\end{enumerate}
+\begin{coqdoccode}
 \end{coqdoccode}

@@ -123,13 +123,6 @@ Record Monoid
          m_ismonoid :> IsMonoid m_set m_mult m_unit
        }.
 
-Lemma hprop_prod :
-  forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
-Proof.
-  intros A HA B HB z z'.
-  apply (trunc_equiv (equiv_path_prod z z')).
-Defined.
-  
 Theorem hprop_inverse_exists (G : Monoid) (x : G) :
   IsHProp {y : G & (G x y = G) * (G y x = G)}.
 Proof.

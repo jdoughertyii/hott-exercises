@@ -149,19 +149,6 @@ requirements are equivalent.
 \}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch06 3.hprop prod}{hprop\_prod}{\coqdoclemma{hprop\_prod}} :\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{\ensuremath{\forall}} \coqdocvar{A}, \coqdocabbreviation{IsHProp} \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{B}, \coqdocabbreviation{IsHProp} \coqdocvariable{B} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocabbreviation{IsHProp} (\coqdocvariable{A} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqdocvariable{B}).\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intros} \coqdocvar{A} \coqdocvar{HA} \coqdocvar{B} \coqdocvar{HB} \coqdocvar{z} \coqdocvar{z'}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} (\coqdocdefinition{trunc\_equiv} (\coqdocdefinition{equiv\_path\_prod} \coqdocvar{z} \coqdocvar{z'})).\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
 \coqdockw{Theorem} \coqdef{Ch06 3.hprop inverse exists}{hprop\_inverse\_exists}{\coqdoclemma{hprop\_inverse\_exists}} (\coqdocvar{G} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}) (\coqdocvar{x} : \coqdocvariable{G}) :\coqdoceol
 \coqdocindent{1.00em}
 \coqdocabbreviation{IsHProp} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\{}}\coqdocvar{y} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{:}} \coqdocvariable{G} \coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\&}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{G} \coqdocvariable{x} \coqdocvar{y} \coqdocnotation{=} \coqdocvariable{G}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{G} \coqdocvar{y} \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{G}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqexternalref{:type scope:'x7B' x ':' x 'x26' x 'x7D'}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Specif}{\coqdocnotation{\}}}.\coqdoceol
@@ -180,7 +167,7 @@ inverse\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 \coqdoctac{assert} (\coqdockw{\ensuremath{\forall}} \coqdocvar{y} : \coqdocvar{G}, \coqdocabbreviation{IsHProp} (\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{G} \coqdocvar{x} \coqdocvariable{y} \coqdocnotation{=} \coqdocvar{G}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvar{G} \coqdocvariable{y} \coqdocvar{x} \coqdocnotation{=} \coqdocvar{G}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}})). \coqdoctac{intro} \coqdocvar{y}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch06 3.hprop prod}{\coqdoclemma{hprop\_prod}}; \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}; \coqdoctac{apply} \coqdocvar{G}.\coqdoceol
+\coqdoctac{apply} \coqdoclemma{hprop\_prod}; \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}; \coqdoctac{apply} \coqdocvar{G}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{apply} \coqdocinstance{hprop\_inhabited\_contr}. \coqdoctac{intro} \coqdocvar{u}. \coqdoctac{\ensuremath{\exists}} \coqdocvar{u}.\coqdoceol
 \coqdocindent{1.00em}
@@ -550,7 +537,7 @@ preserved by products, so the path space is contractible.
 \coqdocindent{2.00em}
 \coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{r} : (\coqdocabbreviation{IsHProp} (\coqref{Ch06 3.list code}{\coqdocdefinition{list\_code}} (\coqdocvar{h} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t}) (\coqdocvar{h'} \coqexternalref{:list scope:x '::' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocnotation{::}} \coqdocvar{t'})))).\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{simpl}. \coqdoctac{apply} \coqref{Ch06 3.hprop prod}{\coqdoclemma{hprop\_prod}}.\coqdoceol
+\coqdoctac{simpl}. \coqdoctac{apply} \coqdoclemma{hprop\_prod}.\coqdoceol
 \coqdocindent{2.00em}
 \coqdoctac{apply} \coqdoclemma{hprop\_allpath}. \coqdoctac{apply} \coqdocvar{HA}.\coqdoceol
 \coqdocindent{2.00em}
@@ -714,9 +701,9 @@ and we're done.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Notation} \coqdef{Ch06 3.:16362}{"}{"}[ ]" := \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}.\coqdoceol
+\coqdockw{Notation} \coqdef{Ch06 3.:16188}{"}{"}[ ]" := \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}.\coqdoceol
 \coqdocnoindent
-\coqdockw{Notation} \coqdef{Ch06 3.:16385}{"}{"}[ x ; .. ; y ]" := (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{x} .. (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{y} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}) ..).\coqdoceol
+\coqdockw{Notation} \coqdef{Ch06 3.:16211}{"}{"}[ x ; .. ; y ]" := (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{x} .. (\coqexternalref{cons}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{cons}} \coqdocvar{y} \coqexternalref{nil}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Datatypes}{\coqdocconstructor{nil}}) ..).\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{Class} \coqdef{Ch06 3.IsMonoidHom}{IsMonoidHom}{\coqdocrecord{IsMonoidHom}} \{\coqdocvar{A} \coqdocvar{B} : \coqref{Ch06 3.Monoid}{\coqdocrecord{Monoid}}\} (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl3/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) :=\coqdoceol
@@ -857,7 +844,7 @@ not\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 \coqdoctac{refine} (\coqdocdefinition{trunc\_equiv'} (\coqref{Ch06 3.isprod ismonoidhom}{\coqdoclemma{isprod\_ismonoidhom}} \coqdocvar{f})).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{apply} \coqref{Ch06 3.hprop prod}{\coqdoclemma{hprop\_prod}}.\coqdoceol
+\coqdoctac{apply} \coqdoclemma{hprop\_prod}.\coqdoceol
 \coqdocindent{1.00em}
 \coqdoctac{intros} \coqdocvar{p} \coqdocvar{q}. \coqdoctac{apply} \coqdocvar{B}.\coqdoceol
 \coqdocindent{1.00em}
