@@ -361,9 +361,76 @@ Proof.
 Defined.
   
 
-(** %\exer{4.3}{147}% 
+(** %\exerdone{4.3}{147}% 
 Reformulate the proof of Lemma 4.1.1 without using univalence.
 *) 
+
+(** %\soln%
+Suppose that $f : A \to B$ such that $\qinv(f)$ is inhabited.  To show that
+$\qinv(f) \eqvsym \prd{x:X}(x=x)$, note that by associativity we have
+%\[
+  \qinv(f) \eqvsym 
+  \sm{h : \sm{g : B \to A}(f \circ g \sim \idfunc{A})}
+    (\fst(h) \circ f \sim \idfunc{A})
+\]%
+Now, because $f$ is an equivalence, by function extensionality $f \circ g \sim
+\idfunc{A}$ is equivalent to $g = f^{-1}$.  But then $\sm{g : B \to A}(g =
+f^{-1})$ is contractible with center $(f^{-1}, \refl{f^{-1}})$, so we've
+reduced to the type $f^{-1} \circ f \sim \idfunc{A}$.  Again by function
+extensionality, this is equivalent to $\prd{x:A}(x=x)$.
+*)
+
+
+Theorem concat_Ap_w (A B : Type) (f g : A -> B) (p : forall x : A, f x = g x)
+         (x y : A) (q : x = y)
+  : ap f q  = p x @ ap g q @ (p y)^.
+Proof.
+  apply moveL_pV. apply concat_Ap.
+Defined.
+
+
+Theorem qinv_to_loop (A B : Type) (f : A <~> B) :
+  qinv f <~> forall x : A, x = x.
+Proof.
+  unfold qinv.
+  equiv_via ({h : {g : B -> A & (f o g == idmap)} & (h.1 o f == idmap)}).
+  refine (equiv_adjointify _ _ _ _).
+  intro w. exists (w.1; fst w.2). apply (snd w.2).
+  intro w. exists w.1.1. split. apply w.1.2. apply w.2.
+  intro w. destruct w as [[g h] e]. reflexivity.
+  intro w. destruct w as [g [h e]]. reflexivity.
+  
+  transparent assert (H : (Contr {g : B -> A & f o g == idmap})).
+  exists (f^-1; eisretr f). intro h. destruct h as [w h].
+  apply path_sigma_uncurried. simpl.
+  exists (path_forall f^-1 w (fun b : B => ap f^-1 (h b)^ @ eissect f (w b))).
+  unfold pointwise_paths, compose.
+  apply path_forall; intro a.
+  refine ((transport_forall_constant _ _ _) @ _).
+  refine ((path_forall_1_beta _ (fun z => f z = a) _ _) @ _).
+  refine ((transport_paths_Fl _ _) @ _).
+  apply moveR_Vp. apply moveL_pM.
+  refine (_ @ (ap_pp _ _ _)^).
+  apply moveL_Mp. refine (_ @ (eisadj _ _)).
+  apply moveR_Vp. apply moveL_pM.
+  refine (_ @ (ap_compose _ _ _)).
+  refine (_ @ (concat_Ap_w _ _ _ idmap (eisretr f) _ _ _)^).
+  apply concat2. apply concat2. reflexivity. apply (ap_idmap _)^. reflexivity.
+
+  equiv_via ((center {g : B -> A & f o g == idmap}).1 o f == idmap).
+  refine (equiv_sigma_contr_base _ _ _).
+  simpl. clear H.
+
+  refine (equiv_adjointify _ _ _ _).
+  intro h. apply path_forall in h. intro x. refine ((eissect f _)^ @ _).
+  apply (ap10 h x).
+  intro h. intro x. unfold compose. refine ((eissect f _) @ _). apply (h x).
+  intro h. apply path_forall; intro a.
+  apply moveR_Vp. refine ((ap10_path_forall _ _ _ a) @ _). reflexivity.
+  intro h. apply path_forall; intro a.
+  apply moveR_Mp. apply concat2. reflexivity.
+  refine ((ap10_path_forall _ _ _ a) @ _). reflexivity.
+Defined.
 
 
 (** %\exer{4.4}{147}% 
