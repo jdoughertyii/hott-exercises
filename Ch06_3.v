@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export HoTT Ch06_2 hit.Torus.
+Require Export HoTT Ch06_2.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -67,7 +67,7 @@ Prove that if the type $\Sn^{2}$ belongs to some universe $\UU$, then $\UU$ is
 not a 2-type.
 *)
 
-(** %\exerdone{6.7}{217}% 
+(** %\exer{6.7}{217}% 
 Prove that if $G$ is a monoid and $x : G$, then $\sm{y:G}((x \cdot y = e)
 \times (y \cdot x = e))$ is a mere proposition.  Conclude, using the principle
 of unique choice, that it would be equivalent to define a group to be a monoid
@@ -154,7 +154,7 @@ Record Group
          g_isgroup :> IsGroup g_monoid g_inv
        }.
 
-Theorem issig_group : 
+Theorem issig_group `{Funext} : 
   {G : Monoid & {i : G -> G & forall a, (G a (i a) = G) * (G (i a) a = G)}} 
     <~>
     Group.
@@ -175,6 +175,7 @@ Proof.
     apply path_forall; intro a. apply eta_prod.
 Defined.
   
+(*
 Theorem ex6_7 :
   {G : Monoid & forall x, Brck {y : G & (G x y = G) * (G y x = G)}}
   <~>
@@ -201,11 +202,12 @@ Proof.
   refine IsEquivmin1.
   apply hprop_inverse_exists.
 Defined.
+*)
   
   
 
 
-(** %\exerdone{6.8}{217}% 
+(** %\exer{6.8}{217}% 
 Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
 proof of Lemma 6.11.5.
 *)
@@ -534,6 +536,7 @@ Proof.
 Defined.
   
 
+(*
 Theorem hprop_ismonoidhom {A B : Monoid} (f : A -> B) : IsHProp (IsMonoidHom f).
 Proof.
   refine (trunc_equiv' (isprod_ismonoidhom f)).
@@ -541,6 +544,7 @@ Proof.
   intros p q. apply B.
   repeat (apply hprop_dependent; intro). intros p q. apply B.
 Defined.
+*)
   
 Theorem issig_monoidhom (A B : Monoid) :
   {f : A -> B & IsMonoidHom f} <~> MonoidHom A B.
@@ -548,6 +552,7 @@ Proof.
   issig (BuildMonoidHom A B) (@mhom_fun A B) (@mhom_ismhom A B).
 Defined.
 
+(*
 Theorem equiv_path_monoidhom {A B : Monoid} {f g : MonoidHom A B} :
   ((mhom_fun _ _ f) = (mhom_fun _ _ g)) <~> f = g.
 Proof.
@@ -557,7 +562,9 @@ Proof.
             ((issig_monoidhom A B)^-1 f) ((issig_monoidhom A B)^-1 g)).
   apply equiv_inverse. apply equiv_ap. refine _.
 Defined.
+*)
 
+(*
 Theorem list_is_free_monoid (A : Type) (HA : IsHSet A) (G : Monoid) :
   MonoidHom (BuildMonoid (list A) _ _ set_list_is_monoid) G <~> (A -> G).
 Proof.
@@ -572,6 +579,7 @@ Proof.
   transitivity (G (homLAG_to_AG A HA G f h) (f t)). f_ap.
   unfold homLAG_to_AG. refine (@hmult _ _ f _ [h] t)^. apply f.
 Defined.
+*)
   
 
 Local Close Scope list_scope.
@@ -592,7 +600,7 @@ axiom.
 Of course, it's easiest to prove the full function extensionality axiom by
 referring to Exercise 2.16.  But we want to show something more: that this map
 is an inverse to $\happly$.
-Let $f g : A \to B$, and suppose that $p : f = g$.  Then $\happly(p) :
+Let $f, g : A \to B$, and suppose that $p : f = g$.  Then $\happly(p) :
 \prd{x:A}f(x) = g(x)$.  For all $x : A$ we define a function $\tilde{h} : I \to
 B$ by
 %\begin{align*}
@@ -643,16 +651,29 @@ Proof.
   refine (interval_rect_beta_seg (fun _ => P) _ _ _).
 Defined.
 
-Definition Lemma6_3_2 {A B : Type} (f g : A -> B) : (f == g) -> (f = g).
-Proof.
-  intro p.
-  transparent assert (pt : (forall x:A, interval -> B)).
-    intro x. apply (interval_rectnd B (f x) (g x) (p x)).
-  transparent assert (q : (interval -> (A -> B))).
-    intro i. apply (fun x:A => pt x i).
-  apply (ap q seg).
-Defined.
+Definition interval_path_arrow {A B : Type} {f g : A -> B} 
+  : (f == g) -> (f = g)
+  := fun p => ap (fun i a => interval_rectnd B (f a) (g a) (p a) i) seg.
 
+Theorem ex6_10_alpha {A B : Type} {f g : A -> B} 
+  : (@ap10 A B f g) o (@interval_path_arrow A B f g) == idmap.
+Proof.
+Admitted.
+  
+  
+  
+Theorem ex6_10_beta {A B : Type} {f g : A -> B} 
+  : (@interval_path_arrow A B f g) o (@ap10 A B f g) == idmap.
+Proof.
+  intro p. unfold compose.
+  set (q := (fun i a => interval_rectnd B (f a) (g a) (ap10 p a) i)).
+Admitted.
+  
+  
+    
+  
+
+  
  
 End Exercise6_10.
 
@@ -688,7 +709,8 @@ $g(\north) = b_{n}$, $g(\south) = b_{s}$, and $g(\merid(a)) = f(a)$ for all $a
 homotopic to the identity function.
 *)
 
-Theorem univ_prop_susp {A B : Type} :
+(*
+Theorem univ_prop_susp `{Funext} {A B : Type} :
   (Susp A -> B) <~> {bn : B & {bs : B & A -> (bn = bs)}}.
 Proof.
   refine (equiv_adjointify _ _ _ _).
@@ -710,6 +732,7 @@ Proof.
   refine ((Susp_comp_nd_merid _) @ _).
   reflexivity.
 Defined.
+*)
   
 
   
@@ -774,6 +797,7 @@ Admitted.
 Definition n_le_m__Sn_le_Sm : forall (n m : nat), (le n m) -> (le (S n) (S m))
   := fun n m H => (H.1; ap S H.2).
 
+(*
 Lemma order_partitions : forall (n m : nat), (le n m) + (lt m n).
 Proof.
   induction n.
@@ -787,17 +811,23 @@ Proof.
         left. apply n_le_m__Sn_le_Sm. apply l0.
         right. destruct l0. exists x. simpl. apply (ap S). apply p.
 Defined.
+*)
   
 
+(*
 Definition r : nat * nat -> nat * nat.
   intro z. destruct z as [a b].
   destruct (order_partitions b a).
   apply (monus a b, O).
   apply (O, monus b a).
 Defined.
+*)
   
+(*
 Definition int := {x : nat * nat & r x = x}.
+*)
 
+(*
 Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
   intro z. destruct z as [[a b] p]. destruct (decidable_paths_nat a b).
   left. right. apply tt.
@@ -805,7 +835,9 @@ Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
   right. apply (pred (monus a b)).
   left. left. apply (pred (monus b a)).
 Defined.
+*)
 
+(*
 Definition nat_1_nat_to_int : (nat + Unit + nat) -> int :=
   fun z =>
     match z with
@@ -815,6 +847,7 @@ Definition nat_1_nat_to_int : (nat + Unit + nat) -> int :=
                  end
       | inr n => ((S n, O); 1)
     end.
+*)
         
 Lemma lt_le : forall n m, (lt n m) -> (le n m).
 Proof.
@@ -841,6 +874,7 @@ Proof.
 Defined.
   
 
+(*
 Theorem ex6_12 : int <~> (nat + Unit + nat).
 Proof.
   refine (equiv_adjointify int_to_nat_1_nat nat_1_nat_to_int _ _).
@@ -880,6 +914,7 @@ Proof.
     assert (IsHSet (nat * nat)) as Hn. apply hset_prod; apply hset_nat.
     apply set_path2.
 Defined.
+*)
 
 Definition int' := nat + Unit + nat.
 

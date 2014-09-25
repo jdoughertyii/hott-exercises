@@ -53,6 +53,11 @@ where now every object that isn't a $\unit$ is a colimit.
 *)
 
 (** %\exer{7.3}{250}% *)
+
+Inductive W_tree (A : Type) (B : A -> Type) : Type :=
+  | sup : forall a : A, (B a -> W_tree A B) -> W_tree A B.
+
+
 (** %\exer{7.4}{250}% *)
 (** %\exer{7.5}{250}% *)
 (** %\exer{7.6}{250}% *)
@@ -62,7 +67,7 @@ where now every object that isn't a $\unit$ is a colimit.
 (** %\exer{7.10}{251}% *)
 (** %\exer{7.11}{251}% *)
 
-(** %\exerdone{7.12}{251}% 
+(** %\exer{7.12}{251}% 
 Show that $X \mapsto (\lnot \lnot X)$ is a modality.
 *) 
 
@@ -113,20 +118,27 @@ automatically a quasi-inverse to $\eta^{\lnot\lnot}_{z = z'}$.  Such an arrow
 is immediate from the fact that $\lnot \lnot A$ is a mere proposition.
 *)
 
+(*
 Definition eta_nn (A : Type) : A -> ~ ~ A := fun a f => f a.
+*)
 
+(*
 Lemma hprop_arrow (A B : Type) : IsHProp B -> IsHProp (A -> B).
 Proof.
   intro HB.
   apply hprop_allpath. intros f g. apply path_forall. intro a. apply HB.
 Defined.
+*)
 
+(*
 Lemma hprop_neg {A : Type} : IsHProp (~ A).
 Proof.
   apply hprop_arrow. apply hprop_Empty.
 Defined.
+*)
   
 
+(*
 Definition ind_nn (A : Type) (B : ~ ~ A -> Type) : 
   (forall a : A, ~ ~ (B (eta_nn A a))) -> forall z : ~ ~ A, ~ ~ (B z). 
 Proof.
@@ -136,14 +148,18 @@ Proof.
                     (@allpath_hprop _ hprop_neg _ _)
                     (f a)) g).
 Defined.
+*)
 
+(*
 Definition ind_nn_compute (A : Type) (B : ~ ~ A -> Type)
    (f : forall a, ~ ~ (B (eta_nn A a))) (a : A) :
     ind_nn A B f (eta_nn A a) = f a.
 Proof.
   apply allpath_hprop.
 Defined.
+*)
 
+(*
 Lemma isequiv_hprop (P Q : Type) (HP : IsHProp P) (HQ : IsHProp Q)
       (f : P -> Q) :
   (Q -> P) -> IsEquiv f.
@@ -153,13 +169,17 @@ Proof.
   intro q. apply allpath_hprop.
   intro p. apply allpath_hprop.
 Defined.
+*)
 
+(*
 Lemma hprop_hprop_path (A : Type) (HA : IsHProp A) (x y : A) : IsHProp (x = y).
 Proof.
   apply hprop_allpath.
   apply set_path2.
 Defined.
+*)
 
+(*
 Definition nn_isequiv_eta_path (A : Type) (z z' : ~ ~ A) : 
   IsEquiv (eta_nn (z = z')).
 Proof.
@@ -167,7 +187,9 @@ Proof.
   apply hprop_hprop_path. apply hprop_neg. apply hprop_neg.
   intro f. apply hprop_neg.
 Defined.
+*)
 
+(*
 Theorem ismodality_DN : IsModality (fun A : Type => ~ ~ A).
 Proof.
   apply (@Build_IsModality (fun A : Type => ~~ A)
@@ -176,6 +198,7 @@ Proof.
                            ind_nn_compute
                            nn_isequiv_eta_path).
 Defined.
+*)
 
 
   
@@ -208,6 +231,7 @@ i.e., for all $X$ we have
   }
 \]% *)
 
+(*
 Definition mod_fun (mod : Type -> Type) `{IsModality mod}
            {A B : Type} (f : A -> B) 
   : mod A -> mod B.
@@ -217,7 +241,9 @@ Proof.
   apply modality_eta.
   apply (f a).
 Defined.
+*)
 
+(*
 Lemma mod_fun_eta (mod : Type -> Type) `{IsModality mod} {A B : Type} 
       {f : A -> B} :
   (@mod_fun mod _ A B f) o (@modality_eta mod _ A)
@@ -228,7 +254,9 @@ Proof.
   unfold compose, mod_fun.
   refine (@modality_ind_compute mod _ _ _ _ _).
 Defined.
+*)
 
+(*
 Class IsLEModality (mod : Type -> Type) := 
   BuildIsLEModality {
       lem_ismodality : IsModality mod ;
@@ -241,6 +269,7 @@ Class IsLEModality (mod : Type -> Type) :=
       lem_products : forall (A B X: Type),
         (X -> mod (A * B)) <~> (X -> mod A) * (X -> mod B)               
     }.
+*)
 
 
 (** (i) Let $\modal X \defeq (P \to X)$, with $\eta^{\modal}_{A} : A \to
@@ -319,10 +348,13 @@ and finite products.
 Coq is having a real hard time with the proof of
 [coslice_compose_aux] below.  The right way to do it is to use the functorality of $\modal$, but instead I just did a bunch of path algebra.  Maybe I'll go back and do it right one day.*)
 
+(*
 Definition eta_coslice (P : Type) (HP : IsHProp P) 
   : forall A : Type, A -> (P -> A)
   := fun A a p => a.
+*)
 
+(*
 Definition ind_coslice (P : Type) (HP : IsHProp P)
   : forall (A : Type) (B : (P -> A) -> Type),
       (forall a : A, P -> (B (eta_coslice P HP A a))) 
@@ -333,7 +365,9 @@ Proof.
           (fun p' : P => ap g (allpath_hprop p p')))). 
   apply f. apply p.
 Defined.
+*)
 
+(*
 Lemma ind_coslice_compute (P : Type) (HP : IsHProp P) 
   : forall A B (f : forall a : A, P -> (B (eta_coslice P HP A a))) a,
       ind_coslice P HP A B f (eta_coslice P HP A a) = f a.
@@ -352,7 +386,9 @@ Proof.
   f_ap. apply path_forall_1.
   reflexivity.
 Defined.
+*)
 
+(*
 Lemma isequiv_eta_coslice_path (P : Type) (HP : IsHProp P)
   : forall A (f g : P -> A),
       IsEquiv (eta_coslice P HP (f = g)).
@@ -381,8 +417,10 @@ Proof.
          with (apD10 q).
   apply eta_path_forall.
 Defined.
+*)
 
 
+(*
 Definition ismodality_hprop_coslice (P : Type) (HP : IsHProp P) 
   : IsModality (fun A : Type => P -> A)
   := @Build_IsModality (fun A => P -> A)
@@ -390,7 +428,9 @@ Definition ismodality_hprop_coslice (P : Type) (HP : IsHProp P)
                            (ind_coslice P HP)
                            (ind_coslice_compute P HP)
                            (isequiv_eta_coslice_path P HP).
+*)
 
+(*
 Lemma isequiv_contr_coslice_fun {A B P : Type} `{Contr P} : 
   IsEquiv (@mod_fun (fun A => P -> A) 
                     (ismodality_hprop_coslice P _)
@@ -425,13 +465,17 @@ Proof.
   f_ap. apply path_forall; intro p. apply ap_const.
   reflexivity.
 Defined.
+*)
 
+(*
 Lemma ap11_V {A B : Type} {f g : A -> B} (h : f = g) {x y : A} (p : x = y) :
   ap11 h^ p^ = (ap11 h p)^.
 Proof.
   induction h. induction p. reflexivity.
 Defined.
+*)
 
+(*
 Lemma coslice_compose_aux (A B C P X : Type) (HP : IsHProp P) 
       (f : A -> C) (g : B -> C) : 
 {h : X * P -> A & {k : X * P -> B & f o h = g o k}} <~>
@@ -622,8 +666,10 @@ Proof.
   
   apply eta_path_forall.
 Defined.
+*)
   
   
+(*
 Theorem islemodality_hprop_coslice `{Funext} 
         (P : Type) (HP : IsHProp P)
   : IsLEModality (fun A : Type => P -> A).
@@ -652,6 +698,7 @@ Proof.
   apply equiv_inverse. 
   apply equiv_functor_prod'; apply equiv_uncurry.
 Defined.
+*)
 
 (** (ii)
 Suppose now that $\modal X \defeq P * X$.  That is, suppose that $\modal X$ is
@@ -794,6 +841,7 @@ Proof.
   intros p. reflexivity.
 Defined.
 
+(*
 Definition ismodality_hprop_join (P : Type) `{IsHProp P}
   : IsModality (@join_mod P)
   := @Build_IsModality (@join_mod P)
@@ -802,7 +850,9 @@ Definition ismodality_hprop_join (P : Type) `{IsHProp P}
                        (@ind_hprop_join_compute P _)
                        (@isequiv_eta_hprop_join_path P _).
 
+*)
 
+(*
 Theorem islemodality_hprop_join (P : Type) `{IsHProp P} :
   IsLEModality (@join_mod P).
 Proof.
@@ -818,6 +868,7 @@ Proof.
   refine (equiv_adjointify _ _ _ _).
   intros. split.
   Admitted.
+*)
   
   
   

@@ -6,7 +6,7 @@ Require Export HoTT Ch03.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Equivalences *)
 
-(** %\exerdone{4.1}{147}% 
+(** %\exer{4.1}{147}% 
 Consider the type of ``two-sided adjoint equivalence data'' for $f : A \to B$,
 %\[
   \sm{g:B \to A} 
@@ -85,8 +85,11 @@ Theorem ex4_1 `{Univalence} (A B : Type) (f : A <~> B) :
   <~>
   forall x : A, @idpath _ x = @idpath _ x.
 Proof.
-  generalize dependent f. generalize dependent B.
-  apply equiv_rect.
+  set (p := path_universe f).
+  assert (fisp : f = equiv_path _ _ p).
+    apply path_equiv. apply path_forall; intro a. simpl.
+    unfold p. symmetry. apply transport_path_universe.
+  clearbody p. induction p. rewrite fisp. simpl. 
 
   equiv_via ({g : A -> A & {h : g == idmap & {e : g == idmap &
     (h == e) 
@@ -124,7 +127,8 @@ Proof.
   unfold pointwise_paths.
   apply path_forall; intro a.
   refine ((transport_forall_constant _ _ _) @ _).
-  refine ((path_forall_1_beta _ (fun z => z = a) _ _) @ _).
+  refine ((@path_forall_1_beta _ A (fun _ => A) a (fun z => z = a)
+                               idmap g _ 1) @ _).
   refine ((transport_paths_l _ _) @ _).
   refine ((concat_p1 _) @ _).
   apply inv_V.
@@ -134,7 +138,7 @@ Proof.
       = (fun y => (center {g : A -> A & g == idmap}).2 
                      ((center {g : A -> A & g == idmap}).1 y)))}).
   refine (equiv_sigma_contr_base _ _ _).
-  simpl. clear H.
+  simpl. clear HC.
   
   equiv_via ({e : (fun x : A => x) == idmap & 
              {p : (fun x => 1) = e 
@@ -174,7 +178,7 @@ Defined.
   
 
 
-(** %\exerdone{4.2}{147}% 
+(** %\exer{4.2}{147}% 
 Show that for any $A, B : \UU$, the following type is equivalent to $A \eqvsym
 B$.
 %\[
@@ -274,7 +278,7 @@ Proof.
   apply moveR_pM. refine ((ap_V _ _) @ _). refine (_ @ (concat_1p _)^).
   apply inverse2. refine ((ap_pp _ _ _) @ _). apply moveR_pM.
   refine ((ap_1 _ _) @ _). apply moveL_pV. refine ((concat_1p _) @ _).
-  apply (other_adj _)^.
+  apply (other_adj _ _)^.
 Defined.
 
 Theorem isequiv_equiv_to_contr_rel_equiv `{Univalence} (A B : Type) :
@@ -283,8 +287,8 @@ Proof.
   refine (isequiv_adjointify _ _ _ _).
   intro R. destruct R as [R [f g]].
   refine (equiv_adjointify _ _ _ _).
-  intro a. apply (center _ (f a)).1.
-  intro b. apply (center _ (g b)).1.
+  intro a. apply (center {b : B & R a b}).1.
+  intro b. apply (center {a : A & R a b}).1.
   
   intro b. simpl. 
   destruct (center {a : A & R a b}) as [a p]. simpl.
@@ -345,7 +349,7 @@ Proof.
   exists g. split.
   unfold compose, g. intro b. destruct (retr b). apply center.2.
   unfold compose, g. intro a. destruct (retr (f a)). 
-  change a with (a; 1).1. apply (ap pr1 (contr (a; 1))).
+  apply (ap pr1 (contr (a; 1))).
 Defined.
 
 Lemma hprop_prod : forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
@@ -354,7 +358,7 @@ Proof.
   apply (trunc_equiv (equiv_path_prod z z')).
 Defined.
 
-Theorem ex4_2_iii A B (f : A -> B) : IsHProp (isequiv' f).
+Theorem ex4_2_iii `{Funext} A B (f : A -> B) : IsHProp (isequiv' f).
 Proof.
   unfold isequiv'.
   apply hprop_prod; apply hprop_dependent; intro; apply hprop_contr.
@@ -389,7 +393,7 @@ Proof.
 Defined.
 
 
-Theorem qinv_to_loop (A B : Type) (f : A <~> B) :
+Theorem qinv_to_loop `{Funext} (A B : Type) (f : A <~> B) :
   qinv f <~> forall x : A, x = x.
 Proof.
   unfold qinv.
@@ -400,14 +404,15 @@ Proof.
   intro w. destruct w as [[g h] e]. reflexivity.
   intro w. destruct w as [g [h e]]. reflexivity.
   
-  transparent assert (H : (Contr {g : B -> A & f o g == idmap})).
+  transparent assert (H' : (Contr {g : B -> A & f o g == idmap})).
   exists (f^-1; eisretr f). intro h. destruct h as [w h].
   apply path_sigma_uncurried. simpl.
   exists (path_forall f^-1 w (fun b : B => ap f^-1 (h b)^ @ eissect f (w b))).
   unfold pointwise_paths, compose.
-  apply path_forall; intro a.
+  apply path_forall; intro b.
   refine ((transport_forall_constant _ _ _) @ _).
-  refine ((path_forall_1_beta _ (fun z => f z = a) _ _) @ _).
+  refine ((@path_forall_1_beta _ B (fun _ => A) b (fun z => f z = b) _ _ _ _) 
+            @ _).
   refine ((transport_paths_Fl _ _) @ _).
   apply moveR_Vp. apply moveL_pM.
   refine (_ @ (ap_pp _ _ _)^).
@@ -419,7 +424,7 @@ Proof.
 
   equiv_via ((center {g : B -> A & f o g == idmap}).1 o f == idmap).
   refine (equiv_sigma_contr_base _ _ _).
-  simpl. clear H.
+  simpl. clear H'.
 
   refine (equiv_adjointify _ _ _ _).
   intro h. apply path_forall in h. intro x. refine ((eissect f _)^ @ _).
@@ -508,7 +513,7 @@ Admitted.
 
 End Exercise4_4.
 
-(** %\exerdone{4.5}{147}% 
+(** %\exer{4.5}{147}% 
 Prove that equivalences satisfy the _2-out-of-6 property_: given $f : A \to B$
 and $g : B \to C$ and $h : C \to D$, if $g \circ f$ and $h \circ g$ are
 equivalences, so are $f$, $g$, $h$, and $h \circ g \circ f$.  Use this to give
@@ -765,6 +770,7 @@ Here univalence is used only in establishing that $a = a$ is a set, by showing
 that it's equivalent to $(\bool \eqvsym \bool)$.
 *)
 
+(*
 Lemma Lemma412 (A : Type) (a : A) (q : a = a) :
   IsHSet (a = a) -> (forall x, Brck (a = x)) 
   -> (forall p : a = a, p @ q = q @ p)
@@ -797,7 +803,9 @@ Proof.
   transitivity (1^ @ q @ 1).
   apply ((X1 a).2 1). hott_simpl.
 Defined.
+*)
   
+(*
 Definition Bool_Bool_to_a_a : 
   ((Bool:Type) <~> (Bool:Type)) -> 
   (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
@@ -810,7 +818,9 @@ Definition Bool_Bool_to_a_a :
   destruct equiv_isequiv. exists equiv_inv.
   split. apply eisretr. apply eissect.
 Defined.
+*)
 
+(*
 Definition a_a_to_Bool_Bool : 
   (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
   =
@@ -821,7 +831,9 @@ Definition a_a_to_Bool_Bool :
   apply (BuildEquiv Bool Bool X.1).
   apply (isequiv_adjointify X.1 X.2.1 (fst X.2.2) (snd X.2.2)).
 Defined.
+*)
 
+(*
 Theorem ex4_6ii : {A : Type & {B : Type & {f : A -> B & ~ IsHProp (qinv f)}}}.
 Proof.
   set (X := {A : Type & Brck ((Bool:Type) = A)}).
@@ -839,5 +851,6 @@ Proof.
   intro p. simpl.
    *)
 Admitted.
+*)
   
 End Exercise4_6.

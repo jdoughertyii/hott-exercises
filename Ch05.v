@@ -203,7 +203,7 @@ Definition Bool_rect_uncurried_inv (E : Bool -> Type) :
   intro f. split; [apply (f false) | apply (f true)].
 Defined.
 
-Theorem ex5_4 (E : Bool -> Type) : IsEquiv (Bool_rect_uncurried E).
+Theorem ex5_4 `{Funext} (E : Bool -> Type) : IsEquiv (Bool_rect_uncurried E).
 Proof.
   refine (isequiv_adjointify _ (Bool_rect_uncurried_inv E) _ _);
     unfold Bool_rect_uncurried, Bool_rect_uncurried_inv.
@@ -247,14 +247,14 @@ Definition nat_rect_uncurried (E : nat -> Type) :
   intros p n. induction n. apply (fst p). apply (snd p). apply IHn.
 Defined.
 
-Theorem ex5_5 : ~ IsEquiv (nat_rect_uncurried (fun _ => Bool)).
+Theorem ex5_5 `{Funext} : ~ IsEquiv (nat_rect_uncurried (fun _ => Bool)).
 Proof.
   intro e. destruct e.
   set (ez := (Ex3.ez Bool true)).
   set (es := (Ex3.es Bool)).
   set (ez' := (Ex3.ez' Bool true)).
   set (es' := (Ex3.es' Bool true)).
-  assert ((ez, es) = (ez', es')) as H.
+  assert ((ez, es) = (ez', es')) as H'.
   transitivity (equiv_inv (nat_rect_uncurried (fun _ => Bool) (ez, es))).
   symmetry. apply eissect.
   transitivity (equiv_inv (nat_rect_uncurried (fun _ => Bool) (ez', es'))).
@@ -394,7 +394,7 @@ Hypothesis rec_comp : forall P h alpha, rec P h (lawvere alpha) = h alpha.
 Definition phi : (L -> A) -> ((L -> A) -> A) :=
   fun f alpha => f (lawvere alpha).
 
-Theorem ex5_9 : forall (f : A -> A), {a : A & f a = a}.
+Theorem ex5_9 `{Funext} : forall (f : A -> A), {a : A & f a = a}.
 Proof.
   intro f. apply (LawvereFP phi).
   intro q. exists (rec A q). unfold phi.
@@ -443,7 +443,7 @@ Variable lawvere : (L -> Unit) -> L.
 Variable indL : forall P, (forall alpha, P (lawvere alpha)) -> forall l, P l.
 Hypothesis ind_comp : forall P f alpha, indL P f (lawvere alpha) = f alpha.
 
-Theorem ex5_10 : Contr L.
+Theorem ex5_10 `{Funext} : Contr L.
 Proof.
   apply (BuildContr L (lawvere (fun _ => tt))).
   apply indL; intro alpha.

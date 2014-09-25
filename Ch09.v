@@ -196,6 +196,7 @@ Proof.
   reflexivity.
 Defined.
 
+(*
 Theorem slice_cat_if_cat (A : PreCategory) (a : A) 
   : (IsCategory A) -> (IsCategory (slice_precategory A a)).
 Proof.
@@ -215,7 +216,7 @@ Proof.
   unfold eq. 
   transitivity (
     transport (fun z => Category.morphism A (fst z) (snd z)) 
-              (path_prod (b, a) (c, a) ((isotoid A b c) i) 1%path) f
+              (path_prod (b, a) (c, a) ((isotoid A b c) i) 1) f
   ).
   refine (_ @ (transport_path_prod _ _ _ _ _ _ _ _)^). reflexivity.
   refine ((Lemma9_1_9 _ _ _ _ _ _ _ _) @ _). simpl.
@@ -235,6 +236,7 @@ Proof.
   simpl in *.
   path_induction. simpl in *.
 Admitted.
+*)
   
   
 

@@ -6,11 +6,12 @@
 The following are solutions to exercises from
 _Homotopy Type Theory: Univalent Foundations of Mathematics_.  The Coq
 code given alongside the by-hand solutions requires the HoTT version of Coq,
-available %\href{https://github.com/HoTT}{at the HoTT github repository}%.  It
-will be assumed throughout that it has been imported by *)
+available %\href{https://github.com/HoTT}{at the HoTT github repository}%.  
+*)
 
 
 Require Export HoTT.
+
 
 (**
 %\tableofcontents%
@@ -44,13 +45,17 @@ and
 So $h \circ (g \circ f) \equiv (h \circ g) \circ f$.  In Coq, we have *)
 
 
-Definition compose' {A B C : Type} (g : B -> C) (f : A -> B) := fun x => g (f x).
+Module Ex1.
 
-Lemma compose'_assoc : forall (A B C D : Type) (f : A -> B) (g : B-> C) (h : C -> D), 
-  compose' h (compose' g f) = compose' (compose' h g) f.
+Definition compose {A B C : Type} (g : B -> C) (f : A -> B) := fun x => g (f x).
+
+Lemma compose_assoc (A B C D : Type) (f : A -> B) (g : B-> C) (h : C -> D)
+  : compose h (compose g f) = compose (compose h g) f.
 Proof.
   reflexivity.
 Defined.
+  
+End Ex1.
 
 (** %\exerdone{1.2}{56}%  
 Derive the recursion principle for products $\rec{A \times B}$ using only the
@@ -73,10 +78,13 @@ in terms of these projections as follows
 or, in Coq,
 *)
 
-Section Exercise2a.
-  Context {A B : Type}.
+Module Ex2.
 
-  Definition recprd (C : Type) (g : A -> B -> C) (p : A * B) := g (fst p) (snd p).
+Section Ex2a.
+Context (A B : Type).
+
+Definition prod_rect (C : Type) (g : A -> B -> C) (p : A * B) 
+  := g (fst p) (snd p).
 
 (** We must then show that
 %\begin{align*}
@@ -88,18 +96,13 @@ which in Coq amounts to showing that these this equality is a reflexivity.
 *)
 
 
-  Theorem recprd_correct : forall (C : Type) (g : A -> B -> C) (a : A) (b : B), 
-    recprd C g (a, b) = g a b. 
-  Proof.
-    reflexivity.
-  Defined.
+Theorem prod_rect_correct : forall (C : Type) (g : A -> B -> C) (a : A) (b : B), 
+    prod_rect C g (a, b) = g a b. 
+Proof.
+  reflexivity.
+Defined.
 
-End Exercise2a.
-
-Section Exercise2b.
-
-  Context (A : Type).
-  Context (B : A -> Type).
+End Ex2a.
 
 (** Now for the $\Sigma$-types.  Here we have a projection
 %\[
@@ -120,8 +123,14 @@ by
 \]% 
 *)
 
-  Definition recsm (C : Type) (g : forall (x : A), B x -> C) (p : {x:A & B x}) := 
-    g (p.1) (p.2).
+Section Ex2b.
+
+Context (A : Type).
+Context (B : A -> Type).
+
+
+Definition sigma_rect (C : Type) (g : forall (x : A), B x -> C) (p : {x:A & B x}) 
+  := g (p.1) (p.2).
 
 (** %\noindent%
 We then verify that
@@ -132,22 +141,21 @@ We then verify that
 \end{align*}%
 *)
 
-  Theorem recsm_correct : forall (C:Type) (g : forall x, B x -> C) (a:A) (b:B a), 
-    recsm C g (a; b) = g a b. 
-  Proof.
-    reflexivity.
-  Defined.
+Theorem sigma_rect_correct : forall (C:Type) (g : forall x, B x -> C) (a:A) (b:B a), 
+  sigma_rect C g (a; b) = g a b. 
+Proof.
+  reflexivity.
+Defined.
 
-End Exercise2b.
+End Ex2b.
+
+End Ex2.
 
 (** %\exerdone{1.3}{56}% 
 Derive the induction principle for products $\ind{A \times B}$ using only the
-    projections and the propositional uniqueness principle $\uppt$.  Verify that
-    the definitional equalities are valid.  Generalize $\uppt$ to $\Sigma$-types,
-    and do the same for $\Sigma$-types. *)
-
-Section Exercise3a.
-  Context {A B : Type}.
+projections and the propositional uniqueness principle $\uppt$.
+Verify that the definitional equalities are valid.  Generalize $\uppt$
+to $\Sigma$-types, and do the same for $\Sigma$-types. *)
 
 (** %\soln% 
 The induction principle has type
@@ -184,8 +192,13 @@ so
 has the right type.  In Coq we use [eta_prod], which is the name for
 $\uppt$, then use it with transport to give our $\ind{A\times B}'$.  *)
 
-  Definition indprd (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (z : A * B) := 
-    (eta_prod z) # (g (fst z) (snd z)).
+Module Ex3.
+Section Ex3a.
+Context (A B : Type).
+
+
+Definition prod_rect (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (z : A * B) 
+  := (eta_prod z) # (g (fst z) (snd z)).
 
 (** 
 We now have to show that
@@ -209,19 +222,15 @@ Unfolding the left gives
 \end{align*}%
 which was to be proved. *)
 
-  Theorem indprd_correct : 
-    forall (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (a:A) (b:B), 
-      indprd C g (a, b) = g a b. 
-  Proof.
-    reflexivity.
-  Defined.
+Theorem prod_rect_correct : 
+  forall (C : A * B -> Type) (g : forall (x:A) (y:B), C (x, y)) (a:A) (b:B), 
+    prod_rect C g (a, b) = g a b. 
+Proof.
+  reflexivity.
+Defined.
 
-End Exercise3a.
+End Ex3a.
 
-
-Section Exercise3b.
-  Context {A : Type}.
-  Context {B : A -> Type}.
 
 (** For $\Sigma$-types, we define
 %\[
@@ -249,9 +258,14 @@ Thus, we can write
 \]%
 and in Coq, *)
 
+Section Ex3b.
+Context (A : Type).
+Context (B : A -> Type).
 
-  Definition indsm (C : {x:A & B x} -> Type) (g : forall (a:A) (b:B a), C (a; b)) (p : {x:A & B x}) :=
-    (eta_sigma p) # (g (p.1) (p.2)).
+
+Definition sigma_rect (C : {x:A & B x} -> Type) 
+           (g : forall (a:A) (b:B a), C (a; b)) (p : {x:A & B x}) 
+  := (eta_sigma p) # (g (p.1) (p.2)).
 
 (** 
 Now we must verify that
@@ -277,15 +291,17 @@ We have
 \end{align*}% *)
 
 
-  Theorem indsm_correct : 
-        forall (C : {x:A & B x} -> Type) 
-               (g : forall (a:A) (b:B a), C (a; b)) (a : A) (b : B a), 
-          indsm C g (a; b) = g a b. 
-  Proof.
-    reflexivity.
-  Defined.
+Theorem sigma_rect_correct : 
+      forall (C : {x:A & B x} -> Type) 
+             (g : forall (a:A) (b:B a), C (a; b)) (a : A) (b : B a), 
+        sigma_rect C g (a; b) = g a b. 
+Proof.
+  reflexivity.
+Defined.
 
-End Exercise3b.
+End Ex3b.
+
+End Ex3.
 
 (** %\exerdone{1.4}{56}%  
 Assuming as given only the _iterator_ for natural numbers
@@ -302,286 +318,285 @@ derive a function having the type of the recursor $\rec{\mathbb{N}}$.  Show
 that the defining equations of the recursor hold propositionally for this
 function, using the induction principle for $\mathbb{N}$. *)
 
-Section Exercise4.
+Section Ex4.
 
-  Variable C : Type.
-  Variable c0 : C.
-  Variable cs : nat -> C -> C.
+Variable C : Type.
+Variable c0 : C.
+Variable cs : nat -> C -> C.
 
-  (** %\soln%  
-    Fix some $C : \UU$, $c_{0} : C$, and $c_{s} : \mathbb{N} \to C \to C$.
-    $\ite(C)$ allows for the $n$-fold application of a single function to a single
-    input from $C$, whereas $\rec{\mathbb{N}}$ allows each application to depend on
-    $n$, as well.  Since $n$ just tracks how many applications we've done, we can
-    construct $n$ on the fly, iterating over elements of $\mathbb{N} \times C$.  So
-    we will use the iterator
-    %\[
-    \ite_{\mathbb{N} \times C} : \mathbb{N} \times C \to (\mathbb{N} \times C
-    \to \mathbb{N} \times C) \to \mathbb{N} \to \mathbb{N} \times C
-    \]%
-    to derive a function
-    %\[
-    \Phi : \prd{C : \UU} C \to (\mathbb{N} \to C \to C) \to
-    \mathbb{N} \to C
-    \]%
-    which has the same type as $\rec{\mathbb{N}}$.  
-
-
-    The first argument of $\ite_{\mathbb{N} \times C}$ is the starting point,
-    which we'll make $(0, c_{0})$.  The second input takes an element of
-    $\mathbb{N} \times C$ as an argument and uses $c_{s}$ to construct a new
-    element of $\mathbb{N} \times C$.  We can use the first and second elements of
-    the pair as arguments for $c_{s}$, and we'll use $\suc$ to advance the first
-    argument, representing the number of steps taken.  This gives the function
-    %\[
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)) 
-    : \mathbb{N} \times C \to \mathbb{N} \times C
-    \]%
-    for the second input to $\ite_{\mathbb{N} \times C}$.  The third input is just
-    $n$, which we can pass through.  Plugging these in gives
-    %\[
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    n
-    \big)
-    : \mathbb{N} \times C
-    \]%
-    from which we need to extract an element of $C$.  This is easily done with the
-    projection operator, so we have
-    %\[
-    \Phi(C, c_{0}, c_{s}, n) \defeq
-    \snd\bigg(
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    n
-    \big)
-    \bigg)
-    \]%
-    which has the same type as $\rec{\mathbb{N}}$.  In Coq we first define the
-    iterator and then our alternative recursor: *)
+(** %\soln%  
+Fix some $C : \UU$, $c_{0} : C$, and $c_{s} : \mathbb{N} \to C \to C$.
+$\ite(C)$ allows for the $n$-fold application of a single function to a single
+input from $C$, whereas $\rec{\mathbb{N}}$ allows each application to depend on
+$n$, as well.  Since $n$ just tracks how many applications we've done, we can
+construct $n$ on the fly, iterating over elements of $\mathbb{N} \times C$.  So
+we will use the iterator
+%\[
+\ite_{\mathbb{N} \times C} : \mathbb{N} \times C \to (\mathbb{N} \times C
+\to \mathbb{N} \times C) \to \mathbb{N} \to \mathbb{N} \times C
+\]%
+to derive a function
+%\[
+\Phi : \prd{C : \UU} C \to (\mathbb{N} \to C \to C) \to
+\mathbb{N} \to C
+\]%
+which has the same type as $\rec{\mathbb{N}}$.  
 
 
+The first argument of $\ite_{\mathbb{N} \times C}$ is the starting point,
+which we'll make $(0, c_{0})$.  The second input takes an element of
+$\mathbb{N} \times C$ as an argument and uses $c_{s}$ to construct a new
+element of $\mathbb{N} \times C$.  We can use the first and second elements of
+the pair as arguments for $c_{s}$, and we'll use $\suc$ to advance the first
+argument, representing the number of steps taken.  This gives the function
+%\[
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)) 
+: \mathbb{N} \times C \to \mathbb{N} \times C
+\]%
+for the second input to $\ite_{\mathbb{N} \times C}$.  The third input is just
+$n$, which we can pass through.  Plugging these in gives
+%\[
+\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+n
+\big)
+: \mathbb{N} \times C
+\]%
+from which we need to extract an element of $C$.  This is easily done with the
+projection operator, so we have
+%\[
+\Phi(C, c_{0}, c_{s}, n) \defeq
+\snd\bigg(
+\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+n
+\big)
+\bigg)
+\]%
+which has the same type as $\rec{\mathbb{N}}$.  In Coq we first define the
+iterator and then our alternative recursor: *)
 
-  Fixpoint iter (C : Type) (c0 : C) (cs : C -> C) (n : nat) : C :=
-    match n with 
-      | O => c0
-      | S n' => cs(iter C c0 cs n')
-    end.
 
 
-  Definition Phi (C : Type) (c0 : C) (cs: nat -> C -> C) (n : nat) :=
-    snd (iter (nat * C)
-              (O, c0)
-              (fun x => (S (fst x), cs (fst x) (snd x)))
-              n).
+Fixpoint iter (C : Type) (c0 : C) (cs : C -> C) (n : nat) : C :=
+  match n with 
+    | O => c0
+    | S n' => cs(iter C c0 cs n')
+  end.
 
-  (** 
-    Now to show that the defining equations hold propositionally for $\Phi$.
-    For clarity of notation, define
-    %\[
-    \Phi'(n) = 
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    n
-    \big)
-    \]% *)
 
-  Definition Phi' (n : nat) := 
-    iter (nat * C) (O, c0) (fun x => (S (fst x), cs (fst x) (snd x))) n.
+Definition Phi (C : Type) (c0 : C) (cs: nat -> C -> C) (n : nat) :=
+  snd (iter (nat * C)
+            (O, c0)
+            (fun x => (S (fst x), cs (fst x) (snd x)))
+            n).
 
-  (** %\noindent%
-    So the propositional equalities can be written
-    %\begin{align*}
-    \snd \Phi'(0) &=_{C} c_{0}  \\
-    \prd{n:\mathbb{N}} \snd \Phi'(\suc(n)) &=_{C} c_{s}(n, \snd \Phi'(n)).
-    \end{align*}%
-    The first is straightforward:
-    %\[
-    \snd \Phi'(0)
-    \equiv
-    \snd\ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    0
-    \big)
-    \equiv
-    \snd(0, c_{0})
-    \equiv
-    c_{0}
-    \]%
-    so $\refl{c_{0}} : \snd\Phi'(0) =_{C} c_{0}$.  To establish the second, we use
-    induction on a strengthened hypothesis involving $\Phi'$.  We will establish
-    that for all $n : \mathbb{N}$,
-    %\[
-    P(n) \defeq 
-    \Phi'(\suc(n)) =_{C} (\suc(n), c_{s}(n, \snd\Phi'(n)))
-    \]%
-    is inhabited.
-    For the base case, we have
-    %\begin{align*}
-    \Phi'(\suc(0)) &\equiv 
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    \suc(0)
-    \big)
-    \\&\equiv
-    \Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big)
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    0
-    \big)
-    \\&\equiv
-    \Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big)
-    (0, c_{0})
-    \\&\equiv
-    (\suc(0), c_{s}(0, c_{0}))
-    \\&\equiv
-    (\suc(0), c_{s}(0, \snd\Phi'(0)))
-    \end{align*}%
-    using the derivation of the first propositional equality.  So $P(0)$ is
-    inhabited, or $p_{0} : P(0)$.  For the induction
-    hypothesis, suppose that $n : \mathbb{N}$ and that $p_{n} : P(n)$.  A little
-    massaging gives
-    %\begin{align*}
-    \Phi'(\suc(\suc(n)))
-    &\equiv
-    \ite_{\mathbb{N} \times C}\big(
-    (0, c_{0}),
-    \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
-    \suc(\suc(n))
-    \big)
-    \\&\equiv
-    \Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big) \Phi'(\suc(n))
-    \\&\equiv
-    (\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd \Phi'(\suc(n)))) 
-    \end{align*}%
-    We now apply based path induction using $p_{n}$.  Consider the family
-    %\[
-    D : \prd{z:\mathbb{N} \times C}(\Phi'(\suc(n)) = x) \to \UU
-    \]%
-    given by
-    %\[
-    D(z) \defeq 
-    \Big(\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd
-    \Phi'(\suc(n)))\Big) 
-    =
-    (\suc(\fst z), c_{s}(\fst z, \snd \Phi'(\suc(n)))) 
-    \]%
-    Clearly, we have
-    %\[
-    \refl{\Phi'(\suc(\suc(n)))} : D(\Phi'(\suc(n)), \refl{\Phi'(\suc(n))})
-    \]%
-    so by based path induction, there is an element
-    %\begin{align*}
-    f((\suc(n), c_{s}(n, \snd\Phi'(n))), p_{n}) &:
-    \Big(\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd
-    \Phi'(\suc(n)))\Big) 
-    \\&=
-    (\suc(\fst (\suc(n), c_{s}(n, \snd\Phi'(n)))),
-    \\&\phantom{---}
-    c_{s}(\fst (\suc(n), c_{s}(n,
-    \snd\Phi'(n))), \snd\Phi'(\suc(n)))) 
-    \end{align*}%
-    Let $p_{n+1} \defeq f((\suc(n), c_{s}(n, \snd \Phi'(n))))$.
-    Our first bit of massaging allows us to replace the left hand side of this by
-    $\Phi'(\suc(\suc(n))$.  As for the right, applying the projections gives
-    %\begin{align*}
-    p_{n+1} &: \Phi'(\suc(\suc(n))) 
-    =
-    (\suc(\suc(n)), c_{s}(\suc(n), \snd\Phi'(\suc(n)))) 
-    \equiv P(\suc(n))
-    \end{align*}%
-    Plugging all this into our induction principle for $\mathbb{N}$, we can
-    discharge the assumption that $p_{n} : P(n)$ to obtain
-    %\[
-    q \defeq \ind{\mathbb{N}}(P, p_{0}, \lam{n}{p_{n}}p_{n+1}, n) : P(n)
-    \]%
-    The propositional equality we're after is a consequence of this, which we again
-    obtain by based path induction.  Consider the family
-    %\[
-    E : \prd{z:\mathbb{N} \times C}(\Phi'(n) = z) \to \UU
-    \]%
-    given by
-    %\[
-    E(z, p) \defeq 
-    \snd\Phi'(\suc(n)) = \snd z
-    \]%
-    Again, it's clear that
-    %\[
-    \refl{\snd\Phi'(\suc(n))} : E(\Phi'(\suc(n)), \refl{\Phi'(\suc(n))}
-    \]%
-    So based path induction gives us a function
-    %\[
-    g((\suc(n), c_{s}(n, \snd\Phi'(n))), q) : 
-    \snd\Phi'(\suc(n)) = \snd (\suc(n), c_{s}(n, \snd\Phi'(n)))
-    \]%
-    and by applying the projection function on the right and discharging the
-    assumption of $n$, we have shown that
-    %\[
-    \prd{n:\mathbb{N}}\snd\Phi'(\suc(n)) = c_{s}(n, \snd\Phi'(n))
-    \]%
-    is inhabited.  Next chapter we'll prove that functions are functors, and we
-    won't have to do this based path induction every single time.  It'll be great.
-    Repeating it all in Coq, we have*)
+(** 
+  Now to show that the defining equations hold propositionally for $\Phi$.
+  For clarity of notation, define
+  %\[
+  \Phi'(n) = 
+  \ite_{\mathbb{N} \times C}\big(
+  (0, c_{0}),
+  \lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+  n
+  \big)
+  \]% *)
 
-  Theorem Phi'_correct1 : snd (Phi' 0) = c0. 
-  Proof.
-    reflexivity.
-  Defined.
+Definition Phi' (n : nat) := 
+  iter (nat * C) (O, c0) (fun x => (S (fst x), cs (fst x) (snd x))) n.
 
-  Theorem Phi'_correct2 : forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))).
-  Proof.
-    intros. induction n. reflexivity.
-    transitivity ((S (fst (Phi' (S n))), cs (fst (Phi' (S n))) (snd (Phi' (S n))))).
-    reflexivity.
-    rewrite IHn. reflexivity.
-  Defined.
+(** %\noindent%
+So the propositional equalities can be written
+%\begin{align*}
+\snd \Phi'(0) &=_{C} c_{0}  \\
+\prd{n:\mathbb{N}} \snd \Phi'(\suc(n)) &=_{C} c_{s}(n, \snd \Phi'(n)).
+\end{align*}%
+The first is straightforward:
+%\[
+\snd \Phi'(0)
+\equiv
+\snd\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+0
+\big)
+\equiv
+\snd(0, c_{0})
+\equiv
+c_{0}
+\]%
+so $\refl{c_{0}} : \snd\Phi'(0) =_{C} c_{0}$.  To establish the second, we use
+induction on a strengthened hypothesis involving $\Phi'$.  We will establish
+that for all $n : \mathbb{N}$,
+%\[
+P(n) \defeq 
+\Phi'(\suc(n)) =_{C} (\suc(n), c_{s}(n, \snd\Phi'(n)))
+\]%
+is inhabited.
+For the base case, we have
+%\begin{align*}
+\Phi'(\suc(0)) &\equiv 
+\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+\suc(0)
+\big)
+\\&\equiv
+\Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big)
+\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+0
+\big)
+\\&\equiv
+\Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big)
+(0, c_{0})
+\\&\equiv
+(\suc(0), c_{s}(0, c_{0}))
+\\&\equiv
+(\suc(0), c_{s}(0, \snd\Phi'(0)))
+\end{align*}%
+using the derivation of the first propositional equality.  So $P(0)$ is
+inhabited, or $p_{0} : P(0)$.  For the induction
+hypothesis, suppose that $n : \mathbb{N}$ and that $p_{n} : P(n)$.  A little
+massaging gives
+%\begin{align*}
+\Phi'(\suc(\suc(n)))
+&\equiv
+\ite_{\mathbb{N} \times C}\big(
+(0, c_{0}),
+\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x)),
+\suc(\suc(n))
+\big)
+\\&\equiv
+\Big(\lam{x}(\suc(\fst x), c_{s}(\fst x, \snd x))\Big) \Phi'(\suc(n))
+\\&\equiv
+(\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd \Phi'(\suc(n)))) 
+\end{align*}%
+We now apply based path induction using $p_{n}$.  Consider the family
+%\[
+D : \prd{z:\mathbb{N} \times C}(\Phi'(\suc(n)) = x) \to \UU
+\]%
+given by
+%\[
+D(z) \defeq 
+\Big(\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd
+\Phi'(\suc(n)))\Big) 
+=
+(\suc(\fst z), c_{s}(\fst z, \snd \Phi'(\suc(n)))) 
+\]%
+Clearly, we have
+%\[
+\refl{\Phi'(\suc(\suc(n)))} : D(\Phi'(\suc(n)), \refl{\Phi'(\suc(n))})
+\]%
+so by based path induction, there is an element
+%\begin{align*}
+f((\suc(n), c_{s}(n, \snd\Phi'(n))), p_{n}) &:
+\Big(\suc(\fst \Phi'(\suc(n))), c_{s}(\fst \Phi'(\suc(n)), \snd
+\Phi'(\suc(n)))\Big) 
+\\&=
+(\suc(\fst (\suc(n), c_{s}(n, \snd\Phi'(n)))),
+\\&\phantom{---}
+c_{s}(\fst (\suc(n), c_{s}(n,
+\snd\Phi'(n))), \snd\Phi'(\suc(n)))) 
+\end{align*}%
+Let $p_{n+1} \defeq f((\suc(n), c_{s}(n, \snd \Phi'(n))))$.
+Our first bit of massaging allows us to replace the left hand side of this by
+$\Phi'(\suc(\suc(n))$.  As for the right, applying the projections gives
+%\begin{align*}
+p_{n+1} &: \Phi'(\suc(\suc(n))) 
+=
+(\suc(\suc(n)), c_{s}(\suc(n), \snd\Phi'(\suc(n)))) 
+\equiv P(\suc(n))
+\end{align*}%
+Plugging all this into our induction principle for $\mathbb{N}$, we can
+discharge the assumption that $p_{n} : P(n)$ to obtain
+%\[
+q \defeq \ind{\mathbb{N}}(P, p_{0}, \lam{n}{p_{n}}p_{n+1}, n) : P(n)
+\]%
+The propositional equality we're after is a consequence of this, which we again
+obtain by based path induction.  Consider the family
+%\[
+E : \prd{z:\mathbb{N} \times C}(\Phi'(n) = z) \to \UU
+\]%
+given by
+%\[
+E(z, p) \defeq 
+\snd\Phi'(\suc(n)) = \snd z
+\]%
+Again, it's clear that
+%\[
+\refl{\snd\Phi'(\suc(n))} : E(\Phi'(\suc(n)), \refl{\Phi'(\suc(n))}
+\]%
+So based path induction gives us a function
+%\[
+g((\suc(n), c_{s}(n, \snd\Phi'(n))), q) : 
+\snd\Phi'(\suc(n)) = \snd (\suc(n), c_{s}(n, \snd\Phi'(n)))
+\]%
+and by applying the projection function on the right and discharging the
+assumption of $n$, we have shown that
+%\[
+\prd{n:\mathbb{N}}\snd\Phi'(\suc(n)) = c_{s}(n, \snd\Phi'(n))
+\]%
+is inhabited.  Next chapter we'll prove that functions are functors, and we
+won't have to do this based path induction every single time.  It'll be great.
+Repeating it all in Coq, we have*)
+
+Theorem Phi'_correct1 : snd (Phi' 0) = c0. 
+Proof.
+  reflexivity.
+Defined.
+
+Theorem Phi'_correct2 : forall n, Phi'(S n) = (S n, cs n (snd (Phi' n))).
+Proof.
+  intros. induction n. reflexivity.
+  transitivity ((S (fst (Phi' (S n))), cs (fst (Phi' (S n))) (snd (Phi' (S n))))).
+  reflexivity.
+  rewrite IHn. reflexivity.
+Defined.
   
-End Exercise4.
+End Ex4.
 
 (** %\exerdone{1.5}{56}%  
-    Show that if we define $A + B \defeq \sm{x:\bool}
-        \rec{\bool}(\UU, A, B, x)$, then we can give a definition of $\ind{A+B}$ for
-        which the definitional equalities stated in %\S1.7% hold.
+Show that if we define $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU, A,
+B, x)$, then we can give a definition of $\ind{A+B}$ for which the
+definitional equalities stated in %\S1.7% hold.
 
 
-    %\soln%  
-    Define $A+B$ as stated.  We need to define a function of type
-    %\[
-    \ind{A+B}' : \prd{C : (A + B) \to \UU}
-    \left( \tprd{a:A} C(\inl(a))\right)
-    \to
-    \left( \tprd{b:B} C(\inr(b))\right)
-    \to
-    \tprd{x : A + B} C(x)
-    \]%
-    which means that we also need to define $\inl' : A \to A + B$ and $\inr' B \to
-    A + B$; these are
-    %\begin{align*}
-    \inl'(a) \defeq (0_{\bool}, a)
-    \qquad\qquad
-    \inr'(b) \defeq (1_{\bool}, b)
-    \end{align*}%
+%\soln%  
+Define $A+B$ as stated.  We need to define a function of type
+%\[
+\ind{A+B}' : \prd{C : (A + B) \to \UU}
+\left( \tprd{a:A} C(\inl(a))\right)
+\to
+\left( \tprd{b:B} C(\inr(b))\right)
+\to
+\tprd{x : A + B} C(x)
+\]%
+which means that we also need to define $\inl' : A \to A + B$ and $\inr' B \to
+A + B$; these are
+%\begin{align*}
+\inl'(a) \defeq (0_{\bool}, a)
+\qquad\qquad
+\inr'(b) \defeq (1_{\bool}, b)
+\end{align*}%
 In Coq, we can use [sigT] to define [coprd] as a
 $\Sigma$-type: *)
 
-Section Exercise5.
+Module Ex5.
+Section Ex5.
 
-  Context {A B : Type}.
+Context (A B : Type).
 
 
-  Definition coprd := {x:Bool & if x then B else A}.
+Definition sum := {x:Bool & if x then B else A}.
+Definition inl (a : A) := existT (fun x:Bool => if x then B else A) false a.
+Definition inr (b : B) := existT (fun x:Bool => if x then B else A) true b.
 
-  Definition myinl (a : A) := existT (fun x:Bool => if x then B else A) false a.
-
-  Definition myinr (b : B) := existT (fun x:Bool => if x then B else A) true b.
-
-  (** 
+(** 
 Suppose that $C : A + B \to \UU$, $g_{0} : \prd{a:A} C(\inl'(a))$, $g_{1} :
 \prd{b:B} C(\inr'(b))$, and $x : A+B$; we're looking to define
 %\[
@@ -618,115 +633,120 @@ B(1_{\bool})
 B(x)
 \]%
 along with
-    %\[
-    g_{0} :
-    \prd{a:A} C(\inl'(a))
-    \equiv
-    \prd{a:\rec{\bool}(\UU, A, B, 0_{\bool})} C((0_{\bool}, a))
-    \equiv
-    B(0_{\bool})
-    \]%
-    and similarly for $g_{1}$.  So
-    %\[
-    \ind{\bool}(B, g_{0}, g_{1}) : \prd{x:\bool}\prd{y:\rec{\bool}(\UU, A, B, x)}
-    C((x, y))
-    \]%
-    which is just what we needed for $\ind{\Phi}$.  So we define
-    %\[
-    \ind{A+B}'(C, g_{0}, g_{1}, x)
-    \defeq
-    \ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
-    C,
-    \ind{\bool}\left(
-    \prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
-    g_{0},
-    g_{1}
-    \right),
-    x
-    \right)
-    \]%
-    and, in Coq, we use sigT_rect, which is the built-in
-    $\ind{\sm{x:A}B(x)}$: *)
+%\[
+g_{0} :
+\prd{a:A} C(\inl'(a))
+\equiv
+\prd{a:\rec{\bool}(\UU, A, B, 0_{\bool})} C((0_{\bool}, a))
+\equiv
+B(0_{\bool})
+\]%
+and similarly for $g_{1}$.  So
+%\[
+\ind{\bool}(B, g_{0}, g_{1}) : \prd{x:\bool}\prd{y:\rec{\bool}(\UU, A, B, x)}
+C((x, y))
+\]%
+which is just what we needed for $\ind{\Phi}$.  So we define
+%\[
+\ind{A+B}'(C, g_{0}, g_{1}, x)
+\defeq
+\ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
+C,
+\ind{\bool}\left(
+\prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
+g_{0},
+g_{1}
+\right),
+x
+\right)
+\]%
+and, in Coq, we use sigT_rect, which is the built-in
+$\ind{\sm{x:A}B(x)}$: *)
 
 
-  Definition indcoprd (C : coprd -> Type) (g0 : forall a : A, C (myinl a)) (g1 : forall b : B, C (myinr b)) (x : coprd) := 
-    sigT_rect C 
-              (Bool_rect (fun x:Bool => forall (y : if x then B else A), C (x; y)) 
-                         g1 
-                         g0) 
-              x.
+Definition sum_rect (C : sum -> Type) 
+           (g0 : forall a : A, C (inl a)) 
+           (g1 : forall b : B, C (inr b)) 
+           (x : sum) 
+  := 
+  sigT_rect C 
+            (Bool_rect (fun x:Bool => forall (y : if x then B else A), C (x; y))
+                       g1 
+                       g0) 
+            x.
 
-  (** 
-    Now we must show that the definitional equalities
-    %\begin{align*}
-    \ind{A+B}'(C, g_{0}, g_{1}, \inl'(a)) \equiv g_{0}(a) \\
-    \ind{A+B}'(C, g_{0}, g_{1}, \inr'(b)) \equiv g_{1}(b)
-    \end{align*}%
-    hold.  For the first, we have
-    %\begin{align*}
-    \ind{A+B}'(C, g_{0}, g_{1}, \inl'(a)) 
-    &\equiv
-    \ind{A+B}'(C, g_{0}, g_{1}, (0_{\bool}, a)) 
-    \\&\equiv
-    \ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
-    C,
-    \ind{\bool}\left(
-    \prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
-    g_{0},
-    g_{1}
-    \right),
-    (0_{\bool}, a)
-    \right)
-    \\&\equiv
-    \ind{\bool}\left(
-    \prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
-    g_{0},
-    g_{1},
-    0_{\bool}
-    \right)(a)
-    \\&\equiv
-    g_{0}(a)
-    \end{align*}%
-    and for the second,
-    %\begin{align*}
-    \ind{A+B}'(C, g_{0}, g_{1}, \inr'(b)) 
-    &\equiv
-    \ind{A+B}'(C, g_{0}, g_{1}, (1_{\bool}, b)) 
-    \\&\equiv
-    \ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
-    C,
-    \ind{\bool}\left(
-    \prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
-    g_{0},
-    g_{1}
-    \right),
-    (1_{\bool}, b)
-    \right)
-    \\&\equiv
-    \ind{\bool}\left(
-    \prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
-    g_{0},
-    g_{1},
-    1_{\bool}
-    \right)(b)
-    \\&\equiv
-    g_{1}(b)
-    \end{align*}% *)
+(** 
+Now we must show that the definitional equalities
+%\begin{align*}
+\ind{A+B}'(C, g_{0}, g_{1}, \inl'(a)) \equiv g_{0}(a) \\
+\ind{A+B}'(C, g_{0}, g_{1}, \inr'(b)) \equiv g_{1}(b)
+\end{align*}%
+hold.  For the first, we have
+%\begin{align*}
+\ind{A+B}'(C, g_{0}, g_{1}, \inl'(a)) 
+&\equiv
+\ind{A+B}'(C, g_{0}, g_{1}, (0_{\bool}, a)) 
+\\&\equiv
+\ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
+C,
+\ind{\bool}\left(
+\prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
+g_{0},
+g_{1}
+\right),
+(0_{\bool}, a)
+\right)
+\\&\equiv
+\ind{\bool}\left(
+\prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
+g_{0},
+g_{1},
+0_{\bool}
+\right)(a)
+\\&\equiv
+g_{0}(a)
+\end{align*}%
+and for the second,
+%\begin{align*}
+\ind{A+B}'(C, g_{0}, g_{1}, \inr'(b)) 
+&\equiv
+\ind{A+B}'(C, g_{0}, g_{1}, (1_{\bool}, b)) 
+\\&\equiv
+\ind{\sm{x:\bool}\rec{\bool}(\UU, A, B, x)}\left(
+C,
+\ind{\bool}\left(
+\prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
+g_{0},
+g_{1}
+\right),
+(1_{\bool}, b)
+\right)
+\\&\equiv
+\ind{\bool}\left(
+\prd{y:\rec{\bool}(\UU, A, B, x)} C((x, y)),
+g_{0},
+g_{1},
+1_{\bool}
+\right)(b)
+\\&\equiv
+g_{1}(b)
+\end{align*}% *)
 
 
-  Theorem indcoprd_correct1 : 
-    forall C g0 g1 a, indcoprd C g0 g1 (myinl a) = g0 a. 
-  Proof.
-    reflexivity.
-  Qed.
+Theorem sum_rect_correct1 : 
+  forall C g0 g1 a, sum_rect C g0 g1 (inl a) = g0 a. 
+Proof.
+  reflexivity.
+Qed.
 
-  Theorem indcoprd_correct2 : 
-    forall C g0 g1 a, indcoprd C g0 g1 (myinr a) = g1 a. 
-  Proof.
-    reflexivity.
-  Qed.
+Theorem sum_rect_correct2 : 
+  forall C g0 g1 a, sum_rect C g0 g1 (inr a) = g1 a. 
+Proof.
+  reflexivity.
+Qed.
 
-End Exercise5.
+End Ex5.
+End Ex5.
 
 (** %\exerdone{1.6}{56}%
 Show that if we define $A \times B \defeq \prd{x : \bool}
@@ -734,80 +754,81 @@ Show that if we define $A \times B \defeq \prd{x : \bool}
     B}$ for which the definitional equalities stated in %\S1.5% hold
     propositionally (i.e.%~%using equality types). *)
 
-Section Exercise6.
-  Context {A B : Type}.
+(** %\soln% 
+Define
+%\[
+  A \times B \defeq \prd{x : \bool} \rec{\bool}(\UU, A, B, x)
+\]%
+Supposing that $a : A$ and $b : B$, we have an element $(a, b) : A \times B$
+given by
+%\[
+  (a, b) \defeq \ind{\bool}(\rec{\bool}(\UU, A, B), a, b)
+\]%
+Defining this type and constructor in Coq, we have *)
 
-  (** %\soln% 
-    Define
-    %\[
-    A \times B \defeq \prd{x : \bool} \rec{\bool}(\UU, A, B, x)
-    \]%
-    Supposing that $a : A$ and $b : B$, we have an element $(a, b) : A \times B$
-    given by
-    %\[
-    (a, b) \defeq \ind{\bool}(\rec{\bool}(\UU, A, B), a, b)
-    \]%
-    Defining this type and constructor in Coq, we have *)
+Module Ex6.
+Section Ex6.
+Context (A B : Type).
 
 
-  Definition prd := forall x : Bool, if x then B else A.
+Definition prod := forall x : Bool, if x then B else A.
 
-  Definition mypair (a : A) (b : B) := Bool_rect (fun x : Bool => if x then B else A) b a.
+Definition pair (a : A) (b : B) 
+  := Bool_rect (fun x : Bool => if x then B else A) b a.
 
-  (** 
-    An induction principle for $A \times B$ will, given a family $C : A \times B
-    \to \UU$ and a function 
-    %\[
-    g : \prd{x:A}\prd{y:B} C((x, y)),
-    \]% 
-    give a function $f : \prd{x : A \times B}C(x)$ defined by
-    %\[
-    f((x, y)) \defeq g(x)(y)
-    \]%
-    So suppose that we have such a $C$ and $g$.  Writing things out in terms of the
-    definitions, we have
-    %\begin{align*}
-    C &: \left(\prd{x:\bool}\rec{\bool}(\UU, A, B, x)\right) \to \UU \\
-    g &: \prd{x:A}\prd{y:B} C(\ind{\bool}(\rec{\bool}(\UU, A, B), x, y))
-    \end{align*}%  
-    We can define projections by
-    %\[
-    \fst p \defeq p(0_{\bool}) \qquad\qquad \snd p \defeq p(1_{\bool})
-    \]%
-    Since $p$ is an element of a dependent type, we have
-    %\begin{align*}
-    p(0_{\bool}) &: \rec{\bool}(\UU, A, B, 0_{\bool}) \equiv A\\
-    p(1_{\bool}) &: \rec{\bool}(\UU, A, B, 1_{\bool}) \equiv B
-    \end{align*}% *)
+(** 
+An induction principle for $A \times B$ will, given a family $C : A \times B
+\to \UU$ and a function 
+%\[
+g : \prd{x:A}\prd{y:B} C((x, y)),
+\]% 
+give a function $f : \prd{x : A \times B}C(x)$ defined by
+%\[
+f((x, y)) \defeq g(x)(y)
+\]%
+So suppose that we have such a $C$ and $g$.  Writing things out in terms of the
+definitions, we have
+%\begin{align*}
+C &: \left(\prd{x:\bool}\rec{\bool}(\UU, A, B, x)\right) \to \UU \\
+g &: \prd{x:A}\prd{y:B} C(\ind{\bool}(\rec{\bool}(\UU, A, B), x, y))
+\end{align*}%  
+We can define projections by
+%\[
+\fst p \defeq p(0_{\bool}) \qquad\qquad \snd p \defeq p(1_{\bool})
+\]%
+Since $p$ is an element of a dependent type, we have
+%\begin{align*}
+p(0_{\bool}) &: \rec{\bool}(\UU, A, B, 0_{\bool}) \equiv A\\
+p(1_{\bool}) &: \rec{\bool}(\UU, A, B, 1_{\bool}) \equiv B
+\end{align*}% *)
 
-  Definition myfst (p : prd) := p false.
+Definition fst (p : prod) := p false.
+Definition snd (p : prod) := p true.
 
-  Definition mysnd (p : prd) := p true.
-
-  (** 
-    Then we have
-    %\begin{align*}
-    g(\fst p)(\snd p) 
-    &: C(\ind{\bool}(\rec{\bool}(\UU, A, B), (\fst p), (\snd p)))
-    \equiv 
-    C((p(0_{\bool}), p(1_{\bool})))
-    \end{align*}%
-    So we have defined a function
-    %\[
-    f' : \prd{p : A \times B} C((p(0_{\bool}), p(1_{\bool})))
-    \]%
-    But we need one of the type
-    %\[
-    f : \prd{p : A \times B} C(p)
-    \]%
-    To solve this problem, we need to appeal to function extensionality from %\S2.9%.
-    This implies that there is a function
-    %\[
-    \funext : 
-    \left(\prd{x:\bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))\right)
-    \to 
-    ((\fst p, \snd p) =_{A \times B} p)
-    \]%
+(** 
+Then we have
+%\begin{align*}
+g(\fst p)(\snd p) 
+&: C(\ind{\bool}(\rec{\bool}(\UU, A, B), (\fst p), (\snd p)))
+\equiv 
+C((p(0_{\bool}), p(1_{\bool})))
+\end{align*}%
+So we have defined a function
+%\[
+f' : \prd{p : A \times B} C((p(0_{\bool}), p(1_{\bool})))
+\]%
+But we need one of the type
+%\[
+f : \prd{p : A \times B} C(p)
+\]%
+To solve this problem, we need to appeal to function extensionality from %\S2.9%.
+This implies that there is a function
+%\[
+\funext : 
+\left(\prd{x:\bool} ((\fst p, \snd p)(x) =_{\rec{\bool}(\UU, A, B, x)} p(x))\right)
+\to 
+((\fst p, \snd p) =_{A \times B} p)
+\]%
 We just need to show that the antecedent is inhabited, which we can do with
 $\ind{\bool}$.  So consider the family
 %\begin{align*}
@@ -859,16 +880,16 @@ Now we can define $\ind{A\times B}$ as
 \]%
 In Coq we can repeat this construction using [Funext]. *)
 
-  Definition myuppt `{Funext} (p : prd) : mypair (myfst p) (mysnd p) = p.
-    apply path_forall.
-    unfold pointwise_paths; apply Bool_rect; reflexivity.
-  Defined.
+Definition eta_prod `{Funext} (p : prod) : pair (fst p) (snd p) = p.
+  apply path_forall.
+  unfold pointwise_paths; apply Bool_rect; reflexivity.
+Defined.
 
+Definition prod_rect `{Funext} (C : prod -> Type) 
+           (g : forall (x:A) (y:B), C (pair x y)) (z : prod) 
+  := (eta_prod z) # (g (fst z) (snd z)).
 
-  Definition indprd' (C : prd -> Type) (g : forall (x:A) (y:B), C (mypair x y)) (z : prd) := 
-    (myuppt z) # (g (myfst z) (mysnd z)).
-
-  (** 
+(** 
 Now, we must show that the definitional equality holds propositionally.  That
 is, we must show that the type
 %\[
@@ -909,29 +930,23 @@ Verifying that the definitional equality holds propositionally.  The reason we
 can only get propositional equality, not judgemental equality, is that
 $\funext(h) = \refl{(a, b)}$ is just a propositional equality.  Understanding
 this better requires stuff from next chapter. 
-   *)
+*)
 
-  Lemma lemma1_6 : forall a b, myuppt (mypair a b) = 1.
-  Proof.
-    intros. unfold myuppt.
-    transitivity (path_forall (mypair (myfst (mypair a b)) (mysnd (mypair a b))) 
-                              _
-                              (fun _ => 1)).
-    f_ap. by_extensionality x. destruct x; reflexivity.
-    unfold mypair, myfst, mysnd. simpl.
-    apply path_forall_1 with (f:=Bool_rect (fun x : Bool => if x then B else A) b a).
-  Qed.
+Lemma prod_rect_correct `{Funext} C g a b
+  : prod_rect C g (pair a b) = g a b.
+Proof.
+  unfold prod_rect.
+  path_via (transport C 1 (g (fst (pair a b)) (snd (pair a b)))). f_ap.
+  unfold eta_prod.
+  path_via (path_forall (pair (fst (pair a b)) (snd (pair a b))) (pair a b) 
+                        (fun _ => 1)).
+  f_ap. apply path_forall; intro x. destruct x; reflexivity.
+  apply path_forall_1.
+Defined.
+  
+End Ex6.
+End Ex6.
 
-
-  Goal forall C g a b, indprd' C g (mypair a b) = g a b.
-  Proof.
-    intros. unfold indprd'. unfold transport.
-    rewrite lemma1_6.
-    unfold mypair, myfst, mysnd. reflexivity.
-  Qed.
-
-
-End Exercise6.
 
 (** %\exerdone{1.7}{56}%             
 Give an alternative derivation of $\ind{=_{A}}'$ from $\ind{=_{A}}$ which
@@ -943,138 +958,146 @@ $\ind{=_{A}}$ entails Lemmas 2.3.1 and 3.11.8, and that these two principles
 imply $\ind{=_{A}}'$ directly.  
 
 First we have Lemma 2.3.1, which states that for any type family $P$ over $A$
-    and $p : x =_{A} y$, there is a function $p_{*} : P(x) \to P(y)$.  The proof
-    for this can be taken directly from the text.  Consider the type family
-    %\[
-    D : \prd{x, y : A}(x = y) \to \UU,
-    \qquad\qquad
-    D(x, y, p) \defeq P(x) \to P(y)
-    \]%
-    which exists, since $P(x) : \UU$ for all $x : A$ and these can be used to form
-    function types.  We also have
-    %\[
-    d \defeq \lam{x}\idfunc{P(x)} 
-    : \prd{x:A}D(x, x, \refl{x})
-    \equiv \prd{x:A} P(x) \to P(x)
-    \]%
-    We now apply $\ind{=_{A}}$ to obtain
-    %\[
-    p_{*} \defeq \ind{=_{A}}(D, d, x, y, p) : P(x) \to P(y)
-    \]%
-    establishing the Lemma.
+and $p : x =_{A} y$, there is a function $p_{*} : P(x) \to P(y)$.  The proof
+for this can be taken directly from the text.  Consider the type family
+%\[
+D : \prd{x, y : A}(x = y) \to \UU,
+\qquad\qquad
+D(x, y, p) \defeq P(x) \to P(y)
+\]%
+which exists, since $P(x) : \UU$ for all $x : A$ and these can be used to form
+function types.  We also have
+%\[
+d \defeq \lam{x}\idfunc{P(x)} 
+: \prd{x:A}D(x, x, \refl{x})
+\equiv \prd{x:A} P(x) \to P(x)
+\]%
+We now apply $\ind{=_{A}}$ to obtain
+%\[
+p_{*} \defeq \ind{=_{A}}(D, d, x, y, p) : P(x) \to P(y)
+\]%
+establishing the Lemma.
 
-    Next we have Lemma 3.11.8, which states that for any $A$ and any $a : A$, the
-        type $\sm{x:A} (a = x)$ is contractible;  that is, there is some $w :
-        \sm{x:A}(a=x)$ such that $w = w'$ for all $w' : \sm{x:A}(a=x)$.  Consider the
-        point $(a, \refl{a}) : \sm{a:A}(a=x)$ and the family $C: \prd{x,y:A}(x=y) \to \UU$ given
-        by
-        %\[
-        C(x, y, p) \defeq 
-        ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
-        \]%
-        Take also the function
-        %\[
-        \refl{(x, \refl{x})} : \prd{x:A} ((x, \refl{x}) =_{\sm{x:A}(x=z)} (x, \refl{x}))
-        \]%
-        By path induction, then, we have a function
-        %\[
-        g : \prd{x, y:A}\prd{p:x =_{A} y} 
-        ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
-        \]%
-        such that $g(x, x, \refl{x}) \defeq \refl{(x, \refl{x})}$.  
-        This allows us to construct
-        %\[
-        \lam{p}g(a, \fst p, \snd p) : 
-        \prd{p:\sm{x:A}(a=x)}
-        (a, \refl{a}) =_{\sm{z:A}(a=z)} (\fst p, \snd p)
-        \]%
-        And $\upst$ lets us transport this, using the first lemma, to the statement
-        that $\sm{x:A}(a=x)$ is contractible:
-        %\[
-        \contr \defeq \lam{p}\Big(
-        (\upst\,p)_{*}g(a, \fst p, \snd p)
-        \Big)
-        :
-        \prd{p:\sm{x:A}(a=x)}
-        (a, \refl{a}) =_{\sm{z:A}(a=z)} p
-        \]%
+Next we have Lemma 3.11.8, which states that for any $A$ and any $a : A$, the
+    type $\sm{x:A} (a = x)$ is contractible;  that is, there is some $w :
+    \sm{x:A}(a=x)$ such that $w = w'$ for all $w' : \sm{x:A}(a=x)$.  Consider the
+    point $(a, \refl{a}) : \sm{a:A}(a=x)$ and the family $C: \prd{x,y:A}(x=y) \to \UU$ given
+    by
+    %\[
+    C(x, y, p) \defeq 
+    ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
+    \]%
+    Take also the function
+    %\[
+    \refl{(x, \refl{x})} : \prd{x:A} ((x, \refl{x}) =_{\sm{x:A}(x=z)} (x, \refl{x}))
+    \]%
+    By path induction, then, we have a function
+    %\[
+    g : \prd{x, y:A}\prd{p:x =_{A} y} 
+    ((x, \refl{x}) =_{\sm{z:A}(x=z)} (y, p))
+    \]%
+    such that $g(x, x, \refl{x}) \defeq \refl{(x, \refl{x})}$.  
+    This allows us to construct
+    %\[
+    \lam{p}g(a, \fst p, \snd p) : 
+    \prd{p:\sm{x:A}(a=x)}
+    (a, \refl{a}) =_{\sm{z:A}(a=z)} (\fst p, \snd p)
+    \]%
+    And $\upst$ lets us transport this, using the first lemma, to the statement
+    that $\sm{x:A}(a=x)$ is contractible:
+    %\[
+    \contr \defeq \lam{p}\Big(
+    (\upst\,p)_{*}g(a, \fst p, \snd p)
+    \Big)
+    :
+    \prd{p:\sm{x:A}(a=x)}
+    (a, \refl{a}) =_{\sm{z:A}(a=z)} p
+    \]%
 
-        With these two lemmas we can derive based path induction.  Fix some $a:A$ and
-        suppose we have a family
-        %\[
-        C : \prd{x:A} (a=x) \to \UU
-        \]%
-        and an element
-        %\[
-        c : C(a, \refl{a}).
-    \]%
-    Suppose we have $x:A$ and $p:a=x$.  Then we have $(x,p) : \sm{x:A}(a=x)$, and
-    because this type is contractible, an element $\contr_{(x,p)}: (a,\refl{a}) =
-    (x,p)$.  So for any type family $P$ over $\sm{x:A}(a=x)$, we have the function
-    $(\contr_{(x,p)})_{*} : P((a, \refl{a})) \to P((x,p))$.  In particular, we have
-    the type family
+    With these two lemmas we can derive based path induction.  Fix some $a:A$ and
+    suppose we have a family
     %\[
-    \tilde{C} \defeq \lam{p} C(\fst p, \snd p)
+    C : \prd{x:A} (a=x) \to \UU
     \]%
-    so
+    and an element
     %\[
-    (\contr_{(x,p)})_{*} : \tilde{C}((a,\refl{a})) \to \tilde{C}((x,p)) \equiv  C(a, \refl{a}) \to C(x, p).
-    \]%
-    thus
-    %\[
-    (\contr_{(x,p)})_{*}(c) : C(x,p)
-    \]%
-    or, abstracting out the $x$ and $p$,
-    %\[
-    f \defeq \lam{x}{p}(\contr_{(x,p)})_{*}(c) : \prd{x:A}\prd{p:x=y}C(x,p).
-    \]%
-    We also have
-    %\begin{align*}
-    f(a, \refl{a}) 
-    & \equiv 
-    (\contr_{(a, \refl{a})})_{*}(c)
-    \\&\equiv
-    ((\upst\, (a, \refl{a}))_{*}g(a, a, \refl{a}))_{*}(c)
-    \\&\equiv
-    ((\upst\, (a, \refl{a}))_{*}\refl{(a, \refl{a})})_{*}(c)
-    \\&\equiv
-    (\ind{=}(\lam{x}((a, \refl{a}) = x), \lam{x}\idfunc{(a, \refl{a})=x}, (a,\refl{a}), (a,\refl{a}),
-    \refl{(a,\refl{a})})\refl{(a, \refl{a})})_{*}(c)
-    \\&\equiv
-    (\idfunc{(a, \refl{a})=(a,\refl{a})}\refl{(a, \refl{a})})_{*}(c)
-    \\&\equiv
-    (\refl{(a, \refl{a})})_{*}(c)
-    \\&\equiv
-    \ind{=}(\tilde{C}, \lam{x}\idfunc{\tilde{C}(x)}, (a, \refl{a}), (a, \refl{a}), \refl{(a, \refl{a})})(c)
-    \\&\equiv
-    \idfunc{\tilde{C}((a, \refl{a}))}(c)
-    \\&\equiv
-    \idfunc{C(a, \refl{a})}(c)
-    \\&\equiv
-    c
-    \end{align*}%
-    So we have derived based path induction.
+    c : C(a, \refl{a}).
+\]%
+Suppose we have $x:A$ and $p:a=x$.  Then we have $(x,p) : \sm{x:A}(a=x)$, and
+because this type is contractible, an element $\contr_{(x,p)}: (a,\refl{a}) =
+(x,p)$.  So for any type family $P$ over $\sm{x:A}(a=x)$, we have the function
+$(\contr_{(x,p)})_{*} : P((a, \refl{a})) \to P((x,p))$.  In particular, we have
+the type family
+%\[
+\tilde{C} \defeq \lam{p} C(\fst p, \snd p)
+\]%
+so
+%\[
+(\contr_{(x,p)})_{*} : \tilde{C}((a,\refl{a})) \to \tilde{C}((x,p)) \equiv  C(a, \refl{a}) \to C(x, p).
+\]%
+thus
+%\[
+(\contr_{(x,p)})_{*}(c) : C(x,p)
+\]%
+or, abstracting out the $x$ and $p$,
+%\[
+f \defeq \lam{x}{p}(\contr_{(x,p)})_{*}(c) : \prd{x:A}\prd{p:x=y}C(x,p).
+\]%
+We also have
+%\begin{align*}
+f(a, \refl{a}) 
+& \equiv 
+(\contr_{(a, \refl{a})})_{*}(c)
+\\&\equiv
+((\upst\, (a, \refl{a}))_{*}g(a, a, \refl{a}))_{*}(c)
+\\&\equiv
+((\upst\, (a, \refl{a}))_{*}\refl{(a, \refl{a})})_{*}(c)
+\\&\equiv
+(\ind{=}(\lam{x}((a, \refl{a}) = x), \lam{x}\idfunc{(a, \refl{a})=x}, (a,\refl{a}), (a,\refl{a}),
+\refl{(a,\refl{a})})\refl{(a, \refl{a})})_{*}(c)
+\\&\equiv
+(\idfunc{(a, \refl{a})=(a,\refl{a})}\refl{(a, \refl{a})})_{*}(c)
+\\&\equiv
+(\refl{(a, \refl{a})})_{*}(c)
+\\&\equiv
+\ind{=}(\tilde{C}, \lam{x}\idfunc{\tilde{C}(x)}, (a, \refl{a}), (a, \refl{a}), \refl{(a, \refl{a})})(c)
+\\&\equiv
+\idfunc{\tilde{C}((a, \refl{a}))}(c)
+\\&\equiv
+\idfunc{C(a, \refl{a})}(c)
+\\&\equiv
+c
+\end{align*}%
+So we have derived based path induction.
  *)
 
-Definition ind {A} : forall (C : forall (x y : A), x = y -> Type),
-                       (forall (x:A), C x x 1) -> 
-                       forall (x y : A) (p : x = y), C x y p.
+Module Ex7.
+
+Section ex7.
+
+Definition ind (A : Type) : forall (C : forall (x y : A), x = y -> Type),
+                              (forall (x:A), C x x 1) -> 
+                              forall (x y : A) (p : x = y), C x y p.
+Proof.
   path_induction. apply X.
 Defined.
 
 Definition Lemma231 {A} (P : A -> Type) (x y : A) (p : x = y) : P(x) -> P(y).
+Proof.
   intro. rewrite <- p. apply X.
 Defined.
 
-Definition Lemma3118 {A} : forall (a:A), Contr {x:A & a=x}.
-  intro a. exists (a; 1).
+Definition Lemma3118 : forall (A : Type) (a:A), Contr {x:A & a=x}.
+Proof.
+  intros A a. exists (a; 1).
   intro x. destruct x as [x p]. path_induction. reflexivity.
 Defined.
 
-Definition ind' {A} : forall (a : A) (C : forall (x:A), a = x -> Type),
-                        C a 1 -> forall (x:A) (p:a=x), C x p.
+Definition ind' (A : Type) : forall (a : A) (C : forall (x:A), a = x -> Type),
+                               C a 1 -> forall (x:A) (p:a=x), C x p.
+Proof.
   intros.
-  assert (Contr {x:A & a=x}) as H. apply Lemma3118.
+  assert (H : (Contr {x:A & a=x})). apply Lemma3118.
   change (C x p) with ((fun c => C c.1 c.2) (x; p)).
   apply (Lemma231 _ (a; 1) (x; p)).
   transitivity (center {x : A & a = x}). destruct H as [[a' p'] z]. simpl. 
@@ -1083,44 +1106,48 @@ Definition ind' {A} : forall (a : A) (C : forall (x:A), a = x -> Type),
   apply X.
 Defined.
 
+
+End ex7.
+End Ex7.
+
 (** %\exerdone{1.8}{56}%  
-    Define multiplication and exponentiation using
-    $\rec{\mathbb{N}}$.  Verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring
-    using only $\ind{\mathbb{N}}$. *)
+Define multiplication and exponentiation using
+$\rec{\mathbb{N}}$.  Verify that $(\mathbb{N}, +, 0, \times, 1)$ is a semiring
+using only $\ind{\mathbb{N}}$. *)
 
 Local Open Scope nat_scope.
 
 (** %\soln% 
-    For multiplication, we need to construct a function $\mult : \mathbb{N}
-    \to \mathbb{N} \to \mathbb{N}$.  Defined with pattern-matching, we would have
-        %\begin{align*}
-        \mult(0, m) &\defeq 0 \\
-        \mult(\suc(n), m) &\defeq m + \mult(n, m)
-        \end{align*}%
-        so in terms of $\rec{\mathbb{N}}$ we have
-        %\[
-        \mult \defeq 
-        \rec{\mathbb{N}}(
-        \mathbb{N} \to \mathbb{N},
-        \lam{n}0,
-        \lam{n}{g}{m}\add(m, g(m))
-        )
-        \]%
-        For exponentiation, we have the function $\expf: \mathbb{N} \to \mathbb{N} \to
-        \mathbb{N}$, with the intention that $\expf(e, b) = b^{e}$.  In terms of pattern
-        matching,
-        %\begin{align*}
-        \expf(0, b) &\defeq 1 \\
-        \expf(\suc(e), b) &\defeq \mult(b, \expf(e, b))
-        \end{align*}%
-        or, in terms of $\rec{\mathbb{N}}$,
-        %\[
-        \expf \defeq \rec{\mathbb{N}}(
-        \mathbb{N} \to \mathbb{N},
-        \lam{n}1,
-        \lam{n}{g}{m}\mult(m, g(m))
-        )
-        \]%
+For multiplication, we need to construct a function $\mult : \mathbb{N}
+\to \mathbb{N} \to \mathbb{N}$.  Defined with pattern-matching, we would have
+%\begin{align*}
+\mult(0, m) &\defeq 0 \\
+\mult(\suc(n), m) &\defeq m + \mult(n, m)
+\end{align*}%
+so in terms of $\rec{\mathbb{N}}$ we have
+%\[
+\mult \defeq 
+\rec{\mathbb{N}}(
+\mathbb{N} \to \mathbb{N},
+\lam{n}0,
+\lam{n}{g}{m}\add(m, g(m))
+)
+\]%
+For exponentiation, we have the function $\expf: \mathbb{N} \to \mathbb{N} \to
+\mathbb{N}$, with the intention that $\expf(e, b) = b^{e}$.  In terms of pattern
+matching,
+%\begin{align*}
+\expf(0, b) &\defeq 1 \\
+\expf(\suc(e), b) &\defeq \mult(b, \expf(e, b))
+\end{align*}%
+or, in terms of $\rec{\mathbb{N}}$,
+%\[
+\expf \defeq \rec{\mathbb{N}}(
+\mathbb{N} \to \mathbb{N},
+\lam{n}1,
+\lam{n}{g}{m}\mult(m, g(m))
+)
+\]%
 In Coq, we can define these by *)
 
 Fixpoint plus (n m : nat) : nat :=
@@ -1488,123 +1515,123 @@ A long chain of based path inductions allows us to construct an object of type
 (\suc(n) \times m) + (\suc(n) \times k) = (m+k) + (n \times m + n \times k)
 \]
 In the interest of masochism, I'll do them explicitly.  We start with
-    \[
-    r_{1} \defeq r_{m, n \times m, k+n\times k} 
-    : (m + n \times m) + (k + n \times k)
-    = m + (n \times m + (k + n \times k))
-    \]
-    Based path induction over $C_{1}(\ell) \defeq m + (n \times m + (k + n \times
-    k)) = m + \ell$ and using
-    \[
-    r_{2} \defeq r_{n \times m, k, n \times k}
-    : n \times m + (k + n \times k)
-    = (n \times m + k) + n \times k
-    \]
-    gives
-    \[
-    \langle r_{2} \rangle \defeq 
-    \ind{=}'(n\times m + (k + n \times k), C_{1}, \refl{m+(n\times m + (k + n
-    \times k))}, (n \times m + k) + n \times k, r_{2}
-    )
-    \]
-    which results in
-    \[
-    r_{1} 
-    \ct
-    \langle r_{2} \rangle
-    :
-    (m + n \times m) + (k + n \times k)
-    =
-    m + ((n \times m + k) + n \times k)
-    \]
-    Next consider
-    \[
-    q_{1} \defeq q_{n\times m, k} : n \times m + k = k + n \times m
-    \]
-    which is passed through a based path induction on $C_{2}(\ell) \defeq m + ((n
-    \times m + k) + n \times k) =  m + (\ell
-    + n \times k)$ to get
-    \[
-    \langle q_{1} \rangle
-    \defeq
-    \ind{=}'(n \times m + k, C_{2}, \refl{m + ((n \times m + k) + n \times k)}, k + n
-    \times m, q_{1})
-    \]
-    which adds to our chain, giving
-    \[
-    r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle
-    :
-    (m + n \times m) + (k + n \times k)
-    =
-    m + ((k + n \times m) + n \times k)
-    \]
-    Now just two applications of associativity are left.  We have
-    \[
-    r_{3} \defeq r_{k, n \times m, n \times k}
-    :
-    (k + n \times m) + n \times k
-    =
-    k + (n \times m + n \times k)
-    \]
-    so for $C_{3}(\ell) \defeq m + ((k + n \times m) + n \times k) = m + \ell$, we have
-    \[
-    \langle r_{3} \rangle \defeq
-    \ind{=}'((k + n \times m) + n \times k, C_{3}, \refl{m + ((k + n \times m) + n
-    \times k)}, k + (n \times m + n \times k), r_{3})
-    \]
-    making our chain of type
-    \[
-    r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle \ct \langle r_{3}
-    \rangle
-    :
-    (m + n \times m) + (k + n \times k)
-    =
-    m + (k + (n \times m + n \times k))
-    \]
-    Finally, take
-    \[
-    r_{4} \defeq r^{-1}_{m, k, n \times m + n \times k}
-    :
-    m + (k + (n \times m + n \times k))
-    =
-    (m + k) + (n \times m + n \times k)
-    \]
-    so after applying the last judgemental equality above, we have
-    \[
-    f \defeq
-    r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle \ct \langle r_{3}
-    \rangle \ct r_{4}
-    :
-    (\suc(n) \times m) + (\suc(n) \times k)
-    =
-    (m + k) + (n \times m + n \times k)
-    \]
-    Now, consider the family $D(\ell) \defeq (m+k) + n \times (m+k) = (m+k) +
-    \ell$.  Based path induction once more gives us
-    \[
-    \ind{=}'(n \times (m + k), D, \refl{(m+k)+n\times(m+k)}, n \times m + n
-    \times k, p_{n}) \ct f^{-1}
-    \]
-    which, after application of our judgemental equalities, is of type
-    \[
-    \suc(n) \times (m + k) = (\suc(n) \times m) + (\suc(n) \times k)
-    \]
-    So we can at last apply induction over $\mathbb{N}$, using the family $E(n) : n
-    \times (m + k) = (n \times m) + (n \times k)$, giving
-    \[
-    \ind{\mathbb{N}}(E, \refl{0 \times (m + k)}, 
-    \lam{n}{p}(
-    \ind{=}'(n \times (m + k), D, \refl{(m+k)+n\times(m+k)}, n \times m + n
-    \times k, p) \ct f^{-1}
-    ))
-    \]
-    which is of type
-    \[
-    \prd{n:\mathbb{N}} n \times (m + k) = (n \times m) + (n \times k)
-    \]
-    and $m$ and $k$ may be abstracted out to give (vii). 
+\[
+r_{1} \defeq r_{m, n \times m, k+n\times k} 
+: (m + n \times m) + (k + n \times k)
+= m + (n \times m + (k + n \times k))
+\]
+Based path induction over $C_{1}(\ell) \defeq m + (n \times m + (k + n \times
+k)) = m + \ell$ and using
+\[
+r_{2} \defeq r_{n \times m, k, n \times k}
+: n \times m + (k + n \times k)
+= (n \times m + k) + n \times k
+\]
+gives
+\[
+\langle r_{2} \rangle \defeq 
+\ind{=}'(n\times m + (k + n \times k), C_{1}, \refl{m+(n\times m + (k + n
+\times k))}, (n \times m + k) + n \times k, r_{2}
+)
+\]
+which results in
+\[
+r_{1} 
+\ct
+\langle r_{2} \rangle
+:
+(m + n \times m) + (k + n \times k)
+=
+m + ((n \times m + k) + n \times k)
+\]
+Next consider
+\[
+q_{1} \defeq q_{n\times m, k} : n \times m + k = k + n \times m
+\]
+which is passed through a based path induction on $C_{2}(\ell) \defeq m + ((n
+\times m + k) + n \times k) =  m + (\ell
++ n \times k)$ to get
+\[
+\langle q_{1} \rangle
+\defeq
+\ind{=}'(n \times m + k, C_{2}, \refl{m + ((n \times m + k) + n \times k)}, k + n
+\times m, q_{1})
+\]
+which adds to our chain, giving
+\[
+r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle
+:
+(m + n \times m) + (k + n \times k)
+=
+m + ((k + n \times m) + n \times k)
+\]
+Now just two applications of associativity are left.  We have
+\[
+r_{3} \defeq r_{k, n \times m, n \times k}
+:
+(k + n \times m) + n \times k
+=
+k + (n \times m + n \times k)
+\]
+so for $C_{3}(\ell) \defeq m + ((k + n \times m) + n \times k) = m + \ell$, we have
+\[
+\langle r_{3} \rangle \defeq
+\ind{=}'((k + n \times m) + n \times k, C_{3}, \refl{m + ((k + n \times m) + n
+\times k)}, k + (n \times m + n \times k), r_{3})
+\]
+making our chain of type
+\[
+r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle \ct \langle r_{3}
+\rangle
+:
+(m + n \times m) + (k + n \times k)
+=
+m + (k + (n \times m + n \times k))
+\]
+Finally, take
+\[
+r_{4} \defeq r^{-1}_{m, k, n \times m + n \times k}
+:
+m + (k + (n \times m + n \times k))
+=
+(m + k) + (n \times m + n \times k)
+\]
+so after applying the last judgemental equality above, we have
+\[
+f \defeq
+r_{1} \ct \langle r_{2} \rangle \ct \langle q_{1} \rangle \ct \langle r_{3}
+\rangle \ct r_{4}
+:
+(\suc(n) \times m) + (\suc(n) \times k)
+=
+(m + k) + (n \times m + n \times k)
+\]
+Now, consider the family $D(\ell) \defeq (m+k) + n \times (m+k) = (m+k) +
+\ell$.  Based path induction once more gives us
+\[
+\ind{=}'(n \times (m + k), D, \refl{(m+k)+n\times(m+k)}, n \times m + n
+\times k, p_{n}) \ct f^{-1}
+\]
+which, after application of our judgemental equalities, is of type
+\[
+\suc(n) \times (m + k) = (\suc(n) \times m) + (\suc(n) \times k)
+\]
+So we can at last apply induction over $\mathbb{N}$, using the family $E(n) : n
+\times (m + k) = (n \times m) + (n \times k)$, giving
+\[
+\ind{\mathbb{N}}(E, \refl{0 \times (m + k)}, 
+\lam{n}{p}(
+\ind{=}'(n \times (m + k), D, \refl{(m+k)+n\times(m+k)}, n \times m + n
+\times k, p) \ct f^{-1}
+))
+\]
+which is of type
+\[
+\prd{n:\mathbb{N}} n \times (m + k) = (n \times m) + (n \times k)
+\]
+and $m$ and $k$ may be abstracted out to give (vii). 
 
-    \item This was shown as a lemma in proving (vi).
+\item This was shown as a lemma in proving (vi).
 
 \end{enumerate}%
 
@@ -1690,7 +1717,6 @@ Proof.
   induction n; [| simpl; rewrite <- IHn; rewrite <- ex1_8_viii]; reflexivity.
 Qed.
 
-(* Yikes.  This would be easier if [replace] were available *)
 Theorem ex1_8_vii : forall (n m k : nat),
                       n * (m + k) = (n * m) + (n * k).
 Proof.
@@ -1711,7 +1737,6 @@ Define the type family $\Fin : \mathbb{N} \to \UU$ mentioned at the end of
 %\S1.3%, and the dependent function $\fmax : \prd{n : \mathbb{N}} \Fin(n + 1)$
 mentioned in %\S1.4%. *)
 
-Local Open Scope nat_scope.
 
 (** %\soln%  
 $\Fin(n)$ is a type with exactly $n$ elements.  Consider $\Fin(n)$ from the
@@ -1725,6 +1750,8 @@ we note that there are $n$ such elements, and define
   \equiv \sum_{m:\mathbb{N}} \sm{k:\mathbb{N}}(m+ \suc(k) = n)
 \]%
 And in Coq, *)
+
+Local Open Scope nat_scope.
 
 Definition le (n m : nat) : Type := {k:nat & n + k = m}.
 Notation "n <= m" := (le n m)%nat (at level 70) : nat_scope.
@@ -1789,8 +1816,9 @@ Proof.
   unfold Fin, lt, le. intros. simpl.
   exists m.2.1.
   apply S_inj. rewrite plus_n_Sm.
-  rewrite plus_1_r.
-  apply m.2.2.
+  rewrite m.2.2.
+  symmetry.
+  apply plus_1_r.
 Qed.
 
 Local Close Scope nat_scope.
@@ -2026,8 +2054,8 @@ We can get a proof out of Coq by printing this [Goal].  It returns
 \item If (not $A$ or not $B$), then not ($A$ and $B$).
 \end{enumerate}% *)
 
-Section Exercise12.
-  Context {A B : Type}.
+Section Ex12.
+  Context (A B : Type).
 
   (** 
 %\soln% 
@@ -2094,10 +2122,10 @@ A \times B
     apply H.
     destruct x.
     constructor.
-    exact a.
+    exact fst.
   Qed.
 
-End Exercise12.
+End Ex12.
 
 (**
 %\exerdone{1.13}{57}%
@@ -2105,8 +2133,8 @@ Using propositions-as-types, derive the double negation of the
 principle of excluded middle, %i.e.~prove% 
 %\emph{not (not ($P$ or not $P$))}%. *)
 
-Section Exercise13.
-  Context {P : Type}.
+Section Ex13.
+  Context (P : Type).
 
   (** 
 %\soln%  
@@ -2150,7 +2178,7 @@ Finally, in Coq, *)
     apply p.
   Qed.
 
-End Exercise13.
+End Ex13.
 
 (** 
 %\exerdone{1.14}{57}%  

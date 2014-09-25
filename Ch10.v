@@ -38,7 +38,7 @@ $\acc(\inl(a))$, consider any $z' : A + B$, which is either of the form $z'
 Inductive acc {A : hSet} {L : A -> A -> hProp} : A -> Type :=
   | accL : forall a : A, (forall b : A, (L b a) -> acc b) -> acc a.
 
-Lemma hprop_acc {A : hSet} {L : A -> A -> hProp} 
+Lemma hprop_acc `{Funext} {A : hSet} {L : A -> A -> hProp} 
   : forall a, IsHProp (@acc _ L a).
 Proof.
   intro a. apply hprop_allpath. intros s1 s2.
@@ -53,11 +53,14 @@ Definition well_founded {A : hSet} (L : A -> A -> hProp) :=
 
 Definition WFRel := {A : hSet & {L : A -> A -> hProp & @well_founded A L}}.
 
+(*
 Lemma hprop_wf {A : hSet} (L : A -> A -> hProp) : IsHProp (well_founded L).
 Proof.
   apply hprop_dependent. apply hprop_acc.
 Defined.
+*)
 
+(*
 Lemma path_wfrel (AL BL : WFRel) (p : AL.1 = BL.1) : 
   (transport _ p AL.2).1 = BL.2.1 -> AL = BL.
 Proof.
@@ -65,22 +68,27 @@ Proof.
   apply (@path_sigma_hprop _ _ (hprop_wf) _).
   apply q.
 Defined.
+*)
 
+(*
 Lemma path_wfrel_uncurried (AL BL : WFRel) :
   {p : AL.1 = BL.1 & (transport _ p AL.2).1 = BL.2.1} -> AL = BL.
 Proof.
   intro H. destruct H as [p q]. apply (path_wfrel _ _ p q).
 Defined.
+*)
 
 Definition extensional (AL : WFRel)
   := forall a a', (forall c, (AL.2.1 c a) <-> (AL.2.1 c a')) -> (a = a').
 
+(*
 Lemma hprop_extensional (AL : WFRel) : IsHProp (extensional AL).
 Proof.
   apply hprop_dependent; intro a.
   apply hprop_dependent; intro b.
   apply hprop_arrow. apply hprop_allpath. apply set_path2.
 Defined.
+*)
 
 Definition ExtWFRel := {AL : WFRel & extensional AL}.
 

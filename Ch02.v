@@ -630,7 +630,7 @@ Definition ex2_9_g {A B X : Type} (h : (A->X) * (B->X)) : A + B -> X :=
            end.
 
 
-Theorem ex2_9 : forall A B X, (A + B->X) <~> (A->X) * (B->X).
+Theorem ex2_9 `{Funext} : forall A B X, (A + B->X) <~> (A->X) * (B->X).
 Proof.
   intros. refine (equiv_adjointify ex2_9_f ex2_9_g _ _); intro h.
   destruct h as (x, y). reflexivity.
@@ -652,7 +652,7 @@ Definition ex2_9_g' {A B : Type} {C: A + B -> Type}
             | inr b => snd h b
           end.
 
-Theorem ex2_9' : forall A B C, 
+Theorem ex2_9' `{Funext} : forall A B C, 
   (forall (p:A + B), C(p)) <~> (forall a:A, C(inl a)) * (forall b:B, C(inr b)).
 Proof.
   intros. 
@@ -1397,20 +1397,18 @@ is contractible.  Since any two contractible types are equivalent, this means
 Since the first is contractible by Lemma 3.11.8.  Thus, we've shown
 that $\total{\happly(f)}$, as defined in Definition 4.7.5, is an
 equivalence.  By Theorem 4.7.7, this makes $\happly(f, g)$ an
-equivalence for all $g$, proving the result.  Fingers crossed that none of the
-HoTT library lemmas I use depend on [Funext] or [Univalence].
-*)
+equivalence for all $g$, proving the result. *)
 
 Section Exercise2_16.
 
-Variable funext : forall (A : Type) (B : A -> Type) (f g : forall (x:A), B x),
+Hypothesis funext : forall (A : Type) (B : A -> Type) (f g : forall (x:A), B x),
                       (f == g) -> (f = g).
 
 Definition funext' {A : Type} {B : A -> Type} (f g : forall (x:A), B x) : 
   (f==g) -> (f=g) :=
   (fun h : (f==g) => (funext A B f g h) @ (funext A B g g (fun _ => 1))^).
 
-Lemma funext'_computes {A : Type} {B : A -> Type} (f : forall (x:A), B x) : 
+Lemma funext'_beta {A : Type} {B : A -> Type} (f : forall (x:A), B x) : 
   funext' f f (fun _ => 1) = 1.
 Proof.
   unfold funext'. rewrite concat_pV. reflexivity.
@@ -1428,8 +1426,8 @@ Proof.
   intro k. apply (funext' (fun x => (f x; 1)) k); intro x.
   assert (Contr {y : B x & f x = y}). apply Lemma3118.
   destruct X. destruct center. rewrite <- (contr (k x)).
-  apply path_sigma_uncurried. exists p.
-  induction p. reflexivity.
+  apply path_sigma_uncurried. exists proj2_sig.
+  induction proj2_sig. reflexivity.
 Defined.  
 
 Definition choice {A B f} : 
@@ -1467,12 +1465,12 @@ Defined.
   
 Definition total_happly {A B f} : 
   {g : forall x:A, B x & f = g} -> {g : forall x:A, B x & f == g}.
-  intros. destruct X. exists x. apply apD10. apply p.
+  intros. destruct X. exists proj1_sig. apply apD10. apply proj2_sig.
 Defined.
 
 Definition total_happly_inv {A B f} : 
   {g : forall x:A, B x & f == g} -> {g : forall x:A, B x & f = g}.
-  intros. destruct X. exists x. apply funext'. apply p.
+  intros. destruct X. exists proj1_sig. apply funext'. apply proj2_sig.
 Defined.
 
 Lemma total_equivalence {A B f} : IsEquiv(@total_happly A B f).
@@ -1496,33 +1494,32 @@ Proof.
   reflexivity.
 Qed.
 
-Definition fx_inv {A P Q} {f : forall x:A, P x -> Q x} {k : IsEquiv (total f)} 
-           (x : A) (y : Q x) : P x. 
-  destruct k.
-  change x with (x; y).1.
-  apply (transport _ (base_path (eisretr (x; y)))).
-  apply (equiv_inv (x; y)).2.
-Defined.
-
 Lemma Theorem477 (A : Type) (P Q : A -> Type) (f : forall x:A, P x -> Q x) : 
   IsEquiv (total f) -> forall x:A, IsEquiv (f x).
 Proof.
-  intros.
-  refine (isequiv_adjointify (f x) (fx_inv x) _ _); unfold fx_inv; intro y.
-  - destruct X.
-    rewrite ap_transport. simpl. unfold base_path. 
-    apply (fiber_path (eisretr (x; y))).
-  - destruct X. unfold base_path.
-    change (x; f x y) with ((total f) (x; y)).
-    rewrite eisadj. rewrite <- ap_compose.
-    assert ((ap (pr1 o total f) (eissect (x; y))) = (base_path (eissect (x; y)))).
-    unfold compose. unfold base_path. reflexivity.
-    rewrite X. unfold base_path. simpl.
-    transitivity (x; y).2.
-    apply (fiber_path (eissect (x; y))).
-    reflexivity.
+  intros e a.
+  refine (isequiv_adjointify _ _ _ _).
+
+  (* quasi-inverse *)
+  destruct e. intro q.
+  change a with (a; q).1.
+  apply (transport _ (base_path (eisretr (a; q)))).
+  apply (equiv_inv (a; q)).2.
+
+  (* section *)
+  destruct e. intro p.
+  refine ((ap_transport _ _ _) @ _).
+  apply (fiber_path (eisretr (a; p))).
+
+  (* retract *)
+  destruct e. intro p.
+  change p with (a; p).2.
+  refine (_ @ (fiber_path (eissect (a; p)))).
+  unfold base_path. f_ap. simpl.
+  change (a; f a p) with (total f (a; p)).
+  rewrite eisadj. refine ((ap_compose _ _ _)^ @ _).
+  reflexivity.
 Defined.
-     
    
 
 Theorem ex2_16 {A B} (f g : forall (x:A), B x) : IsEquiv(@apD10 A B f g).
@@ -1552,7 +1549,9 @@ axiom, this means that $A = A'$ and $B = B'$.  But then $A \times B = A' \times
 B'$, so again by univalence $(A \times B) \eqvsym (A' \times B')$. 
 *)
 
-Theorem ex2_17_i `{Univalence}: forall (A A' B B' : Type),
+Module Ex17.
+
+Theorem equiv_functor_prod `{Univalence}: forall (A A' B B' : Type),
   A <~> A' -> B <~> B' -> (A * B) <~> (A' * B').
 Proof.
   intros A A' B B' f g. 
@@ -1585,7 +1584,7 @@ Clearly these are quasi-inverses, since
 and vice versa.
 *)
 
-Theorem ex2_17_i' : forall (A A' B B' : Type),
+Theorem equiv_functor_prod' : forall (A A' B B' : Type),
   A <~> A' -> B <~> B' -> (A * B) <~> (A' * B').
 Proof.
   intros A A' B B' f g.
@@ -1601,45 +1600,41 @@ To prove that the proofs are equivalent, it suffices to show that the
 underlying functions are equal, by Lemma 3.5.1.  
 *)
 
-Theorem equal_proofs `{Univalence} : ex2_17_i = ex2_17_i'.
+Theorem equal_proofs `{Univalence} : equiv_functor_prod = equiv_functor_prod'.
 Proof.
-  unfold ex2_17_i, ex2_17_i'. simpl. unfold compose.
+  unfold equiv_functor_prod, equiv_functor_prod'. simpl. unfold compose.
   apply path_forall; intro A.  apply path_forall; intro A'.
   apply path_forall; intro B.  apply path_forall; intro B'.
   apply path_forall; intro f.  apply path_forall; intro g.
   
-  (* equiv_fun *)
-  assert (transport idmap
-                  (transport (fun x : Type => A * B = A' * x)
-                     (path_universe_uncurried g)
-                     (transport (fun x : Type => A * B = x * B)
-                        (path_universe_uncurried f) 1))
-          =
-         fun z : A * B => (f (fst z), g (snd z))) as H1.
-  apply path_forall; intro z. 
-  repeat (rewrite trans_paths; hott_simpl).
-  rewrite transport_pp. 
-  rewrite <- transport_idmap_ap.
-  rewrite <- (transport_idmap_ap Type (fun a:Type => a * B) A A' (path_universe_uncurried f) z).
-  rewrite (@transport_prod Type idmap (fun x:Type => B)).
-  rewrite transport_prod. simpl.
-  destruct z; apply path_prod; simpl.
-    rewrite transport_const.
-    assert ((path_universe_uncurried f) = (path_universe (equiv_fun f))).
-    unfold path_universe. destruct f. reflexivity.
-    rewrite X. apply transport_path_universe.
-    rewrite transport_const.
-    assert ((path_universe_uncurried g) = (path_universe (equiv_fun g))).
-    unfold path_universe. destruct g. reflexivity.
-    rewrite X. apply transport_path_universe.
 
- unfold equiv_path, equiv_adjointify. 
- 
- (* Lemma 3.5.1 *)
- apply path_equiv. apply H1.
-Qed.
-  
-  
+  unfold equiv_path, equiv_adjointify.
+  apply path_equiv. simpl. apply path_forall; intro z.
+  destruct z as [a b]. simpl.
+  rewrite transport_paths_Fr. rewrite transport_paths_Fr.
+  refine ((transport_pp _ _ _ _) @ _).
+  refine ((transport_idmap_ap _ _ _ _ _ _)^ @ _).
+  refine ((transport_prod _ _) @ _). 
+  apply path_prod; simpl.
+    (* fst *)
+    refine ((transport_const _ _) @ _).
+    rewrite transport_pp. 
+    rewrite <- (transport_idmap_ap Type (fun y => y * B)).
+    rewrite transport_prod. simpl.
+    refine (_ @ (transport_path_universe _ _)). f_ap.
+    unfold path_universe, path_universe_uncurried.
+    apply (ap _). apply path_equiv. reflexivity.
+
+    (* snd *)
+    refine (_ @ (transport_path_universe _ _)). f_ap.
+    unfold path_universe, path_universe_uncurried.
+    apply (ap _). apply path_equiv. reflexivity.
+    rewrite concat_1p. 
+    rewrite <- (transport_idmap_ap Type (fun y => y * B)).
+    rewrite transport_prod. simpl.
+    apply transport_const.
+Defined.
+    
 
 (** %\noindent%
 (iii)  The proofs of the rest of these are pretty much routine.  With
@@ -1720,7 +1715,7 @@ Definition pi_f_inv {A A' : Type} {B : A -> Type} {B' : A' -> Type}
   apply (g x)^-1. apply (X (f x)).
 Defined.
 
-Theorem ex2_17_pi {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+Theorem ex2_17_pi `{Funext} {A A' : Type} {B : A -> Type} {B' : A' -> Type}
            (f : A <~> A') (g : forall x : A, B x <~> B' (f x)) :
   (forall x:A, B x) <~> (forall x':A', B' x').
 Proof.
@@ -1744,3 +1739,5 @@ Proof.
   apply equiv_path_universe.
   rewrite HA, HB. reflexivity.
 Qed.
+
+End Ex17.

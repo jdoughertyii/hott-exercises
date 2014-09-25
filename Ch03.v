@@ -6,7 +6,7 @@ Require Export HoTT Ch02.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Sets and logic *)
 
-Notation Brck Q := (minus1Trunc Q).
+Notation Brck Q := (merely Q).
 
 (** %\exerdone{3.1}{127}%  
 Prove that if $A \eqvsym B$ and $A$ is a set, then so is $B$.
@@ -141,18 +141,18 @@ is contractible these functions are equal.  $\happly$ then gives $x = y$, so
 $A$ is a mere proposition.
 *)
 
-Theorem ex3_4 (A : Type) : IsHProp A <-> Contr (A -> A).
+Theorem ex3_4 `{Funext} (A : Type) : IsHProp A <-> Contr (A -> A).
 Proof.
-  split; intro H.
+  split; intro H'.
 
   (* forward *)
   exists idmap; intro f.
-  apply path_forall; intro x. apply H.
+  apply path_forall; intro x. apply H'.
 
   (* backward *)
   apply hprop_allpath; intros x y.
   assert ((fun z:A => x) = (fun z:A => y)).
-  destruct H. transitivity center. 
+  destruct H'. transitivity center. 
   apply (contr (fun _ => x))^. apply (contr (fun _ : A => y)).
   apply (apD10 X x).
 Defined.
@@ -168,14 +168,17 @@ proposition, so $A \to \iscontr(A)$ is as well.  $\isprop(A)$ is
 always a mere proposition, so by Lemma 3.3.3 we have the equivalence.
 *)
 
-Theorem ex3_5 (A : Type) : IsHProp A <~> (A -> Contr A).
+Module Ex5.
+
+Theorem equiv_hprop_inhabited_contr `{Funext} (A : Type) 
+  : IsHProp A <~> (A -> Contr A).
 Proof.
-  (* Lemma 3.3.3 *)
-  apply equiv_iff_hprop. 
-  (* Lemma 3.11.3 *)
-  apply contr_inhabited_hprop. 
-  apply hprop_inhabited_contr. 
-Qed.
+  apply equiv_iff_hprop.
+  apply contr_inhabited_hprop.
+  apply hprop_inhabited_contr.
+Defined.
+
+End Ex5.
 
 (** %\exerdone{3.6}{127}%
 Show that if $A$ is a mere proposition, then so is $A + (\lnot A)$.
@@ -191,17 +194,17 @@ case analysis, we have
 *)
 
 
-Theorem ex3_6 {A} : IsHProp A -> IsHProp (A + ~A).
+Theorem ex3_6 `{Funext} {A} : IsHProp A -> IsHProp (A + ~A).
 Proof.
-  intro H. 
-  assert (IsHProp (~A)) as H'. 
+  intro H'. 
+  assert (IsHProp (~A)) as H''. 
   apply hprop_allpath. intros f f'. apply path_forall; intro x. contradiction.
   apply hprop_allpath. intros x y.
   destruct x as [a | f], y as [a' | f'].
-  apply (ap inl). apply H.
+  apply (ap inl). apply H'.
   contradiction.
   contradiction.
-  apply (ap inr). apply H'.
+  apply (ap inr). apply H''.
 Defined.
 
 (** %\exerdone{3.7}{127}%
@@ -258,11 +261,12 @@ Hypothesis H1 : Q -> E.
 Hypothesis H2 : E -> Q.
 Hypothesis H3 : forall e e' : E, e = e'.
 
-Definition ex3_8_i : Q -> (Brck Q) := min1.
+Definition ex3_8_i : Q -> (Brck Q) := tr.
 
 Definition ex3_8_ii : (Brck Q) -> Q.
-  intro q. apply H2. apply (@minus1Trunc_rect_nondep Q E).
-  apply H1. apply H3. apply q.
+  intro q. apply H2. apply (@Trunc_rect -1 Q).
+  intro q'. apply hprop_allpath. apply H3.
+  apply H1. apply q.
 Defined.
 
 Theorem ex3_8_iii : forall q q' : Brck Q, q = q'.
@@ -276,6 +280,8 @@ Theorem ex3_8_iv : (Brck Q) <~> E.
   apply (H1 o ex3_8_ii).
   apply (ex3_8_i o H2).
 Defined.
+
+
   
 End Exercise3_8. 
 
@@ -418,6 +424,7 @@ Proof.
     apply (true_ne_false H).
 Defined.
 
+(*
 Theorem ex3_11 `{Univalence} : ~ (forall A, Brck A -> A).
 Proof.
   intro f.
@@ -441,6 +448,7 @@ Proof.
   apply (@negb_no_fixpoint (f Bool (min1 true))). 
   apply (X (min1 true)).
 Qed.
+*)
   
  
 (** %\exerdone{3.12}{127}%
@@ -468,10 +476,9 @@ Hypothesis LEM : forall A, IsHProp A -> (A + ~A).
 Theorem ex3_12 : forall A, Brck (Brck A -> A).
 Proof.
   intro A.
-  destruct (LEM (Brck A) minus1Trunc_is_prop).
-  apply (minus1Trunc_rect_nondep (fun a => min1 (fun _ : Brck A => a))).
-  apply minus1Trunc_is_prop. apply m.
-  apply min1. intro a. contradiction n.
+  destruct (LEM (Brck A) _).
+  strip_truncations. apply tr. intro a. apply t.
+  apply tr. intro a. contradiction (n a).
 Defined.
 
 End Exercise3_12.
@@ -522,7 +529,7 @@ Definition AC := forall X A P,
   -> ((forall x:X, Brck {a:A x & P x a}) 
       -> Brck {g : forall x, A x & forall x, P x (g x)}).
 
-Definition AC_simpl := forall (X : hSet) (Y : X -> Type),
+Definition AC_prod := forall (X : hSet) (Y : X -> Type),
   (forall x, IsHSet (Y x)) -> 
   ((forall x, Brck (Y x)) -> Brck (forall x, Y x)).
 
@@ -531,42 +538,56 @@ Proof.
   typeclasses eauto.
 Defined.
 
-Lemma Lemma382 : AC <~> AC_simpl.
+  
+Lemma AC_equiv_AC_prod `{Funext} : AC <~> AC_prod.
 Proof.
-  apply equiv_iff_hprop; unfold AC, AC_simpl.
+  apply equiv_iff_hprop; unfold AC, AC_prod.
 
-  intros AC. intros X Y HY D.
-  assert (Brck ({g : forall x, Y x & forall x, (fun x a => Unit) x (g x)})
-               <~> Brck (forall x, Y x)).
+  (* forward *)
+  intros AC HX Y HY f.
+  
+  transparent assert (He : (
+    Brck ({g : forall x, Y x & forall x, (fun x a => Unit) x (g x)})
+    <~> 
+    Brck (forall x, Y x)
+  )).
   apply equiv_iff_hprop. 
-  intro w. strip_truncations. apply min1. apply w.1.
-  intro g. strip_truncations. apply min1. exists g. intro x. apply tt.
-  apply X0. apply (AC X Y (fun x a => Unit)). apply X. apply HY.
-  intros. apply hprop_Unit. intros. 
-  assert (Brck (Y x)) as y by apply D. strip_truncations. 
-  apply min1. exists y. apply tt.
+  intro w. strip_truncations. apply tr. apply w.1.
+  intro g. strip_truncations. apply tr. exists g. intro x. apply tt.
 
-  intros AC_simpl X A P HX HA HP D.
-  assert (Brck (forall x, {a : A x & P x a}) 
-            <~> Brck {g : forall x, A x & forall x, P x (g x)}).
+  apply He. clear He. apply (AC _ Y (fun x a => Unit)). apply HX. apply HY.
+  intros. apply hprop_Unit. intros. 
+  assert (y : Brck (Y x)) by apply f. strip_truncations.
+  apply tr. exists y. apply tt.
+
+  (* back *)
+  intros AC_prod X A P HX HA HP f.
+
+  transparent assert (He: (
+    Brck (forall x, {a : A x & P x a}) 
+    <~> 
+    Brck {g : forall x, A x & forall x, P x (g x)}
+  )).
   apply equiv_iff_hprop.
-  intros. strip_truncations. apply min1. exists (fun x => (X0 x).1).
+  intros. strip_truncations. apply tr. exists (fun x => (X0 x).1).
   intro x. apply (X0 x).2.
-  intros. strip_truncations. apply min1. intro x. apply (X0.1 x; X0.2 x). 
-  apply X0. apply (AC_simpl (default_HSet X HX) (fun x => {a : A x & P x a})).
+  intros. strip_truncations. apply tr. intro x. apply (X0.1 x; X0.2 x). 
+
+  apply He. clear He. 
+  apply (AC_prod (default_HSet X HX) (fun x => {a : A x & P x a})).
   intros. apply ex3_3. apply (HA x). intro a.
   apply hprop_is_hset. apply (HP x a).
-  intro x. apply (D x).
+  intro x. apply (f x).
 Defined.
 
 Section Exercise3_13.
 
 Hypothesis LEM' : forall A, A + ~A.
 
-Theorem ex3_13: AC.
+Theorem ex3_13 `{Funext} : AC.
 Proof.
-  apply Lemma382. unfold AC_simpl. intros X Y HX HY.
-  apply min1. intros. 
+  apply AC_equiv_AC_prod. intros X Y HX HY.
+  apply tr. intros. 
   destruct (LEM' (Y x)). apply y.
   assert (Brck (Y x)) as y'. apply HY.
   assert (~ Brck (Y x)) as nn. intro p. strip_truncations. contradiction.
@@ -697,22 +718,22 @@ Section Exercise3_16.
 
 Hypothesis LEM : forall A, IsHProp A -> (A + ~ A).
 
-Theorem ex3_16 (X : hSet) (Y : X -> Type) :
+Theorem ex3_16 `{Funext} (X : hSet) (Y : X -> Type) :
   (forall x, IsHProp (Y x)) -> 
   (forall x, ~ ~ Y x) <~> ~ ~ (forall x, Y x).
 Proof.
-  intro HY. apply equiv_iff_hprop; intro H.
+  intro HY. apply equiv_iff_hprop; intro H'.
   
   intro f. apply f. intro x. 
   destruct (LEM (Y x)). 
     apply HY. apply y.
-    contradiction (H x).
+    contradiction (H' x).
   
   intro x. 
   destruct (LEM (Y x)). 
     apply HY. intro f. contradiction.
     assert (~ (forall x, Y x)). intro f. contradiction (f x).
-    contradiction H.
+    contradiction H'.
 Qed.
    
 End Exercise3_16.
@@ -737,14 +758,14 @@ $B(x)$.  Since $\brck{A}$ is contractible, we have $p : \lvert a
 *)
 
 Theorem ex3_17 (A : Type) (B : Brck A -> Type) :
-  (forall x, IsHProp (B x)) -> (forall a, B (min1 a)) -> (forall x, B x).
+  (forall x, IsHProp (B x)) -> (forall a, B (tr a)) -> (forall x, B x).
 Proof.
   intros HB f. intro x.
-  apply (@minus1Trunc_rect_nondep A (B x)).
-  intro a. assert (min1 a = x) as p. apply allpath_hprop.
-  apply (transport _ p). apply (f a).
-  apply allpath_hprop. apply x.
+  apply Trunc_rect. apply HB.
+  intro a. apply (f a).
 Defined.
+  
+  
 
 (** %\exerdone{3.18}{128}%
 Show that the law of excluded middle
@@ -775,12 +796,12 @@ constructed such an element, so producing that gives one of $A + \lnot A$, and
 we're done.
 *)
 
-Theorem ex3_18: 
+Theorem ex3_18 `{Funext} : 
   (forall A, IsHProp A -> (A + ~A)) <-> (forall A, IsHProp A -> (~ ~A -> A)).
 Proof.
   split.
-  intros LEM A H f. destruct (LEM A H). apply a. contradiction.
-  intros DN A H. apply (DN (A + ~A) (ex3_6 H)).
+  intros LEM A H' f. destruct (LEM A H'). apply a. contradiction.
+  intros DN A H'. apply (DN (A + ~A) (ex3_6 H')).
   exact (fun g : ~ (A + ~ A) => g (inr (fun a:A => g (inl a)))).
 Qed.
   
@@ -970,7 +991,7 @@ Proof.
   apply (p @ p'^).
 Defined.
 
-Lemma hprop_dependent (A : Type) (P : A -> Type) :
+Lemma hprop_dependent `{Funext} (A : Type) (P : A -> Type) :
   (forall a, IsHProp (P a)) -> IsHProp (forall a, P a).
 Proof.
   intro HP. 
@@ -1282,12 +1303,12 @@ Context {P : nat -> Type} {HP : forall n, IsHProp (P n)}
 Local Definition Q (w : {n : nat & P n}) : Type := 
   forall w' : {n : nat & P n}, w.1 <= w'.1.
 
-Lemma hprop_Q : forall w, IsHProp (Q w).
+Lemma hprop_Q `{Funext} : forall w, IsHProp (Q w).
 Proof.
   intro w. unfold Q. apply hprop_dependent. intro w'. apply hprop_le.
 Defined.
 
-Lemma hprop_sigma_Q : IsHProp {w : {n : nat & P n} & Q w}.
+Lemma hprop_sigma_Q `{Funext} : IsHProp {w : {n : nat & P n} & Q w}.
 Proof.
   apply hprop_allpath. intros w w'.
   refine (path_sigma_hprop _ _ _). apply hprop_Q.
@@ -1543,11 +1564,11 @@ Proof.
 Defined.
 
 
-Lemma ex3_19 : Brck {n : nat & P n} -> {n : nat & P n}.
+Lemma ex3_19 `{Funext} : Brck {n : nat & P n} -> {n : nat & P n}.
 Proof.
   intro w.
   apply (@pr1 _ Q).
-  set (H := hprop_sigma_Q).
+  set (H' := hprop_sigma_Q).
   strip_truncations.
   transparent assert (w' : {n : nat & P n}).
   exists (bmin w.1).
@@ -1627,15 +1648,15 @@ Then $e(x) = e(y)$, since $\brck{P}$ is a proposition, and applying $e^{-1}$ to
 each side gives $x = y$.  Thus $P$ is a mere proposition.
 *)
 
-Theorem ex3_21 (P : Type) : IsHProp P <~> (P <~> Brck P).
+Theorem ex3_21 `{Funext} (P : Type) : IsHProp P <~> (P <~> Brck P).
 Proof.
   assert (IsHProp (P <~> Brck P)). apply hprop_allpath; intros e1 e2.
   apply path_equiv. apply path_forall; intro p.
   apply hprop_allpath. apply allpath_hprop.
   apply equiv_iff_hprop.
 
-  intro HP. apply equiv_iff_hprop. apply min1.
-  apply (minus1Trunc_rect_nondep idmap). apply HP.
+  intro HP. apply equiv_iff_hprop. apply tr.
+  apply Trunc_rect. intro p. apply HP. apply idmap.
   
   intro e. apply hprop_allpath; intros x y.
   assert (e x = e y) as p. apply hprop_allpath. apply allpath_hprop.
@@ -1644,7 +1665,7 @@ Proof.
 Defined.
   
 
-(** %\exerdone{3.22}{128}%
+(** %\exer{3.22}{128}%
 As in classical set theory, the finite version of the axiom of choice is a
 theorem.  Prove that the axiom of choice holds when $X$ is a finite type
 $\Fin(n)$.
@@ -1871,18 +1892,21 @@ Proof.
   exists n. exists O. apply (plus_1_r _)^.
 
   (* Section *)
-  intro H. destruct H as [w | t]. destruct w as [m [k p]]. simpl.
-  destruct (decidable_paths_nat m n).
-  assert Empty. apply (nat_encode (S k) O). apply (plus_cancelL m).
-  refine (_ @ (plus_O_r _)). refine (_ @ p0^). apply p. contradiction.
-  apply (ap inl). 
-  apply path_Fin. reflexivity.
+  intro H. destruct H as [w | t]. 
+    
+    (* w : Fin n *)
+    destruct w as [m [k p]]. unfold cardF. simpl.
+    destruct (decidable_paths_nat m n).
+    assert Empty. apply (nat_encode (S k) O). apply (plus_cancelL m).
+    refine (_ @ (plus_O_r _)). refine (_ @ p0^). apply p. contradiction.
+    apply (ap inl). apply path_Fin. reflexivity.
 
-  simpl. destruct (decidable_paths_nat n n). apply (ap inr). apply contr_unit.
-  contradiction (n0 1).
+    (* t : Unit *)
+    unfold cardF. simpl. destruct (decidable_paths_nat n n). 
+    apply (ap inr). apply contr_unit. contradiction (n0 1).
 
   (* Retraction *)
-  intro w. destruct w as [m [k p]]. simpl.
+  intro w. destruct w as [m [k p]]. unfold cardF. simpl.
   destruct (decidable_paths_nat m n).
   apply path_Fin. apply p0^.
   apply path_Fin. reflexivity.
@@ -1911,8 +1935,8 @@ Lemma brck_equiv (A B : Type) : (A <~> B) -> (Brck A <~> Brck B).
 Proof.
   intro e.
   apply equiv_iff_hprop.
-  intro a'. strip_truncations. apply min1. apply e. apply a'.
-  intro b'. strip_truncations. apply min1. apply e^-1. apply b'.
+  intro a'. strip_truncations. apply tr. apply e. apply a'.
+  intro b'. strip_truncations. apply tr. apply e^-1. apply b'.
 Defined.
 
 Definition Book_2_15_6 (X : Type) (A : X -> Type) (P : forall x, A x -> Type) :
@@ -1925,8 +1949,9 @@ Proof.
   intro x. apply (f x).2.
 Defined.
 
-Theorem Book_2_15_7 (X : Type) (A : X -> Type) (P : forall x, A x -> Type) :
-  IsEquiv (Book_2_15_6 X A P).
+Theorem Book_2_15_7 `{Funext} (X : Type) (A : X -> Type) 
+        (P : forall x, A x -> Type) 
+  : IsEquiv (Book_2_15_6 X A P).
 Proof.
   refine (isequiv_adjointify _ _ _ _).
   intros f x. apply (f.1 x; f.2 x).
@@ -1941,11 +1966,12 @@ Proof.
   unfold Book_2_15_6. simpl. apply eta_sigma.
 Defined.
 
+
 Theorem brck_functor_prod (A B : Type) : Brck (A * B) <~> Brck A * Brck B.
 Proof.
   apply equiv_iff_hprop.
-  intro x. split; strip_truncations; apply min1. apply (fst x). apply (snd x).
-  intro x. destruct x as [a b]. strip_truncations. apply min1. apply (a, b).
+  intro x. split; strip_truncations; apply tr. apply (fst x). apply (snd x).
+  intro x. destruct x as [a b]. strip_truncations. apply tr. apply (a, b).
 Defined.
 
 (* The induction step of the proof *)
@@ -1961,7 +1987,7 @@ Proof.
   apply m. apply a.
 Defined.
 
-Theorem domain_trans :
+Theorem domain_trans `{Funext} :
   (forall m, Brck {a : A m & P m a})
   <~>
   (forall z, Brck {a : A ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z))
@@ -1975,9 +2001,9 @@ Proof.
   apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro z.
   apply brck_equiv.
-  refine (equiv_functor_sigma _ _).
-  unfold A'. unfold compose. apply (ap A). reflexivity.
-  unfold P'. f_ap.
+  refine (equiv_functor_sigma' _ _).
+  unfold A'. unfold compose. apply equiv_idmap. 
+  intro a. unfold P'. unfold compose. simpl. apply equiv_idmap.
   
   equiv_via (
     (forall z, Brck {a : A' (inl z) & P' (inl z) a})
@@ -1991,7 +2017,7 @@ Proof.
 Defined.
   
 
-Theorem codomain_trans :
+Theorem codomain_trans `{Funext} :
   Brck {g : forall m, A m & forall m, P m (g m)}
   <~>
   Brck {g : forall z, (A o (@equiv_inv _ _ cardF (isequiv_cardF n)) o inl) z
@@ -2039,12 +2065,13 @@ Defined.
 End ISFAC.
 
 
-Theorem finite_AC (n : nat) (A : Fin n -> Type) (P : forall m, A m -> Type) : 
+Theorem finite_AC `{Funext} (n : nat) (A : Fin n -> Type) 
+        (P : forall m, A m -> Type) : 
   (forall m, Brck {a : A m & P m a}) 
   -> Brck {g : forall m, A m & forall m, P m (g m)}.
 Proof.
   induction n.
-  intro H. apply min1.
+  intro H'. apply tr.
   exists (fun m : Fin 0 => Empty_rect (fun _ => A m) (cardO m)).
   intro m. contradiction (cardO m).
 
@@ -2057,7 +2084,7 @@ Proof.
                  P ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)) a))).
   apply fn.
   set (z := tt).
-  apply f1 in z. strip_truncations. apply min1. intro t. apply z.
+  apply f1 in z. strip_truncations. apply tr. intro t. apply z.
 Defined.
 
 (**
@@ -2104,7 +2131,7 @@ Context {n : nat} {Y : Fin (S n) -> Type}.
 
 Local Definition Y' := Y o (@equiv_inv _ _ cardF (isequiv_cardF n)).
 
-Theorem domain_trans' :
+Theorem domain_trans' `{Funext} :
   (forall m, Brck (Y m))
   <~>
   (forall z, Brck (Y ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)))) 
@@ -2121,7 +2148,7 @@ Proof.
   apply equiv_idmap.
 Defined.
 
-Theorem codomain_trans' : 
+Theorem codomain_trans' `{Funext} : 
   Brck (forall z, Y ((@equiv_inv _ _ cardF (isequiv_cardF n)) (inl z)))
   *
   Brck (forall z : Unit, Y (n; (O; (plus_1_r _)^)))
@@ -2145,21 +2172,21 @@ Defined.
 
 End ISFAC'.
 
-Theorem finite_AC' (n : nat) (Y : Fin n -> Type) :
+Theorem finite_AC' `{Funext} (n : nat) (Y : Fin n -> Type) :
   (forall m, Brck (Y m)) -> Brck (forall m, Y m).
 Proof.
   induction n.
-  intro H. apply min1. intro m. contradiction (cardO m).
+  intro H'. apply tr. intro m. contradiction (cardO m).
   
   intro f.
   apply domain_trans' in f. destruct f as [fn f1].
   apply codomain_trans'. split.
   
   apply IHn. apply fn.
-  set (z := tt). apply f1 in z. strip_truncations. apply min1. intro t. apply z.
+  set (z := tt). apply f1 in z. strip_truncations. apply tr. intro t. apply z.
 Defined.
 
-Theorem finite_AC_eqv_finite_AC' : 
+Theorem finite_AC_eqv_finite_AC' `{Funext} : 
   (forall (n : nat) (A : Fin n -> Type) P, 
      (forall m, Brck {a : A m & P m a})
      ->
@@ -2169,13 +2196,13 @@ Theorem finite_AC_eqv_finite_AC' :
      (forall m, Brck (Y m)) -> Brck (forall m, Y m)).
 Proof.
   apply equiv_iff_hprop.
-
+  
   (* forward *)
-  intros H n Y f.
+  intros finite_AC n Y f.
   transparent assert (e : (
-    Brck {g : forall m : Fin n, Y m & forall m, (fun z a => Unit) m (g m)}
+    Brck {g : forall m, Y m & forall m, (fun z a => Unit) m (g m)}
     <~>
-    Brck (forall m : Fin n, Y m)
+    Brck (forall m, Y m)
   )).
   equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
   apply brck_equiv. apply equiv_inverse.
@@ -2183,12 +2210,14 @@ Proof.
   apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
   intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
   apply e. clear e.
-  apply (H n Y (fun z a => Unit)).
+  
+  apply (finite_AC n Y (fun z a => Unit)).
   intro m. assert (Brck (Y m)). apply (f m).
-  strip_truncations. apply min1. exists X. apply tt.
+  strip_truncations. apply tr. exists X. apply tt.
 
   (* back *)
-  intros H n A P f.
+  intros finite_AC' n A P f.
+  
   transparent assert (e : (
     Brck (forall m, (fun x => {a : A x & P x a}) m)
     <~>
@@ -2197,10 +2226,11 @@ Proof.
   apply brck_equiv.
   apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ _)).
   apply e. clear e.
-  apply H. apply f.
+
+  apply finite_AC'. apply f.
 Defined.
 
-Theorem finite_AC_alt (n : nat) (A : Fin n -> Type) 
+Theorem finite_AC_alt `{Funext} (n : nat) (A : Fin n -> Type) 
         (P : forall m, A m -> Type) : 
   (forall m, Brck {a : A m & P m a}) 
   -> Brck {g : forall m, A m & forall m, P m (g m)}.
@@ -2209,4 +2239,3 @@ Proof.
   apply finite_AC_eqv_finite_AC'.
   apply finite_AC'.
 Defined.
-

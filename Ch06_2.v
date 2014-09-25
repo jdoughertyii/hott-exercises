@@ -178,6 +178,7 @@ Definition baz {A : Type} {x y : A} {p q : x = y} (r : p = q) :
   concat_pV p = (r @@ inverse2 r) @ concat_pV q.
 Proof. by path_induction. Defined.
 
+(*
 Theorem isequiv_SS1_to_S2 : IsEquiv (SS1_to_S2).
 Proof.
   apply isequiv_adjointify with S2_to_SS1.
@@ -340,5 +341,6 @@ Proof.
   refine (_ @ (inv_pp _ _)^). hott_simpl. apply whiskerR.
   apply whiskerR_ap.
 Defined.
+*)
     
 
