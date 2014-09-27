@@ -123,6 +123,7 @@ Naturality and the computation rules then give
 and we're done.  The computation in Coq is long, since all of the homotopic
 corrections have to be done by hand.  I also spend a lot of moves on making the
 interactive version of the proof clear, and those could probably be eliminated.
+There are some lemmata with dumb names that should be fixed.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
@@ -241,6 +242,100 @@ interactive version of the proof clear, and those could probably be eliminated.
 \coqdocdefinition{concat\_pV} \coqdocvariable{p} \coqdocnotation{=} \coqdocnotation{(}\coqdocvariable{r} \coqdocnotation{@@} \coqdocdefinition{inverse2} \coqdocvariable{r}\coqdocnotation{)} \coqdocnotation{@} \coqdocdefinition{concat\_pV} \coqdocvariable{q}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}. \coqdoctac{by} \coqdocvar{path\_induction}. \coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 2.apD02 const}{apD02\_const}{\coqdocdefinition{apD02\_const}} (\coqdocvar{A} \coqdocvar{B} : \coqdockw{Type}) (\coqdocvar{f} : \coqdocvariable{A} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{B}) (\coqdocvar{x} \coqdocvar{y} : \coqdocvariable{A}) \coqdoceol
+\coqdocindent{5.50em}
+(\coqdocvar{p} \coqdocvar{q} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) (\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{q})\coqdoceol
+\coqdocindent{1.00em}
+: \coqdocdefinition{apD02} \coqdocvariable{f} \coqdocvariable{r} \coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{=} \coqdoceol
+\coqdocindent{2.00em}
+\coqdocnotation{(}\coqdoclemma{apD\_const} \coqdocvariable{f} \coqdocvariable{p}\coqdocnotation{)} \coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocnotation{(}\coqdocdefinition{transport2\_const} \coqdocvariable{r} (\coqdocvariable{f} \coqdocvariable{x})\coqdocnotation{)} \coqdocnotation{@@} \coqdocnotation{(}\coqdocdefinition{ap02} \coqdocvariable{f} \coqdocvariable{r}\coqdocnotation{)}\coqdocnotation{)}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}\coqdoceol
+\coqdocindent{3.00em}
+\coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL} (\coqdocdefinition{transport2} (\coqdockw{fun} \coqdocvar{\_} : \coqdocvariable{A} \ensuremath{\Rightarrow} \coqdocvariable{B}) \coqdocvariable{r} (\coqdocvariable{f} \coqdocvariable{x})) \coqdocnotation{(}\coqdoclemma{apD\_const} \coqdocvariable{f} \coqdocvariable{q}\coqdocnotation{)\^{}}\coqdocnotation{)}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{by} \coqdocvar{path\_induction}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch06 2.cancel2L}{cancel2L}{\coqdocdefinition{cancel2L}} (\coqdocvar{A} : \coqdockw{Type}) (\coqdocvar{x} \coqdocvar{y} \coqdocvar{z} : \coqdocvariable{A}) (\coqdocvar{p} \coqdocvar{p'} : \coqdocvariable{x} \coqdocnotation{=} \coqdocvariable{y}) (\coqdocvar{q} \coqdocvar{q'} : \coqdocvariable{y} \coqdocnotation{=} \coqdocvariable{z})\coqdoceol
+\coqdocindent{5.50em}
+(\coqdocvar{r} : \coqdocvariable{p} \coqdocnotation{=} \coqdocvariable{p'}) (\coqdocvar{s} \coqdocvar{t} : \coqdocvariable{q} \coqdocnotation{=} \coqdocvariable{q'}) \coqdoceol
+\coqdocindent{1.00em}
+: \coqdocvariable{r} \coqdocnotation{@@} \coqdocvariable{s} \coqdocnotation{=} \coqdocvariable{r} \coqdocnotation{@@} \coqdocvariable{t} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{s} \coqdocnotation{=} \coqdocvariable{t}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intro} \coqdocvar{u}. \coqdoctac{induction} \coqdocvar{r}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{whiskerL\_1p} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}). \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{whiskerL\_1p} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pM}. \coqdoctac{apply} \coqdocdefinition{moveR\_Vp}. \coqdoctac{refine} (\coqdocnotation{(}\coqdocdefinition{concat2\_1p} \coqdocvar{\_}\coqdocnotation{)\^{}} \coqdocnotation{@} \coqdocvar{\_}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pV}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}). \coqdoctac{apply} \coqdocdefinition{concat2}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pp\_p} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveL\_pM}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_pV} \coqdocvar{\_}\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocdefinition{moveR\_pV}. \coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat\_1p} \coqdocvar{\_}\coqdocnotation{)\^{}}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{refine} (\coqdocvar{\_} \coqdocnotation{@} \coqdocnotation{(}\coqdocdefinition{concat2\_1p} \coqdocvar{\_}\coqdocnotation{)}).\coqdoceol
+\coqdocnoindent
+\coqdocvar{Admitted}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\begin{coqdoccomment}
+\coqdoceol
+Definition\coqdocindent{0.50em}
+S2\_rectnd\_beta\_surf\coqdocindent{0.50em}
+(P\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+Type)\coqdocindent{0.50em}
+(b\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+P)\coqdocindent{0.50em}
+(l\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+idpath\coqdocindent{0.50em}
+b\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+idpath\coqdocindent{0.50em}
+b)\coqdoceol
+:\coqdocindent{0.50em}
+ap02\coqdocindent{0.50em}
+(S2\_rectnd\coqdocindent{0.50em}
+P\coqdocindent{0.50em}
+b\coqdocindent{0.50em}
+l)\coqdocindent{0.50em}
+surf\coqdocindent{0.50em}
+=\coqdocindent{0.50em}
+l\^{}.\coqdoceol
+Proof.\coqdoceol
+\coqdocindent{1.00em}
+unfold\coqdocindent{0.50em}
+S2\_rectnd.\coqdoceol
+\coqdocindent{1.00em}
+refine\coqdocindent{0.50em}
+((S2\_rect\_beta\_loop\coqdocindent{0.50em}
+\_\coqdocindent{0.50em}
+\_\coqdocindent{0.50em}
+\_)\coqdocindent{0.50em}
+@\coqdocindent{0.50em}
+\_).\coqdoceol
+\end{coqdoccomment}
+\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \begin{coqdoccomment}

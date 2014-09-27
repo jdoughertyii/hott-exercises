@@ -1939,33 +1939,6 @@ Proof.
   intro b'. strip_truncations. apply tr. apply e^-1. apply b'.
 Defined.
 
-Definition Book_2_15_6 (X : Type) (A : X -> Type) (P : forall x, A x -> Type) :
-  (forall x, {a : A x & P x a}) 
-  ->
-  {g : forall x, A x & forall x, P x (g x)}.
-Proof.
-  intro f.
-  exists (fun x => (f x).1).
-  intro x. apply (f x).2.
-Defined.
-
-Theorem Book_2_15_7 `{Funext} (X : Type) (A : X -> Type) 
-        (P : forall x, A x -> Type) 
-  : IsEquiv (Book_2_15_6 X A P).
-Proof.
-  refine (isequiv_adjointify _ _ _ _).
-  intros f x. apply (f.1 x; f.2 x).
-
-  (* Section *)
-  intro w. unfold Book_2_15_6.
-  apply path_sigma_uncurried. simpl. exists 1.
-  simpl. reflexivity.
-
-  (* Retraction *)
-  intro f. apply path_forall; intro x.
-  unfold Book_2_15_6. simpl. apply eta_sigma.
-Defined.
-
 
 Theorem brck_functor_prod (A B : Type) : Brck (A * B) <~> Brck A * Brck B.
 Proof.
@@ -2038,9 +2011,7 @@ Proof.
   intro z. apply equiv_idmap.
   
   equiv_via (Brck (forall z, {a : A' z & P' z a})).
-  apply brck_equiv.
-  apply equiv_inverse. 
-  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ _)).
+  apply brck_equiv. refine (equiv_sigma_corect _ _ _).
   
   equiv_via (Brck ((forall z, {a : A' (inl z) & P' (inl z) a})
                    *
@@ -2056,9 +2027,8 @@ Proof.
   refine (equiv_functor_prod' _ _).
   apply brck_equiv.
   unfold A', P', compose.
-  apply (BuildEquiv _ _ 
-                    (Book_2_15_6 _ _ _) 
-                    (Book_2_15_7 _ _ (fun z a => P (cardF^-1 (inl z)) a))).
+  apply equiv_inverse.
+  refine (equiv_sigma_corect _ _ _).
   apply brck_equiv. apply equiv_idmap.
 Defined.
 
@@ -2205,8 +2175,7 @@ Proof.
     Brck (forall m, Y m)
   )).
   equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
-  apply brck_equiv. apply equiv_inverse.
-  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ (fun z a => Unit))).
+  apply brck_equiv. refine (equiv_sigma_corect _ _ _).
   apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
   intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
   apply e. clear e.
@@ -2224,7 +2193,7 @@ Proof.
     Brck {g : forall m : Fin n, A m & forall m : Fin n, P m (g m)}
   )).
   apply brck_equiv.
-  apply (BuildEquiv _ _ (Book_2_15_6 _ _ _) (Book_2_15_7 _ _ _)).
+  apply equiv_inverse. refine (equiv_sigma_corect _ _ _).
   apply e. clear e.
 
   apply finite_AC'. apply f.

@@ -50,6 +50,8 @@ want to construct an element of $x=z$; but this is just $q$, so induction gives
 us a function $p \ctu q : x = z$ such that $\refl{x} \ctu q \defeq q$.
 *)
 
+Module Altcats.
+
 Definition cat' {A : Type} {x y z : A} (p : x = y) (q : y = z) : x = z.
   induction p. apply q.
 Defined.
@@ -278,6 +280,8 @@ Proof.
   induction p, q. reflexivity.
 Qed.
 
+End Altcats.
+
 
 (** %\exerdone{2.4}{103}% 
 Define, by induction on $n$, a general notion of $n$-dimensional path
@@ -422,12 +426,16 @@ which is inhabited by $\refl{q}$.  So $(p \ct -)$ has a quasi-inverse, hence it
 is an equivalence.
 *)
 
+Module Altequivcat.
 
-Lemma isequiv_eqcat (A:Type) (x y z : A) (p : x = y) : IsEquiv (fun q:(y=z) => p @ q).
+Lemma isequiv_concat (A:Type) (x y z : A) (p : x = y) 
+  : IsEquiv (@concat A x y z p).
 Proof.
-  refine (isequiv_adjointify _ (fun q:(x=z) => p^ @ q) _ _); intro q;
+  refine (isequiv_adjointify _ (concat p^) _ _); intro q;
     by path_induction.
-Qed.
+Defined.
+
+End Altequivcat.
 
 (** %\exerdone{2.7}{104}% 
 State and prove a generalization of Theorem 2.6.5 from cartesian products to
@@ -480,9 +488,9 @@ by induction.  So let $x \equiv (a, b)$, $y \equiv (a', b')$, $p
 But from the definition of $f$, this is a judgemental equality.  So we're done.
 *)
 
-Module Exercise2_7.
+Module Ex7.
 
-Definition T {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+Local Definition T {A A' : Type} {B : A -> Type} {B' : A' -> Type}
            {g : A -> A'} (h : forall a, B a -> B' (g a))
            {x y : {a:A & B a}}
            (p : x.1 = y.1) (q : p # x.2 = y.2)
@@ -499,21 +507,22 @@ Definition functor_sigma {A A' : Type} {B : A -> Type} {B' : A' -> Type}
   : {x : A & B x} -> {x : A' & B' x}
   := fun z => (g z.1; h z.1 z.2).
 
-Theorem ex2_7 : forall {A A' : Type} {B : A -> Type} {B' : A' -> Type}
+Theorem ap_functor_sigma {A A' : Type} {B : A -> Type} {B' : A' -> Type}
                        (g : A -> A') (h : forall a, B a -> B' (g a))
                        (x y : {a:A & B a})
-                       (p : x.1 = y.1) (q : p # x.2 = y.2),
-  ap (functor_sigma g h) (path_sigma B x y p q) 
-  = path_sigma B' (functor_sigma g h x) (functor_sigma g h y) 
-               (ap g p) (T h p q). 
-intros. 
-destruct x as [a b], y as [a' b']. 
-simpl in p. induction p. 
-simpl in q. induction q. 
-reflexivity.
+                       (p : x.1 = y.1) (q : p # x.2 = y.2)
+  :  ap (functor_sigma g h) (path_sigma B x y p q) 
+     = path_sigma B' (functor_sigma g h x) (functor_sigma g h y) 
+                  (ap g p) (T h p q). 
+Proof.
+  intros. 
+  destruct x as [a b], y as [a' b']. 
+  simpl in p. induction p. 
+  simpl in q. induction q. 
+  reflexivity.
 Defined.
 
-End Exercise2_7.
+End Ex7.
 
 
 
@@ -620,50 +629,55 @@ which, assuming function extensionality, is inhabited.  So $(g,
 \alpha, \beta)$ is a quasi-inverse to $f$, giving the universal property.
 *)
 
-Definition ex2_9_f {A B X : Type} (h : (A + B -> X)) : (A->X) * (B->X) :=
-  (h o inl, h o inr).
+Module Ex2_9.
 
-Definition ex2_9_g {A B X : Type} (h : (A->X) * (B->X)) : A + B -> X :=
-  fun x => match x with
-             | inl a => (fst h) a
-             | inr b => (snd h) b
-           end.
-
-
-Theorem ex2_9 `{Funext} : forall A B X, (A + B->X) <~> (A->X) * (B->X).
+Theorem equiv_sum_distributive `{Funext} (A B X : Type)
+  : (A + B -> X) <~> (A -> X) * (B -> X).
 Proof.
-  intros. refine (equiv_adjointify ex2_9_f ex2_9_g _ _); intro h.
-  destruct h as (x, y). reflexivity.
-  apply path_forall. intro z. destruct z; reflexivity.
-Qed.
+  refine (equiv_adjointify _ _ _ _).
 
-(** All of this generalizes directly to the case of dependent functions. *)
+  (* forward *)
+  intro f. split. 
+    intro a. exact (f (inl a)).
+    intro b. exact (f (inr b)).
+  
+  (* back *)
+  intro f. intro z. destruct f as [f g]. destruct z as [a | b]. 
+  exact (f a). exact (g b).
+
+  (* section *)
+  intro f. reflexivity.
+  
+  (* retract *)
+  intro f. apply path_forall; intro x. destruct x as [a | b]; reflexivity.
+Defined.
+  
+End Ex2_9.
 
 
-Definition ex2_9_f' {A B : Type} {C: A + B -> Type} (h : forall (p:A + B), C p) 
-  : (forall a:A, C(inl a)) * (forall b:B, C(inr b)) :=
-(fun _ => h (inl _), fun _ => h (inr _)).
-
-Definition ex2_9_g' {A B : Type} {C: A + B -> Type} 
-           (h : (forall a:A, C(inl a)) * (forall b:B, C(inr b))) : 
-  forall (p:A + B), C p :=
- fun _ => match _ as s return (C s) with
-            | inl a => fst h a
-            | inr b => snd h b
-          end.
-
-Theorem ex2_9' `{Funext} : forall A B C, 
-  (forall (p:A + B), C(p)) <~> (forall a:A, C(inl a)) * (forall b:B, C(inr b)).
+Theorem equiv_forall_distributive `{Funext} (A B : Type) (C : A + B -> Type)
+  : (forall p, C p) <~> (forall a, C (inl a)) * (forall b, C (inr b)).
 Proof.
-  intros. 
-  refine (equiv_adjointify ex2_9_f' ex2_9_g' _ _); unfold ex2_9_f', ex2_9_g'.
-  intro. destruct x. apply path_prod; simpl;
-  apply path_forall; unfold pointwise_paths; reflexivity.
-  intro. apply path_forall; intro p. destruct p; reflexivity.
-Qed.
+  refine (equiv_adjointify _ _ _ _).
+  
+  (* forward *)
+  intro f. split. 
+    intro a. exact (f (inl a)).
+    intro b. exact (f (inr b)).
 
-          
-     
+  (* back *)
+  intro f. destruct f as [f g]. intro p. destruct p as [a | b].
+    exact (f a). exact (g b).
+  
+  (* section *)
+  intro f. reflexivity.
+
+  (* retract *)
+  intro f. apply path_forall. intro p. destruct p as [a | b]; reflexivity.
+Defined.
+  
+
+
 (** %\exerdone{2.10}{104}% 
 Prove that $\Sigma$-types are ``associative'', in that for any $A:\UU$ and
 families $B : A \to \UU$ and $C : (\sm{x:A} B(x)) \to \UU$, we have
@@ -704,25 +718,27 @@ and
 So $f$ is an equivalence.
 *)
 
-Definition ex2_10_f {A : Type} {B : A -> Type} {C : {x:A & B x} -> Type} : 
-  {x:A & {y : B x & C (x; y)}} -> {p : {x:A & B x} & C p}.
-  intro abc. destruct abc as [a [b c]]. apply ((a; b); c).
-Defined.
+Module Ex2_10.
 
-Definition ex2_10_g {A : Type} {B : A -> Type} {C : {x:A & B x} -> Type} : 
-  {p : {x:A & B x} & C p} -> {x:A & {y : B x & C (x; y)}}.
-  intro abc. destruct abc as [[a b] c].
-  exists a; exists b; apply c.
-Defined.
-
-Theorem ex2_10 : forall A B C, IsEquiv(@ex2_10_f A B C).
+Theorem equiv_sigma_assoc (A : Type) (P : A -> Type) (Q : {a : A & P a} -> Type)
+  : {a : A & {p : P a & Q (a; p)}} <~> {x : _ & Q x}.
 Proof.
-  intros. 
-  refine (isequiv_adjointify ex2_10_f ex2_10_g _ _);
-  unfold ex2_10_f, ex2_10_g; intro abc; 
-  [ destruct abc as [[a b] c] | destruct abc as [a [b c]]];
-  reflexivity.
-Qed.
+  refine (equiv_adjointify _ _ _ _).
+  
+  (* forward *)
+  intro w. destruct w as [a [p q]]. apply ((a; p); q).
+  
+  (* back *)
+  intro w. destruct w as [[a p] q]. apply (a; (p; q)).
+
+  (* section *)
+  intro w. reflexivity.
+
+  (* retract *)
+  intro w. reflexivity.
+Defined.
+
+End Ex2_10.
 
 (** %\exerdone{2.11}{104}% 
 A (homotopy) commutative square
@@ -840,50 +856,48 @@ applying function extensionality again results in
 So we have an equivalence.
 *)
 
-Section Exercise2_11.
 
-Variables (A B C X : Type) (f: A -> C) (g: B -> C). 
+Section Ex11.
 
-Definition P := {a:A & {b:B & f a = g b}}.
-Definition funpull := {h:X->A & {k:X->B & f o h = g o k}}.
+Context {A B C : Type} (X : Type) (f: A -> C) (g: B -> C). 
 
-Definition pi1 (p : P) : A := p.1.
-Definition pi2 (p : P) : B := p.2.1.
-
-
-Definition ex2_11_f `{Funext} : (X -> P) -> funpull.
-  intro h.
-  refine (pi1 o h; (pi2 o h; _)).
-  apply path_forall; intro.
-  exact (h x).2.2.
+Local Definition square_commutes `{Funext} 
+  : f o (fun p : (pullback f g) => p.1) = g o (fun p : (pullback f g) => p.2.1).
+Proof.
+  apply path_forall. intro p. destruct p as [a [b p]]. apply p.
 Defined.
 
-Definition ex2_11_g : funpull -> (X -> P).
-  intros h x.
-  refine (h.1 x; (h.2.1 x; _)).
-  exact (apD10 h.2.2 x).
+Lemma pullback_uprop `{Funext}  
+  : (X -> (pullback f g)) <~> pullback (@compose X _ _ f) (@compose X _ _ g).
+Proof.
+  refine (equiv_adjointify _ _ _ _).
+  
+  (* forward *)
+  intro h. exists (fun x => pr1 (h x)). exists (fun x => pr1 (pr2 (h x))).
+  apply path_forall. intro x. unfold compose. apply (h x).2.2.
+
+  (* backward *)
+  intros h x. destruct h as [h1 [h2 q]]. refine (h1 x; (h2 x; apD10 q x)).
+
+  (* section *)
+  intro h. destruct h as [h1 [h2 q]].
+  apply path_sigma_uncurried. simpl. exists 1.
+  apply path_sigma_uncurried. simpl. exists 1. simpl.
+  apply (ap apD10)^-1. apply eisretr.
+
+  (* retract *)
+  intro h. simpl.
+  apply path_forall. intro x.
+  apply path_sigma_uncurried. exists 1. simpl.
+  apply path_sigma_uncurried. exists 1. simpl.
+  change (h x).2.2 with ((fun x' => (h x').2.2) x). f_ap.
+  apply eisretr.
 Defined.
+  
+End Ex11.
 
-Theorem ex2_11 `{Funext} : (X -> P) <~> funpull.
-  refine (equiv_adjointify ex2_11_f ex2_11_g _ _).
 
-  (* alpha *)
-  unfold Sect, ex2_11_g, ex2_11_f, path_forall; simpl. 
-  destruct 0 as [f' [g' p]]; simpl. f_ap. f_ap.
-  apply (ap apD10)^-1.
-  apply eisretr.
-
-  (* beta *)
-  unfold Sect, ex2_11_g, ex2_11_f, path_forall; intro h; simpl.
-  apply path_forall; intro x.
-  repeat (apply path_sigma_uncurried; exists idpath; simpl).
-  change (h x).2.2 with ((fun x' => (h x').2.2) x); f_ap. 
-  apply eisretr.
-Qed.
-
-End Exercise2_11.
-
-(** %\exer{2.12}{104}% 
+(** %\exerdone{2.12}{104}% 
 Suppose given two commutative squares
 %\[\xymatrix{
   A \ar[r] \ar[d] & C \ar[r] \ar[d] & E \ar[d] \\
@@ -897,259 +911,177 @@ pullback square.
 (** %\soln%
 Label the arrows
 %\[\xymatrix{
-  A \ar[r] \ar[d] & C \ar[r] \ar[d] & E \ar[d]^{f} \\
-  B \ar[r]_{h} & D \ar[r]_{g} & F
+  A \ar[r] \ar[d] & C \ar[r]^{j} \ar[d]_{g} & E \ar[d]^{k} \\
+  B \ar[r]_{f} & D \ar[r]_{h} & F
 }\]%
-and suppose that the right square is a pullback.  That is, for all $X$ there is
-an equivalence
+Suppose that the right-hand square is a pullback.  That is, suppose we have
 %\[
-  e : \eqv{(X \to C)}{(X \to D) \times_{X \to F} (X \to E)}
+  (X \to C) \eqvsym (X \to D) \times_{(X \to F)} (X \to E)
 \]%
-There are two obvious maps
-%\begin{align*}
-  (X \to A) &\to (X \to B) \times_{X \to D} (X \to C) \\
-  (X \to A) &\to (X \to B) \times_{X \to F} (X \to E)
-\end{align*}%
-and we want to show that the first is an equivalence iff the second is.  To do
-this, we show that 
+We want to show that
 %\[
-  \eqv{
-    (X \to B) \times_{X \to D} (X \to C)
-  }{
-    (X \to B) \times_{X \to F} (X \to E)
-  }
+  \eqv{(X \to A)}{(X \to B) \times_{(X \to D)} (X \to C)}
 \]%
-and then use the fact that $\eqvsym$ is an equivalence relation.
-
-So suppose that $k : (X \to B) \times_{X \to D} (X \to C)$.  We can construct
-two maps of the correct signature by composition:
+if and only if
 %\[
-  \left(\proj{3}^{1}(k), \proj{3}^{2}(e(\proj{3}^{2}(k))), -\right)
-  :
-  (X \to B) \times_{X \to F} (X \to E)
+  \eqv{(X \to A)}{(X \to B) \times_{(X \to F)} (X \to E)}
 \]%
-So we just need a proof that these commute correctly.  We have
-%\begin{align*}
-  \proj{3}^{3}(e(\proj{3}^{2}(k))) &: 
-    f \circ g^{*}f \circ \proj{3}^{2}(k)
-    =
-    g \circ f^{*}g \circ \proj{3}^{2}(k)
-    \\
-  \proj{3}^{3}(k) &:
-  h \circ \proj{3}^{1}(k)
-  =
-  f^{*}g \circ \proj{3}^{2}(k)
-\end{align*}%
-which we can straightforwardly combine to obtain the desired equality:
+It suffices to show that 
 %\[
-  \proj{3}^{3}(e(\proj{3}^{2}(k))) \ct \mapfunc{g \circ
-  -}(\proj{3}^{3}(k))^{-1}
-  :
-  f \circ g^{*}f \circ \proj{3}^{2}(k)
-  =
-  g \circ h \circ \proj{3}^{1}(k)
-\]%                              
-giving us a forward map
-%\[
-\phi : k \mapsto
-  \left(\proj{3}^{1}(k), \proj{3}^{2}(e(\proj{3}^{2}(k))), 
-  \proj{3}^{3}(e(\proj{3}^{2}(k))) \ct \mapfunc{g \circ
-  -}(\proj{3}^{3}(k))^{-1}
-  \right)
+  \eqv{(X \to B) \times_{(X \to D)} (X \to C)}{(X \to B) \times_{(X \to F)} (X \to E)}
 \]%
-
-To go the other way, suppose that $k : (X \to B) \times_{X \to F} (X \to E)$.
-As before, the first entry of our output will just be $\proj{3}^{1}(k)$ again.
-The second we'll have to build using $e^{-1}$:
+because $\eqvsym$ is an equivalence relation.  And for this it suffices to show
+that for any $l : X \to B$,
 %\[
-  e^{-1}\left(h \circ \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
-  :
-  X \to C
-\]%
-And now we must prove that we have the needed commutation relation:
-%\[
-  h \circ \proj{3}^{1}(k) = f^{*}g \circ e^{-1}\left(h \circ \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
-\]%
-note that by definition of $e$, this is judgementally equivalent to
-%\[
-  h \circ \proj{3}^{1}(k) = \proj{3}^{1}\left(e\left(e^{-1}\left(h \circ
-  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right) \right)\right)
-\]%
-which, since $\alpha : e \circ e^{-1} \sim \idfunc{}$, is equal to
-%\[
-  h \circ \proj{3}^{1}(k) = \proj{3}^{1}\left(h \circ
-  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right)
-\]%
-a definitional equality.  So our backward map is
-%\[
-  \phi^{-1} : k \mapsto
-  \left(\proj{3}^{1}(k),
-  e^{-1}\left(h \circ
-  \proj{3}^{1}(k), \proj{3}^{2}(k), \proj{3}^{3}(k)\right),
-  \mapfunc{\proj{3}^{1}}\alpha^{-1}
-  \right)
-\]%
-
-To show that these are quasi-inverses, suppose that $k : (X \to B) \times_{X
-\to F} (X \to E)$, which we may assume is of the form $(k_{1}, k_{2}, p)$.
-Then
-%\[
-  \phi(\phi^{-1}(k))
-  \equiv
   \left(
-    k_{1},
-    \proj{3}^{2}\left(e\left(e^{-1}\left(h \circ k_{1}, k_{2},
-    p\right)\right)\right),
-  \proj{3}^{3}\left(e\left(e^{-1}\left(h \circ k_{1}, k_{2}, p\right)\right)\right) \ct \mapfunc{g \circ
-  -}\left(\mapfunc{\proj{3}^{1}}\alpha^{-1}\right)^{-1}
+    \sm{m : X \to C}(f \circ l = g \circ m)
   \right)
-\]%
-Which, since $e$ is an equivalence and by the way $\mapfunc{}$ interacts with
-inverses, is equal (up to homotopy) to
-%\[
-  \phi(\phi^{-1}(k))
-  =
+  \eqvsym
   \left(
-    k_{1},
-    k_{2},
-    p \ct \mapfunc{g \circ
-  -}\mapfunc{\proj{3}^{1}}\alpha
+    \sm{m : X \to E}(h \circ f \circ l = k \circ m)
   \right)
 \]%
-But $\mapfunc{g \circ -}\mapfunc{\proj{3}^{1}}\alpha$ is equal to reflexivity,
-up to the inverse of the former homotopy.  So we have
+by the functorality of the $\Sigma$-type former.  Similarly, by our hypothesis
+that the right square is a pullback, we have
 %\[
-  \phi(\phi^{-1}(k)) = k
-\]%
-by the universal property of $\Sigma$ types.
-
-For the other direction, suppose that $k : (X \to B) \times_{X \to D} (X \to
-C)$, which we may assume is of the form $(k_{1}, k_{2}, p)$.  Then
-%\[
-  \phi^{-1}(\phi(k))
-  \equiv
   \left(
-    k_{1}, 
-    e^{-1}\left(h \circ k_{1}, \proj{3}^{2}(e(k_{2})), 
-    \proj{3}^{3}(e(k_{2})) \ct \mapfunc{g\circ-}p^{-1}
-    \right),
-    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+    \sm{m : (X \to D) \times_{(X \to F)} (X \to E)}(f \circ l = \fst(m))
   \right)
-\]%
-which, by definition of $e$, reduces to
-%\[
-  \phi^{-1}(\phi(k))
-  \equiv
+  \eqvsym
   \left(
-    k_{1}, 
-    e^{-1}\left(h \circ k_{1}, f^{*}g \circ k_{2}, 
-    \proj{3}^{3}(e(k_{2})) \ct \mapfunc{g\circ-}p^{-1}
-    \right),
-    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+    \sm{m : X \to E}(h \circ f \circ l = k \circ m)
   \right)
 \]%
-Now, by $p$, we have $h \circ k_{1} = g^{*}f \circ k_{2}$, so the second term
-may be written
+But, since the fiber product is symmetric and $\Sigma$-types associative and
+commutative on constant type families, this is the same as the condition that
 %\[
-  \phi^{-1}(\phi(k))
-  =
   \left(
-    k_{1}, 
-    e^{-1}(e(k_{2})),
-    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+    \sm{m : X \to E} \sm{p : \sm{n : X \to D}(h \circ n = k \circ m)}
+        (f \circ l = \fst(p))
+  \right)
+  \eqvsym
+  \left(
+    \sm{m : X \to E}(h \circ f \circ l = k \circ m)
   \right)
 \]%
-and since $e$ is an equivalence we have up to homotopy
+So again by the functorality of the $\Sigma$ former, it suffices to show that
+for any $m : X \to E$ we have
 %\[
-  \phi^{-1}(\phi(k))
-  \equiv
   \left(
-    k_{1}, 
-    k_{2},
-    \mapfunc{\proj{3}^{1}}\alpha^{-1}
+    \sm{p : \sm{n : X \to D}(h \circ n = k \circ m)}
+        (f \circ l = \fst(p))
+  \right)
+  \eqvsym
+  \left(
+    h \circ f \circ l = k \circ m
   \right)
 \]%
-which by a similar argument as the previous case gives $\phi^{-1}(\phi(k)) =
-k$.  In neither case is the argument particularly convincing.  That's what Coq
-is for, I guess.
+or, by associativity of the $\Sigma$ former,
+%\[
+  \left(
+    \sm{n : X \to D}
+    \left(
+    (h \circ n = k \circ m) \times (f \circ l = n)
+    \right)
+  \right)
+  \eqvsym
+  \left(
+    h \circ f \circ l = k \circ m
+  \right)
+\]%
+But these are clearly equivalent, and so we are done.
 *)
 
-Section Exercise2_12.
+Definition sigma_corect (X : Type) (A : X -> Type) (P : forall x, A x -> Type)
+  : {g : forall x, A x & forall x, P x (g x)} -> forall x, {a : A x & P x a}
+  := fun w x => (w.1 x; w.2 x).
 
-Context {A B C D E F X : Type} (f : E -> F) (g : D -> F) (h : B -> D)
-        (gsf : C -> D) (fsg : C -> E) (r : g o gsf = f o fsg).
 
-
-Definition e : (X -> C) -> {a : X -> D & {b : X -> E & g o a = f o b}}.
+Lemma equiv_sigma_corect `{Funext} (X : Type) (A : X -> Type) 
+      (P : forall x, A x -> Type)
+  : {g : forall x, A x & forall x, P x (g x)} <~> forall x, {a : A x & P x a}.
 Proof.
-  intro k.
-  exists (gsf o k).
-  exists (fsg o k).
-  apply ((ap (fun z => z o k) r)).
+  refine (equiv_adjointify (sigma_corect X A P) _ _ _); intro w.
+  exists (fun x => (w x).1). apply (fun x => (w x).2).
+  apply path_forall. intro x. apply eta_sigma.
+  apply eta_sigma.
+Defined.
+  
+Lemma equiv_sigma_comm (A B : Type) (P : A -> B -> Type)
+  : {a : A & {b : B & P a b}} <~> {b : B & {a : A & P a b}}.
+Proof.
+  refine (equiv_adjointify _ _ _ _).
+  exact (fun w => (w.2.1; (w.1; w.2.2))).
+  exact (fun w => (w.2.1; (w.1; w.2.2))).
+  intro w. apply eta_sigma.
+  intro w. apply eta_sigma.
 Defined.
 
-Hypothesis isequiv_e : IsEquiv e.
+Module pullback_lemma.
 
-Definition left_to_outer : 
-  {a : X -> B & {b : X -> C & h o a = gsf o b}}
-  -> {a : X -> B & {b : X -> E & g o h o a = f o b}}
-  := fun k =>
-       (k.1; ((e k.2.1).2.1; (ap (compose g) k.2.2) @ (e k.2.1).2.2)).
+Variables (A B C D E F X : Type) 
+          (f : B -> D) (g : C -> D) (h : D -> F) (j : C -> E) (k : E -> F)
+          (r : h o g = k o j).
 
-Definition outer_to_left :
-  {a : X -> B & {b : X -> E & g o h o a = f o b}}
-  -> {a : X -> B & {b : X -> C & h o a = gsf o b}}
-  := fun k =>
-       (k.1; (e^-1 (h o k.1; k.2); ap pr1 (eisretr e (h o k.1; k.2))^)).
-
-Theorem left_equiv_outer :
-  {a : X -> B & {b : X -> C & h o a = gsf o b}}
-  <~> {a : X -> B & {b : X -> E & g o h o a = f o b}}.
+Local Definition xc_to_plbk 
+  : (X -> C) -> pullback (@compose X _ _ h) (@compose X _ _ k).
 Proof.
-  refine (equiv_adjointify left_to_outer outer_to_left _ _).
-  intro k. 
-  apply path_sigma_uncurried. exists 1.
-  apply path_sigma_uncurried. simpl. 
-  transparent assert (H : (
-    fsg o e^-1 (h o k.1; k.2) = (k.2).1
-  )).
-  change (fsg o e^-1 (h o k.1; k.2))
-         with (e (e^-1 (h o k.1; k.2))).2.1.
-  change k.2.1 with (pr1 (@pr2 (X -> D) 
-                            (fun a => {b : X -> E & g o a = f o b})
-                            (h o k.1; k.2))).
-  transparent assert (H' : (e (e^-1 (h o k.1; k.2)) = (h o k.1; k.2))).
-  apply eisretr.
-  rewrite H'. reflexivity.
-  exists H.
-  simpl in H.
-  refine ((transport_paths_Fr _ _) @ _).
-  apply moveR_pM. apply moveR_pM.
-  transitivity (ap (compose g) (ap pr1 (eisretr e (h o k.1; k.2)))^).
-  f_ap. apply (ap_V pr1 (eisretr e (h o k.1; k.2))).
-  refine ((ap_V (compose g) _) @ _).
-  admit.
+  intro l. refine (g o l; (j o l; ap (fun m => m o l) r)).
+Defined.
+  
+Variable (He : IsEquiv xc_to_plbk).
+
+Theorem pbl_helper `{Funext}
+  : pullback (@compose X _ _ f) (@compose X _ _ g)
+    <~>
+    pullback (@compose X _ _ (h o f)) (@compose X _ _ k).
+Proof.
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. simpl. intro j.
+
+  equiv_via {c : pullback (@compose X _ _ h) (@compose X _ _ k) & f o j = c.1}.
+  refine (equiv_functor_sigma' _ _). 
+  apply (BuildEquiv _ _ xc_to_plbk He). intro l.
+  apply equiv_idmap.
+
+  equiv_via {c : {c : X -> E & {b : X -> D & h o b = k o c}} & f o j = c.2.1}.
+  refine (equiv_functor_sigma' _ _).
+  refine (equiv_sigma_comm _ _ _). intro c. apply equiv_idmap.
+
+  equiv_via {c : X -> E & {l : {b : X -> D & h o b = k o c} & f o j = l.1}}.
+  apply equiv_inverse. refine (equiv_sigma_assoc _ _).
+
+  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro m. simpl.
+  
+  equiv_via {l : X -> D & {_ : h o l = k o m & f o j = l}}.
+  apply equiv_inverse. refine (equiv_sigma_assoc _ _).
+
+  refine (equiv_adjointify _ _ _ _).
+  intro w. destruct w as [l [p q]].
+  refine (_ @ p). apply (ap (compose h)). apply q.
+  intro p. exists (f o j). exists p. reflexivity.
+  intro p. apply concat_1p.
+  intro w. destruct w as [l [p q]].
+  apply path_sigma_uncurried. exists q. induction q.
+  simpl. apply path_sigma_uncurried.
+  exists (concat_1p _). induction p. reflexivity.
+Defined.
   
 
-
-  (* outer_to_left o left_to_outer == id *)
-  intro k. destruct k as [k1 [k2 p]].
-  apply path_sigma_uncurried. exists 1. simpl.
-  apply path_sigma_uncurried. simpl.
-  transparent assert (H : (
-    e^-1 (h o k1; (fsg o k2; 
-                   ap (compose g) p @ ap (fun z : C -> F => z o k2) r)) 
-    = k2
-  )).
-  apply (ap e)^-1.
-  refine ((eisretr e _) @ _). unfold e.
-  apply path_sigma_uncurried. simpl. 
-  exists p. simpl.
-  apply path_sigma_uncurried. simpl.
-  admit. admit.
-Admitted.
+Lemma pullback_lemma `{Funext}
+  : (X -> A) <~> pullback (@compose X _ _ f) (@compose X _ _ g)
+    <->
+    (X -> A) <~> pullback (@compose X _ _ (h o f)) (@compose X _ _ k).
+Proof.
+  split.
+  intro H'.
+  equiv_via (pullback (@compose X _ _ f) (@compose X _ _ g)).
+  apply H'. apply pbl_helper.
+  intro H'.
+  equiv_via (pullback (@compose X _ _ (h o f)) (@compose X _ _ k)).
+  apply H'. apply equiv_inverse. apply pbl_helper.
+Defined.
   
-End Exercise2_12.
+End pullback_lemma.
 
 
 
@@ -1399,7 +1331,7 @@ that $\total{\happly(f)}$, as defined in Definition 4.7.5, is an
 equivalence.  By Theorem 4.7.7, this makes $\happly(f, g)$ an
 equivalence for all $g$, proving the result. *)
 
-Section Exercise2_16.
+Section Ex16.
 
 Hypothesis funext : forall (A : Type) (B : A -> Type) (f g : forall (x:A), B x),
                       (f == g) -> (f = g).
@@ -1529,7 +1461,7 @@ Proof.
   apply total_equivalence.
 Qed.
   
-End Exercise2_16.
+End Ex16.
 
 (** %\exerdone{2.17}{105}%
 %\begin{enumerate}

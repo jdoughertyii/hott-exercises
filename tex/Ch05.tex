@@ -551,7 +551,7 @@ This make $\phi(p, p)$ a fixed point of $f$:
 \coqdockw{End} \coqref{Ch05}{\coqdocmodule{Ex9}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{5.10}{176} 
+\exerdone{5.10}{176} 
 Continuing from Exercise 5.9, consider $L_{\unit}$, which is not obviously
 inconsistent since $\unit$ does have the fixed-point property.  Formulate an
 induction principle for $L_{\unit}$ and its computation rule, analogously to
@@ -597,38 +597,19 @@ universal property of the terminal object, $\alpha = {!}$, so we're done.
 \coqdockw{Hypothesis} \coqdef{Ch05.Ex10.Ex10.ind comp}{ind\_comp}{\coqdocvariable{ind\_comp}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P} \coqdocvar{f} \coqdocvar{alpha}, \coqdocvariable{indL} \coqdocvariable{P} \coqdocvariable{f} (\coqdocvariable{lawvere} \coqdocvariable{alpha}) \coqdocnotation{=} \coqdocvariable{f} \coqdocvariable{alpha}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\begin{coqdoccomment}
-\coqdoceol
-Theorem\coqdocindent{0.50em}
-ex5\_10\coqdocindent{0.50em}
-:\coqdocindent{0.50em}
-Contr\coqdocindent{0.50em}
-L.\coqdoceol
-Proof.\coqdoceol
+\coqdockw{Theorem} \coqdef{Ch05.Ex10.ex5 10}{ex5\_10}{\coqdoclemma{ex5\_10}} `\{\coqdocclass{Funext}\} : \coqdocabbreviation{Contr} \coqdocvariable{L}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-(BuildContr\coqdocindent{0.50em}
-L\coqdocindent{0.50em}
-(lawvere\coqdocindent{0.50em}
-(fun\coqdocindent{0.50em}
-\_\coqdocindent{0.50em}
-=>\coqdocindent{0.50em}
-tt))).\coqdoceol
+\coqdoctac{apply} (\coqdocconstructor{BuildContr} \coqdocvariable{L} (\coqdocvariable{lawvere} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} \coqdocconstructor{tt}))).\coqdoceol
 \coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-indL;\coqdocindent{0.50em}
-intro\coqdocindent{0.50em}
-alpha.\coqdoceol
+\coqdoctac{apply} \coqdocvariable{indL}; \coqdoctac{intro} \coqdocvar{alpha}.\coqdoceol
 \coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-(ap\coqdocindent{0.50em}
-lawvere).\coqdoceol
+\coqdoctac{apply} (\coqdocdefinition{ap} \coqdocvariable{lawvere}).\coqdoceol
 \coqdocindent{1.00em}
-apply\coqdocindent{0.50em}
-allpath\_hprop.\coqdoceol
-Defined.\coqdoceol
-\end{coqdoccomment}
-\coqdoceol
+\coqdoctac{apply} \coqdoclemma{allpath\_hprop}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
 \coqdockw{End} \coqref{Ch05.Ex10.Ex10}{\coqdocsection{Ex10}}.\coqdoceol

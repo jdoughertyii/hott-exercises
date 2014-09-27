@@ -107,9 +107,8 @@ suffices to demand that for each $x : G$ we have $\brck{Q(x)}$.  Thus these two
 requirements are equivalent.
 *)
 
-Class IsMonoid (A : Type) (m : A -> A -> A) (e : A) 
+Class IsMonoid (A : hSet) (m : A -> A -> A) (e : A) 
   := BuildIsMonoid {
-         m_isset : IsHSet A ;
          m_unitr : forall a : A, m a e = a ;
          m_unitl : forall a : A, m e a = a ;
          m_assoc : forall x y z : A, m x (m y z) = m (m x y) z
@@ -117,27 +116,29 @@ Class IsMonoid (A : Type) (m : A -> A -> A) (e : A)
 
 Record Monoid 
   := BuildMonoid {
-         m_set :> Type ;
+         m_set :> hSet ;
          m_mult :> m_set -> m_set -> m_set ;
          m_unit :> m_set ;
          m_ismonoid :> IsMonoid m_set m_mult m_unit
        }.
 
-Theorem hprop_inverse_exists (G : Monoid) (x : G) :
-  IsHProp {y : G & (G x y = G) * (G y x = G)}.
+Theorem hprop_inverse_exists (G : hSet) (m : G -> G -> G) (e : G) 
+        (HG : IsMonoid G m e)
+: forall x, IsHProp {y : G & (m x y = e) * (m y x = e)}.
 Proof.
+  intro x.
   (* reduce to uniqueness of inverse *)
-  assert (forall y : G, IsHProp ((G x y = G) * (G y x = G))). intro y.
+  assert (forall y : G, IsHProp ((m x y = e) * (m y x = e))). intro y.
   apply hprop_prod; intros p q; apply G.
   apply hprop_inhabited_contr. intro u. exists u.
   intro v. apply path_sigma_hprop.
 
   (* inverse is unique *)
-  refine ((@m_unitr _ G G G _)^ @ _).
-  refine (_ @ (@m_unitl _ G G G _)). 
-  transitivity (G u.1 (G x v.1)). f_ap. symmetry. apply (fst v.2).
-  transitivity (G (G u.1 x) v.1). refine (@m_assoc G G G G _ _ _).
-  f_ap. apply (snd u.2).
+  destruct HG.
+  refine ((m_unitr0 _)^ @ _).
+  refine (_ @ (m_unitl0 _)). 
+  path_via (m u.1 (m x v.1)). f_ap. symmetry. apply (fst v.2).
+  path_via (m (m u.1 x) v.1). f_ap. apply (snd u.2).
 Defined.
 
 
@@ -175,8 +176,7 @@ Proof.
     apply path_forall; intro a. apply eta_prod.
 Defined.
   
-(*
-Theorem ex6_7 :
+Theorem ex6_7 `{Funext} :
   {G : Monoid & forall x, Brck {y : G & (G x y = G) * (G y x = G)}}
   <~>
   Group.
@@ -192,17 +192,15 @@ Proof.
                          _).
   apply issig_group. 
   apply equiv_functor_sigma_id. intro G.
-  apply (BuildEquiv _ _ 
-                    (Book_2_15_6 _ _ (fun x y => (G x y = G) * (G y x = G)))).
-  apply Book_2_15_7.
+  apply equiv_inverse. refine (equiv_sigma_corect _ _ _).
   apply equiv_functor_sigma_id. intro G.
   apply equiv_functor_forall_id. intro x.
   apply equiv_inverse.
-  apply (BuildEquiv _ _ min1).
-  refine IsEquivmin1.
+  apply ex3_21.
+  destruct G as [G m e HG]. simpl in *.
   apply hprop_inverse_exists.
+  apply HG.
 Defined.
-*)
   
   
 
@@ -373,10 +371,9 @@ Defined.
 
 
 Theorem set_list_is_monoid {A : Type} {HA : IsHSet A} : 
-  IsMonoid (list A) (@app A) nil.
+  IsMonoid (BuildhSet (list A) (set_list_is_set _ HA)) (@app A) nil.
 Proof.
   apply BuildIsMonoid.
-  apply set_list_is_set. apply HA. 
   apply app_nil_r. reflexivity.
   apply app_assoc.
 Defined.
@@ -493,13 +490,19 @@ Record MonoidHom (A B : Monoid) :=
       mhom_ismhom :> IsMonoidHom mhom_fun
     }.
 
-
 Definition homLAG_to_AG (A : Type) (HA : IsHSet A) (G : Monoid) :
-  MonoidHom (BuildMonoid (list A) _ _ set_list_is_monoid) G -> (A -> G)
+  MonoidHom (BuildMonoid (BuildhSet (list A) (set_list_is_set _ HA)) 
+                         _ _ set_list_is_monoid) 
+            G 
+  -> (A -> G)
   := fun f a => (mhom_fun _ G f) [a].
 
 Definition AG_to_homLAG (A : Type) (HA : IsHSet A) (G : Monoid) :
-  (A -> G) -> MonoidHom (BuildMonoid (list A) _ _ set_list_is_monoid) G.
+  (A -> G) 
+  ->
+  MonoidHom (BuildMonoid (BuildhSet (list A) (set_list_is_set _ HA)) 
+                         _ _ set_list_is_monoid) 
+            G.
 Proof.
   (* lift f by recursion *)
   intro f.
@@ -536,15 +539,11 @@ Proof.
 Defined.
   
 
-(*
-Theorem hprop_ismonoidhom {A B : Monoid} (f : A -> B) : IsHProp (IsMonoidHom f).
+Theorem hprop_ismonoidhom `{Funext} {A B : Monoid} (f : A -> B) 
+  : IsHProp (IsMonoidHom f).
 Proof.
   refine (trunc_equiv' (isprod_ismonoidhom f)).
-  apply hprop_prod.
-  intros p q. apply B.
-  repeat (apply hprop_dependent; intro). intros p q. apply B.
 Defined.
-*)
   
 Theorem issig_monoidhom (A B : Monoid) :
   {f : A -> B & IsMonoidHom f} <~> MonoidHom A B.
@@ -552,8 +551,7 @@ Proof.
   issig (BuildMonoidHom A B) (@mhom_fun A B) (@mhom_ismhom A B).
 Defined.
 
-(*
-Theorem equiv_path_monoidhom {A B : Monoid} {f g : MonoidHom A B} :
+Theorem equiv_path_monoidhom `{Funext} {A B : Monoid} {f g : MonoidHom A B} :
   ((mhom_fun _ _ f) = (mhom_fun _ _ g)) <~> f = g.
 Proof.
   equiv_via ((issig_monoidhom A B)^-1 f = (issig_monoidhom A B)^-1 g).
@@ -562,11 +560,13 @@ Proof.
             ((issig_monoidhom A B)^-1 f) ((issig_monoidhom A B)^-1 g)).
   apply equiv_inverse. apply equiv_ap. refine _.
 Defined.
-*)
 
-(*
-Theorem list_is_free_monoid (A : Type) (HA : IsHSet A) (G : Monoid) :
-  MonoidHom (BuildMonoid (list A) _ _ set_list_is_monoid) G <~> (A -> G).
+Theorem list_is_free_monoid `{Funext} (A : Type) (HA : IsHSet A) (G : Monoid) :
+  MonoidHom (BuildMonoid ((BuildhSet (list A) (set_list_is_set _ HA))) 
+                         _ _ set_list_is_monoid) 
+            G 
+            <~> 
+            (A -> G).
 Proof.
   transparent assert (HG : (IsMonoid G G G)). apply G.
   refine (equiv_adjointify (homLAG_to_AG _ _ _) (AG_to_homLAG _ _ _) _ _).
@@ -579,7 +579,6 @@ Proof.
   transitivity (G (homLAG_to_AG A HA G f h) (f t)). f_ap.
   unfold homLAG_to_AG. refine (@hmult _ _ f _ [h] t)^. apply f.
 Defined.
-*)
   
 
 Local Close Scope list_scope.
@@ -709,7 +708,6 @@ $g(\north) = b_{n}$, $g(\south) = b_{s}$, and $g(\merid(a)) = f(a)$ for all $a
 homotopic to the identity function.
 *)
 
-(*
 Theorem univ_prop_susp `{Funext} {A B : Type} :
   (Susp A -> B) <~> {bn : B & {bs : B & A -> (bn = bs)}}.
 Proof.
@@ -726,16 +724,15 @@ Proof.
   intro f. apply path_forall.
   refine (Susp_rect _ 1 1 _).
   intro a. 
-  refine ((trans_paths _ _ _ _ _ _ _ _) @ _).
+  simpl.
+  refine ((@transport_paths_FlFr _ _ _ f _ _ _ _) @ _).
   apply moveR_pM.
   refine ((concat_p1 _) @ _). refine (_ @ (concat_1p _)^). apply inverse2.
   refine ((Susp_comp_nd_merid _) @ _).
   reflexivity.
 Defined.
-*)
   
 
-  
 
 (** %\exer{6.12}{218}% 
 Show that $\eqv{\Z}{\N + \unit + \N}$.  Show that if we were to define $\Z$ as
@@ -797,7 +794,6 @@ Admitted.
 Definition n_le_m__Sn_le_Sm : forall (n m : nat), (le n m) -> (le (S n) (S m))
   := fun n m H => (H.1; ap S H.2).
 
-(*
 Lemma order_partitions : forall (n m : nat), (le n m) + (lt m n).
 Proof.
   induction n.
@@ -805,29 +801,23 @@ Proof.
   induction m.
     right. exists n. reflexivity.
     destruct IHm.
-      left. destruct l. exists (S x).
+      left. destruct l as [x p]. exists (S x).
       simpl. apply (ap S). apply ((plus_n_Sm _ _)^ @ p).
       destruct (IHn m).
         left. apply n_le_m__Sn_le_Sm. apply l0.
-        right. destruct l0. exists x. simpl. apply (ap S). apply p.
+        right. destruct l0 as [x p]. exists x. simpl. apply (ap S). apply p.
 Defined.
-*)
   
 
-(*
 Definition r : nat * nat -> nat * nat.
   intro z. destruct z as [a b].
   destruct (order_partitions b a).
   apply (monus a b, O).
   apply (O, monus b a).
 Defined.
-*)
   
-(*
 Definition int := {x : nat * nat & r x = x}.
-*)
 
-(*
 Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
   intro z. destruct z as [[a b] p]. destruct (decidable_paths_nat a b).
   left. right. apply tt.
@@ -835,9 +825,7 @@ Definition int_to_nat_1_nat : int -> (nat + Unit + nat).
   right. apply (pred (monus a b)).
   left. left. apply (pred (monus b a)).
 Defined.
-*)
 
-(*
 Definition nat_1_nat_to_int : (nat + Unit + nat) -> int :=
   fun z =>
     match z with
@@ -847,7 +835,6 @@ Definition nat_1_nat_to_int : (nat + Unit + nat) -> int :=
                  end
       | inr n => ((S n, O); 1)
     end.
-*)
         
 Lemma lt_le : forall n m, (lt n m) -> (le n m).
 Proof.
@@ -874,32 +861,31 @@ Proof.
 Defined.
   
 
-(*
 Theorem ex6_12 : int <~> (nat + Unit + nat).
 Proof.
   refine (equiv_adjointify int_to_nat_1_nat nat_1_nat_to_int _ _).
   
   intro z. destruct z as [[n | n] | n].
-  reflexivity. simpl. repeat f_ap. apply contr_unit. reflexivity.
+  reflexivity. 
+  unfold int_to_nat_1_nat. simpl. repeat f_ap. apply contr_unit. reflexivity.
   
   intro z. destruct z as [[a b] p].
   apply path_sigma_uncurried.
   assert (
     (nat_1_nat_to_int (int_to_nat_1_nat ((a, b); p))).1 = ((a, b); p).1
   ) as H.
-  unfold nat_1_nat_to_int, int_to_nat_1_nat.
+  unfold nat_1_nat_to_int, int_to_nat_1_nat, r in *. simpl in *.
   destruct (decidable_paths_nat a b).
-  unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
+  destruct (order_partitions b a). refine (_ @ p).
     apply path_prod. 
     assert (b = O). apply (ap snd p)^. 
     assert (a = O). apply (p0 @ X).
     simpl. transitivity (monus a 0). simpl. apply X0^. f_ap. apply X^.
     reflexivity.
-    reflexivity.
-    assert (a = O). apply (ap fst p)^. assert (b = O). apply (p0^ @ X).
-    simpl. transitivity (monus b 0). simpl. apply X0^. f_ap. apply X^.
+    assert (a = O). apply (ap fst p)^. assert (b = O). apply (p0^ @ X). simpl. 
+    apply path_prod. apply X^. apply X0^.
 
-  unfold r in p. simpl. destruct (order_partitions b a); refine (_ @ p);
+  destruct (order_partitions b a); refine (_ @ p);
     apply path_prod.
     simpl. refine ((Spred _ _) @ _).
     intro H. apply monus_eq_O__n_le_m in H. 
@@ -914,7 +900,6 @@ Proof.
     assert (IsHSet (nat * nat)) as Hn. apply hset_prod; apply hset_nat.
     apply set_path2.
 Defined.
-*)
 
 Definition int' := nat + Unit + nat.
 

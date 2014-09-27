@@ -109,6 +109,7 @@ Naturality and the computation rules then give
 and we're done.  The computation in Coq is long, since all of the homotopic
 corrections have to be done by hand.  I also spend a lot of moves on making the
 interactive version of the proof clear, and those could probably be eliminated.
+There are some lemmata with dumb names that should be fixed.
 *)
 
 
@@ -177,6 +178,42 @@ Proof. by path_induction. Defined.
 Definition baz {A : Type} {x y : A} {p q : x = y} (r : p = q) : 
   concat_pV p = (r @@ inverse2 r) @ concat_pV q.
 Proof. by path_induction. Defined.
+
+Definition apD02_const (A B : Type) (f : A -> B) (x y : A) 
+           (p q : x = y) (r : p = q)
+  : apD02 f r 
+    = 
+    (apD_const f p) 
+      @ ((transport2_const r (f x)) @@ (ap02 f r))
+      @ (concat_pp_p _ _ _)
+      @ (whiskerL (transport2 (fun _ : A => B) r (f x)) (apD_const f q)^).
+Proof.
+  by path_induction.
+Defined.
+
+Definition cancel2L (A : Type) (x y z : A) (p p' : x = y) (q q' : y = z)
+           (r : p = p') (s t : q = q') 
+  : r @@ s = r @@ t -> s = t.
+Proof.
+  intro u. induction r.
+  refine ((whiskerL_1p _)^ @ _). refine (_ @ (whiskerL_1p _)).
+  apply moveR_pM. apply moveR_Vp. refine ((concat2_1p _)^ @ _).
+  refine (_ @ (concat_pp_p _ _ _)).
+  apply moveL_pV. refine (_ @ (concat_pp_p _ _ _)). apply concat2.
+  refine (_ @ (concat_pp_p _ _ _)).
+  apply moveL_pM. refine (_ @ (concat_pV _)^).
+  apply moveR_pV. refine (_ @ (concat_1p _)^).
+  refine (_ @ (concat2_1p _)).
+Admitted.
+  
+
+(*
+Definition S2_rectnd_beta_surf (P : Type) (b : P) (l : idpath b = idpath b)
+: ap02 (S2_rectnd P b l) surf = l^.
+Proof.
+  unfold S2_rectnd.
+  refine ((S2_rect_beta_loop _ _ _) @ _).
+*)
 
 (*
 Theorem isequiv_SS1_to_S2 : IsEquiv (SS1_to_S2).
