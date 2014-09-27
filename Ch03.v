@@ -1614,6 +1614,8 @@ The first of these is given by the fact that $A$ is contractible.  The second
 results from the functorality of transport.
 *)
 
+Module Ex20.
+
 Theorem equiv_sigma_contr_base (A : Type) (P : A -> Type) (HA : Contr A) : 
   {x : A & P x} <~> P (center A).
 Proof.
@@ -1631,6 +1633,7 @@ Proof.
   apply transport_pV.
 Defined.
   
+End Ex20.
 
 (** %\exerdone{3.21}{128}%
 Prove that $\isprop(P) \eqvsym (P \eqvsym \brck{P})$.
@@ -1665,7 +1668,7 @@ Proof.
 Defined.
   
 
-(** %\exer{3.22}{128}%
+(** %\exerdone{3.22}{128}%
 As in classical set theory, the finite version of the axiom of choice is a
 theorem.  Prove that the axiom of choice holds when $X$ is a finite type
 $\Fin(n)$.
@@ -2011,7 +2014,7 @@ Proof.
   intro z. apply equiv_idmap.
   
   equiv_via (Brck (forall z, {a : A' z & P' z a})).
-  apply brck_equiv. refine (equiv_sigma_corect _ _ _).
+  apply brck_equiv. refine (equiv_sigT_corect _ _).
   
   equiv_via (Brck ((forall z, {a : A' (inl z) & P' (inl z) a})
                    *
@@ -2028,7 +2031,7 @@ Proof.
   apply brck_equiv.
   unfold A', P', compose.
   apply equiv_inverse.
-  refine (equiv_sigma_corect _ _ _).
+  refine (equiv_sigT_corect _ _).
   apply brck_equiv. apply equiv_idmap.
 Defined.
 
@@ -2175,7 +2178,7 @@ Proof.
     Brck (forall m, Y m)
   )).
   equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
-  apply brck_equiv. refine (equiv_sigma_corect _ _ _).
+  apply brck_equiv. refine (equiv_sigT_corect _ _).
   apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
   intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
   apply e. clear e.
@@ -2193,7 +2196,7 @@ Proof.
     Brck {g : forall m : Fin n, A m & forall m : Fin n, P m (g m)}
   )).
   apply brck_equiv.
-  apply equiv_inverse. refine (equiv_sigma_corect _ _ _).
+  apply equiv_inverse. refine (equiv_sigT_corect _ _).
   apply e. clear e.
 
   apply finite_AC'. apply f.

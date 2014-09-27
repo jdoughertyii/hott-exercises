@@ -976,46 +976,58 @@ for any $m : X \to E$ we have
     h \circ f \circ l = k \circ m
   \right)
 \]%
-or, by associativity of the $\Sigma$ former,
+or, by associativity of the $\Sigma$ former and symmetry of products,
 %\[
   \left(
-    \sm{n : X \to D}
-    \left(
-    (h \circ n = k \circ m) \times (f \circ l = n)
-    \right)
+    \sm{p : \sm{n : X \to D} (f \circ l = n)}
+    (h \circ \fst(p) = k \circ m)
   \right)
   \eqvsym
   \left(
     h \circ f \circ l = k \circ m
   \right)
 \]%
-But these are clearly equivalent, and so we are done.
+Finally, these are equivalent by Lemma 3.11.9.  That's next chapter, but it's
+also straightforward to construct an explicit equivalence.
 *)
 
-Definition sigma_corect (X : Type) (A : X -> Type) (P : forall x, A x -> Type)
-  : {g : forall x, A x & forall x, P x (g x)} -> forall x, {a : A x & P x a}
-  := fun w x => (w.1 x; w.2 x).
-
-
-Lemma equiv_sigma_corect `{Funext} (X : Type) (A : X -> Type) 
-      (P : forall x, A x -> Type)
-  : {g : forall x, A x & forall x, P x (g x)} <~> forall x, {a : A x & P x a}.
+Lemma equiv_const_sigma_prod (A B : Type) : {a : A & B} <~> A * B.
 Proof.
-  refine (equiv_adjointify (sigma_corect X A P) _ _ _); intro w.
-  exists (fun x => (w x).1). apply (fun x => (w x).2).
-  apply path_forall. intro x. apply eta_sigma.
-  apply eta_sigma.
+  refine (equiv_adjointify _ _ _ _).
+  intro w. apply (w.1, w.2).
+  intro w. apply (fst w; snd w).
+  intro w. apply eta_prod.
+  intro w. apply eta_sigma.
 Defined.
-  
+
 Lemma equiv_sigma_comm (A B : Type) (P : A -> B -> Type)
   : {a : A & {b : B & P a b}} <~> {b : B & {a : A & P a b}}.
 Proof.
   refine (equiv_adjointify _ _ _ _).
-  exact (fun w => (w.2.1; (w.1; w.2.2))).
-  exact (fun w => (w.2.1; (w.1; w.2.2))).
+  intro w. apply (w.2.1; (w.1; w.2.2)).
+  intro w. apply (w.2.1; (w.1; w.2.2)).
   intro w. apply eta_sigma.
   intro w. apply eta_sigma.
 Defined.
+  
+
+Lemma equiv_sigma_contr_base (A : Type) (P : A -> Type) (HA : Contr A)
+  : {a : A & P a} <~> P (center A).
+Proof.
+  refine (equiv_adjointify _ _ _ _).
+  intro w. apply (transport _ (contr w.1)^). apply w.2.
+  intro p. apply (center A; p).
+
+  intro p. simpl.
+  transparent assert (H: (center A = center A)). apply contr_paths_contr.
+  transparent assert (H': ((contr (center A))^ = 1)). apply allpath_hprop.
+  path_via (transport P 1 p). f_ap.
+
+  intro w. apply path_sigma_uncurried.
+  simpl. exists (contr w.1).
+  apply transport_pV.
+Defined.
+
 
 Module pullback_lemma.
 
@@ -1036,7 +1048,7 @@ Theorem pbl_helper `{Funext}
     <~>
     pullback (@compose X _ _ (h o f)) (@compose X _ _ k).
 Proof.
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. simpl. intro j.
+  refine (equiv_functor_sigma_id _). intro j.
 
   equiv_via {c : pullback (@compose X _ _ h) (@compose X _ _ k) & f o j = c.1}.
   refine (equiv_functor_sigma' _ _). 
@@ -1050,21 +1062,28 @@ Proof.
   equiv_via {c : X -> E & {l : {b : X -> D & h o b = k o c} & f o j = l.1}}.
   apply equiv_inverse. refine (equiv_sigma_assoc _ _).
 
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro m. simpl.
+  refine (equiv_functor_sigma_id _). intro m.
   
   equiv_via {l : X -> D & {_ : h o l = k o m & f o j = l}}.
   apply equiv_inverse. refine (equiv_sigma_assoc _ _).
 
-  refine (equiv_adjointify _ _ _ _).
-  intro w. destruct w as [l [p q]].
-  refine (_ @ p). apply (ap (compose h)). apply q.
-  intro p. exists (f o j). exists p. reflexivity.
-  intro p. apply concat_1p.
-  intro w. destruct w as [l [p q]].
-  apply path_sigma_uncurried. exists q. induction q.
-  simpl. apply path_sigma_uncurried.
-  exists (concat_1p _). induction p. reflexivity.
+  equiv_via {l : X -> D & {_ : f o j = l & h o l = k o m}}.
+  refine (equiv_functor_sigma_id _). intro l.
+  equiv_via ((h o l = k o m) * (f o j = l)).
+  apply equiv_const_sigma_prod.
+  equiv_via ((f o j = l) * (h o l = k o m)).
+  apply equiv_prod_symm.
+  apply equiv_inverse. apply equiv_const_sigma_prod.
+
+  equiv_via {l : {n : X -> D & f o j = n} & h o l.1 = k o m}.
+  refine (equiv_sigma_assoc _ _).
+
+  equiv_via (h o (center {n : X -> D & f o j = n}).1 = k o m).
+  refine (equiv_sigma_contr_base _ _ _). simpl.
+
+  apply equiv_idmap.
 Defined.
+
   
 
 Lemma pullback_lemma `{Funext}
