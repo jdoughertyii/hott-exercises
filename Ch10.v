@@ -16,7 +16,7 @@ axiom of choice holds.
 
 (** %\exer{10.3}{364}% *)
 
-(** %\exer{10.4}{365}% 
+(** %\exerdone{10.4}{365}% 
 Prove that if $(A, <_{A})$ and $(B, <_{B})$ are well-founded, extensional,
 or ordinals, then so is $A + B$, with $<$ defined by
 %\begin{alignat*}{3}
@@ -28,12 +28,72 @@ or ordinals, then so is $A + B$, with $<$ defined by
 *)
 
 (** %\soln%
+(i)
 Suppose that $(A, <_{A})$ and $(B, <_{B})$ are well-founded.  To show that $(A
 B, <)$ is well-founded, we need to show that $\acc(z)$ for all $z : A+B$.
-There are two cases: $z \equiv \inl(a)$ and $z \equiv \inl(b)$.  To show that
-$\acc(\inl(a))$, consider any $z' : A + B$, which is either of the form $z'
-\equiv \inl(a')$ or $z' \equiv \inl(b')$.  If the first, then 
-*)
+
+Note first that for any $a : A$, $\acc(\inl(a))$, which we show by well-founded
+induction on $A$.  For $a : A$ the inductive hypothesis says that for any $a'
+<_{A} a$ we have $\acc(\inl(a'))$. So we must show that $\acc(\inl(a))$.  It
+suffices to show that for all $z' < \inl(a)$, $\acc(z')$.  There are two cases:
+if $z' \equiv \inl(a')$, then the induction hypothesis gives $\acc(z')$; if $z'
+\equiv \inr(b')$, then $z' < \inl(a)$ is a contradiction.
+
+Likewise, well-founded induction on $B$ shows that for all $b : B$,
+$\acc(\inr(b))$.  The induction hypothesis says that for any $b' <_{B} b$ we
+have $\acc(\inr(b'))$, and we must show $\acc(\inr(b))$.  It suffices to show
+that for all $z' < \inr(b)$ we have $\acc(z')$.  Again, there are two cases.
+If $z' \equiv \inl(a')$ then we have $\acc(z')$ by the argument of the previous
+paragraph.  If $z' \equiv \inr(b')$, then we have $\acc(z')$ by the induction
+hypothesis.
+
+Now, to show that $(A + B, <)$ is a well-founded, suppose that $z : A + B$;
+then $\acc(z)$.  For if $z \equiv \inl(a)$, then the first argument above gives
+$\acc(z)$; if instead $z \equiv \inr(b)$, then the second argument gives
+$\acc(z)$.
+
+%\vspace{.1in}
+\noindent%
+(ii) Suppose that $(A, <_{A})$ and $(B, <_{B})$ are extensional, and $z, z' : A
++ B$.  To show that $(A + B, <)$ is extensional, suppose that $\fall{z'' : A +
+B}(z'' < z) \Leftrightarrow (z'' < z')$.  We must show that $z = z'$.  There
+are four cases.
+ - $z \equiv \inl(a)$, $z' \equiv \inl(a')$.  Then $z = z'$ is equivalent to $a
+   = a'$, and the hypothesis reduces to $\fall{a'' : A}(a'' <_{A} a)
+   \Leftrightarrow (a'' <_{A} a')$.  By the extensionality of $<_{A}$ it
+   follows that $a = a'$.
+ - $z \equiv \inl(a)$, $z' \equiv \inr(b')$.  Then by the hypothesis we have
+   $(a <_{A} a) \Leftrightarrow \unit$, which is equivalent to $(a <_{A} a)$.
+   But $<_{A}$ is well-founded, hence irreflexive, so this is a contradiction.
+ - $z \equiv \inr(b)$, $z' \equiv \inl(a')$.  This case goes as the previous
+   one.
+ - $z \equiv \inr(b)$, $z' \equiv \inr(b')$.  This case goes as the first.
+So $<$ is extensional.
+
+%\vspace{.1in}
+\noindent%
+(iii)
+Suppose that $A$ and $B$ are ordinals.  We must show that $<$ is transitive, so
+suppose that $z, z', z'' : A + B$.  There are 8 cases, in which $(z, z', z'')$
+are
+ - $(\inl(a), \inl(a'), \inl(a''))$.  Then the statement reduces to
+   transitivity of $<_{A}$.
+ - $(\inl(a), \inl(a'), \inr(b''))$.  Then the statement reduces to $a <_{A}
+   a' \to a <_{A} a'$, which is trivial.
+ - $(\inl(a), \inr(b'), \inl(a''))$.  Then the second hypothesis is a
+    contradiction.
+ - $(\inl(a), \inr(b'), \inr(b''))$.  Then the statement reduces to $b' <_{B}
+   b'' \to b' <_{B} b''$, again trivial.
+ - $(\inr(b), \inl(a'), \inl(a''))$.  Then the first hypothesis is a
+     contradiction.
+ - $(\inr(b), \inl(a'), \inr(b''))$.  Then the first hypothesis is a
+     contradiction.
+ - $(\inr(b), \inr(b'), \inl(a''))$.  Then the second hypothesis is a
+     contradiction.
+ - $(\inr(b), \inr(b'), \inr(b''))$.  Then the statement reduces to
+     transitivity of $<_{B}$.
+So $A + B$ is an ordinal.
+*)  
 
 Inductive acc {A : hSet} {L : A -> A -> hProp} : A -> Type :=
   | accL : forall a : A, (forall b : A, (L b a) -> acc b) -> acc a.
@@ -51,52 +111,24 @@ Defined.
 Definition well_founded {A : hSet} (L : A -> A -> hProp) := 
   forall a : A, @acc A L a.
 
-Definition WFRel := {A : hSet & {L : A -> A -> hProp & @well_founded A L}}.
-
-(*
-Lemma hprop_wf {A : hSet} (L : A -> A -> hProp) : IsHProp (well_founded L).
+Lemma hprop_wf `{Funext} {A : hSet} (L : A -> A -> hProp) 
+  : IsHProp (well_founded L).
 Proof.
   apply hprop_dependent. apply hprop_acc.
 Defined.
-*)
 
-(*
-Lemma path_wfrel (AL BL : WFRel) (p : AL.1 = BL.1) : 
-  (transport _ p AL.2).1 = BL.2.1 -> AL = BL.
+Lemma wf_irreflexive {A : hSet} (L : A -> A -> hProp) (HL : well_founded L)
+  : forall a : A, ~ (L a a).
 Proof.
-  intro q. apply path_sigma_uncurried. exists p.
-  apply (@path_sigma_hprop _ _ (hprop_wf) _).
-  apply q.
+  intro a. induction (HL a) as [a f g].
+  intro H. contradiction (g a H).
 Defined.
-*)
 
-(*
-Lemma path_wfrel_uncurried (AL BL : WFRel) :
-  {p : AL.1 = BL.1 & (transport _ p AL.2).1 = BL.2.1} -> AL = BL.
-Proof.
-  intro H. destruct H as [p q]. apply (path_wfrel _ _ p q).
-Defined.
-*)
-
-Definition extensional (AL : WFRel)
-  := forall a a', (forall c, (AL.2.1 c a) <-> (AL.2.1 c a')) -> (a = a').
-
-(*
-Lemma hprop_extensional (AL : WFRel) : IsHProp (extensional AL).
-Proof.
-  apply hprop_dependent; intro a.
-  apply hprop_dependent; intro b.
-  apply hprop_arrow. apply hprop_allpath. apply set_path2.
-Defined.
-*)
-
-Definition ExtWFRel := {AL : WFRel & extensional AL}.
-
-
-Definition strict_nat_order : nat -> nat -> hProp
-  := fun n m => hp (lt n m) (hprop_lt n m).
 
 Definition set_sum (A B : hSet) := default_HSet (A + B) hset_sum.
+
+(* This is misdefined in HoTT/HoTT *)
+Definition False_hp : hProp := (hp Empty _).
 
 Definition sum_order {A B : hSet} (LA : A -> A -> hProp) 
            (LB : B -> B -> hProp) (z z' : set_sum A B)
@@ -112,9 +144,110 @@ Definition sum_order {A B : hSet} (LA : A -> A -> hProp)
                   end
      end.
 
+Lemma sum_order_wf {A B : hSet} (LA : A -> A -> hProp) (LB : B -> B -> hProp)
+  : (well_founded LA) -> (well_founded LB) -> well_founded (sum_order LA LB).
+Proof.
+  intros HLA HLB.
+  transparent assert (HA : (
+    forall a : A, @acc A LA a -> @acc _ (sum_order LA LB) (inl a)
+  )).
+  intros a s. induction s as [a f g]. constructor.
+  intros z' L. destruct z' as [a' | b']; simpl in *.
+  apply g. apply L.
+  contradiction.
+
+  transparent assert (HB : (
+    forall b : B, @acc B LB b -> @acc _ (sum_order LA LB) (inr b)
+  )).
+  intros b s. induction s as [b f g]. constructor.
+  intros z' L. destruct z' as [a' | b']; simpl in *.
+  apply HA. apply HLA.
+  apply g. apply L.
+
+  intro z. destruct z as [a | b].
+  apply HA. apply HLA.
+  apply HB. apply HLB.
+Defined.
+  
+
+Definition extensional {A : hSet} (L : A -> A -> hProp) {HL : well_founded L}
+  := forall a a', (forall c, (L c a) <-> (L c a')) -> (a = a').
+
+Lemma hprop_extensional `{Funext} (A : hSet) (L : A -> A -> hProp) 
+      (HL : well_founded L)
+  : IsHProp (@extensional A L HL).
+Proof.
+  apply hprop_dependent; intro a.
+  apply hprop_dependent; intro b.
+  apply hprop_dependent. intro f. apply hprop_allpath. apply set_path2.
+Defined.
+
+Lemma sum_order_ext {A B : hSet} (LA : A -> A -> hProp) (LB : B -> B -> hProp)
+      (HwfA : well_founded LA) (HwfB : well_founded LB)
+  : (@extensional A LA HwfA) 
+    -> (@extensional B LB HwfB) 
+    -> @extensional _ (sum_order LA LB) (sum_order_wf LA LB HwfA HwfB).
+Proof.
+  intros HeA HeB.
+  intros z z' Heq. destruct z as [a | b], z' as [a' | b']; apply path_sum.
+  apply HeA. intro a''. apply (Heq (inl a'')).
+  apply (wf_irreflexive LA HwfA a), ((snd (Heq (inl a))) tt).
+  apply (wf_irreflexive LA HwfA a'), ((fst (Heq (inl a'))) tt).
+  apply HeB. intro b''. apply (Heq (inr b'')).
+Defined.
+
+Class Ord 
+  := BuildOrd {
+       o_set :> hSet ;
+       o_rel :> o_set -> o_set -> hProp ;
+       o_wf :> @well_founded o_set o_rel ;
+       o_ext :> @extensional o_set o_rel o_wf ;
+       o_trans : forall a b c : o_set, (o_rel a b) -> (o_rel b c) -> (o_rel a c)
+     }.
+
+Definition ordinal_sum (A B : Ord) : Ord.
+Proof.
+  destruct A as [A LA LAw LAe LAt], B as [B LB LBw LBe LBt].
+  refine (BuildOrd (set_sum A B) 
+                   (sum_order LA LB)
+                   (sum_order_wf LA LB LAw LBw)
+                   (sum_order_ext LA LB LAw LBw LAe LBe)
+                   _).
+  intros z z' z'' Hzz' Hz'z''.
+  destruct z as [a | b], z' as [a' | b'], z'' as [a'' | b'']; simpl in *.
+  apply (LAt a a' a'' Hzz' Hz'z''). 
+  apply Hz'z''. contradiction. apply Hzz'.
+  contradiction. contradiction. contradiction.
+  apply (LBt b b' b'' Hzz' Hz'z'').
+Defined.
 
 
-(** %\exer{10.5}{365}% *)
+(** %\exer{10.5}{365}% 
+*)
+
+Definition set_prod (A B : hSet) := default_HSet (A * B) (hset_prod A _ B _).
+
+Definition lexical_order {A B : hSet} (LA : A -> A -> hProp) 
+           (LB : B -> B -> hProp) (z z' : set_prod A B)
+  : hProp
+  := match z with 
+       | (a, b) => match z' with
+                     | (a', b') => hp (Brck ((LA a a') 
+                                             + 
+                                             ((a = a') * (LB b b')))) _
+                   end
+     end.
+
+
+Lemma lexical_order_wf `{Funext} {A B : hSet} 
+      (LA : A -> A -> hProp) (LB : B -> B -> hProp)
+  : (well_founded LA) -> (well_founded LB) -> well_founded (lexical_order LA LB).
+Admitted.
+  
+  
+  
+    
+
 (** %\exer{10.6}{365}% *)
 (** %\exer{10.7}{365}% 
 Note that $\bool$ is an ordinal, under the obvious relation $<$ such that

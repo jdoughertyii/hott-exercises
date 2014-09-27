@@ -192,7 +192,7 @@ Proof.
                          _).
   apply issig_group. 
   apply equiv_functor_sigma_id. intro G.
-  apply equiv_inverse. refine (equiv_sigma_corect _ _ _).
+  apply equiv_inverse. refine (equiv_sigT_corect _ _).
   apply equiv_functor_sigma_id. intro G.
   apply equiv_functor_forall_id. intro x.
   apply equiv_inverse.
@@ -770,6 +770,12 @@ could try a different encoding.
 
 *)
 
+Lemma hset_prod : forall A, IsHSet A -> forall B, IsHSet B -> IsHSet (A * B).
+Proof.
+  intros A HA B HB.
+  intros z z'. apply hprop_allpath. apply allpath_hprop.
+Defined.
+
 Module Exercise6_12.
 
 
@@ -842,11 +848,6 @@ Proof.
   apply p.
 Defined.
 
-Lemma hset_prod : forall A, IsHSet A -> forall B, IsHSet B -> IsHSet (A * B).
-Proof.
-  intros A HA B HB.
-  intros z z'. apply hprop_allpath. apply allpath_hprop.
-Defined.
 
 Theorem hset_nat : IsHSet nat.
 Proof.
