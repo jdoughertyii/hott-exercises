@@ -178,7 +178,7 @@ Defined.
   
 
 
-(** %\exer{4.2}{147}% 
+(** %\exerdone{4.2}{147}% 
 Show that for any $A, B : \UU$, the following type is equivalent to $A \eqvsym
 B$.
 %\[
@@ -438,7 +438,7 @@ Proof.
 Defined.
 
 
-(** %\exer{4.4}{147}% 
+(** %\exerdone{4.4}{147}% 
 Suppose $f : A \to B$ and $g : B \to C$ and $b : B$.
 %\begin{itemize}
   \item[(i)] Show that there is a natural map $\hfib{g \circ f}{g(b)} \to
@@ -456,64 +456,135 @@ Suppose $f : A \to B$ and $g : B \to C$ and $b : B$.
   \left(\sm{b':B} (g(b') = g(b))\right)
 \]%
 The obvious choice is $f^{*} \defeq (a, p) \mapsto (f(a), p)$.  We then must
-show that $\hfib{f^{*}}{b, \refl{g(b)}} \eqvsym \hfib{f}{b}$.  Unfolding the
-notation again, we're looking for an equivalence
-%\[
-  \left(\sm{w:\hfib{g \circ f}{g(b)}} (f^{*}(w) = (b, \refl{g(b)}))\right)
-  \eqvsym
-  \left(\sm{a:A} (f(a) = b)\right)
-\]%
+show that $\hfib{f^{*}}{b, \refl{g(b)}} \eqvsym \hfib{f}{b}$.  We have this by
+the following chain of equivalences:
+%\begin{align*}
+  \hfib{f^{*}}{b, \refl{g(b)}}
+  &\equiv
+  \sm{w : \sm{a:A}(g(f(a)) = g(b))}(f^{*}(w) = (b, \refl{g(b)}))
+  \\&\eqvsym
+  \sm{a:A}\sm{p : g(f(a)) = g(b)}(f^{*}(a, p) = (b, \refl{g(b)}))
+  \\&\equiv
+  \sm{a:A}\sm{p : g(f(a)) = g(b)}((f(a), p) = (b, \refl{g(b)}))
+  \\&\eqvsym
+  \sm{a:A}\sm{p : g(f(a)) = g(b)}\sm{q : f(a) = b} q_{*}(p) = \refl{g(b)}
+  \\&\eqvsym
+  \sm{a:A}\sm{q : f(a) = b}\sm{p : g(f(a)) = g(b)} q_{*}(p) = \refl{g(b)}
+  \\&\eqvsym
+  \sm{a:A}\sm{q : f(a) = b}\sm{p : g(f(a)) = g(b)} p = q^{-1}_{*}(\refl{g(b)})
+  \\&\eqvsym
+  \sm{a:A}(f(a) = b)
+  \\&\equiv
+  \hfib{f}{b}
+\end{align*}%
 
+(ii) In this case it's a bit easier to come up with a chain of equivalences in
+the other direction.  We have
+%\begin{align*}
+  \sm{w : \hfib{g}{g(b)}}\hfib{f}{\fst w}
+  &\eqvsym
+  \sm{b' : B}\sm{p : g(b') = g(b)} \hfib{f}{b'}
+  \\&\eqvsym
+  \sm{a:A}\sm{b' : B}\sm{p : g(b') = g(b)} (f(a) = b')
+  \\&\eqvsym
+  \sm{a:A}\sm{b' : B}\sm{p : f(a) = b'} (g(b') = g(b))
+  \\&\eqvsym
+  \sm{a:A}\sm{w : \sm{b':B}(f(a) = b')} (g(\fst w) = g(b))
+  \\&\eqvsym
+  \sm{a:A} (g(f(a)) = g(b))
+  \\&\equiv
+  \hfib{g \circ f}(g(b))
+\end{align*}%
 *)
 
-Section Exercise4_4.
+Lemma equiv_prod_unit (A : Type) : A <~> A * Unit.
+Proof.
+  refine (equiv_adjointify (fun a => (a, tt)) (fun z => fst z) _ _).
+  intro z. apply path_prod. reflexivity. apply eta_unit.
+  intro a. reflexivity.
+Defined.
+
+Module Ex4.
 
 Variables (A B C D : Type) (f : A -> B) (g : B -> C) (b : B).
 
-Definition f_star (z : ((hfiber (g o f) (g b)))) : (hfiber g (g b)) := 
+Definition f_star (z : hfiber (g o f) (g b)) : hfiber g (g b) := 
   (f z.1; z.2).
 
-Theorem ex4_4 : (hfiber (f_star) (b; 1)) <~> (hfiber f b).
+Theorem ex4_4_i : hfiber (f_star) (b; 1) <~> hfiber f b.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  equiv_via {a : A & {p : g (f a) = g b & (f_star (a; p) = (b; 1))}}.
+  apply equiv_inverse. refine (equiv_sigma_assoc _ _). unfold f_star. simpl.
+
+  equiv_via {a : A & {p : g (f a) = g b & {q : f a = b & 
+               transport (fun x => g x = g b) q p = 1}}}.
+  refine (equiv_functor_sigma_id _). intro a.
+  refine (equiv_functor_sigma_id _). intro p.
+  apply equiv_inverse. 
+  refine (equiv_path_sigma (fun x => g x = g b) (f a; p) (b; 1)).
   
-  (* forward *)
-  intro w. destruct w as [[a q] p]. exists a. apply (ap pr1 p).
+  equiv_via {a : A & {q : f a = b & {p : g (f a) = g b & 
+               transport (fun x => g x = g b) q p = 1}}}.
+  refine (equiv_functor_sigma_id _). intro a.
+  refine (equiv_sigma_comm _ _ _).
 
-  (* back *)
-  intro w. destruct w as [a p].
-  exists (a; ap g p). unfold f_star. simpl. induction p. reflexivity.
-
-  (* section *)
-  intro w. destruct w as [a p].
-  apply path_sigma_uncurried. exists 1. simpl.
-  unfold f_star. induction p. reflexivity.
-
-  (* retract *)
-  intro w. destruct w as [[a q] p].
-  apply path_sigma_uncurried. simpl. unfold f_star, compose in *. simpl in *.
-  transparent assert (r : (
-    (existT (fun a => g (f a) = g b) a (ap g (ap pr1 p))) = (a; q)
-  )).
-  apply path_sigma_uncurried. exists 1. simpl.
-  refine (_ @ (fiber_path p^)). simpl.
-  refine (_ @ (transport_paths_Fl _ _)^).
-  refine (_ @ (concat_p1 _)^).
-  refine (_ @ (ap_V _ _)). apply (ap (ap g)).
-  refine (_ @ (ap_V _ (p^))). apply (ap (ap pr1)).
-  apply (inv_V _)^.
-  exists r.
-
-  refine ((transport_paths_Fl r _) @ _).
-  admit.
-Admitted.
+  equiv_via {a : A & {q : f a = b & {p : g (f a) = g b & 
+               p = transport (fun x => g x = g b) q^ 1}}}.
+  refine (equiv_functor_sigma_id _). intro a.
+  refine (equiv_functor_sigma_id _). intro p.
+  refine (equiv_functor_sigma_id _). intro q.
+  refine (BuildEquiv _ _ _ (isequiv_moveL_transport_V _ _ _ _)).
   
-         
+  equiv_via {a : A & {q : f a = b & Unit}}.
+  refine (equiv_functor_sigma_id _). intro a.
+  refine (equiv_functor_sigma_id _). intro p.
+  refine equiv_contr_unit.
 
+  refine (equiv_functor_sigma_id _). intro a.
+  equiv_via ((f a = b) * Unit). refine (equiv_const_sigma_prod _ _).
+  apply equiv_inverse. refine (equiv_prod_unit _).
+Defined.
 
-End Exercise4_4.
+Theorem ex4_4_ii 
+  : hfiber (g o f) (g b) <~> {w : hfiber g (g b) & hfiber f w.1}.
+Proof.
+  apply equiv_inverse. unfold hfiber.
+  
+  equiv_via {b' : B & {p : g b' = g b & {x : A & f x = b'}}}.
+  apply equiv_inverse.
+  refine (equiv_sigma_assoc _ _).
 
-(** %\exer{4.5}{147}% 
+  equiv_via {b' : B & {x : A & {_ : g b' = g b & f x = b'}}}.
+  refine (equiv_functor_sigma_id _). intro b'.
+  refine (equiv_sigma_comm _ _ _).
+
+  equiv_via {x : A & {b' : B & {_ : g b' = g b & f x = b'}}}.
+  refine (equiv_sigma_comm _ _ _).
+  
+  refine (equiv_functor_sigma_id _). intro a.
+
+  equiv_via {b' : B & {p : f a = b' & g b' = g b}}.
+  refine (equiv_functor_sigma_id _). intro b'.
+  equiv_via ((g b' = g b) * (f a = b')).
+  refine (equiv_const_sigma_prod _ _).
+  equiv_via ((f a = b') * (g b' = g b)).
+  refine (equiv_prod_symm _ _).
+  apply equiv_inverse.
+  refine (equiv_const_sigma_prod _ _).
+  
+  
+  equiv_via {w : {b' : B & f a = b'} & g w.1 = g b}.
+  refine (equiv_sigma_assoc _ _).
+
+  equiv_via (g (center {b' : B & f a = b'}).1 = g b).
+  refine (equiv_sigma_contr_base _ _ _). simpl.
+
+  apply equiv_idmap.
+Defined.
+
+End Ex4.
+
+(** %\exerdone{4.5}{147}% 
 Prove that equivalences satisfy the _2-out-of-6 property_: given $f : A \to B$
 and $g : B \to C$ and $h : C \to D$, if $g \circ f$ and $h \circ g$ are
 equivalences, so are $f$, $g$, $h$, and $h \circ g \circ f$.  Use this to give
@@ -565,6 +636,8 @@ Now we must give a higher-level proof that if $f : A \to B$ is an equivalence,
 then for all $a, a' : A$ so is $\mapfunc{f}$.  This uses the following
 somewhat obvious fact, which I don't recall seeing in the text or proving yet:
 if $f : A \to B$ is an equivalence and $f \sim g$, then $g$ is an equivalence.
+This follows immediately from the assumption of function extensionality, but it
+is true even without this assumption.
 For any $a : A$ we have $f^{-1}(g(a)) = f^{-1}(f(a)) = a$
 and for any $b : B$, $g(f^{-1}(b)) = f(f^{-1}(b)) = b$, giving $\isequiv(g)$.
 

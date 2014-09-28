@@ -30,7 +30,7 @@ or ordinals, then so is $A + B$, with $<$ defined by
 (** %\soln%
 (i)
 Suppose that $(A, <_{A})$ and $(B, <_{B})$ are well-founded.  To show that $(A
-B, <)$ is well-founded, we need to show that $\acc(z)$ for all $z : A+B$.
++ B, <)$ is well-founded, we need to show that $\acc(z)$ for all $z : A+B$.
 
 Note first that for any $a : A$, $\acc(\inl(a))$, which we show by well-founded
 induction on $A$.  For $a : A$ the inductive hypothesis says that for any $a'
@@ -205,7 +205,7 @@ Class Ord
        o_trans : forall a b c : o_set, (o_rel a b) -> (o_rel b c) -> (o_rel a c)
      }.
 
-Definition ordinal_sum (A B : Ord) : Ord.
+Definition ord_sum (A B : Ord) : Ord.
 Proof.
   destruct A as [A LA LAw LAe LAt], B as [B LB LBw LBe LBt].
   refine (BuildOrd (set_sum A B) 
@@ -223,6 +223,20 @@ Defined.
 
 
 (** %\exer{10.5}{365}% 
+Prove that if $(A, <_{A})$ and $(B, <_{B})$ are well-founded, extensional, or
+ordinals, then so is $A \times B$, with $<$ defined by
+%\[
+  ((a, b) < (a', b')) \defeq (a <_{A} a') \lor ((a = a') \land (b <_{B} b')).
+\]%
+*)
+
+(** %\soln%
+(i)
+Suppose that $<_{A}$ and $<_{B}$ are well-founded.  As in the previous
+exercise, we do nested well-founded induction.  First let $a:A$; we show that
+$b < b'$ implies $(a, b) < (a, b')$ for all $b, b' : B$ by double well-founded
+induction on $B$.  So suppose that $b, b' : B$ and $s : \acc(b)$ and $s' :
+\acc(b')$.
 *)
 
 Definition set_prod (A B : hSet) := default_HSet (A * B) (hset_prod A _ B _).
@@ -242,13 +256,24 @@ Definition lexical_order {A B : hSet} (LA : A -> A -> hProp)
 Lemma lexical_order_wf `{Funext} {A B : hSet} 
       (LA : A -> A -> hProp) (LB : B -> B -> hProp)
   : (well_founded LA) -> (well_founded LB) -> well_founded (lexical_order LA LB).
+Proof.
+  transparent assert (HB : (
+    forall b, @acc _ LB b -> forall b', @acc _ LB b' -> forall a, 
+    @acc _ (lexical_order LA LB) (a, b) -> @acc _ (lexical_order LA LB) (a, b')
+  )).
+  intros b s b' s' a Ha.
+  induction s as [b f g], s' as [b' f' g'], Ha as [z F G].
+  destruct z as [a'' b'']. simpl in *.
 Admitted.
-  
-  
   
     
 
-(** %\exer{10.6}{365}% *)
+(** %\exer{10.6}{365}% 
+Define the usul algebraic operations on ordinals, and prove that they
+satisfy the usual properties.
+*)
+
+
 (** %\exer{10.7}{365}% 
 Note that $\bool$ is an ordinal, under the obvious relation $<$ such that
 $0_{\bool} < 1_{\bool}$ only.
@@ -259,11 +284,17 @@ $0_{\bool} < 1_{\bool}$ only.
 *)
 
 (** %\soln%
-For $P, Q : \prop$, define $(P < Q) \defeq (P \to Q)$.  We must show that this
-$<$ is well-founded, extensional, and transitive.  To show that it's
-well-founded, suppose that $Q : \prop$; we show that $P$ is accessible for all
-$P < Q$.
+For $P, Q : \prop$, define $(P < Q) \defeq ((P \to Q) = \unit)$.  We
+must show that this $<$ is well-founded, extensional, and transitive.
+To show that it's well-founded, suppose that $Q : \prop$; we show that
+$P$ is accessible for all $P < Q$.  That is,
 *)
+
+Definition heyting_ord `{Funext} (P Q : hProp) 
+  : hProp
+  := hp ((P -> Q) * (Q <> P)) _.
+  
+
 
 
 (** %\exer{10.8}{365}% *)

@@ -27,7 +27,7 @@ or ordinals, then so is $A + B$, with $<$ defined by
  \soln
 (i)
 Suppose that $(A, <_{A})$ and $(B, <_{B})$ are well-founded.  To show that $(A
-B, <)$ is well-founded, we need to show that $\acc(z)$ for all $z : A+B$.
++ B, <)$ is well-founded, we need to show that $\acc(z)$ for all $z : A+B$.
 
 
 Note first that for any $a : A$, $\acc(\inl(a))$, which we show by well-founded
@@ -329,7 +329,7 @@ HoTT/HoTT\coqdocindent{0.50em}
 \}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch10.ordinal sum}{ordinal\_sum}{\coqdocdefinition{ordinal\_sum}} (\coqdocvar{A} \coqdocvar{B} : \coqref{Ch10.Ord}{\coqdocclass{Ord}}) : \coqref{Ch10.Ord}{\coqdocclass{Ord}}.\coqdoceol
+\coqdockw{Definition} \coqdef{Ch10.ord sum}{ord\_sum}{\coqdocdefinition{ord\_sum}} (\coqdocvar{A} \coqdocvar{B} : \coqref{Ch10.Ord}{\coqdocclass{Ord}}) : \coqref{Ch10.Ord}{\coqdocclass{Ord}}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
@@ -361,6 +361,20 @@ HoTT/HoTT\coqdocindent{0.50em}
 \coqdocemptyline
 \end{coqdoccode}
 \exer{10.5}{365} 
+Prove that if $(A, <_{A})$ and $(B, <_{B})$ are well-founded, extensional, or
+ordinals, then so is $A \times B$, with $<$ defined by
+\[
+  ((a, b) < (a', b')) \defeq (a <_{A} a') \lor ((a = a') \land (b <_{B} b')).
+\]
+
+
+ \soln
+(i)
+Suppose that $<_{A}$ and $<_{B}$ are well-founded.  As in the previous
+exercise, we do nested well-founded induction.  First let $a:A$; we show that
+$b < b'$ implies $(a, b) < (a, b')$ for all $b, b' : B$ by double well-founded
+induction on $B$.  So suppose that $b, b' : B$ and $s : \acc(b)$ and $s' :
+\acc(b')$.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
@@ -394,13 +408,32 @@ HoTT/HoTT\coqdocindent{0.50em}
 \coqdocindent{1.00em}
 : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{Ch10.well founded}{\coqdocdefinition{well\_founded}} \coqdocvariable{LA}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqref{Ch10.well founded}{\coqdocdefinition{well\_founded}} \coqdocvariable{LB}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqref{Ch10.well founded}{\coqdocdefinition{well\_founded}} (\coqref{Ch10.lexical order}{\coqdocdefinition{lexical\_order}} \coqdocvariable{LA} \coqdocvariable{LB}).\coqdoceol
 \coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{transparent} \coqdoctac{assert} (\coqdocvar{HB} : (\coqdoceol
+\coqdocindent{2.00em}
+\coqdockw{\ensuremath{\forall}} \coqdocvar{b}, @\coqref{Ch10.acc}{\coqdocinductive{acc}} \coqdocvar{\_} \coqdocvar{LB} \coqdocvariable{b} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{b'}, @\coqref{Ch10.acc}{\coqdocinductive{acc}} \coqdocvar{\_} \coqdocvar{LB} \coqdocvariable{b'} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdockw{\ensuremath{\forall}} \coqdocvar{a}, \coqdoceol
+\coqdocindent{2.00em}
+@\coqref{Ch10.acc}{\coqdocinductive{acc}} \coqdocvar{\_} (\coqref{Ch10.lexical order}{\coqdocdefinition{lexical\_order}} \coqdocvar{LA} \coqdocvar{LB}) \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{a}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{b}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} @\coqref{Ch10.acc}{\coqdocinductive{acc}} \coqdocvar{\_} (\coqref{Ch10.lexical order}{\coqdocdefinition{lexical\_order}} \coqdocvar{LA} \coqdocvar{LB}) \coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{a}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{,}} \coqdocvariable{b'}\coqexternalref{:core scope:'(' x ',' x ',' '..' ',' x ')'}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}\coqdoceol
+\coqdocindent{1.00em}
+)).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{intros} \coqdocvar{b} \coqdocvar{s} \coqdocvar{b'} \coqdocvar{s'} \coqdocvar{a} \coqdocvar{Ha}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{induction} \coqdocvar{s} \coqdockw{as} [\coqdocvar{b} \coqdocvar{f} \coqdocvar{g}], \coqdocvar{s'} \coqdockw{as} [\coqdocvar{b'} \coqdocvar{f'} \coqdocvar{g'}], \coqdocvar{Ha} \coqdockw{as} [\coqdocvar{z} \coqdocvar{F} \coqdocvar{G}].\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{destruct} \coqdocvar{z} \coqdockw{as} [\coqdocvar{a'{}'} \coqdocvar{b'{}'}]. \coqdoctac{simpl} \coqdoctac{in} *.\coqdoceol
+\coqdocnoindent
 \coqdocvar{Admitted}.\coqdoceol
 \coqdocemptyline
 \coqdocemptyline
-\coqdocemptyline
-\coqdocemptyline
 \end{coqdoccode}
-\exer{10.6}{365}  \exer{10.7}{365} 
+\exer{10.6}{365} 
+Define the usul algebraic operations on ordinals, and prove that they
+satisfy the usual properties.
+
+
+ \exer{10.7}{365} 
 Note that $\bool$ is an ordinal, under the obvious relation $<$ such that
 $0_{\bool} < 1_{\bool}$ only.
 \begin{enumerate}
@@ -410,11 +443,19 @@ $0_{\bool} < 1_{\bool}$ only.
 
 
  \soln
-For $P, Q : \prop$, define $(P < Q) \defeq (P \to Q)$.  We must show that this
-$<$ is well-founded, extensional, and transitive.  To show that it's
-well-founded, suppose that $Q : \prop$; we show that $P$ is accessible for all
-$P < Q$.
-
-
- \exer{10.8}{365}  \exer{10.9}{365}  \exer{10.10}{365}  \exer{10.11}{365}  \exer{10.12}{366}  \exer{10.13}{366} \begin{coqdoccode}
+For $P, Q : \prop$, define $(P < Q) \defeq ((P \to Q) = \unit)$.  We
+must show that this $<$ is well-founded, extensional, and transitive.
+To show that it's well-founded, suppose that $Q : \prop$; we show that
+$P$ is accessible for all $P < Q$.  That is,
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Definition} \coqdef{Ch10.heyting ord}{heyting\_ord}{\coqdocdefinition{heyting\_ord}} `\{\coqdocclass{Funext}\} (\coqdocvar{P} \coqdocvar{Q} : \coqdocrecord{hProp}) \coqdoceol
+\coqdocindent{1.00em}
+: \coqdocrecord{hProp}\coqdoceol
+\coqdocindent{1.00em}
+:= \coqdocconstructor{hp} (\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{P} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{Q}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{\ensuremath{\times}}} \coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{(}}\coqdocvariable{Q} \coqdocnotation{\ensuremath{\not=}} \coqdocvariable{P}\coqexternalref{:type scope:x '*' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Datatypes}{\coqdocnotation{)}}) \coqdocvar{\_}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{10.8}{365}  \exer{10.9}{365}  \exer{10.10}{365}  \exer{10.11}{365}  \exer{10.12}{366}  \exer{10.13}{366} \begin{coqdoccode}
 \end{coqdoccode}
