@@ -294,7 +294,8 @@ recursion principle is
 \]%
 Note first that the relevant recursion hypothesis can be constructed from $g$:
 %\[
-  \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
+  h
+  \defeq \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
   : ((C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt) \to \emptyt
 \]%
 And so we have $\rec{C}(\emptyt, h) : C \to \emptyt$.  But then
@@ -337,7 +338,7 @@ End Ex7.
 
 
 
-(** %\exer{5.8}{175}% 
+(** %\exerdone{5.8}{175}% 
 Consider now an ``inductive type'' $D$ with one constructor $\mathsf{scott} :
 (D \to D) \to D$.  The second recursor for $C$ suggested in %\S5.6% leads to
 the following recursor for $D$:
@@ -348,6 +349,41 @@ with computation rule $\rec{D}(P, h, \mathsf{scott}(\alpha)) \equiv h(\alpha,
 (\lam{d}\rec{D}(P, h, \alpha(d))))$. Show that this also leads to a
 contradiction.
 *)
+
+(** %\soln%
+As in the previous problem, we can construct the recursion hypothesis from the
+constructor:
+%\[
+  h 
+  \defeq \lam{f : D \to D}{g : D \to \emptyt}g(\mathsf{scott}(f))
+  : (D \to D) \to (D \to \emptyt) \to \emptyt
+\]%
+Then by $h(\idfunc{D})$ it suffices to give a function $D \to \emptyt$ to
+construct an element of $\emptyt$, which we have in $\lam{d:D}\rec{D}(\emptyt,
+h, d) : \emptyt$.  So, putting it all together, we have
+%\[
+  h(\idfunc{D}, \lam{d}\rec{D}(\emptyt, h, d))
+\]%
+which by the computation rule is judgementally equal to
+%\[
+  \rec{D}(\emptyt, h, \mathsf{scott}(\idfunc{D})).
+\]%
+*)
+
+Section Ex8.
+
+Variable (D : Type) (scott : (D -> D) -> D).
+Hypothesis (rec : forall P, ((D -> D) -> (D -> P) -> P) -> D -> P).
+
+Theorem ex8 : Empty.
+Proof.
+  set (h := (fun f g => g (scott f)) : (D -> D) -> (D -> Empty) -> Empty).
+  apply (h idmap). intro d.
+  apply (rec Empty h d).
+Defined.
+ 
+
+End Ex8.
 
 (** %\exerdone{5.9}{176}% 
 Let $A$ be an arbitrary type and consider generally an ``inductive definition''

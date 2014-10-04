@@ -411,7 +411,8 @@ recursion principle is
 \]
 Note first that the relevant recursion hypothesis can be constructed from $g$:
 \[
-  \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
+  h
+  \defeq \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
   : ((C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt) \to \emptyt
 \]
 And so we have $\rec{C}(\emptyt, h) : C \to \emptyt$.  But then
@@ -464,7 +465,7 @@ contradiction because $C \to \lnot C$ and $\lnot C \to C$.
 \coqdockw{End} \coqref{Ch05.Ex7}{\coqdocsection{Ex7}}.\coqdoceol
 \coqdocemptyline
 \end{coqdoccode}
-\exer{5.8}{175} 
+\exerdone{5.8}{175} 
 Consider now an ``inductive type'' $D$ with one constructor $\mathsf{scott} :
 (D \to D) \to D$.  The second recursor for $C$ suggested in \S5.6 leads to
 the following recursor for $D$:
@@ -476,7 +477,52 @@ with computation rule $\rec{D}(P, h, \mathsf{scott}(\alpha)) \equiv h(\alpha,
 contradiction.
 
 
- \exerdone{5.9}{176} 
+ \soln
+As in the previous problem, we can construct the recursion hypothesis from the
+constructor:
+\[
+  h 
+  \defeq \lam{f : D \to D}{g : D \to \emptyt}g(\mathsf{scott}(f))
+  : (D \to D) \to (D \to \emptyt) \to \emptyt
+\]
+Then by $h(\idfunc{D})$ it suffices to give a function $D \to \emptyt$ to
+construct an element of $\emptyt$, which we have in $\lam{d:D}\rec{D}(\emptyt,
+h, d) : \emptyt$.  So, putting it all together, we have
+\[
+  h(\idfunc{D}, \lam{d}\rec{D}(\emptyt, h, d))
+\]
+which by the computation rule is judgementally equal to
+\[
+  \rec{D}(\emptyt, h, \mathsf{scott}(\idfunc{D})).
+\]
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{Ch05.Ex8}{Ex8}{\coqdocsection{Ex8}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} (\coqdef{Ch05.Ex8.D}{D}{\coqdocvariable{D}} : \coqdockw{Type}) (\coqdef{Ch05.Ex8.scott}{scott}{\coqdocvariable{scott}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvar{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{D}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Hypothesis} (\coqdef{Ch05.Ex8.rec}{rec}{\coqdocvariable{rec}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{((}}\coqdocvariable{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch05.ex8}{ex8}{\coqdoclemma{ex8}} : \coqdocinductive{Empty}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{set} (\coqdocvar{h} := (\coqdockw{fun} \coqdocvar{f} \coqdocvar{g} \ensuremath{\Rightarrow} \coqdocvariable{g} (\coqdocvariable{scott} \coqdocvariable{f})) : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{D}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{D} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocvar{h} \coqdocabbreviation{idmap}). \coqdoctac{intro} \coqdocvar{d}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocvariable{rec} \coqdocinductive{Empty} \coqdocvar{h} \coqdocvar{d}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch05.Ex8}{\coqdocsection{Ex8}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exerdone{5.9}{176} 
 Let $A$ be an arbitrary type and consider generally an ``inductive definition''
 of a type $L_{A}$ with constructor $\mathsf{lawvere}:(L_{A} \to A) \to L_{A}$.
 The second recursor for $C$ suggested in \S5.6 leads to the following
