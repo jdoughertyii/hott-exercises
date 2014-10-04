@@ -1525,99 +1525,81 @@ $(\bool \eqvsym \bool) \eqvsym \bool$.
 \begin{coqdoccode}
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch02.id isequiv}{id\_isequiv}{\coqdoclemma{id\_isequiv}} : \coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocabbreviation{idmap} \coqdocabbreviation{idmap} (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} 1) (\coqdockw{fun} \coqdocvar{\_} \ensuremath{\Rightarrow} 1)).\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Lemma} \coqdef{Ch02.negb isequiv}{negb\_isequiv}{\coqdoclemma{negb\_isequiv}} : \coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocdefinition{negb} \coqdocdefinition{negb} \coqdocvar{\_} \coqdocvar{\_});\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{intro}; \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{reflexivity}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Defined}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch02.ex2 13 f}{ex2\_13\_f}{\coqdocdefinition{ex2\_13\_f}} (\coqdocvar{x} : \coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}) : \coqdocinductive{Bool} := \coqdocvariable{x} \coqdocconstructor{false}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Definition} \coqdef{Ch02.ex2 13 g}{ex2\_13\_g}{\coqdocdefinition{ex2\_13\_g}} (\coqdocvar{b} : \coqdocinductive{Bool}) : (\coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}) :=\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{if} \coqdocvariable{b}\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{then} \{| \coqdocconstructor{equiv\_fun} \coqdocconstructor{:=} \coqdocconstructor{negb} |\}\coqdoceol
-\coqdocindent{1.00em}
-\coqdockw{else} \{| \coqdocconstructor{equiv\_fun} \coqdocconstructor{:=} \coqdocconstructor{idmap} |\}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
 \coqdockw{Lemma} \coqdef{Ch02.equiv not const}{equiv\_not\_const}{\coqdoclemma{equiv\_not\_const}} (\coqdocvar{f} : \coqdocinductive{Bool} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Bool}) `\{\coqdocclass{IsEquiv} \coqdocinductive{Bool} \coqdocinductive{Bool} \coqdocvariable{f}\} : \coqdoceol
 \coqdocindent{1.00em}
 \coqdocvariable{f} \coqdocconstructor{false} \coqdocnotation{=} \coqdocdefinition{negb} (\coqdocvariable{f} \coqdocconstructor{true}).\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{pose} \coqdocvar{proof} (\coqdocmethod{eissect} \coqdocvar{f} \coqdocconstructor{true}) \coqdockw{as} \coqdocvar{H1}.\coqdoceol
+\coqdoctac{assert} (\coqdocvar{f}\coqdocnotation{\ensuremath{^{-1}}} (\coqdocvar{f} \coqdocconstructor{true}) \coqdocnotation{=} \coqdocconstructor{true}) \coqdockw{as} \coqdocvar{Ht} \coqdoctac{by} \coqdoctac{apply} \coqdocmethod{eissect}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{pose} \coqdocvar{proof} (\coqdocmethod{eissect} \coqdocvar{f} \coqdocconstructor{false}) \coqdockw{as} \coqdocvar{H2}.\coqdoceol
+\coqdoctac{assert} (\coqdocvar{f}\coqdocnotation{\ensuremath{^{-1}}} (\coqdocvar{f} \coqdocconstructor{false}) \coqdocnotation{=} \coqdocconstructor{false}) \coqdockw{as} \coqdocvar{Hf} \coqdoctac{by} \coqdoctac{apply} \coqdocmethod{eissect}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqdocvar{f} \coqdocconstructor{true}), (\coqdocvar{f} \coqdocconstructor{false});\coqdoceol
+\coqdoctac{destruct} (\coqdocvar{f} \coqdocconstructor{true}), (\coqdocvar{f} \coqdocconstructor{false}).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{try} (\coqdocvar{etransitivity}; \coqdoctac{try} (\coqdocvar{eassumption} || (\coqdoctac{symmetry}; \coqdocvar{eassumption})));\coqdoceol
+\coqdocvar{contradiction} (\coqdocdefinition{true\_ne\_false} (\coqdocvar{Ht}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvar{Hf})).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{try} (\coqdoctac{simpl}; \coqdoctac{reflexivity}).\coqdoceol
+\coqdoctac{reflexivity}. \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdocvar{contradiction} (\coqdocdefinition{true\_ne\_false} (\coqdocvar{Ht}\coqdocnotation{\^{}} \coqdocnotation{@} \coqdocvar{Hf})).\coqdoceol
 \coqdocnoindent
 \coqdockw{Defined}.\coqdoceol
 \coqdocemptyline
 \coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch02.negb involutive}{negb\_involutive}{\coqdoclemma{negb\_involutive}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{b}, \coqdocdefinition{negb} (\coqdocdefinition{negb} \coqdocvariable{b}) \coqdocnotation{=} \coqdocvariable{b}.\coqdoceol
-\coqdocnoindent
-\coqdockw{Proof}. \coqdoctac{destruct} \coqdocvar{b}; \coqdoctac{reflexivity}. \coqdockw{Qed}.\coqdoceol
-\coqdocemptyline
-\coqdocnoindent
-\coqdockw{Theorem} \coqdef{Ch02.ex2 13}{ex2\_13}{\coqdoclemma{ex2\_13}} `\{\coqdocclass{Funext}\} : \coqdocnotation{(}\coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}.\coqdoceol
+\coqdockw{Theorem} \coqdef{Ch02.equiv bool equiv bool}{equiv\_bool\_equiv\_bool}{\coqdoclemma{equiv\_bool\_equiv\_bool}} `\{\coqdocclass{Funext}\} : \coqdocnotation{(}\coqdocinductive{Bool} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}\coqdocnotation{)} \coqdocnotation{\ensuremath{\eqvsym}} \coqdocinductive{Bool}.\coqdoceol
 \coqdocnoindent
 \coqdockw{Proof}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqref{Ch02.ex2 13 f}{\coqdocdefinition{ex2\_13\_f}} \coqref{Ch02.ex2 13 g}{\coqdocdefinition{ex2\_13\_g}} \coqdocvar{\_} \coqdocvar{\_});\coqdoceol
+\coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_} \coqdocvar{\_}).\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{unfold} \coqdocdefinition{Sect}, \coqref{Ch02.ex2 13 f}{\coqdocdefinition{ex2\_13\_f}}, \coqref{Ch02.ex2 13 g}{\coqdocdefinition{ex2\_13\_g}}.\coqdoceol
-\coqdocemptyline
+- \coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} (\coqdocvar{f} \coqdocconstructor{false}).\coqdoceol
 \coqdocindent{1.00em}
-\begin{coqdoccomment}
-\coqdocindent{0.50em}
-alpha\coqdocindent{0.50em}
-\end{coqdoccomment}
-\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{reflexivity}.\coqdoceol
-\coqdocemptyline
-\coqdocindent{1.00em}
-\begin{coqdoccomment}
-\coqdocindent{0.50em}
-beta\coqdocindent{0.50em}
-\end{coqdoccomment}
-\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} \coqdocvar{x}. \coqdoctac{pose} \coqdocvar{proof} (\coqref{Ch02.equiv not const}{\coqdoclemma{equiv\_not\_const}} \coqdocvar{equiv\_fun}) \coqdockw{as} \coqdocvar{H1}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{apply} \coqdocdefinition{path\_equiv}; \coqdoctac{apply} \coqdocdefinition{path\_forall}; \coqdoctac{intro} \coqdocvar{x}; \coqdoctac{destruct} \coqdocvar{x}; \coqdoctac{simpl}.\coqdoceol
-\coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqdocvar{equiv\_fun} \coqdocconstructor{false}); \coqdoctac{simpl};\coqdoceol
+- \coqdoctac{intro} \coqdocvar{b}. \coqdoctac{destruct} \coqdocvar{b}.\coqdoceol
 \coqdocindent{2.00em}
-\coqdoctac{repeat} (\coqdoctac{transitivity} (\coqdocdefinition{negb} (\coqdocdefinition{negb} (\coqdocvar{equiv\_fun} \coqdocconstructor{true})));\coqdoceol
-\coqdocindent{3.00em}
-[\coqdoctac{rewrite} \ensuremath{\leftarrow} \coqdocvar{H1}; \coqdoctac{reflexivity} \ensuremath{|} \coqdoctac{apply} \coqref{Ch02.negb involutive}{\coqdoclemma{negb\_involutive}}]).\coqdoceol
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+Case\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+b\coqdocindent{0.50em}
+true;\coqdocindent{0.50em}
+send\coqdocindent{0.50em}
+to\coqdocindent{0.50em}
+negation\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{2.00em}
++ \coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocdefinition{negb} \coqdocdefinition{negb} \coqdocvar{\_} \coqdocvar{\_}); \coqdoctac{intro} \coqdocvar{b}; \coqdoctac{destruct} \coqdocvar{b}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{2.00em}
+\begin{coqdoccomment}
+\coqdocindent{0.50em}
+Case\coqdocindent{0.50em}
+:\coqdocindent{0.50em}
+b\coqdocindent{0.50em}
+false;\coqdocindent{0.50em}
+send\coqdocindent{0.50em}
+to\coqdocindent{0.50em}
+identity\coqdocindent{0.50em}
+\end{coqdoccomment}
+\coqdoceol
+\coqdocindent{2.00em}
++ \coqdoctac{refine} (\coqdocdefinition{equiv\_adjointify} \coqdocabbreviation{idmap} \coqdocabbreviation{idmap} \coqdocvar{\_} \coqdocvar{\_}); \coqdoctac{intro} \coqdocvar{b}; \coqdoctac{reflexivity}.\coqdoceol
 \coqdocindent{1.00em}
-\coqdoctac{destruct} (\coqdocvar{equiv\_fun} \coqdocconstructor{false}); \coqdoctac{reflexivity}.\coqdoceol
+- \coqdoctac{intro} \coqdocvar{b}. \coqdoctac{destruct} \coqdocvar{b}; \coqdoctac{reflexivity}.\coqdoceol
+\coqdocindent{1.00em}
+- \coqdoctac{intro} \coqdocvar{f}. \coqdoctac{apply} \coqdocdefinition{path\_equiv}. \coqdoctac{apply} \coqdocdefinition{path\_arrow}. \coqdoctac{intro} \coqdocvar{b}.\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{assert} (\coqdocvar{f} \coqdocconstructor{false} \coqdocnotation{=} \coqdocdefinition{negb} (\coqdocvar{f} \coqdocconstructor{true})) \coqdockw{as} \coqdocvar{Hf} \coqdoctac{by} \coqdoctac{apply} (\coqref{Ch02.equiv not const}{\coqdoclemma{equiv\_not\_const}} \coqdocvar{f}).\coqdoceol
+\coqdocindent{2.00em}
+\coqdoctac{destruct} \coqdocvar{b}, (\coqdocvar{f} \coqdocconstructor{true}), (\coqdocvar{f} \coqdocconstructor{false});\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{try} (\coqdoctac{reflexivity});\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{try} (\coqdocvar{contradiction} (\coqdocdefinition{true\_ne\_false} \coqdocvar{Hf}));\coqdoceol
+\coqdocindent{3.00em}
+\coqdoctac{try} (\coqdocvar{contradiction} (\coqdocdefinition{false\_ne\_true} \coqdocvar{Hf})).\coqdoceol
 \coqdocnoindent
-\coqdockw{Qed}.\coqdoceol
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
 \coqdocemptyline
 \coqdocemptyline
 \end{coqdoccode}

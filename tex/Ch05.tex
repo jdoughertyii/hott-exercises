@@ -392,7 +392,7 @@ recursion principle of a $\w$-type, but for which functions are not determined
 uniquely by their recurrence.
 
 
- \exer{5.7}{175} 
+ \exerdone{5.7}{175} 
 Suppose that in the ``inductive definition'' of the type $C$ at the beginning
 of \S5.6, we replace the type $\N$ by $\emptyt$.  Analogously to
 5.6.1, we might consider a recursion principle for this type with hypothesis
@@ -404,13 +404,67 @@ inconsistent, i.e.~it allows us to construct an element of $\emptyt$.
 
 
  \soln
-The associated recursion principle is
+The constructor for $C$ is $g : (C \to \emptyt) \to C$, and the associated
+recursion principle is
 \[
   \rec{C} : \prd{P:\UU} ((C \to \emptyt) \to (P \to \emptyt) \to P) \to C \to P
 \]
+Note first that the relevant recursion hypothesis can be constructed from $g$:
+\[
+  \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
+  : ((C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt) \to \emptyt
+\]
+And so we have $\rec{C}(\emptyt, h) : C \to \emptyt$.  But then
+\[
+  \rec{C}(\emptyt, h, g(\rec{C}(\emptyt, h))) : \emptyt
+\]
+meaning that our recursion principle is inconsistent.
 
 
- \exer{5.8}{175} 
+Alternatively, note that there is an equivalence
+\begin{align*}
+  (C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt
+  &\eqvsym
+  (C \to \emptyt) \times (\emptyt \to \emptyt) \to \emptyt
+  \eqvsym
+  (C \to \emptyt) \times \unit \to \emptyt
+  \eqvsym
+  (C \to \emptyt) \to \emptyt
+  \equiv \lnot\lnot C
+\end{align*}
+so the recursion principle says $\lnot\lnot C \to \lnot C$.  By double negation
+introduction composed with this we get $C \to \lnot C$.  On the other hand, by
+$g$ we have $\lnot C \to C$, and composing this with the recursion principle
+gives $\lnot\lnot C \to C$.  So $C$ is decidable, and in both cases we have a
+contradiction because $C \to \lnot C$ and $\lnot C \to C$.
+\begin{coqdoccode}
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Section} \coqdef{Ch05.Ex7}{Ex7}{\coqdocsection{Ex7}}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Variable} (\coqdef{Ch05.Ex7.C}{C}{\coqdocvariable{C}} : \coqdockw{Type}) (\coqdef{Ch05.Ex7.g}{g}{\coqdocvariable{g}} : \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvar{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvar{C}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Variable} (\coqdef{Ch05.Ex7.rec}{rec}{\coqdocvariable{rec}} : \coqdockw{\ensuremath{\forall}} \coqdocvar{P}, \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{((}}\coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{P} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocvariable{P}).\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{Theorem} \coqdef{Ch05.ex7}{ex7}{\coqdoclemma{ex7}} : \coqdocinductive{Empty}.\coqdoceol
+\coqdocnoindent
+\coqdockw{Proof}.\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{set} (\coqdocvar{h} := (\coqdockw{fun} \coqdocvar{k} \coqdocvar{i} \ensuremath{\Rightarrow} \coqdocvariable{k} (\coqdocvariable{g} \coqdocvariable{k})): (\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocvariable{C} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{(}}\coqdocinductive{Empty} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty}\coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{)}} \coqexternalref{:type scope:x '->' x}{http://coq.inria.fr/distrib/8.4pl4/stdlib/Coq.Init.Logic}{\coqdocnotation{\ensuremath{\rightarrow}}} \coqdocinductive{Empty})).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} (\coqdocvariable{rec} \coqdocinductive{Empty} \coqdocvar{h}).\coqdoceol
+\coqdocindent{1.00em}
+\coqdoctac{apply} \coqdocvariable{g}. \coqdoctac{apply} (\coqdocvariable{rec} \coqdocinductive{Empty} \coqdocvar{h}).\coqdoceol
+\coqdocnoindent
+\coqdockw{Defined}.\coqdoceol
+\coqdocemptyline
+\coqdocnoindent
+\coqdockw{End} \coqref{Ch05.Ex7}{\coqdocsection{Ex7}}.\coqdoceol
+\coqdocemptyline
+\end{coqdoccode}
+\exer{5.8}{175} 
 Consider now an ``inductive type'' $D$ with one constructor $\mathsf{scott} :
 (D \to D) \to D$.  The second recursor for $C$ suggested in \S5.6 leads to
 the following recursor for $D$:

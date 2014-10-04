@@ -275,7 +275,7 @@ recursion principle of a $\w$-type, but for which functions are not determined
 uniquely by their recurrence.
 *)
 
-(** %\exer{5.7}{175}% 
+(** %\exerdone{5.7}{175}% 
 Suppose that in the ``inductive definition'' of the type $C$ at the beginning
 of %\S5.6%, we replace the type $\N$ by $\emptyt$.  Analogously to
 5.6.1, we might consider a recursion principle for this type with hypothesis
@@ -287,11 +287,54 @@ inconsistent, %i.e.~it% allows us to construct an element of $\emptyt$.
 *)
 
 (** %\soln%
-The associated recursion principle is
+The constructor for $C$ is $g : (C \to \emptyt) \to C$, and the associated
+recursion principle is
 %\[
   \rec{C} : \prd{P:\UU} ((C \to \emptyt) \to (P \to \emptyt) \to P) \to C \to P
 \]%
+Note first that the relevant recursion hypothesis can be constructed from $g$:
+%\[
+  \lam{f:C \to \emptyt}{i:\emptyt \to \emptyt}f(g(f))
+  : ((C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt) \to \emptyt
+\]%
+And so we have $\rec{C}(\emptyt, h) : C \to \emptyt$.  But then
+%\[
+  \rec{C}(\emptyt, h, g(\rec{C}(\emptyt, h))) : \emptyt
+\]%
+meaning that our recursion principle is inconsistent.
+
+Alternatively, note that there is an equivalence
+%\begin{align*}
+  (C \to \emptyt) \to (\emptyt \to \emptyt) \to \emptyt
+  &\eqvsym
+  (C \to \emptyt) \times (\emptyt \to \emptyt) \to \emptyt
+  \eqvsym
+  (C \to \emptyt) \times \unit \to \emptyt
+  \eqvsym
+  (C \to \emptyt) \to \emptyt
+  \equiv \lnot\lnot C
+\end{align*}%
+so the recursion principle says $\lnot\lnot C \to \lnot C$.  By double negation
+introduction composed with this we get $C \to \lnot C$.  On the other hand, by
+$g$ we have $\lnot C \to C$, and composing this with the recursion principle
+gives $\lnot\lnot C \to C$.  So $C$ is decidable, and in both cases we have a
+contradiction because $C \to \lnot C$ and $\lnot C \to C$.
 *)
+
+Section Ex7.
+
+Variable (C : Type) (g : (C -> Empty) -> C).
+Variable (rec : forall P, ((C -> Empty) -> (P -> Empty) -> P) -> C -> P).
+
+Theorem ex7 : Empty.
+Proof.
+  set (h := (fun k i => k (g k)): ((C -> Empty) -> (Empty -> Empty) -> Empty)).
+  apply (rec Empty h).
+  apply g. apply (rec Empty h).
+Defined.
+
+End Ex7.
+
 
 
 (** %\exer{5.8}{175}% 

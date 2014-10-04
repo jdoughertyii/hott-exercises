@@ -1154,55 +1154,36 @@ $(\bool \eqvsym \bool) \eqvsym \bool$.
 
 *)
 
-Lemma id_isequiv : Bool <~> Bool.
-Proof.
-  refine (equiv_adjointify idmap idmap (fun _ => 1) (fun _ => 1)).
-Defined.
-
-Lemma negb_isequiv : Bool <~> Bool.
-Proof.
-  refine (equiv_adjointify negb negb _ _);
-  intro; destruct x; reflexivity.
-Defined.
-
-Definition ex2_13_f (x : Bool <~> Bool) : Bool := x false.
-
-Definition ex2_13_g (b : Bool) : (Bool <~> Bool) :=
-  if b
-  then {| equiv_fun := negb |}
-  else {| equiv_fun := idmap |}.
-  
-
 Lemma equiv_not_const (f : Bool -> Bool) `{IsEquiv Bool Bool f} : 
   f false = negb (f true).
 Proof.
-  pose proof (eissect f true) as H1.
-  pose proof (eissect f false) as H2.
-  destruct (f true), (f false);
-  try (etransitivity; try (eassumption || (symmetry; eassumption)));
-  try (simpl; reflexivity).
+  assert (f^-1 (f true) = true) as Ht by apply eissect.
+  assert (f^-1 (f false) = false) as Hf by apply eissect.
+  destruct (f true), (f false).
+  contradiction (true_ne_false (Ht^ @ Hf)).
+  reflexivity. reflexivity.
+  contradiction (true_ne_false (Ht^ @ Hf)).
 Defined.
 
-Theorem negb_involutive : forall b, negb (negb b) = b.
-Proof. destruct b; reflexivity. Qed.
-
-Theorem ex2_13 `{Funext} : (Bool <~> Bool) <~> Bool.
+Theorem equiv_bool_equiv_bool `{Funext} : (Bool <~> Bool) <~> Bool.
 Proof.
-  refine (equiv_adjointify ex2_13_f ex2_13_g _ _);
-  unfold Sect, ex2_13_f, ex2_13_g.
-
-  (* alpha *)
-  destruct x; reflexivity.
-  
-  (* beta *)
-  destruct x. pose proof (equiv_not_const equiv_fun) as H1.
-  apply path_equiv; apply path_forall; intro x; destruct x; simpl.
-  destruct (equiv_fun false); simpl;
-    repeat (transitivity (negb (negb (equiv_fun true)));
-      [rewrite <- H1; reflexivity | apply negb_involutive]).
-  destruct (equiv_fun false); reflexivity.
-Qed.                                 
-  
+  refine (equiv_adjointify _ _ _ _).
+  - intro f. apply (f false).
+  - intro b. destruct b.
+    (* Case : b true; send to negation *)
+    + refine (equiv_adjointify negb negb _ _); intro b; destruct b; reflexivity.
+    (* Case : b false; send to identity *)
+    + refine (equiv_adjointify idmap idmap _ _); intro b; reflexivity.
+  - intro b. destruct b; reflexivity.
+  - intro f. apply path_equiv. apply path_arrow. intro b.
+    assert (f false = negb (f true)) as Hf by apply (equiv_not_const f).
+    destruct b, (f true), (f false);
+      try (reflexivity);
+      try (contradiction (true_ne_false Hf));
+      try (contradiction (false_ne_true Hf)).
+Defined.
+    
+    
   
 (** %\exerdone{2.14}{104}% 
 Suppose we add to type theory the equality reflection rule which says that if

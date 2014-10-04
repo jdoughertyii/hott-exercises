@@ -6,6 +6,7 @@ Require Export HoTT Ch03.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Equivalences *)
 
+
 (** %\exer{4.1}{147}% 
 Consider the type of ``two-sided adjoint equivalence data'' for $f : A \to B$,
 %\[
@@ -69,19 +70,21 @@ and again we can apply 3.11.9 to obtain the equivalent $\refl{\idfunc{A}} =
   \prd{x:A}(\refl{x} = \refl{x})
 \]%
 
-This type is generally not a mere proposition.  It suffices to give an example
-of some $X$ such that $\prd{x:X}(\refl{x}=\refl{x})$ isn't a mere proposition.
-Consider the 2-sphere $\Sn^{2}$.  Then $\refl{\refl{\base}} : \refl{\base} =
-\refl{\base}$, but we also have $\surf : \refl{\base} = \refl{\base}$.  Since
-$\surf \not= \refl{\refl{\base}}$, $(\refl{\base} = \refl{\base})$ isn't a
-mere proposition, hence neither is $\prd{x:\Sn^{2}}(\refl{x} = \refl{x})$,
-hence neither is our type.
+This type is not generally a mere proposition.  By the equivalence just
+exhibited, it suffices to give a type $X$ such that $\prd{x:X}(\refl{x} =
+\refl{x})$ isn't a mere proposition.  For this it suffices to exhibit an $f :
+\prd{x:X}(\refl{x} = \refl{x})$ that's unequal to $\lam{x}\refl{\refl{x}}$.
+Looking ahead to Chapter 6, a natural choice of $X$ is $\Sn^{2}$, and we use
+the fact that $\surf \not= \refl{\refl{\base}}$ to construct the desired $f$.
+To construct an element of $\prd{x:\Sn^{2}}(x=x)$ we proceed by 2-sphere
+induction, defining $f(\base) \equiv \surf$.  Then we must show that
+$\refl{\surf} =^{x \mapsto x=x}_{\surf} \refl{\surf}$.
+
 *)
 
 Theorem ex4_1 `{Univalence} (A B : Type) (f : A <~> B) :
   {g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
-    (forall x, ap f (h x) = e (f x)) 
-  * (forall y, ap g (e y) = h (g y))}}}
+    (forall x, ap f (h x) = e (f x)) * (forall y, ap g (e y) = h (g y))}}}
   <~>
   forall x : A, @idpath _ x = @idpath _ x.
 Proof.
@@ -175,6 +178,14 @@ Proof.
   refine (equiv_sigma_contr_base _ _ _).
   apply (BuildEquiv _ _ apD10 (isequiv_apD10 _ _ _ _)).
 Defined.
+
+
+Theorem ex4_1' `{Univalence} :
+  ~ (forall A B f,
+       IsHProp({g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
+       (forall x, ap f (h x) = e (f x)) * (forall y, ap g (e y) = h (g y))}}})).
+Proof.
+Admitted.
   
 
 
@@ -393,7 +404,7 @@ Proof.
 Defined.
 
 
-Theorem qinv_to_loop `{Funext} (A B : Type) (f : A <~> B) :
+Theorem Book_4_1_1 `{Funext} (A B : Type) (f : A <~> B) :
   qinv f <~> forall x : A, x = x.
 Proof.
   unfold qinv.
@@ -581,6 +592,7 @@ Proof.
 
   apply equiv_idmap.
 Defined.
+
 
 End Ex4.
 
@@ -809,21 +821,17 @@ application of Lemma 4.9.2 or doesn't use the univalence axiom, the proof of
 function extensionality goes through.
 *)
 
-Section Exercise4_6.
+Module Ex6.
 
-Definition idtoqinv {A B} : (A = B) -> {f : A -> B & (qinv f)}.
-  path_induction. exists idmap. exists idmap.
-  split; intro a; reflexivity.
-Defined.
+Hypothesis qinv_univalence : forall A B, qinv (equiv_path A B).
 
-Hypothesis qinv_univalence : forall A B, qinv (@idtoqinv A B).
-
-Theorem ex4_6i (A B X : Type) (e : A <~> B) : (X -> A) <~> (X -> B).
+Theorem Book_4_9_2 (A B X : Type) (e : A <~> B) : (X -> A) <~> (X -> B).
 Proof.
   destruct e as [f p].
   assert (qinv f) as q. exists f^-1. split. 
     apply (eisretr f). apply (eissect f).
-  assert (A = B) as r. apply (qinv_univalence A B). apply (f; q).
+  assert (A = B) as r. apply (qinv_univalence A B). 
+  apply (BuildEquiv _ _ f p).
   path_induction. apply equiv_idmap.
 Defined.
 
@@ -843,87 +851,138 @@ Here univalence is used only in establishing that $a = a$ is a set, by showing
 that it's equivalent to $(\bool \eqvsym \bool)$.
 *)
 
-(*
-Lemma Lemma412 (A : Type) (a : A) (q : a = a) :
-  IsHSet (a = a) -> (forall x, Brck (a = x)) 
-  -> (forall p : a = a, p @ q = q @ p)
-  -> {f : forall (x:A), x = x & f a = q}.
+Lemma Book_4_1_2 `{Funext} (A : Type) (a : A) (q : a = a)
+  : IsHSet (a = a) -> (forall x, Brck (a = x))
+    -> (forall p : a = a, p @ q = q @ p)
+    -> {f : forall (x : A), x = x & f a = q}.
 Proof.
-  intros i g iii.
-  assert (forall (x y : A), IsHSet (x = y)).
+  intros eq g eta.
+  transparent assert (Heq : (forall x y : A, IsHSet (x = y))).
   intros x y. 
-  assert (Brck (a = x)) as gx. apply (g x). 
-  assert (Brck (a = y)) as gy. apply (g y).
+  assert (Brck (a = x)) as p by auto. 
+  assert (Brck (a = y)) as r by auto. 
   strip_truncations.
-  apply (ex3_1' (a = a)).
-  refine (equiv_adjointify (fun p => gx^ @ p @ gy) (fun p => gx @ p @ gy^) _ _);
-  intros p; hott_simpl.
-  apply i.
-  assert (forall x, IsHProp ({r : x = x & forall s : a = x, r = s^ @ q @ s})).
-  intro x. assert (Brck (a = x)) as p. apply (g x). strip_truncations.
-  apply hprop_allpath; intros h h'; destruct h as [r h], h' as [r' h'].
-  apply path_sigma_uncurried. exists ((h p) @ (h' p)^).
-  simpl. apply path_forall; intro s. 
-  apply (X x x).
-  assert (forall x, {r : x = x & forall s : a = x, r = (s ^ @ q) @ s}).
-  intro x. assert (Brck (a = x)) as p. apply (g x). strip_truncations.
+  refine (@trunc_equiv (a = a) _ _ _ _ _).
+  intros s. apply (p^ @ s @ r).
+  apply isequiv_concat_lr.
+  set (B := fun x => {r : x = x & forall s : a = x, (r = s^ @ q @ s)}).
+  transparent assert (HB : (forall x, (IsHProp (B x)))).
+  intro x. assert (Brck (a = x)) as p by auto.
+  strip_truncations.
+  apply hprop_allpath. intros rh r'h'.
+  destruct rh as [r h], r'h' as [r' h'].
+  apply path_sigma_uncurried. exists ((h p) @ (h' p)^). simpl.
+  apply path_forall. intro t. apply Heq.
+  transparent assert (f' : (forall x, B x)).
+  intro x. assert (Brck (a = x)) as p by auto. strip_truncations.
   exists (p^ @ q @ p). intro s. 
-  apply (cancelR _ _ s^). hott_simpl.
-  apply (cancelL p). hott_simpl.
-  transitivity (q @ (p @ s^)). hott_simpl.
-  symmetry. apply (iii (p @ s^)).
-  exists (fun x => (X1 x).1). 
-  transitivity (1^ @ q @ 1).
-  apply ((X1 a).2 1). hott_simpl.
+  apply moveL_pM. repeat (refine ((concat_pp_p _ _ _) @ _)).
+  apply moveR_Vp. refine (_ @ (concat_pp_p _ _ _)).
+  symmetry. apply eta.
+  exists (fun x => (f' x).1).
+  refine (((f' a).2 1) @ _).
+  hott_simpl.
 Defined.
-*)
-  
-(*
-Definition Bool_Bool_to_a_a : 
-  ((Bool:Type) <~> (Bool:Type)) -> 
-  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
-  =
-  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}).
-  intros.
-  apply path_sigma_hprop. simpl.
-  apply (qinv_univalence Bool Bool).1.
-  destruct X. exists equiv_fun.
-  destruct equiv_isequiv. exists equiv_inv.
-  split. apply eisretr. apply eissect.
-Defined.
-*)
 
-(*
-Definition a_a_to_Bool_Bool : 
-  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
-  =
-  (((Bool:Type); min1 1):{A : Type & Brck ((Bool:Type) = A)}) 
-  -> ((Bool:Type) <~> (Bool:Type)).
-  intros. simpl. apply base_path in X. simpl in X.
-  apply idtoqinv in X. 
-  apply (BuildEquiv Bool Bool X.1).
-  apply (isequiv_adjointify X.1 X.2.1 (fst X.2.2) (snd X.2.2)).
-Defined.
-*)
-
-(*
-Theorem ex4_6ii : {A : Type & {B : Type & {f : A -> B & ~ IsHProp (qinv f)}}}.
+Theorem Book_4_1_3 `{Funext}
+  : {A : Type & {B : Type & {f : A -> B & ~ IsHProp (qinv f)}}}.
 Proof.
-  set (X := {A : Type & Brck ((Bool:Type) = A)}).
-  refine (X; (X; _)).
-  set (a := ((Bool:Type); min1 1) : X).
-  set (e := negb_isequiv). destruct e as [lnot H].
-  set (r := (lnot^-1; (eisretr lnot, eissect lnot)) : qinv lnot).
-  (* Coq update broke this
-  set (q := (path_sigma_hprop a a ((qinv_univalence Bool Bool).1 (lnot; r)))).
-  assert {f : forall x, x = x & (f a) = q}.
-  apply Lemma412.
-  apply (ex3_1' ((Bool:Type) <~> (Bool:Type))).
-  refine (equiv_adjointify Bool_Bool_to_a_a a_a_to_Bool_Bool _ _);
-  unfold Bool_Bool_to_a_a, a_a_to_Bool_Bool.
-  intro p. simpl.
-   *)
-Admitted.
+  set (X := {A : Type0 & Brck (Bool = A)}).
+  exists X. exists X. exists idmap. intro H'.
+  set (a := (Bool; tr 1) : X).
+  assert (Q : (qinv (equiv_path Bool Bool))) by apply qinv_univalence.
+  destruct Q as [path_equiv' [retr sect]].
+  transparent assert (q : (a = a)).
+    apply path_sigma_hprop. apply path_equiv'.
+    apply (BuildEquiv _ _ negb isequiv_negb).
+  transparent assert (e : (Bool <~> (a = a))). 
+    equiv_via (Bool <~> Bool). apply equiv_bool_equiv_bool_bool.
+    equiv_via (Bool = Bool).
+    refine (equiv_adjointify _ _ _ _).
+    apply path_equiv'. apply equiv_path.
+    intro eq. apply (sect eq). intro e. apply (retr e).
+    refine (equiv_adjointify _ _ _ _).
+    intro eq. apply path_sigma_uncurried. exists eq. apply allpath_hprop.
+    intro eq. apply (pr1_path eq).
+    intro eq. destruct eq.
+    refine (_ @ (eta_path_sigma_uncurried _)). f_ap. 
+    apply path_sigma_uncurried. exists 1. simpl. apply allpath_hprop.
+    intro eq.
+    refine ((@pr1_path_sigma_uncurried Type0 _ a a _) @ _). reflexivity.
+  assert (F : {f : forall x : X, x = x & f a = q}). apply Book_4_1_2.
+  apply (trunc_equiv e).
+  intro x. destruct x as [A eq]. strip_truncations. apply tr.
+  unfold a. apply path_sigma_uncurried. exists eq. induction eq. reflexivity.
+  intros p.
+  set (b := e^-1 p). assert (pisb : p = e b). unfold b. symmetry. apply eisretr.
+  set (b' := e^-1 q). assert (qisb' : q = e b'). unfold b'. symmetry. 
+    apply eisretr.
+    clearbody b b'.
+  rewrite pisb, qisb'.
+  assert (path_equiv' (BuildEquiv _ _ idmap _) = 1).
+  path_via (path_equiv' (equiv_path _ _ 1)). apply sect.
+  assert (allpath_hprop (transport (fun A : Type0 => Brck (Bool = A)) 1 (tr 1))
+       (tr 1) = 1) by apply allpath_hprop.
+  destruct b, b'.
+  reflexivity.
+  simpl (e true). unfold compose. rewrite X0, X1.
+  apply ((concat_1p _) @ (concat_p1 _)^).
+  simpl (e true). unfold compose. rewrite X0, X1.
+  apply ((concat_p1 _) @ (concat_1p _)^).
+  reflexivity.
+  
+  assert (Heq : (q <> 1)).
+  unfold q. intro Heq.
+  assert (negb <> idmap) as CX. intro h. apply (negb_no_fixpoint true).
+  apply (ap10 h true). apply CX.
+  path_via (equiv_fun (BuildEquiv _ _ negb _)).
+  path_via (equiv_fun (BuildEquiv Bool _ idmap _)). f_ap.
+  path_via (equiv_path Bool Bool (path_equiv' 
+            {| equiv_fun := negb; equiv_isequiv := isequiv_negb |})).
+  symmetry. apply retr.
+  path_via (equiv_path Bool Bool (path_equiv'
+            {| equiv_fun := idmap; equiv_isequiv := isequiv_idmap _ |})).
+  f_ap.
+  path_via ((path_sigma_hprop a a)^-1 (path_sigma_hprop a a (
+    path_equiv' {| equiv_fun := negb; equiv_isequiv := isequiv_negb |}))).
+  symmetry. apply eissect.
+  path_via ((path_sigma_hprop a a)^-1 (path_sigma_hprop a a (
+    path_equiv' {| equiv_fun := idmap; equiv_isequiv := isequiv_idmap _ |}))).
+  f_ap.
+  refine (Heq @ _).
+  path_via (path_sigma_hprop a a ((path_equiv' o (equiv_path _ _)) 1)).
+  rewrite (sect 1).
+  path_via (path_sigma_hprop a a ((path_sigma_hprop a a)^-1 1)).
+  symmetry. apply eisretr.
+  apply eissect.
+  apply (retr _).
+  destruct F as [f eq].
+  assert (Hf : (f <> (fun x => 1))).
+  intro Hf. apply Heq. refine (eq^ @ _). apply (apD10 Hf a).
+  assert (HP : (IsHProp (forall x : X, x = x))).
+  apply (trunc_equiv' (Book_4_1_1 X X (BuildEquiv X X idmap _))).
+  apply Hf. apply allpath_hprop.
+Defined.
+
+(** 
+(iii) $\qinv$-univalence implies that all equivalences are half-adjoint
+equivalences and this because for any $p : A = B$, $\idtoeqv(p)$ is
+half-adjoint.  To see this, suppose that $p : A = B$, which by induction we may
+assume is $\refl{A}$.  Then $\idtoeqv(p) \equiv (\idfunc{A}, \idfunc{A},
+\lam{x:A}\refl{x}, \lam{x:A}\refl{x})$, and to show that this is a half-adjoint
+equivalence we must inhabit the type
+%\[
+\left(
+  \prd{x : A}\idfunc{A}((\lam{x'}\refl{x'})x) 
+             = (\lam{x'}\refl{x'})(\idfunc{A}x)
+             \right)
+  \equiv
+  \left(
+  \prd{x : A}\refl{x} = \refl{x}
+  \right)
+\]%
+which is inhabited by reflexivity.  However, there are equivalences that aren't
+half-adjoint, such as the one constructed in Exercise 4.1.
 *)
   
-End Exercise4_6.
+End Ex6.

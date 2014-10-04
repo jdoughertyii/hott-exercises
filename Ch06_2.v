@@ -5,7 +5,7 @@ Require Export HoTT Ch06_1 hit.TwoSphere.
 (** printing == %\ensuremath{\sim}% **)
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 
-(** %\exerdone{6.2}{217}% 
+(** %\exer{6.2}{217}% 
 Prove that $\susp\Sn^{1} \eqvsym \Sn^{2}$, using the explicit definition of
 $\Sn^{2}$ in terms of $\base$ and $\surf$ given in %\S6.4%.
 *)
