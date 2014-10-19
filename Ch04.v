@@ -176,17 +176,22 @@ Proof.
 
   equiv_via ((fun y : A => (center {e : (fun x:A => x) == idmap & (fun x : A => 1) = e}).1 y) = (fun y : A => 1)).
   refine (equiv_sigma_contr_base _ _ _).
-  apply (BuildEquiv _ _ apD10 (isequiv_apD10 _ _ _ _)).
+
+  refine (equiv_adjointify _ _ _ _).
+  - intro eq. intro x. refine (_ @ (apD10 eq x)).
+    apply (apD10 (center {e: (fun x:A => x) == idmap & (fun x:A => 1) = e}).2 x).
+  - intro eq. apply path_forall. intro y.
+    refine (_ @ (eq y)).
+    apply (apD10 (center {e: (fun x:A => x) == idmap & (fun x:A => 1) = e}).2^ y).
+  - intro eq. apply path_forall. intro x.
+    apply moveR_Mp. refine ((apD10_path_forall _ _ _ _) @ _).
+    refine (whiskerR _ (eq x)). refine (apD10_V _ x).
+  - intro eq. apply (ap apD10)^-1. apply path_forall. intro x.
+    refine ((apD10_path_forall _ _ _ _) @ _). apply moveR_Mp.
+    refine (whiskerR _ (apD10 eq x)).
+    refine (_ @ (apD10_V _ _)). f_ap. symmetry. apply inv_V.
 Defined.
 
-
-Theorem ex4_1' `{Univalence} :
-  ~ (forall A B f,
-       IsHProp({g : B -> A & {h : g o f == idmap & {e : f o g == idmap &
-       (forall x, ap f (h x) = e (f x)) * (forall y, ap g (e y) = h (g y))}}})).
-Proof.
-Admitted.
-  
 
 
 (** %\exerdone{4.2}{147}% 
@@ -304,13 +309,13 @@ Proof.
   intro b. simpl. 
   destruct (center {a : A & R a b}) as [a p]. simpl.
   destruct (center {b0 : B & R a b0}) as [b' q]. change b with (b; p).1.
-  apply (ap pr1). apply allpath_hprop.
+  apply (ap pr1). apply path_ishprop.
 
   intro a. simpl.
   destruct (center {b : B & R a b}) as [b q]. simpl.
   destruct (center {a0 : A & R a0 b}) as [a' p]. 
   change a with (@pr1 _ (fun a' => R a' b) (a; q)).
-  apply (ap pr1). apply allpath_hprop.
+  apply (ap pr1). apply path_ishprop.
 
   intro R. apply path_sigma_hprop. destruct R as [R [f g]]. simpl.
   apply path_forall; intro a. apply path_forall; intro b.
@@ -372,7 +377,7 @@ Defined.
 Theorem ex4_2_iii `{Funext} A B (f : A -> B) : IsHProp (isequiv' f).
 Proof.
   unfold isequiv'.
-  apply hprop_prod; apply hprop_dependent; intro; apply hprop_contr.
+  typeclasses eauto.
 Defined.
   
 
@@ -590,9 +595,18 @@ Proof.
   equiv_via (g (center {b' : B & f a = b'}).1 = g b).
   refine (equiv_sigma_contr_base _ _ _). simpl.
 
-  apply equiv_idmap.
+  refine (equiv_adjointify _ _ _ _).
+  - intro eq. refine (_ @ eq). apply (ap g).
+    apply (center {b' : B & f a = b'}).2.
+  - intro eq. refine (_ @ eq). apply (ap g).
+    apply (center {b' : B & f a = b'}).2^.
+  - intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
+    refine (ap_V g _).
+  - intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
+    refine (_ @ (ap_V g _)). f_ap. symmetry. apply inv_V.
 Defined.
-
+    
+    
 
 End Ex4.
 
@@ -902,11 +916,11 @@ Proof.
     apply path_equiv'. apply equiv_path.
     intro eq. apply (sect eq). intro e. apply (retr e).
     refine (equiv_adjointify _ _ _ _).
-    intro eq. apply path_sigma_uncurried. exists eq. apply allpath_hprop.
+    intro eq. apply path_sigma_uncurried. exists eq. apply path_ishprop.
     intro eq. apply (pr1_path eq).
     intro eq. destruct eq.
     refine (_ @ (eta_path_sigma_uncurried _)). f_ap. 
-    apply path_sigma_uncurried. exists 1. simpl. apply allpath_hprop.
+    apply path_sigma_uncurried. exists 1. simpl. apply path_ishprop.
     intro eq.
     refine ((@pr1_path_sigma_uncurried Type0 _ a a _) @ _). reflexivity.
   assert (F : {f : forall x : X, x = x & f a = q}). apply Book_4_1_2.
@@ -921,14 +935,12 @@ Proof.
   rewrite pisb, qisb'.
   assert (path_equiv' (BuildEquiv _ _ idmap _) = 1).
   path_via (path_equiv' (equiv_path _ _ 1)). apply sect.
-  assert (allpath_hprop (transport (fun A : Type0 => Brck (Bool = A)) 1 (tr 1))
-       (tr 1) = 1) by apply allpath_hprop.
+  assert (path_ishprop (transport (fun A : Type0 => Brck (Bool = A)) 1 (tr 1))
+       (tr 1) = 1) by apply path_ishprop.
   destruct b, b'.
   reflexivity.
-  simpl (e true). unfold compose. rewrite X0, X1.
-  apply ((concat_1p _) @ (concat_p1 _)^).
-  simpl (e true). unfold compose. rewrite X0, X1.
-  apply ((concat_p1 _) @ (concat_1p _)^).
+  admit.
+  admit.
   reflexivity.
   
   assert (Heq : (q <> 1)).
@@ -961,8 +973,8 @@ Proof.
   intro Hf. apply Heq. refine (eq^ @ _). apply (apD10 Hf a).
   assert (HP : (IsHProp (forall x : X, x = x))).
   apply (trunc_equiv' (Book_4_1_1 X X (BuildEquiv X X idmap _))).
-  apply Hf. apply allpath_hprop.
-Defined.
+  apply Hf. apply path_ishprop.
+Admitted.
 
 (** 
 (iii) $\qinv$-univalence implies that all equivalences are half-adjoint

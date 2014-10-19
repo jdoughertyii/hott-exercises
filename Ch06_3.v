@@ -67,7 +67,7 @@ Prove that if the type $\Sn^{2}$ belongs to some universe $\UU$, then $\UU$ is
 not a 2-type.
 *)
 
-(** %\exer{6.7}{217}% 
+(** %\exerdone{6.7}{217}% 
 Prove that if $G$ is a monoid and $x : G$, then $\sm{y:G}((x \cdot y = e)
 \times (y \cdot x = e))$ is a mere proposition.  Conclude, using the principle
 of unique choice, that it would be equivalent to define a group to be a monoid
@@ -205,7 +205,7 @@ Defined.
   
 
 
-(** %\exer{6.8}{217}% 
+(** %\exerdone{6.8}{217}% 
 Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
 proof of Lemma 6.11.5.
 *)
@@ -316,7 +316,7 @@ Proof.
                (1, list_r t)) @ _).
     destruct z as [p c].
     apply path_prod. apply H.
-    refine ((transport_path_prod _ _ _ _ _ _ _ _) @ _).
+    refine ((transport_path_prod _ _ _ _) @ _).
     induction p. apply (IHt t').
 Defined.
 
@@ -371,7 +371,7 @@ Defined.
 
 
 Theorem set_list_is_monoid {A : Type} {HA : IsHSet A} : 
-  IsMonoid (BuildhSet (list A) (set_list_is_set _ HA)) (@app A) nil.
+  IsMonoid (@BuildhSet (list A) (set_list_is_set _ HA)) (@app A) nil.
 Proof.
   apply BuildIsMonoid.
   apply app_nil_r. reflexivity.
@@ -491,7 +491,7 @@ Record MonoidHom (A B : Monoid) :=
     }.
 
 Definition homLAG_to_AG (A : Type) (HA : IsHSet A) (G : Monoid) :
-  MonoidHom (BuildMonoid (BuildhSet (list A) (set_list_is_set _ HA)) 
+  MonoidHom (BuildMonoid (@BuildhSet (list A) (set_list_is_set _ HA)) 
                          _ _ set_list_is_monoid) 
             G 
   -> (A -> G)
@@ -500,7 +500,7 @@ Definition homLAG_to_AG (A : Type) (HA : IsHSet A) (G : Monoid) :
 Definition AG_to_homLAG (A : Type) (HA : IsHSet A) (G : Monoid) :
   (A -> G) 
   ->
-  MonoidHom (BuildMonoid (BuildhSet (list A) (set_list_is_set _ HA)) 
+  MonoidHom (BuildMonoid (@BuildhSet (list A) (set_list_is_set _ HA)) 
                          _ _ set_list_is_monoid) 
             G.
 Proof.
@@ -562,7 +562,7 @@ Proof.
 Defined.
 
 Theorem list_is_free_monoid `{Funext} (A : Type) (HA : IsHSet A) (G : Monoid) :
-  MonoidHom (BuildMonoid ((BuildhSet (list A) (set_list_is_set _ HA))) 
+  MonoidHom (BuildMonoid ((@BuildhSet (list A) (set_list_is_set _ HA))) 
                          _ _ set_list_is_monoid) 
             G 
             <~> 
@@ -773,7 +773,7 @@ could try a different encoding.
 Lemma hset_prod : forall A, IsHSet A -> forall B, IsHSet B -> IsHSet (A * B).
 Proof.
   intros A HA B HB.
-  intros z z'. apply hprop_allpath. apply allpath_hprop.
+  intros z z'. apply hprop_allpath. apply path_ishprop.
 Defined.
 
 Module Exercise6_12.
@@ -848,19 +848,6 @@ Proof.
   apply p.
 Defined.
 
-
-Theorem hset_nat : IsHSet nat.
-Proof.
-  apply hset_decidable. intros n.
-  induction n; intro m; destruct m.
-    left. reflexivity.
-    right. intro p. apply equiv_path_nat in p. contradiction.
-    right. intro p. apply equiv_path_nat in p. contradiction.
-    destruct (IHn m).
-      left. apply (ap S). apply p.
-      right. intro p. apply S_inj in p. contradiction.
-Defined.
-  
 
 Theorem ex6_12 : int <~> (nat + Unit + nat).
 Proof.

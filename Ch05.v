@@ -527,7 +527,7 @@ Proof.
   apply (BuildContr L (lawvere (fun _ => tt))).
   apply indL; intro alpha.
   apply (ap lawvere).
-  apply allpath_hprop.
+  apply path_ishprop.
 Defined.
 
 End Ex10.

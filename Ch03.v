@@ -270,7 +270,7 @@ Definition ex3_8_ii : (Brck Q) -> Q.
 Defined.
 
 Theorem ex3_8_iii : forall q q' : Brck Q, q = q'.
-  apply allpath_hprop.
+  apply path_ishprop.
 Defined.
 
 Theorem ex3_8_iv : (Brck Q) <~> E.
@@ -346,15 +346,17 @@ Proof.
       assert (Contr A). apply contr_inhabited_hprop. apply p. apply x.
       apply equiv_path_universe. apply equiv_inverse. apply equiv_contr_unit.
     exists X. induction X. simpl. 
-    assert (IsHProp (IsHProp (Unit:Type))). apply HProp_HProp. apply X.
+    assert (IsHProp (IsHProp (Unit:Type))). 
+    typeclasses eauto. apply X.
     apply path_sigma_uncurried. simpl.
     assert ((Empty:Type) = A).
       apply equiv_path_universe. apply equiv_iff_hprop.
         intro z. contradiction.
         intro a. contradiction.
     exists X. induction X. simpl.
-    assert (IsHProp (IsHProp (Empty:Type))). apply HProp_HProp. apply X.
-Qed.
+    assert (IsHProp (IsHProp (Empty:Type))). 
+    typeclasses eauto. apply X.
+Defined.
 
 End Exercise3_9.
 
@@ -442,7 +444,7 @@ Proof.
   apply (@transport_arrow Type0 (fun A => Brck A) idmap).
   rewrite X in X0.
   assert (b = (transport (fun A : Type => Brck A) (path_universe negb) ^ b)).
-  apply allpath_hprop. rewrite <- X1 in X0. symmetry in X0.
+  apply path_ishprop. rewrite <- X1 in X0. symmetry in X0.
   assert (transport idmap (path_universe negb) (f Bool b) = negb (f Bool b)).
   apply transport_path_universe. rewrite X2 in X0. apply X0.
   apply (@negb_no_fixpoint (f Bool (min1 true))). 
@@ -574,7 +576,7 @@ Proof.
   intros. strip_truncations. apply tr. intro x. apply (X0.1 x; X0.2 x). 
 
   apply He. clear He. 
-  apply (AC_prod (default_HSet X HX) (fun x => {a : A x & P x a})).
+  apply (AC_prod (BuildhSet X) (fun x => {a : A x & P x a})).
   intros. apply ex3_3. apply (HA x). intro a.
   apply hprop_is_hset. apply (HP x a).
   intro x. apply (f x).
@@ -689,7 +691,7 @@ Definition min1'' {A : Type} (a : A) := fun (P : hProp) (f : A -> P) => f a.
 
 Definition trunc_rect'' {A B : Type} (g : A -> B) : IsHProp B -> Brck'' A -> B.
   intros p f.
-  apply (f (hp B p)). apply g.
+  apply (f (BuildhProp B)). apply g.
 Defined.
 
 
@@ -964,7 +966,7 @@ Proof.
   apply p.
 Defined.
   
-Lemma decidable_paths_nat : decidable_paths nat.
+Lemma decidable_paths_nat : DecidablePaths nat.
 Proof.
   intros n m. 
   generalize dependent m.
@@ -979,7 +981,7 @@ Proof.
 Defined.
 
 Lemma hset_nat : IsHSet nat.
-Proof. apply hset_decidable. apply decidable_paths_nat. Defined.
+Proof. apply hset_decpaths. apply decidable_paths_nat. Defined.
 
 Lemma hprop_le (n m : nat) : IsHProp (n <= m).
 Proof.
@@ -1625,7 +1627,7 @@ Proof.
 
   intro p. simpl. 
   assert (Contr (center A = center A)). apply contr_paths_contr.
-  assert (contr (center A) = idpath). apply allpath_hprop.
+  assert (contr (center A) = idpath). apply path_ishprop.
   rewrite X0. reflexivity.
 
   intro w. apply path_sigma_uncurried.
@@ -1655,14 +1657,14 @@ Theorem ex3_21 `{Funext} (P : Type) : IsHProp P <~> (P <~> Brck P).
 Proof.
   assert (IsHProp (P <~> Brck P)). apply hprop_allpath; intros e1 e2.
   apply path_equiv. apply path_forall; intro p.
-  apply hprop_allpath. apply allpath_hprop.
+  apply hprop_allpath. apply path_ishprop.
   apply equiv_iff_hprop.
 
   intro HP. apply equiv_iff_hprop. apply tr.
   apply Trunc_rect. intro p. apply HP. apply idmap.
   
   intro e. apply hprop_allpath; intros x y.
-  assert (e x = e y) as p. apply hprop_allpath. apply allpath_hprop.
+  assert (e x = e y) as p. apply hprop_allpath. apply path_ishprop.
   rewrite (eissect e x)^. rewrite (eissect e y)^.
   apply (ap e^-1 p). 
 Defined.
@@ -1881,7 +1883,7 @@ Proof.
   destruct w as [m w], w' as [m' w'].
   simpl. apply path_sigma_uncurried. exists p.
   set (H := hprop_lt m' n).
-  apply allpath_hprop.
+  apply path_ishprop.
 Defined.
 
 Theorem isequiv_cardF : forall n, IsEquiv (@cardF n).

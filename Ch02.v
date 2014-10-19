@@ -1020,7 +1020,7 @@ Proof.
 
   intro p. simpl.
   transparent assert (H: (center A = center A)). apply contr_paths_contr.
-  transparent assert (H': ((contr (center A))^ = 1)). apply allpath_hprop.
+  transparent assert (H': ((contr (center A))^ = 1)). apply path_ishprop.
   path_via (transport P 1 p). f_ap.
 
   intro w. apply path_sigma_uncurried.
@@ -1079,9 +1079,16 @@ Proof.
   refine (equiv_sigma_assoc _ _).
 
   equiv_via (h o (center {n : X -> D & f o j = n}).1 = k o m).
-  refine (equiv_sigma_contr_base _ _ _). simpl.
+  refine (equiv_sigma_contr_base _ _ _).
 
-  apply equiv_idmap.
+  refine (equiv_adjointify _ _ _ _).
+  intro eq. refine (_ @ eq). apply (ap (compose h)).
+  apply (center {n : X -> D & f o j = n}).2.
+  intro eq. refine (_ @ eq). apply (ap (compose h)).
+  apply (center {n : X -> D & f o j = n}).2^.
+  intro eq. apply moveR_Mp. refine (whiskerR _ eq). refine (ap_V (compose h) _).
+  intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
+  refine (_ @ (ap_V (compose h) _)). f_ap. symmetry. apply inv_V.
 Defined.
 
   

@@ -7,7 +7,7 @@ Require Export HoTT Ch08.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Category theory *)
 
-Require Import Category.
+Require Import categories.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 
@@ -171,7 +171,7 @@ Proof.
   destruct bf as [b f], cg as [c g].
   destruct H as [i H].
   destruct i as [i eq].
-  apply issig_isomorphic.
+  apply Morphisms.issig_isomorphic.
   exists i.
   destruct H as [ii ri li].
   destruct ii as [ii eq'].
@@ -182,6 +182,7 @@ Proof.
 Defined.
     
   
+(*
 (* This should really just be an application of [idtoiso_of_transport] *)
 Lemma Lemma9_1_9 (A : PreCategory) (a a' b b' : A) (p : a = a') (q : b = b')
       (f : Category.morphism A a b) :
@@ -195,6 +196,7 @@ Proof.
   refine (_ @ (left_identity _ _ _ _)^).
   reflexivity.
 Defined.
+*)
 
 (*
 Theorem slice_cat_if_cat (A : PreCategory) (a : A) 

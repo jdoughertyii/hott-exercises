@@ -130,14 +130,14 @@ Proof.
   - intros A B f z g.
     apply z. intro a.
     refine ((transport (fun x => ~ ~ (B x)) 
-                       (@allpath_hprop _ _ _ _)
+                       (@path_ishprop _ _ _ _)
                        (f a)) g).
-  - intros A B f a. apply allpath_hprop.
+  - intros A B f a. apply path_ishprop.
   - intros A z z'.
     refine (isequiv_adjointify _ _ _ _).
-    * intros f. apply allpath_hprop.
+    * intros f. apply path_ishprop.
     * intro p. apply path_arrow; intro f. contradiction.
-    * intro p. apply allpath_hprop.
+    * intro p. apply path_ishprop.
 Defined.
 
 End Ex12.
@@ -313,7 +313,7 @@ Proof.
   - intros X x p. apply x.
   - intros A B f g p.
     apply (transport B (path_arrow (fun _ : P => g p) g
-                                    (fun p' : P => ap g (allpath_hprop p p')))).
+                                    (fun p' : P => ap g (path_ishprop p p')))).
     apply (f (g p) p).
   - intros A B f a.
     apply path_arrow; intro p. simpl in *.
@@ -323,12 +323,12 @@ Proof.
     refine ((apD10_path_arrow _ _ _ _) @ _).
     apply ap_const.
   - intros A z z'.
-    refine (equiv_adjointify _ _ _ _).
+    refine (isequiv_adjointify _ _ _ _).
     + intro f. apply path_arrow. intro p.
       apply (ap10 (f p) p).
     + intro f. apply path_arrow. intro p.
       path_via (path_arrow z z' (ap10 (f p))). f_ap.
-      * apply path_forall. intro p'. f_ap. apply (ap f). apply allpath_hprop.
+      * apply path_forall. intro p'. f_ap. apply (ap f). apply path_ishprop.
       * apply eta_path_arrow.
     + intro p. apply eta_path_arrow.
 Defined.
@@ -381,7 +381,7 @@ Proof.
         apply (ap apD10)^-1. apply path_forall. intro p'.
         refine ((apD10_path_forall _ _ _ p') @ _).
         refine ((ap10_path_arrow _ _ _ p) @ _).
-        f_ap. apply allpath_hprop.
+        f_ap. apply path_ishprop.
 
         intro eq.
         apply (ap apD10)^-1. apply path_forall. intro p.
@@ -424,10 +424,10 @@ Proof.
         intros eq.
         apply path_arrow. intro k. apply path_arrow. intro p.
         path_via ((@O_functor open_modality _ _ (f o h) o O_unit P) p p).
-        unfold compose. f_ap. apply allpath_hprop.
+        unfold compose. f_ap. apply path_ishprop.
         path_via ((@O_functor open_modality _ _ (g o j) o O_unit P) p p).
         apply (ap10 (ap10 eq p) p).
-        unfold compose. f_ap. apply allpath_hprop.
+        unfold compose. f_ap. apply path_ishprop.
         
         intros eq. apply path_arrow. intro p. unfold compose. f_ap.
         
@@ -442,14 +442,14 @@ Proof.
         unfold ap10.
         apply moveL_pV.
         path_via (apD10 ((apD10 eq (O_unit P p)) 
-                         @ (ap11 1 (allpath_hprop (O_unit P p) k))) p).
+                         @ (ap11 1 (path_ishprop (O_unit P p) k))) p).
         apply inverse. apply (apD10_pp (apD10 eq (O_unit P p)) _ p).
         apply moveL_Vp. 
-        refine ((apD10_pp (ap11 1 (allpath_hprop k (O_unit P p))) _ p)^ @ _).
+        refine ((apD10_pp (ap11 1 (path_ishprop k (O_unit P p))) _ p)^ @ _).
         f_ap. induction eq. hott_simpl.
         apply moveR_pM. refine (_ @ (concat_1p _)^).
         refine (_ @ (ap11_V _ _ _ _)).
-        f_ap. apply allpath_hprop.
+        f_ap. apply path_ishprop.
 
         intro eq.
         apply (ap ap10)^-1. apply path_forall. intro p.

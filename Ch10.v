@@ -125,10 +125,10 @@ Proof.
 Defined.
 
 
-Definition set_sum (A B : hSet) := default_HSet (A + B) hset_sum.
+Definition set_sum (A B : hSet) := @BuildhSet (A + B) hset_sum.
 
 (* This is misdefined in HoTT/HoTT *)
-Definition False_hp : hProp := (hp Empty _).
+Definition False_hp : hProp := (BuildhProp Empty).
 
 Definition sum_order {A B : hSet} (LA : A -> A -> hProp) 
            (LB : B -> B -> hProp) (z z' : set_sum A B)
@@ -239,16 +239,16 @@ induction on $B$.  So suppose that $b, b' : B$ and $s : \acc(b)$ and $s' :
 \acc(b')$.
 *)
 
-Definition set_prod (A B : hSet) := default_HSet (A * B) (hset_prod A _ B _).
+Definition set_prod (A B : hSet) := @BuildhSet (A * B) (hset_prod A _ B _).
 
 Definition lexical_order {A B : hSet} (LA : A -> A -> hProp) 
            (LB : B -> B -> hProp) (z z' : set_prod A B)
   : hProp
   := match z with 
        | (a, b) => match z' with
-                     | (a', b') => hp (Brck ((LA a a') 
+                     | (a', b') => BuildhProp (Brck ((LA a a') 
                                              + 
-                                             ((a = a') * (LB b b')))) _
+                                             ((a = a') * (LB b b'))))
                    end
      end.
 
@@ -292,7 +292,7 @@ $P$ is accessible for all $P < Q$.  That is,
 
 Definition heyting_ord `{Funext} (P Q : hProp) 
   : hProp
-  := hp ((P -> Q) * (Q <> P)) _.
+  := BuildhProp ((P -> Q) * (Q <> P)).
   
 
 
