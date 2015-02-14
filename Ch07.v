@@ -154,8 +154,8 @@ Let $P$ be a mere proposition
 *)
 
 (** %\soln%
-A left exact modality is one which preserves pullbacks as well as finite
-products.  That is, if $A \times _{C} B$ is a pullback, then so is
+A left exact (lex) modality is one which preserves pullbacks as well as finite
+products.  That is, if $A \times_{C} B$ is a pullback, then so is
 $\modal (A \times_{C} B)$, which is to say that for all $X$,
 %\[
   (X \to \modal(A \times_{C} B))
@@ -171,6 +171,15 @@ i.e., for all $X$ we have
     (X \to \modal A) \times (X \to \modal B)
   }
 \]%
+
+To show that a modality $\modal$ is lex, it suffices to show that for a type
+$A$ and a family $B \colon A \to \UU$, if $\modal A$ and $\modal
+(\sm{x:A}B(x))$ are
+contractible, then so is each $\modal B(x)$.
+
+Alternatively, it suffices to show that for any types $A$, $B$, $b : B$, and $f
+\colon A \to B$, if $\modal A$ and $\modal B$ are contractible, then so is
+$\modal(\hfib{f}{b})$.
 
 
 %\vspace{.1in}

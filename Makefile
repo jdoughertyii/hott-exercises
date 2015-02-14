@@ -8,7 +8,7 @@ pdf: $(TCHAPS)
 	cd $(TEXDIR) ; make hott-exercises ; mv -f hott-exercises.pdf ..
 
 tex/%.tex : %.v %.glob
-#	coqdoc --latex -s --body-only -d tex --interpolate --parse-comments $<
+	coqdoc --latex -s --body-only -d tex --interpolate --parse-comments $<
 	cp {src,tex}/coqdoc.sty
 
 %.glob : %.v
