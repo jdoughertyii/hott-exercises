@@ -35,3 +35,5 @@ tex/hott-exercises.toc
 .#chap03.v
 
 tex/hott-exercises.run.cookie
+
+*.tex

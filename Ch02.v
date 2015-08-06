@@ -288,23 +288,34 @@ Define, by induction on $n$, a general notion of $n$-dimensional path
 in a type $A$, simultaneously with the type of boundaries for such paths. *)
 
 (** %\soln%
-A $0$-path in $A$ is an element $x : A$, so the type of $0$-paths is just $A$.
-If $p$ and $q$ are $n$-paths, then so is $p = q$.  In the other
-direction, the boundary of a $0$-path is empty, and the boundary of an
-$n+1$ path is an $n$-path.
+A $0$-path in $A$ is an element $x : A$, so the type of $0$-paths is $A$.  A
+$1$-path is an ordinary path $a = a'$ for some $a, a' : A$, so the type of
+$1$-paths is $\sm{a, a':\text{$0$-\textsf{path}}}(a=a')$.  So, in general, the
+type of $(n+1)$-paths should be $\sm{p, q : \text{$n$-\textsf{path}}}(p = q)$.
+
+As for the boundaries, one option is to say that the boundary of an
+$(n+1)$-path is the ordered pair of its endpoints, so that an $n$-boundary
+is a term of type $\text{$n$-\textsf{path}} \times \text{$n$-\textsf{path}}$.  I'd like to define this be mutual induction, but [fst] doesn't want to act on [(boundary A n)], so I can't.
+
+On the other hand, thinking in terms of a simplicial complex, an $n$-path is an
+$n$-simplex, so its boundary should be an $(n-1)$-chain.  The type of
+boundaries is then the image of the boundary map restricted to $n$-simplices.
+To define the boundary map, send an $n$-path $r : p = q$ between $p, q : x = y$
+to the $(n-1)$-path $p \ct q^{-1} : x = x$.  So the type of boundaries is the
+type of loops that factor as $p \ct q^{-1}$.  But this is equivalent to the
+product type of the previous paragraph, so this definition ends up being the
+same.
+
+Thanks to Kabelo Moiloa for pointing out that my original answer was wrong.
 *)
 
 Fixpoint npath (A:Type) (n:nat) : Type :=
   match n with
     | O => A
-    | S n' => {p : (boundary A n') & {q : (boundary A n') & p = q}}
-  end
-
-with boundary (A:Type) (n:nat) : Type :=
-  match n with
-    | O => Empty
-    | S n' => (npath A n')
+    | S n' => {bd : npath A n' * npath A n' & fst bd = snd bd}
   end.
+
+Definition boundary (A:Type) (n:nat) : Type := (npath A n) * (npath A n).
 
 
 (** %\exerdone{2.5}{103}% 
@@ -316,8 +327,7 @@ Prove that the functions
 are inverse equivalences. *)
 
 (** %\soln% 
-I take it that ``inverse equivalences'' means that each of the maps is the
-quasi-inverse of the other.  Suppose that $x, y : A$, $p : x = y$, and $f : A
+Suppose that $x, y : A$, $p : x = y$, and $f : A
 \to B$.  Then we have the objects 
 %\[
   \mapfunc{f}(p) : (f(x) = f(y)) \\
@@ -862,19 +872,20 @@ Section Ex11.
 Context {A B C : Type} (X : Type) (f: A -> C) (g: B -> C). 
 
 Local Definition square_commutes `{Funext} 
-  : f o (fun p : (pullback f g) => p.1) = g o (fun p : (pullback f g) => p.2.1).
+  : f o (fun p : (Pullback f g) => p.1) = g o (fun p : (Pullback f g) => p.2.1).
 Proof.
   apply path_forall. intro p. destruct p as [a [b p]]. apply p.
 Defined.
 
 Lemma pullback_uprop `{Funext}  
-  : (X -> (pullback f g)) <~> pullback (@compose X _ _ f) (@compose X _ _ g).
+  : (X -> (Pullback f g)) <~> Pullback (fun h : X -> A => f o h) 
+                                       (fun h : X -> B => g o h).
 Proof.
   refine (equiv_adjointify _ _ _ _).
   
   (* forward *)
   intro h. exists (fun x => pr1 (h x)). exists (fun x => pr1 (pr2 (h x))).
-  apply path_forall. intro x. unfold compose. apply (h x).2.2.
+  apply path_forall. intro x. apply (h x).2.2.
 
   (* backward *)
   intros h x. destruct h as [h1 [h2 q]]. refine (h1 x; (h2 x; apD10 q x)).
@@ -1006,8 +1017,8 @@ Proof.
   refine (equiv_adjointify _ _ _ _).
   intro w. apply (w.2.1; (w.1; w.2.2)).
   intro w. apply (w.2.1; (w.1; w.2.2)).
-  intro w. apply eta_sigma.
-  intro w. apply eta_sigma.
+  intro w. simpl. apply eta_sigma.
+  intro w. simpl. apply eta_sigma.
 Defined.
   
 
@@ -1036,7 +1047,7 @@ Variables (A B C D E F X : Type)
           (r : h o g = k o j).
 
 Local Definition xc_to_plbk 
-  : (X -> C) -> pullback (@compose X _ _ h) (@compose X _ _ k).
+  : (X -> C) -> Pullback (fun f : X -> D => h o f) (fun f : X -> E => k o f).
 Proof.
   intro l. refine (g o l; (j o l; ap (fun m => m o l) r)).
 Defined.
@@ -1044,13 +1055,14 @@ Defined.
 Variable (He : IsEquiv xc_to_plbk).
 
 Theorem pbl_helper `{Funext}
-  : pullback (@compose X _ _ f) (@compose X _ _ g)
+  : Pullback (fun m : X -> B => f o m) (fun m : X -> C => g o m)
     <~>
-    pullback (@compose X _ _ (h o f)) (@compose X _ _ k).
+    Pullback (fun m : X -> B => (h o f) o m) (fun m : X -> E => k o m).
 Proof.
   refine (equiv_functor_sigma_id _). intro j.
 
-  equiv_via {c : pullback (@compose X _ _ h) (@compose X _ _ k) & f o j = c.1}.
+  equiv_via {c : Pullback (fun m : X -> D => h o m) 
+                          (fun m : X -> E => k o m) & f o j = c.1}.
   refine (equiv_functor_sigma' _ _). 
   apply (BuildEquiv _ _ xc_to_plbk He). intro l.
   apply equiv_idmap.
@@ -1088,22 +1100,25 @@ Proof.
   apply (center {n : X -> D & f o j = n}).2^.
   intro eq. apply moveR_Mp. refine (whiskerR _ eq). refine (ap_V (compose h) _).
   intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
-  refine (_ @ (ap_V (compose h) _)). f_ap. symmetry. apply inv_V.
+  refine (_ @ (ap_V (compose h) _)). f_ap.
 Defined.
 
   
 
 Lemma pullback_lemma `{Funext}
-  : (X -> A) <~> pullback (@compose X _ _ f) (@compose X _ _ g)
+  : (X -> A) <~> Pullback (fun m : X -> B => f o m) 
+                          (fun m : X -> C => g o m)
     <->
-    (X -> A) <~> pullback (@compose X _ _ (h o f)) (@compose X _ _ k).
+    (X -> A) <~> Pullback (fun m : X -> B => (h o f) o m) 
+                          (fun m : X -> E => k o m).
 Proof.
   split.
   intro H'.
-  equiv_via (pullback (@compose X _ _ f) (@compose X _ _ g)).
+  equiv_via (Pullback (fun m : X -> B => f o m) (fun m : X -> C => g o m)).
   apply H'. apply pbl_helper.
   intro H'.
-  equiv_via (pullback (@compose X _ _ (h o f)) (@compose X _ _ k)).
+  equiv_via (Pullback (fun m : X -> B => (h o f) o m) 
+                      (fun m : X -> E => k o m)).
   apply H'. apply equiv_inverse. apply pbl_helper.
 Defined.
   
@@ -1442,21 +1457,22 @@ Proof.
   (* quasi-inverse *)
   destruct e. intro q.
   change a with (a; q).1.
-  apply (transport _ (base_path (eisretr (a; q)))).
+  apply (transport _ (pr1_path (eisretr (a; q)))).
   apply (equiv_inv (a; q)).2.
 
   (* section *)
   destruct e. intro p.
   refine ((ap_transport _ _ _) @ _).
-  apply (fiber_path (eisretr (a; p))).
+  apply (pr2_path (eisretr (a; p))).
 
   (* retract *)
   destruct e. intro p.
   change p with (a; p).2.
-  refine (_ @ (fiber_path (eissect (a; p)))).
-  unfold base_path. f_ap. simpl.
+  refine (_ @ (pr2_path (eissect (a; p)))).
+  unfold pr1_path. f_ap. simpl.
   change (a; f a p) with (total f (a; p)).
-  rewrite eisadj. refine ((ap_compose _ _ _)^ @ _).
+  rewrite eisadj. 
+  refine ((ap_compose (total f) _ _)^ @ _).
   reflexivity.
 Defined.
    
@@ -1541,7 +1557,7 @@ underlying functions are equal, by Lemma 3.5.1.
 
 Theorem equal_proofs `{Univalence} : equiv_functor_prod = equiv_functor_prod'.
 Proof.
-  unfold equiv_functor_prod, equiv_functor_prod'. simpl. unfold compose.
+  unfold equiv_functor_prod, equiv_functor_prod'. simpl. 
   apply path_forall; intro A.  apply path_forall; intro A'.
   apply path_forall; intro B.  apply path_forall; intro B'.
   apply path_forall; intro f.  apply path_forall; intro g.
@@ -1560,19 +1576,21 @@ Proof.
     rewrite transport_pp. 
     rewrite <- (transport_idmap_ap Type (fun y => y * B)).
     rewrite transport_prod. simpl.
-    refine (_ @ (transport_path_universe _ _)). f_ap.
-    unfold path_universe, path_universe_uncurried.
-    apply (ap _). apply path_equiv. reflexivity.
+    refine ((transport_path_universe_uncurried _ _) @ _).
+    reflexivity.
 
     (* snd *)
-    refine (_ @ (transport_path_universe _ _)). f_ap.
-    unfold path_universe, path_universe_uncurried.
-    apply (ap _). apply path_equiv. reflexivity.
-    rewrite concat_1p. 
-    rewrite <- (transport_idmap_ap Type (fun y => y * B)).
-    rewrite transport_prod. simpl.
+    refine ((transport_path_universe_uncurried _ _) @ _). f_ap.
+    path_via (snd (f a, b)). f_ap.
+    refine ((transport_pp _ _ _ _) @ _).
+    refine ((transport_idmap_ap _ _ _ _ _ _)^ @ _).
+    refine ((transport_prod _ _) @ _).
+    apply path_prod; simpl. f_ap.
+    apply transport_idmap_path_universe_uncurried.
     apply transport_const.
 Defined.
+    
+    
     
 
 (** %\noindent%

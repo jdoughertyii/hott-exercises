@@ -1,9 +1,526 @@
 (* begin hide *)
-Require Export HoTT Ch06_2.
+Require Export HoTT Ch05 hit.TwoSphere.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
 (** printing ^-1 %\ensuremath{^{-1}}% **)
+(** * Higher Inductive Types *)
+
+(** %\exerdone{6.1}{217}% 
+Define concatenation of dependent paths, prove that application of dependent
+functions preserves concatenation, and write out the precise induction
+principle for the torus $T^{2}$ with its computation rules.
+*)
+
+(** %\soln%
+I found
+%\href{http://ncatlab.org/homotopytypetheory/files/torus.pdf}{Kristina
+Sojakova's answer posted to the HoTT Google group}%
+helpful here, though I think my answer differs.
+
+Let $W : \UU$, $P : W \to \UU$, $x, y, z : W$, $u : P(x)$, $v : P(y)$, and $w :
+P(z)$ with $p : x = y$ and $q : y = z$.
+We define the map
+%\[
+  \ctD : (\dpath{P}{p}{u}{v}) \to (\dpath{P}{q}{v}{w}) \to (\dpath{P}{p \ct q}{u}{w})
+\]%
+by path induction.
+*)
+
+Definition concatD {A} {P : A -> Type} {x y z : A} 
+           {u : P x} {v : P y} {w : P z}
+           {p : x = y} {q : y = z} :
+  (p # u = v) -> (q # v = w) -> ((p @ q) # u = w).
+  by path_induction.
+Defined.
+
+Notation "p @D q" := (concatD p q)%path (at level 20) : path_scope.
+
+(** %\noindent%
+To prove that application of dependent functions preserves concatenation,
+we must show that for any $f : \prd{x:A}P(x)$, $p : x = y$, and $q : y = z$,
+%\[
+  \mapdep{f}{p \ct q} = \mapdep{f}{p} \ctD \mapdep{f}{q}
+\]%
+which is immediate by path induction.
+*)
+
+Theorem apD_pp {A} {P : A -> Type} (f : forall x : A, P x) 
+        {x y z : A} (p : x = y) (q : y = z) :
+  apD f (p @ q) = (apD f p) @D (apD f q).
+Proof.
+  by path_induction.
+Defined.
+
+(** %\noindent%
+Suppose that we have a family $P : T^{2} \to \UU$, a point $b' : P(b)$, paths
+$p' : \dpath{P}{p}{b'}{b'}$ and $q' : \dpath{P}{q}{b'}{b'}$ and a 2-path $t' :
+\dpath{P}{t}{p' \ctD q'}{q' \ctD p'}$.  Then the induction principle gives a
+section $f : \prd{x : T^{2}} P(x)$ such that $f(b) \equiv b'$, $f(p) = p'$, and
+$f(q) = q'$.  As discussed in the text, we should also have $\apdtwo{f}{t} =
+t'$, but this is not well-typed.  This is because $\apdtwo{f}{t} :
+\dpath{P}{t}{f(p \ct q)}{f(q \ct p)}$, in contrast to the type of $t'$, and the
+two types are not judgementally equal.
+
+To cast $\apdtwo{f}{t}$ as the right type, note first that, as just proven,
+$f(p \ct q) = f(p) \ctD f(q)$, and $f(q \ct p) = f(q) \ctD f(p)$.  The
+computation rules for the 1-paths can be lifted as follows.  
+Let $r, r' : \dpath{P}{p}{u}{v}$, and $s, s' : \dpath{P}{q}{v}{w}$.  Then we
+define a map
+%\[
+  \ctdD : (r = r') \to (s = s') \to (r \ctD s = r' \ctD s')
+\]%
+by path induction.
+*)
+
+Definition concat2D {A : Type} {P : A -> Type} 
+           {x y z : A} {p : x = y} {q : y = z} 
+           {u : P x} {v : P y} {w : P z}
+           {r r' : p # u = v} {s s' : q # v = w} :
+  (r = r') -> (s = s') -> (r @D s = r' @D s').
+  by path_induction.
+Defined.
+
+Notation "p @@D q" := (concat2D p q)%path (at level 20) : path_scope.
+       
+
+(** %\noindent%
+Thus by the computation rules for $p$ and $q$,
+we have for $\alpha : f(p) = p'$ and $\beta : f(q) = q'$,
+%\begin{align*}
+  \alpha \ctdD \beta &: f(p) \ctD f(q) = p' \ctD q' \\
+  \beta \ctdD \alpha &: f(q) \ctD f(p) = q' \ctD p'
+\end{align*}%
+At this point it's pretty clear how to assemble the computation rule.
+Let $N_{1} : f(p \ct q) = f(p) \ctD f(q)$ and $N_{2} : f(q \ct p) = f(q) \ctD
+f(p)$ be two instances of the naturality proof just given.  Then we have
+%\[
+  (\alpha \ctdD \beta)^{-1} \ct N^{-1}_{1} 
+  \ct \apdtwo{f}{t}
+  \ct (\transtwo{t}{b'} \leftwhisker N_{2})
+  \ct (\transtwo{t}{b'} \leftwhisker (\beta \ctdD \alpha))
+  :
+  \dpath{P}{t}{p' \ctD q'}{q' \ctD p'}
+\]%
+which is the type of $t'$.
+*)
+
+Module Torus_ex.
+
+Private Inductive T2 : Type :=
+| Tb : T2.
+
+Axiom Tp : Tb = Tb.
+Axiom Tq : Tb = Tb.
+Axiom Tt : Tp @ Tq = Tq @ Tp.
+
+Definition T2_rect (P : T2 -> Type) 
+           (b' : P Tb) (p' : Tp # b' = b') (q' : Tq # b' = b')
+           (t' : p' @D q' = (transport2 P Tt b') @ (q' @D p'))
+  : forall (x : T2), P x :=
+  fun x => match x with Tb => fun _ _ _ => b' end p' q' t'.
+
+Axiom T2_rect_beta_Tp :
+  forall (P : T2 -> Type)
+         (b' : P Tb) (p' : Tp # b' = b') (q' : Tq # b' = b')
+         (t' : p' @D q' = (transport2 P Tt b') @ (q' @D p')),
+    apD (T2_rect P b' p' q' t') Tp = p'.
+
+Axiom T2_rect_beta_Tq :
+  forall (P : T2 -> Type)
+         (b' : P Tb) (p' : Tp # b' = b') (q' : Tq # b' = b')
+         (t' : p' @D q' = (transport2 P Tt b') @ (q' @D p')),
+    apD (T2_rect P b' p' q' t') Tq = q'.
+
+Axiom T2_rect_beta_Tt :
+  forall (P : T2 -> Type)
+         (b' : P Tb) (p' : Tp # b' = b') (q' : Tq # b' = b')
+         (t' : p' @D q' = (transport2 P Tt b') @ (q' @D p')),
+    (T2_rect_beta_Tp P b' p' q' t' @@D T2_rect_beta_Tq P b' p' q' t')^
+    @ (apD_pp (T2_rect P b' p' q' t') Tp Tq)^ 
+    @ (apD02 (T2_rect P b' p' q' t') Tt)
+    @ (whiskerL (transport2 P Tt (T2_rect P b' p' q' t' Tb))
+                (apD_pp (T2_rect P b' p' q' t') Tq Tp))
+    @ (whiskerL (transport2 P Tt (T2_rect P b' p' q' t' Tb))
+                (T2_rect_beta_Tq P b' p' q' t' @@D T2_rect_beta_Tp P b' p' q' t'))
+    = t'.
+
+End Torus_ex.
+
+(** %\exer{6.2}{217}% 
+Prove that $\susp\Sn^{1} \eqvsym \Sn^{2}$, using the explicit definition of
+$\Sn^{2}$ in terms of $\base$ and $\surf$ given in %\S6.4%.
+*)
+
+(** %\soln%
+$\Sn^{2}$ is generated by
+ - $\base_{2} : \Sn^{2}$
+ - $\surf : \refl{\base_{2}} = \refl{\base_{2}}$
+and $\susp\Sn^{1}$ is generated by
+ - $\north : \susp\Sn^{1}$
+ - $\south : \susp\Sn^{1}$
+ - $\merid : \Sn^{1} \to (\north = \south)$.
+To define a map $f : \susp\Sn^{1} \to \Sn^{2}$, we need a map $m : \Sn^{1} \to
+(\base_{2} = \base_{2})$, which we define by circle recursion such that
+$m(\base_{1}) \equiv \refl{\base_{2}}$ and $m(\lloop) = \surf$.  Then recursion
+on $\susp\Sn^{1}$ gives us our $f$, and we have $f(\north) \equiv \base_{2}$;
+$f(\south) \equiv \base_{2}$; and for all $x : \Sn^{1}$, $f(\merid(x)) = m(x)$.
+
+To go the other way, we use the recursion principle for the 2-sphere to obtain
+a function $g : \Sn^{2} \to \susp\Sn^{1}$ such that $g(\base_{2}) \equiv
+\north$ and $\aptwo{g}{\surf} = \merid(\lloop) \rightwhisker \merid(\base_{1})^{-1}$,
+conjugated with proofs that $\merid(\base_{1}) \ct \merid(\base_{1})^{-1} =
+\refl{\north}$.
+
+Now, to show that this is an equivalence, we must show that the second map is a
+quasi-inverse to the first.  First we show $g \circ f \sim
+\idfunc{\susp\Sn^{1}}$.  For the poles we have
+%\begin{align*}
+  g(f(\north)) &\equiv g(\base_{2}) \equiv \north \\
+  g(f(\south)) &\equiv g(\base_{2}) \equiv \north
+\end{align*}%
+and concatenating the latter with $\merid(\base_{1})$ gives $g(f(\south)) =
+\south$.  Now we must show that for all $y : \Sn^{1}$, these equalities hold as
+$x$ varies along $\merid(y)$.  That is, we must produce a path
+%\[
+  \transfib{x \mapsto g(f(x)) = x}{\merid(y)}{\refl{\north}} = \merid(\base_{1})
+\]%
+or, by Theorem 2.11.3 and a bit of path algebra,
+%\[
+  g(m(y))
+  =
+  \merid(y) \ct \merid(\base_{1})^{-1}
+\]%
+We do this by induction on $\Sn^{1}$.  When $y \equiv \base_{1}$, we have
+%\[
+  g(m(\base_{1})) 
+  = 
+  g(\refl{\base_{2}}) 
+  =
+  \refl{\base_{2}}
+  =
+  \merid(\base_{1}) \ct \merid(\base_{1})^{-1}
+\]%
+When $y$ varies along $\lloop$, we have to show that this proof continues to
+hold.  By Theorem 2.11.3 and some path algebra, this in fact
+reduces to
+%\[
+  \mapfunc{y \mapsto g(m(y))} \lloop
+  =
+  \merid(\lloop) \rightwhisker \merid(\base_{1})^{-1}
+\]%
+modulo the proofs of $\merid(\base_{1}) \ct \merid(\base_{1})^{-1} =
+\refl{\north}$.  And this is essentially the computation rule for $g$.  Since
+the computation rules are propositional some extra proofs have to be carried
+around, though; see the second part of [isequiv_SS1_to_S2] for the gory details.
+
+To show that $f \circ g \sim \idfunc{\Sn^{2}}$, note that
+%\[
+  f(g(\base_{2})) \equiv f(\north) \equiv \base_{2}
+\]%
+so we only need to show that as $x$ varies over the surface,
+%\[
+  \dpath{x \mapsto f(g(x)) =
+  x}{\surf}{\refl{\refl{\base_{2}}}}{\refl{\refl{\base_{2}}}}
+\]%
+which means
+%\[
+ \refl{\refl{\base_{2}}} = \transtwo{\surf}{\refl{\base_{2}}}
+  \equiv
+  \mapfunc{p \mapsto p_{*} \refl{\base_{2}}}\surf
+\]%
+So we need to show that
+%\[
+  \refl{\refl{\base_{2}}} = \mapfunc{p \mapsto f(g(p^{-1})) \ct p} \surf
+\]%
+which by naturality of $\mapfunc{}$ and the computation rule for $\Sn^{1}$ is
+%\[
+  \refl{\refl{\base_{2}}} 
+  =
+  \left(\aptwo{f}{\aptwo{g}{\surf}}\right)^{-1}
+  \ct
+  \surf
+\]%
+Naturality and the computation rules then give
+%\[
+  \aptwo{f}{\aptwo{g}{\surf}} 
+  = \aptwo{f}{\merid(\lloop)} 
+  = m(\lloop)
+  = \surf
+\]%
+and we're done.  The computation in Coq is long, since all of the homotopic
+corrections have to be done by hand.  I also spend a lot of moves on making the
+interactive version of the proof clear, and those could probably be eliminated.
+There are some lemmata with dumb names that should be fixed.
+*)
+
+
+
+Lemma ap_ap__ap02_ap {A B C : Type} {a : A} {b : B} 
+      (p : a = a) (f : B -> C) (m : A -> (b = b)) :
+  ap (fun x : A => ap f (m x)) p = ap02 f (ap m p).
+Proof. by induction p. Defined.
+
+Lemma whiskerR_ap {A B : Type} {a : A} {b b' : B} 
+      (f : A -> (b = b')) (p : a = a) (q : b' = b) :
+  whiskerR (ap f p) q = ap (fun x => f x @ q) p.
+Proof. by induction p. Defined.
+
+Definition SS1_to_S2 := Susp_rec base base (S1_rec (base = base) 1 surf).
+
+Definition S2_to_SS1 := 
+  S2_rec (Susp S1) North
+            ((concat_pV (merid Circle.base))^
+             @ (whiskerR (ap merid loop) (merid Circle.base)^)
+             @ (concat_pV (merid Circle.base)))^.
+
+Lemma ap_concat (A B : Type) (a : A) (b b' b'' : B) (p : a = a) 
+      (f : A -> (b = b')) (g : A -> (b' = b'')) :
+  ap (fun x => f x @ g x) p = (ap f p) @@ (ap g p).
+Proof. by induction p. Defined.
+
+Definition concat2_V2p {A : Type} {x y : A} {p q : x = y} (r : p = q) :
+  (concat_Vp _)^ @ (inverse2 r @@ r) @ (concat_Vp _) = 1.
+Proof. by path_induction. Defined.
+
+Definition ap_inv {A B : Type} {a : A} {b : B} (p : a = a) (m : A -> (b = b)):
+  ap (fun x : A => (m x)^) p = inverse2 (ap m p).
+Proof. by induction p. Defined.
+
+Lemma bar (A B C : Type) (b b' : B) (m : A -> (b = b')) (f : B -> C) 
+      (a : A) (p : a = a) :
+  ap (fun x : A => ap f (m x)) p = ap02 f (ap m p).
+Proof. by induction p. Defined.
+
+Definition ap03 {A B : Type} (f : A -> B) {x y : A} 
+           {p q : x = y} {r s : p = q} (t : r = s) :
+  ap02 f r = ap02 f s
+  := match t with idpath => 1 end.
+
+Definition ap_pp_pV {A B : Type} (f : A -> B) 
+           {x y : A} (p : x = y) :
+  ap_pp f p p^ 
+  = (ap02 f (concat_pV p)^)^ @ (concat_pV (ap f p))^ @ (1 @@ (ap_V f p))^.
+Proof.
+  by path_induction.
+Defined.
+
+Definition ap02_V {A B : Type} (f : A -> B)
+           {x y : A} {p q : x = y} (r : p = q) :
+  ap02 f r^ = (ap02 f r)^.
+Proof. by path_induction. Defined.
+
+Definition inv_p2p {A : Type} {x y z : A} 
+           {p p' : x = y} {q q' : y = z} (r : p = p') (s : q = q') :
+  (r @@ s)^ = r^ @@ s^.
+Proof. by path_induction. Defined.
+
+Definition baz {A : Type} {x y : A} {p q : x = y} (r : p = q) : 
+  concat_pV p = (r @@ inverse2 r) @ concat_pV q.
+Proof. by path_induction. Defined.
+
+Definition apD02_const (A B : Type) (f : A -> B) (x y : A) 
+           (p q : x = y) (r : p = q)
+  : apD02 f r 
+    = 
+    (apD_const f p) 
+      @ ((transport2_const r (f x)) @@ (ap02 f r))
+      @ (concat_pp_p _ _ _)
+      @ (whiskerL (transport2 (fun _ : A => B) r (f x)) (apD_const f q)^).
+Proof.
+  by path_induction.
+Defined.
+
+Definition cancel2L (A : Type) (x y z : A) (p p' : x = y) (q q' : y = z)
+           (r : p = p') (s t : q = q') 
+  : r @@ s = r @@ t -> s = t.
+Proof.
+  intro u. induction r.
+  refine ((whiskerL_1p _)^ @ _). refine (_ @ (whiskerL_1p _)).
+  apply moveR_pM. apply moveR_Vp. refine ((concat2_1p _)^ @ _).
+  refine (_ @ (concat_pp_p _ _ _)).
+  apply moveL_pV. refine (_ @ (concat_pp_p _ _ _)). apply concat2.
+  refine (_ @ (concat_pp_p _ _ _)).
+  apply moveL_pM. refine (_ @ (concat_pV _)^).
+  apply moveR_pV. refine (_ @ (concat_1p _)^).
+  refine (_ @ (concat2_1p _)).
+Admitted.
+  
+
+(*
+Definition S2_rec_beta_surf (P : Type) (b : P) (l : idpath b = idpath b)
+: ap02 (S2_rec P b l) surf = l^.
+Proof.
+  unfold S2_rec.
+  refine ((S2_rect_beta_loop _ _ _) @ _).
+*)
+
+(*
+Theorem isequiv_SS1_to_S2 : IsEquiv (SS1_to_S2).
+Proof.
+  apply isequiv_adjointify with S2_to_SS1.
+  
+  (* SS1_to_S2 o S2_to_SS1 == id *)
+  refine (S2_rect (fun x => SS1_to_S2 (S2_to_SS1 x) = x) 1 _).
+  unfold transport2.
+  transparent assert (H : (forall p : base = base,
+      (fun p' : base = base => transport (fun x => SS1_to_S2 (S2_to_SS1 x) = x) p' 1) p
+      =
+      (fun p' : base = base => ap SS1_to_S2 (ap S2_to_SS1 p'^) @ p') p
+  )).
+  intros. refine ((transport_paths_FFlr _ _) @ _).
+  apply whiskerR. refine ((concat_p1 _) @ _). 
+  refine ((ap_V SS1_to_S2 (ap S2_to_SS1 p))^ @ _). f_ap.
+  apply (ap_V _ _)^.
+  transitivity ((H 1) 
+                @ ap (fun p : base = base => ap SS1_to_S2 (ap S2_to_SS1 p^) @ p) surf
+                @ (H 1)^).
+  apply moveL_pV. 
+  apply (@concat_Ap _ _ _ _ H _ _ _).
+  hott_simpl. clear H.
+  transitivity (ap (fun p : base = base => ap SS1_to_S2 (ap S2_to_SS1 p^) @ p) 
+                   (ap (S1_rec (base = base) 1 surf) loop)).
+  f_ap. apply (S1_rec_beta_loop _ _ _)^.
+  refine ((ap_compose _ _ _)^ @ _). unfold compose.
+  refine ((ap_concat S1 _ _ _ _ _ _ _ _) @ _).
+  transitivity (ap (fun x : S1 => 
+                      ap SS1_to_S2 (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)^)) loop 
+                   @@ surf).
+  f_ap. apply S1_rec_beta_loop.
+  refine (_ @ (concat2_V2p surf)). hott_simpl. f_ap.
+
+
+  (* invert the equation *)
+  transparent assert (H : (
+    forall x : S1, 
+      ap SS1_to_S2 (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)^)
+      =
+      (ap SS1_to_S2 (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)))^
+  )).
+  intro x.
+  refine (_ @ (ap_V _ _)). f_ap.
+  refine (_ @ (ap_V _ _)). reflexivity.
+  transitivity (
+      (H Circle.base)
+      @ ap (fun x : S1 => (ap SS1_to_S2 (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)))^) 
+        loop
+      @ (H Circle.base)^
+  ).
+  apply moveL_pV. apply (concat_Ap H loop).
+  simpl. hott_simpl. clear H.
+  refine ((ap_inv loop 
+                  (fun x => ap SS1_to_S2 (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)))
+                  ) @ _). 
+  f_ap.
+
+  (* reduce to SS1_to_S2 (S2_to_SS1 surf) = surf *)
+  refine ((bar _ _ _ _ _ _ _ _ loop) @ _).
+  refine ((ap03 _ (bar _ _ _ _ _ _ _ _ loop)) @ _).
+  refine ((ap03 _ (ap03 _ (S1_rec_beta_loop _ _ _))) @ _).
+
+  (* compute the action of S2_to_SS1 *)
+  refine ((ap03 _ (S2_rec_beta_surf _ _ _)) @ _).
+  hott_simpl.
+  refine ((ap02_pp _ _ _) @ _). apply moveR_pM.
+  refine ((ap02_pp _ _ _) @ _). apply moveR_Mp.
+  refine ((ap03 _ (whiskerR_ap _ _ _)) @ _).
+  refine ((ap03 _ (ap_concat _ _ _ _ _ _ _ merid _)) @ _).
+  hott_simpl.
+  refine ((ap02_p2p _ _ _) @ _). hott_simpl. apply moveR_pV. apply moveR_pM.
+
+  (* eliminate [ap_pp]s *)
+  refine ((ap_pp_pV _ _) @ _). apply moveL_pV. apply moveL_Mp.
+  refine (_ @ (ap_pp_pV _ _)^). repeat (apply moveR_pM).
+  refine ((inv_pp _ _) @ _). apply moveR_Vp.
+  refine ((inv_pp _ _) @ _). apply moveR_pV. hott_simpl.
+  repeat (apply moveL_pM). apply moveR_pM. hott_simpl. 
+  apply moveL_Mp. refine (_ @ (ap02_V _ _)).
+  refine (_ @ (ap03 _ (inv_V _)^)). apply moveR_Vp. hott_simpl.
+  apply moveR_pM. hott_simpl.
+  repeat (refine ((concat_pp_p _ _ _) @ _)). apply moveR_Vp. apply moveR_Vp.
+  apply moveR_Vp. refine ((concat_concat2 _ _ _ _) @ _).
+  apply moveL_Mp. apply moveR_pM. refine ((inv_p2p _ _) @ _). apply moveL_pV.
+  refine ((concat_concat2 _ _ _ _) @ _). hott_simpl.
+  
+  (* eliminate the [concat_pV]s *)
+  transparent assert (r : (
+    ap SS1_to_S2 (merid Circle.base) = 1
+  )).
+  change 1 with (S1_rec (base = base) 1 surf Circle.base). 
+  apply (Susp_comp_nd_merid Circle.base).
+  apply moveL_pV. apply moveL_pM.
+  refine (_ @ (baz r)^). hott_simpl.
+  apply moveR_pV. apply moveR_Mp.
+  refine ((baz r) @ _). apply moveL_Vp. hott_simpl.
+  refine ((concat_concat2 _ r 1 (inverse2 r)) @ _). simpl. hott_simpl.
+  apply moveL_Mp. apply moveR_pM.
+  refine ((inv_p2p r (inverse2 r)) @ _).
+  apply moveL_pV.
+  refine ((concat_concat2 r^ (ap02 SS1_to_S2 (ap merid loop) @ r) (inverse2 r)^ (inverse2 r)) @ _).
+  hott_simpl.
+
+  (* de-whisker *)
+  refine ((concat2_p1 _) @ _).
+  transitivity ((concat_p1 _) 
+                @ ((r^ @ ap02 SS1_to_S2 (ap merid loop)) @ r) 
+                @ (concat_p1 _)^).
+  apply moveL_pV. apply moveL_Mp. 
+  refine ((concat_p_pp _ _ _) @ _). 
+  apply whiskerR_p1. simpl. hott_simpl.
+  apply moveR_pM. apply moveR_Vp.
+  unfold r. clear r.
+
+  (* compute the action of SS1_to_S2 *)
+  refine ((bar _ _ _ _ _ merid _ _ _)^ @ _).
+  transparent assert (H : (
+    forall x : S1, ap SS1_to_S2 (merid x) = S1_rec _ 1 surf x                        
+  )).
+  apply Susp_comp_nd_merid.
+  change (Susp_comp_nd_merid Circle.base) with (H Circle.base).
+  refine (_ @ (concat_pp_p _ _ _)). apply moveL_pV.
+  refine ((concat_Ap H loop) @ _). f_ap.
+  apply S1_rec_beta_loop.
+  
+
+  (* S2_to_SS2 o SS1_to_S2 == id *)
+  unfold Sect.
+  refine (Susp_rect (fun x => S2_to_SS1 (SS1_to_S2 x) = x) 1 (merid Circle.base) _).
+
+  (* make the goal g(m(y)) = merid(y) @ merid(Circle.base)^ *)
+  intro x.
+    refine ((transport_paths_FFlr _ _) @ _). hott_simpl.
+    transitivity (ap S2_to_SS1 (S1_rec (base = base) 1 surf x)^ @ merid x).
+    repeat f_ap.
+    transitivity (ap SS1_to_S2 (merid x))^. hott_simpl.
+    apply inverse2.
+    apply Susp_comp_nd_merid.
+    apply moveR_pM.
+    transitivity (ap S2_to_SS1 (S1_rec (base = base) 1 surf x))^. hott_simpl.
+    symmetry. transitivity (merid x @ (merid Circle.base)^)^.
+    symmetry. apply inv_pV. apply inverse2. symmetry.
+  generalize dependent x.
+
+  (* now compute *)
+  refine (S1_rect _ _ _).
+  refine (_ @ (concat_pV _)^). reflexivity.
+  refine ((@transport_paths_FlFr S1 _ _ _ _ _ loop _) @ _).
+  hott_simpl. 
+  apply moveR_pM. apply moveR_pM. hott_simpl. refine (_ @ (inv_V _)). 
+  apply inverse2.
+  transitivity ((concat_pV (merid Circle.base))^
+                @ (whiskerR (ap merid loop) (merid Circle.base)^)
+                @ (concat_pV (merid Circle.base))).
+  refine (_ @ (inv_V _)).
+  refine (_ @ (S2_rec_beta_surf _ _ _)).
+  refine ((ap_ap__ap02_ap _ _ _) @ _).
+  f_ap. apply S1_rec_beta_loop.
+  refine (_ @ (inv_pp _ _)^). refine ((concat_pp_p _ _ _) @ _). apply whiskerL.
+  refine (_ @ (inv_pp _ _)^). hott_simpl. apply whiskerR.
+  apply whiskerR_ap.
+Defined.
+*)
+    
+
 
 (** %\exer{6.3}{217}% 
 Prove that the torus $T^{2}$ as defined in %\S6.6% 
@@ -192,7 +709,7 @@ Proof.
                          _).
   apply issig_group. 
   apply equiv_functor_sigma_id. intro G.
-  apply equiv_inverse. refine (equiv_sigT_corect _ _).
+  apply equiv_inverse. refine (equiv_sigT_coind _ _).
   apply equiv_functor_sigma_id. intro G.
   apply equiv_functor_forall_id. intro x.
   apply equiv_inverse.
@@ -201,11 +718,12 @@ Proof.
   apply hprop_inverse_exists.
   apply HG.
 Defined.
+
   
   
 
 
-(** %\exerdone{6.8}{217}% 
+(** %\exer{6.8}{217}% 
 Prove that if $A$ is a set, then $\lst{A}$ is a monoid.  Then complete the
 proof of Lemma 6.11.5.
 *)
@@ -332,6 +850,7 @@ latter is contractible by the induction hypothesis.  Contractibility is
 preserved by products, so the path space is contractible.
 *)
   
+(*
 Theorem set_list_is_set (A : Type) : IsHSet A -> IsHSet (list A).
 Proof.
   intros HA l.
@@ -347,6 +866,7 @@ Proof.
     apply (trunc_equiv (equiv_path_list t t')^-1).
     apply (trunc_equiv (equiv_path_list (h :: t) (h' :: t'))).
 Defined.
+*)
 
 
 (** Now, to show that $\lst{A}$ is a monoid, we must equip it with a
@@ -370,6 +890,7 @@ Proof.
 Defined.
 
 
+(*
 Theorem set_list_is_monoid {A : Type} {HA : IsHSet A} : 
   IsMonoid (@BuildhSet (list A) (set_list_is_set _ HA)) (@app A) nil.
 Proof.
@@ -377,6 +898,7 @@ Proof.
   apply app_nil_r. reflexivity.
   apply app_assoc.
 Defined.
+*)
     
 (** Now, Lemma 6.11.5 states that for any set $A$, the type $\lst{A}$ is the
 free monoid on $A$.  That is, there is an equivalence
@@ -490,13 +1012,16 @@ Record MonoidHom (A B : Monoid) :=
       mhom_ismhom :> IsMonoidHom mhom_fun
     }.
 
+(*
 Definition homLAG_to_AG (A : Type) (HA : IsHSet A) (G : Monoid) :
   MonoidHom (BuildMonoid (@BuildhSet (list A) (set_list_is_set _ HA)) 
                          _ _ set_list_is_monoid) 
             G 
   -> (A -> G)
   := fun f a => (mhom_fun _ G f) [a].
+*)
 
+(*
 Definition AG_to_homLAG (A : Type) (HA : IsHSet A) (G : Monoid) :
   (A -> G) 
   ->
@@ -522,6 +1047,7 @@ Proof.
   intro l'. simpl. refine (_ @ (m_assoc _ _ _)).
   f_ap. apply (m_unit _). apply G.
 Defined.
+*)
 
 Theorem isprod_ismonoidhom {A B : Monoid} (f : A -> B) :
   (f (m_unit A) = m_unit B) 
@@ -539,11 +1065,13 @@ Proof.
 Defined.
   
 
+(*
 Theorem hprop_ismonoidhom `{Funext} {A B : Monoid} (f : A -> B) 
   : IsHProp (IsMonoidHom f).
 Proof.
   refine (trunc_equiv' (isprod_ismonoidhom f)).
 Defined.
+*)
   
 Theorem issig_monoidhom (A B : Monoid) :
   {f : A -> B & IsMonoidHom f} <~> MonoidHom A B.
@@ -551,6 +1079,7 @@ Proof.
   issig (BuildMonoidHom A B) (@mhom_fun A B) (@mhom_ismhom A B).
 Defined.
 
+(*
 Theorem equiv_path_monoidhom `{Funext} {A B : Monoid} {f g : MonoidHom A B} :
   ((mhom_fun _ _ f) = (mhom_fun _ _ g)) <~> f = g.
 Proof.
@@ -560,7 +1089,9 @@ Proof.
             ((issig_monoidhom A B)^-1 f) ((issig_monoidhom A B)^-1 g)).
   apply equiv_inverse. apply equiv_ap. refine _.
 Defined.
+*)
 
+(*
 Theorem list_is_free_monoid `{Funext} (A : Type) (HA : IsHSet A) (G : Monoid) :
   MonoidHom (BuildMonoid ((@BuildhSet (list A) (set_list_is_set _ HA))) 
                          _ _ set_list_is_monoid) 
@@ -579,6 +1110,7 @@ Proof.
   transitivity (G (homLAG_to_AG A HA G f h) (f t)). f_ap.
   unfold homLAG_to_AG. refine (@hmult _ _ f _ [h] t)^. apply f.
 Defined.
+*)
   
 
 Local Close Scope list_scope.
@@ -638,10 +1170,13 @@ Axiom interval_rect_beta_seg : forall (P : interval -> Type)
 
 End Interval.
 
+(*
 Definition interval_rectnd (P : Type) (a b : P) (p : a = b)
   : interval -> P
   := interval_rect (fun _ => P) a b (transport_const _ _ @ p).
+*)
 
+(*
 Definition interval_rectnd_beta_seg (P : Type) (a b : P) (p : a = b)
   : ap (interval_rectnd P a b p) seg = p.
 Proof.
@@ -649,24 +1184,31 @@ Proof.
   refine ((apD_const (interval_rect (fun _ => P) a b _) seg)^ @ _).
   refine (interval_rect_beta_seg (fun _ => P) _ _ _).
 Defined.
+*)
 
+(*
 Definition interval_path_arrow {A B : Type} {f g : A -> B} 
   : (f == g) -> (f = g)
   := fun p => ap (fun i a => interval_rectnd B (f a) (g a) (p a) i) seg.
+*)
 
+(*
 Theorem ex6_10_alpha {A B : Type} {f g : A -> B} 
   : (@ap10 A B f g) o (@interval_path_arrow A B f g) == idmap.
 Proof.
 Admitted.
+*)
   
   
   
+(*
 Theorem ex6_10_beta {A B : Type} {f g : A -> B} 
   : (@interval_path_arrow A B f g) o (@ap10 A B f g) == idmap.
 Proof.
   intro p. unfold compose.
   set (q := (fun i a => interval_rectnd B (f a) (g a) (ap10 p a) i)).
 Admitted.
+*)
   
   
     
@@ -713,22 +1255,22 @@ Theorem univ_prop_susp `{Funext} {A B : Type} :
 Proof.
   refine (equiv_adjointify _ _ _ _).
   intro f. exists (f North). exists (f South). intro a. apply (ap f (merid a)).
-  intro w. destruct w as [bn [bs f]]. apply (Susp_rect_nd bn bs f).
+  intro w. destruct w as [bn [bs f]]. apply (Susp_rec bn bs f).
 
   intro w. destruct w as [bn [bs f]]. 
   apply path_sigma_uncurried. exists 1. 
   apply path_sigma_uncurried. exists 1. 
   apply path_forall; intro a. simpl.
-  apply Susp_comp_nd_merid.
+  apply Susp_rec_beta_merid.
 
   intro f. apply path_forall.
-  refine (Susp_rect _ 1 1 _).
+  refine (Susp_ind _ 1 1 _).
   intro a. 
   simpl.
   refine ((@transport_paths_FlFr _ _ _ f _ _ _ _) @ _).
   apply moveR_pM.
   refine ((concat_p1 _) @ _). refine (_ @ (concat_1p _)^). apply inverse2.
-  refine ((Susp_comp_nd_merid _) @ _).
+  refine ((Susp_rec_beta_merid _) @ _).
   reflexivity.
 Defined.
   

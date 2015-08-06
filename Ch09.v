@@ -72,6 +72,7 @@ underlying map, and an arrow in $A/a$ is determined by the underlying arrow in
 $A$, so we just need to show that $\fst(\idtoiso_{A/a}(F(i))) = \fst(i)$.
 *)
 
+(*
 Module my_slice.
 
 Section my_slice_parts.
@@ -243,6 +244,7 @@ Admitted.
   
 
 End my_slice.
+*)
   
 
 

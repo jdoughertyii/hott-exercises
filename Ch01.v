@@ -670,9 +670,9 @@ Definition sum_rect (C : sum -> Type)
            (x : sum) 
   := 
   sigT_rect C 
-            (Bool_rect (fun x:Bool => forall (y : if x then B else A), C (x; y))
-                       g1 
-                       g0) 
+            (Bool_ind (fun x:Bool => forall (y : if x then B else A), C (x; y))
+                      g1 
+                      g0) 
             x.
 
 (** 
@@ -774,7 +774,7 @@ Context (A B : Type).
 Definition prod := forall x : Bool, if x then B else A.
 
 Definition pair (a : A) (b : B) 
-  := Bool_rect (fun x : Bool => if x then B else A) b a.
+  := Bool_ind (fun x : Bool => if x then B else A) b a.
 
 (** 
 An induction principle for $A \times B$ will, given a family $C : A \times B
@@ -882,7 +882,7 @@ In Coq we can repeat this construction using [Funext]. *)
 
 Definition eta_prod `{Funext} (p : prod) : pair (fst p) (snd p) = p.
   apply path_forall.
-  unfold pointwise_paths; apply Bool_rect; reflexivity.
+  unfold pointwise_paths; apply Bool_ind; reflexivity.
 Defined.
 
 Definition prod_rect `{Funext} (C : prod -> Type) 
@@ -939,7 +939,7 @@ Proof.
   path_via (transport C 1 (g (fst (pair a b)) (snd (pair a b)))). f_ap.
   unfold eta_prod.
   path_via (path_forall (pair (fst (pair a b)) (snd (pair a b))) (pair a b) 
-                        (fun _ => 1)).
+                        (fun _ => idpath)).
   f_ap. apply path_forall; intro x. destruct x; reflexivity.
   apply path_forall_1.
 Defined.
@@ -1076,7 +1076,7 @@ Module Ex7.
 Section ex7.
 
 Definition ind (A : Type) : forall (C : forall (x y : A), x = y -> Type),
-                              (forall (x:A), C x x 1) -> 
+                              (forall (x:A), C x x idpath) -> 
                               forall (x y : A) (p : x = y), C x y p.
 Proof.
   path_induction. apply X.
@@ -1089,17 +1089,17 @@ Defined.
 
 Definition Lemma3118 : forall (A : Type) (a:A), Contr {x:A & a=x}.
 Proof.
-  intros A a. exists (a; 1).
+  intros A a. exists (a; idpath).
   intro x. destruct x as [x p]. path_induction. reflexivity.
 Defined.
 
 Definition ind' (A : Type) : forall (a : A) (C : forall (x:A), a = x -> Type),
-                               C a 1 -> forall (x:A) (p:a=x), C x p.
+                               C a idpath -> forall (x:A) (p:a=x), C x p.
 Proof.
   intros.
   assert (H : (Contr {x:A & a=x})). apply Lemma3118.
   change (C x p) with ((fun c => C c.1 c.2) (x; p)).
-  apply (Lemma231 _ (a; 1) (x; p)).
+  apply (Lemma231 _ (a; idpath) (x; p)).
   transitivity (center {x : A & a = x}). destruct H as [[a' p'] z]. simpl. 
   rewrite <- p'. reflexivity.
   destruct H as [[a' p'] z]. simpl. rewrite <- p'. rewrite <- p. reflexivity.

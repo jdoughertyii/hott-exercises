@@ -111,11 +111,6 @@ Defined.
 Definition well_founded {A : hSet} (L : A -> A -> hProp) := 
   forall a : A, @acc A L a.
 
-Lemma hprop_wf `{Funext} {A : hSet} (L : A -> A -> hProp) 
-  : IsHProp (well_founded L).
-Proof.
-  apply hprop_dependent. apply hprop_acc.
-Defined.
 
 Lemma wf_irreflexive {A : hSet} (L : A -> A -> hProp) (HL : well_founded L)
   : forall a : A, ~ (L a a).
@@ -172,15 +167,6 @@ Defined.
 
 Definition extensional {A : hSet} (L : A -> A -> hProp) {HL : well_founded L}
   := forall a a', (forall c, (L c a) <-> (L c a')) -> (a = a').
-
-Lemma hprop_extensional `{Funext} (A : hSet) (L : A -> A -> hProp) 
-      (HL : well_founded L)
-  : IsHProp (@extensional A L HL).
-Proof.
-  apply hprop_dependent; intro a.
-  apply hprop_dependent; intro b.
-  apply hprop_dependent. intro f. apply hprop_allpath. apply set_path2.
-Defined.
 
 Lemma sum_order_ext {A B : hSet} (LA : A -> A -> hProp) (LB : B -> B -> hProp)
       (HwfA : well_founded LA) (HwfB : well_founded LB)
@@ -239,34 +225,7 @@ induction on $B$.  So suppose that $b, b' : B$ and $s : \acc(b)$ and $s' :
 \acc(b')$.
 *)
 
-Definition set_prod (A B : hSet) := @BuildhSet (A * B) (hset_prod A _ B _).
 
-Definition lexical_order {A B : hSet} (LA : A -> A -> hProp) 
-           (LB : B -> B -> hProp) (z z' : set_prod A B)
-  : hProp
-  := match z with 
-       | (a, b) => match z' with
-                     | (a', b') => BuildhProp (Brck ((LA a a') 
-                                             + 
-                                             ((a = a') * (LB b b'))))
-                   end
-     end.
-
-
-Lemma lexical_order_wf `{Funext} {A B : hSet} 
-      (LA : A -> A -> hProp) (LB : B -> B -> hProp)
-  : (well_founded LA) -> (well_founded LB) -> well_founded (lexical_order LA LB).
-Proof.
-  transparent assert (HB : (
-    forall b, @acc _ LB b -> forall b', @acc _ LB b' -> forall a, 
-    @acc _ (lexical_order LA LB) (a, b) -> @acc _ (lexical_order LA LB) (a, b')
-  )).
-  intros b s b' s' a Ha.
-  induction s as [b f g], s' as [b' f' g'], Ha as [z F G].
-  destruct z as [a'' b'']. simpl in *.
-Admitted.
-  
-    
 
 (** %\exer{10.6}{365}% 
 Define the usul algebraic operations on ordinals, and prove that they

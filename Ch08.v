@@ -15,25 +15,28 @@ Prove that homotopy groups respect products: $\pi_{n}(A \times B) \eqvsym
 (** %\soln%
 *)
 
+(*
 Definition homotopy_group (n : nat) (A : Type) `{H : IsPointed A}
   := match n with
        | O => Trunc 0 A
-       | S n => Trunc 0 (iteratedLoopSpace (S n) A).1
+       | S n => Trunc 0 (iterated_loops (S n) A).1
      end.
+*)
 
 Lemma equiv_functor_Trunc (n : trunc_index) (A B : Type) 
   : (A <~> B) -> (Trunc n A) <~> (Trunc n B).
 Proof.
   intro e.
   refine (equiv_adjointify _ _ _ _).
-  apply Trunc_rect_nondep. intro a. apply (tr (e a)).
-  apply Trunc_rect_nondep. intro b. apply (tr (e^-1 b)).
-  refine (Trunc_rect _ _).
+  apply Trunc_rec. intro a. apply (tr (e a)).
+  apply Trunc_rec. intro b. apply (tr (e^-1 b)).
+  refine (Trunc_ind _ _).
   intro b. simpl. apply (ap tr). apply eisretr.
-  refine (Trunc_rect _ _).
+  refine (Trunc_ind _ _).
   intro a. simpl. apply (ap tr). apply eissect.
 Defined.
   
+(*
 Lemma equiv_functor_iLS (n : nat) (A B : Type) `{IsPointed A} `{IsPointed B}
   : A <~> B -> (iteratedLoopSpace n A).1 <~> (iteratedLoopSpace n B).1.
 Proof.
@@ -44,8 +47,10 @@ Proof.
     set (a := point A). set (b := point B).
     simpl. apply equiv_idmap.
 Defined.
+*)
 
 
+(*
 Lemma hg_prod `{Funext} (n : nat) (A B : Type) `{IsPointed A} `{IsPointed B}
   : homotopy_group n (A * B) <~> (homotopy_group n A) * (homotopy_group n B).
 Proof.
@@ -58,6 +63,7 @@ Proof.
     equiv_via (Trunc 0 (iteratedLoopSpace n ((a = a) * (b = b))).1).
     apply equiv_functor_Trunc.
 Admitted.
+*)
     
     
   

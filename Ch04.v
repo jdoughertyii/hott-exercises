@@ -1,5 +1,6 @@
 (* begin hide *)
 Require Export HoTT Ch03.
+Require Import hit.TwoSphere.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -70,16 +71,10 @@ and again we can apply 3.11.9 to obtain the equivalent $\refl{\idfunc{A}} =
   \prd{x:A}(\refl{x} = \refl{x})
 \]%
 
-This type is not generally a mere proposition.  By the equivalence just
-exhibited, it suffices to give a type $X$ such that $\prd{x:X}(\refl{x} =
-\refl{x})$ isn't a mere proposition.  For this it suffices to exhibit an $f :
-\prd{x:X}(\refl{x} = \refl{x})$ that's unequal to $\lam{x}\refl{\refl{x}}$.
-Looking ahead to Chapter 6, a natural choice of $X$ is $\Sn^{2}$, and we use
-the fact that $\surf \not= \refl{\refl{\base}}$ to construct the desired $f$.
-To construct an element of $\prd{x:\Sn^{2}}(x=x)$ we proceed by 2-sphere
-induction, defining $f(\base) \equiv \surf$.  Then we must show that
-$\refl{\surf} =^{x \mapsto x=x}_{\surf} \refl{\surf}$.
-
+This type is not generally a mere proposition.  Clearly one term of this type is $x
+\mapsto \refl{x}$.  In the case of $X \jdeq \Sn^{2}$, we get a different
+inhabitant by sending $\base$ to $\surf$.  This is a generalization of Lemmas
+6.4.1 and 6.4.2 of the HoTT Book.
 *)
 
 Theorem ex4_1 `{Univalence} (A B : Type) (f : A <~> B) :
@@ -189,10 +184,80 @@ Proof.
   - intro eq. apply (ap apD10)^-1. apply path_forall. intro x.
     refine ((apD10_path_forall _ _ _ _) @ _). apply moveR_Mp.
     refine (whiskerR _ (apD10 eq x)).
-    refine (_ @ (apD10_V _ _)). f_ap. symmetry. apply inv_V.
+    refine (_ @ (apD10_V _ _)). f_ap. 
 Defined.
 
+Lemma not_all_sets `{Univalence} : ~ forall A, IsHSet A.
+Proof.
+  intro oops.
+  apply idmap_bool_ne_negb.
+  refine ((equiv_path_path_universe _)^ @ _).
+  refine (_ @ (equiv_path_path_universe _)). f_ap.
+  apply oops.
+Defined.
 
+Lemma loop_ne_1 `{Univalence} : loop <> 1.
+Proof.
+  intro oops.
+  apply not_all_sets. intros A x y. apply hprop_allpath.
+  intros p q. induction q.
+  refine ((S1_rec_beta_loop A x p)^ @ _).
+  refine (ap (ap _) oops).
+Defined.
+
+Lemma Book_6_4_2 `{Univalence} : {h : forall (x : S1), x = x & h <> (fun x => 1)}.
+Proof.
+  refine (S1_ind _ loop _; _).
+  - refine ((transport_paths_lr _ _) @ _).
+    refine ((ap (fun w => w @ _) (concat_Vp _)) @ _).
+    refine (concat_1p _).
+  - intro oops. apply loop_ne_1.
+    apply (apD10 oops Circle.base).
+Defined.
+
+Definition not_all_1type `{U : Univalence} : ~ (forall A, IsTrunc 1 A).
+Proof.
+  intro oops. apply Book_6_4_2.2.
+  refine (equiv_hprop_allpath _ _ _ _).
+  refine (trunc_equiv (@paths (S1 -> S1) idmap idmap) _).
+  - apply apD10.
+  - refine (trunc_equiv (@equiv_idmap S1 = @equiv_idmap S1) 
+                        (@path_equiv _ _ _ 1%equiv 1%equiv)^-1).
+    apply hprop_allpath. refine (@set_path2 (S1 <~> S1) _ _ _).
+    refine (trunc_equiv (S1 = S1) _).
+    + apply equiv_path.
+    + apply isequiv_equiv_path.
+  - apply isequiv_apD10.
+Defined.
+
+Definition surf_ne_1 `{Univalence} : surf <> 1.
+Proof.
+  intro oops. apply not_all_1type.
+  intros A x y p q. apply hprop_allpath. intros r s.
+  induction s, p.
+  refine ((S2_rec_beta_surf A x r)^ @ _).
+  refine (ap (ap02 _) oops).
+Defined.
+
+Definition ap_homotopic {A B : Type} (f g : A -> B) (h : f == g)
+         {x y : A} (q : x = y)
+: ap f q = h x @ ap g q @ (h y)^.
+Proof.
+  apply moveL_pV. apply concat_Ap.
+Defined.
+
+  
+Definition Book_6_4_2' `{Univalence}
+: {h : forall x : S2, (idpath x) = 1 & h <> (fun x => 1)}.
+Admitted.
+    
+
+Definition ex4_1' `{Univalence} : ~ IsHProp (forall x : S2, (idpath x) = 1).
+Proof.
+  intro oops. apply Book_6_4_2'.2.
+  apply (equiv_hprop_allpath _ _ _ _).
+Defined.
+  
 
 (** %\exerdone{4.2}{147}% 
 Show that for any $A, B : \UU$, the following type is equivalent to $A \eqvsym
@@ -325,11 +390,12 @@ Proof.
   intro eq. apply (transport _ eq). apply p.
   intro q. change b with (b; q).1. change b' with (b'; p).1. apply (ap pr1).
   refine (path_contr _ _). apply (f a).
-  intro q. refine ((fiber_path (path_contr (b'; p) (b; q))) @ _). reflexivity.
-  intro eq. induction eq. simpl. refine (_ @ (ap_1 _ _)). f_ap.
-  refine (path_contr _ _). refine (contr_paths_contr _ _). apply (f a).
+  intro q. refine ((pr2_path (path_contr (b'; p) (b; q))) @ _). reflexivity.
+  intro eq. induction eq. simpl.
+  path_via (@ap {b : B & R a b} _ pr1 (b'; p) _ 1). f_ap.
+  apply concat_Vp.
 
-  intro e. simpl. apply path_equiv. simpl. reflexivity.
+  intro e. apply path_equiv. reflexivity.
 Defined.
 
 Definition qinv {A B : Type} (f : A -> B) :=
@@ -363,15 +429,15 @@ Proof.
   transparent assert (g : (B -> A)).
   intro b. destruct (retr b). apply center.1.
   exists g. split.
-  unfold compose, g. intro b. destruct (retr b). apply center.2.
-  unfold compose, g. intro a. destruct (retr (f a)). 
+  unfold g. intro b. destruct (retr b). apply center.2.
+  unfold g. intro a. destruct (retr (f a)). 
   apply (ap pr1 (contr (a; 1))).
 Defined.
 
 Lemma hprop_prod : forall A, IsHProp A -> forall B, IsHProp B -> IsHProp (A * B).
 Proof.
   intros A HA B HB z z'.
-  apply (trunc_equiv (equiv_path_prod z z')).
+  apply (trunc_equiv' _ (equiv_path_prod z z')).
 Defined.
 
 Theorem ex4_2_iii `{Funext} A B (f : A -> B) : IsHProp (isequiv' f).
@@ -424,7 +490,7 @@ Proof.
   exists (f^-1; eisretr f). intro h. destruct h as [w h].
   apply path_sigma_uncurried. simpl.
   exists (path_forall f^-1 w (fun b : B => ap f^-1 (h b)^ @ eissect f (w b))).
-  unfold pointwise_paths, compose.
+  unfold pointwise_paths.
   apply path_forall; intro b.
   refine ((transport_forall_constant _ _ _) @ _).
   refine ((@path_forall_1_beta _ B (fun _ => A) b (fun z => f z = b) _ _ _ _) 
@@ -445,7 +511,7 @@ Proof.
   refine (equiv_adjointify _ _ _ _).
   intro h. apply path_forall in h. intro x. refine ((eissect f _)^ @ _).
   apply (ap10 h x).
-  intro h. intro x. unfold compose. refine ((eissect f _) @ _). apply (h x).
+  intro h. intro x. refine ((eissect f _) @ _). apply (h x).
   intro h. apply path_forall; intro a.
   apply moveR_Vp. refine ((ap10_path_forall _ _ _ a) @ _). reflexivity.
   intro h. apply path_forall; intro a.
@@ -596,14 +662,10 @@ Proof.
   refine (equiv_sigma_contr_base _ _ _). simpl.
 
   refine (equiv_adjointify _ _ _ _).
-  - intro eq. refine (_ @ eq). apply (ap g).
-    apply (center {b' : B & f a = b'}).2.
-  - intro eq. refine (_ @ eq). apply (ap g).
-    apply (center {b' : B & f a = b'}).2^.
-  - intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
-    refine (ap_V g _).
-  - intro eq. apply moveR_Mp. refine (whiskerR _ eq). 
-    refine (_ @ (ap_V g _)). f_ap. symmetry. apply inv_V.
+  - intro eq. apply eq.
+  - intro eq. apply eq.
+  - intro eq. reflexivity.
+  - intro eq. reflexivity.
 Defined.
     
     
@@ -787,17 +849,9 @@ Proof.
                         (fun p : (f a) = (f a') => ap f^-1 p)
                         (fun p : (f^-1 (f a)) = (f^-1 (f a')) => ap f p)).
   apply (isequiv_homotopic (fun p => (eissect f a) @ p @ (eissect f a')^)).
-  refine (isequiv_adjointify _ 
-                             (fun p => (eissect f a)^ @ p @ (eissect f a')) 
-                             _ _);
-  intro; hott_simpl.
   intro p. induction p. hott_simpl.
   
   apply (isequiv_homotopic (fun p => (eisretr f (f a)) @ p @ (eisretr f (f a'))^)).
-  refine (isequiv_adjointify _ 
-                        (fun p => (eisretr f (f a))^ @ p @ (eisretr f (f a'))) 
-                        _ _);
-  intro; hott_simpl.
   intro p. induction p. hott_simpl.
 Defined.
 
@@ -898,10 +952,12 @@ Proof.
   hott_simpl.
 Defined.
 
+
+(*
 Theorem Book_4_1_3 `{Funext}
   : {A : Type & {B : Type & {f : A -> B & ~ IsHProp (qinv f)}}}.
 Proof.
-  set (X := {A : Type0 & Brck (Bool = A)}).
+  set (X := {A : Type & Brck (Bool = A)}).
   exists X. exists X. exists idmap. intro H'.
   set (a := (Bool; tr 1) : X).
   assert (Q : (qinv (equiv_path Bool Bool))) by apply qinv_univalence.
@@ -910,7 +966,7 @@ Proof.
     apply path_sigma_hprop. apply path_equiv'.
     apply (BuildEquiv _ _ negb isequiv_negb).
   transparent assert (e : (Bool <~> (a = a))). 
-    equiv_via (Bool <~> Bool). apply equiv_bool_equiv_bool_bool.
+    equiv_via (Bool <~> Bool). apply equiv_bool_aut_bool.
     equiv_via (Bool = Bool).
     refine (equiv_adjointify _ _ _ _).
     apply path_equiv'. apply equiv_path.
@@ -922,9 +978,9 @@ Proof.
     refine (_ @ (eta_path_sigma_uncurried _)). f_ap. 
     apply path_sigma_uncurried. exists 1. simpl. apply path_ishprop.
     intro eq.
-    refine ((@pr1_path_sigma_uncurried Type0 _ a a _) @ _). reflexivity.
+    refine ((@pr1_path_sigma_uncurried Type _ a a _) @ _). reflexivity.
   assert (F : {f : forall x : X, x = x & f a = q}). apply Book_4_1_2.
-  apply (trunc_equiv e).
+  apply (trunc_equiv _ e).
   intro x. destruct x as [A eq]. strip_truncations. apply tr.
   unfold a. apply path_sigma_uncurried. exists eq. induction eq. reflexivity.
   intros p.
@@ -975,6 +1031,7 @@ Proof.
   apply (trunc_equiv' (Book_4_1_1 X X (BuildEquiv X X idmap _))).
   apply Hf. apply path_ishprop.
 Admitted.
+*)
 
 (** 
 (iii) $\qinv$-univalence implies that all equivalences are half-adjoint

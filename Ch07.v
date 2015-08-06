@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export HoTT Ch06_3.
+Require Export HoTT Ch06.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -121,6 +121,7 @@ The definition of a modalities in HoTT/HoTT is different from the one
 in the book, in order to get better computation rules.
 *)
 
+(*
 Module Ex12.
 
 Definition notnot_modality `{Funext} : Modality.
@@ -141,6 +142,7 @@ Proof.
 Defined.
 
 End Ex12.
+*)
 
   
 
@@ -308,6 +310,7 @@ Proof.
 Defined.
                                          
 
+(*
 Module Ex13.
 
 Require Import ReflectiveSubuniverse.
@@ -491,6 +494,7 @@ Admitted.
 End OpenModality.
 
 End Ex13.
+*)
 
 
 (** %\exer{7.14}{251}% *)

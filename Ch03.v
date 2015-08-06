@@ -264,7 +264,7 @@ Hypothesis H3 : forall e e' : E, e = e'.
 Definition ex3_8_i : Q -> (Brck Q) := tr.
 
 Definition ex3_8_ii : (Brck Q) -> Q.
-  intro q. apply H2. apply (@Trunc_rect -1 Q).
+  intro q. apply H2. apply (@Trunc_ind -1 Q).
   intro q'. apply hprop_allpath. apply H3.
   apply H1. apply q.
 Defined.
@@ -426,7 +426,6 @@ Proof.
     apply (true_ne_false H).
 Defined.
 
-(*
 Theorem ex3_11 `{Univalence} : ~ (forall A, Brck A -> A).
 Proof.
   intro f.
@@ -441,16 +440,15 @@ Proof.
                     (f Bool (transport (fun A => Brck A) 
                                        (path_universe negb)^
                                        b))).
-  apply (@transport_arrow Type0 (fun A => Brck A) idmap).
+  refine (transport_arrow _ _ _).
   rewrite X in X0.
   assert (b = (transport (fun A : Type => Brck A) (path_universe negb) ^ b)).
   apply path_ishprop. rewrite <- X1 in X0. symmetry in X0.
   assert (transport idmap (path_universe negb) (f Bool b) = negb (f Bool b)).
   apply transport_path_universe. rewrite X2 in X0. apply X0.
-  apply (@negb_no_fixpoint (f Bool (min1 true))). 
-  apply (X (min1 true)).
-Qed.
-*)
+  apply (@negb_no_fixpoint (f Bool (tr true))). 
+  apply (X (tr true)).
+Defined.
   
  
 (** %\exerdone{3.12}{127}%
@@ -763,7 +761,7 @@ Theorem ex3_17 (A : Type) (B : Brck A -> Type) :
   (forall x, IsHProp (B x)) -> (forall a, B (tr a)) -> (forall x, B x).
 Proof.
   intros HB f. intro x.
-  apply Trunc_rect. apply HB.
+  apply Trunc_ind. apply HB.
   intro a. apply (f a).
 Defined.
   
@@ -900,8 +898,8 @@ Theorem equiv_path_nat : forall n m, (nat_code n m) <~> (n = m).
 Proof.
   intros.
   refine (equiv_adjointify (nat_decode n m) (nat_encode n m) _ _).
-  
-  intro p. induction p. simpl.
+
+  intro p. destruct p. simpl.
   induction n. reflexivity. simpl.
   apply (ap (ap S) IHn).
 
@@ -987,7 +985,6 @@ Lemma hprop_le (n m : nat) : IsHProp (n <= m).
 Proof.
   apply hprop_allpath. intros p q.
   refine (path_sigma_hprop _ _ _).
-  intro k. apply hprop_allpath. refine set_path2. apply hset_nat.
   destruct p as [k p], q as [k' p']. simpl.
   apply (plus_cancelL n).
   apply (p @ p'^).
@@ -1608,7 +1605,7 @@ $(\contr_{\fst(w)}^{-1})_{*}\snd(w) : P(a)$, and going back gives
 %\[
   (a, (\contr_{\fst(w)}^{-1})_{*}\snd(w)) : \sm{x:A} P(x)
 \]%
-By Theoremm 2.7.2, it suffices to show that $a = \fst(w)$ and that
+By Theorem 2.7.2, it suffices to show that $a = \fst(w)$ and that
 %\[
   (\contr_{\fst(w)})_{*}(\contr_{\fst(w)}^{-1})_{*} \snd(w) = \snd(w)
 \]%
@@ -1661,7 +1658,7 @@ Proof.
   apply equiv_iff_hprop.
 
   intro HP. apply equiv_iff_hprop. apply tr.
-  apply Trunc_rect. intro p. apply HP. apply idmap.
+  apply Trunc_ind. intro p. apply HP. apply idmap.
   
   intro e. apply hprop_allpath; intros x y.
   assert (e x = e y) as p. apply hprop_allpath. apply path_ishprop.
@@ -1868,10 +1865,6 @@ Defined.
 Lemma hprop_lt (n m : nat) : IsHProp (lt n m).
 Proof.
   apply hprop_allpath. intros x y.
-  transparent assert (H : (
-    forall k : nat, IsHProp ((n + S k)%nat = m)
-  )).
-  intro k. apply hprop_allpath. apply (@set_path2 nat hset_nat).
   apply path_sigma_hprop.
   destruct x as [x p], y as [y p'].
   simpl. apply S_inj. apply (plus_cancelL n). apply (p @ p'^).
@@ -1980,8 +1973,8 @@ Proof.
   intro z.
   apply brck_equiv.
   refine (equiv_functor_sigma' _ _).
-  unfold A'. unfold compose. apply equiv_idmap. 
-  intro a. unfold P'. unfold compose. simpl. apply equiv_idmap.
+  unfold A'. apply equiv_idmap. 
+  intro a. unfold P'. simpl. apply equiv_idmap.
   
   equiv_via (
     (forall z, Brck {a : A' (inl z) & P' (inl z) a})
@@ -1989,7 +1982,7 @@ Proof.
     (forall z, Brck {a : A' (inr z) & P' (inr z) a})
   ).
   apply equiv_inverse. 
-  refine (equiv_sum_rect _).
+  refine (equiv_sum_ind _).
   
   apply equiv_functor_prod'; apply equiv_idmap.
 Defined.
@@ -2016,13 +2009,13 @@ Proof.
   intro z. apply equiv_idmap.
   
   equiv_via (Brck (forall z, {a : A' z & P' z a})).
-  apply brck_equiv. refine (equiv_sigT_corect _ _).
+  apply brck_equiv. refine (equiv_sigT_coind _ _).
   
   equiv_via (Brck ((forall z, {a : A' (inl z) & P' (inl z) a})
                    *
                    (forall z, {a : A' (inr z) & P' (inr z) a}))).
   apply brck_equiv.
-  apply equiv_inverse. refine (equiv_sum_rect _).
+  apply equiv_inverse. refine (equiv_sum_ind _).
   
   equiv_via (Brck (forall z : Fin n, {a : A' (inl z) & P' (inl z) a}) 
              * 
@@ -2031,9 +2024,9 @@ Proof.
 
   refine (equiv_functor_prod' _ _).
   apply brck_equiv.
-  unfold A', P', compose.
+  unfold A', P'.
   apply equiv_inverse.
-  refine (equiv_sigT_corect _ _).
+  refine (equiv_sigT_coind _ _).
   apply brck_equiv. apply equiv_idmap.
 Defined.
 
@@ -2118,7 +2111,7 @@ Proof.
   intro b. apply equiv_idmap.
 
   equiv_via ((forall z, Brck (Y' (inl z))) * (forall z, Brck (Y' (inr z)))).
-  apply equiv_inverse. refine (equiv_sum_rect _).
+  apply equiv_inverse. refine (equiv_sum_ind _).
   
   apply equiv_idmap.
 Defined.
@@ -2137,11 +2130,11 @@ Proof.
   apply equiv_inverse. apply brck_functor_prod. 
 
   equiv_via (Brck (forall z, Y' z)).
-  apply brck_equiv. refine (equiv_sum_rect _).
+  apply brck_equiv. refine (equiv_sum_ind _).
 
   apply brck_equiv. refine (equiv_functor_forall' _ _).
   apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
-  intro b. unfold Y', compose. apply equiv_path.
+  intro b. unfold Y'. apply equiv_path.
   f_ap. apply eissect.
 Defined.
 
@@ -2180,7 +2173,7 @@ Proof.
     Brck (forall m, Y m)
   )).
   equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
-  apply brck_equiv. refine (equiv_sigT_corect _ _).
+  apply brck_equiv. refine (equiv_sigT_coind _ _).
   apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
   intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
   apply e. clear e.
@@ -2198,7 +2191,7 @@ Proof.
     Brck {g : forall m : Fin n, A m & forall m : Fin n, P m (g m)}
   )).
   apply brck_equiv.
-  apply equiv_inverse. refine (equiv_sigT_corect _ _).
+  apply equiv_inverse. refine (equiv_sigT_coind _ _).
   apply e. clear e.
 
   apply finite_AC'. apply f.
