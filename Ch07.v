@@ -31,26 +31,6 @@ Express $\Sn^{2}$ as a colimit of a diagram consisting entirely of copies of
 $\unit$.
 *)
 
-(** %\soln%
-Recall that we can define $\Sn^{2} \defeq \susp\Sn^{1} \defeq \susp\susp\Sn^{0}
-\defeq \susp\susp\susp\bool$.  Then note that $\eqv{\bool}{\unit + \unit}$, and
-that $\susp{A}$ is the pushout of the span $\unit \leftarrow A \to \unit$.  So
-we have a diagram
-%\[\xymatrix{
-  \unit + \unit \ar[r] \ar[d] & \unit \ar[d] & \\
-  \unit \ar[r] & \Sn^{1} \ar[d] \ar[r] & \unit \ar[d] \\
-  & \unit \ar[r] & \Sn^{2}
-}\]%
-where both squares are pushouts.  And, since the coproduct is the colimit
-of the discrete diagram with two items, we can write
-%\[\xymatrix{
-               & \unit \ar[d] & & \\
-  \unit \ar[r] & \bool \ar[r] \ar[d] & \unit \ar[d] & \\
-  & \unit \ar[r] & \Sn^{1} \ar[d] \ar[r] & \unit \ar[d] \\
-  & & \unit \ar[r] & \Sn^{2}
-}\]%
-where now every object that isn't a $\unit$ is a colimit.
-*)
 
 (** %\exer{7.3}{250}% *)
 
