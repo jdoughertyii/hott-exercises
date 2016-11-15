@@ -7,7 +7,7 @@ Require Export HoTT Ch08.
 (** printing ^-1 %\ensuremath{^{-1}}% **)
 (** * Category theory *)
 
-Require Import categories.
+Require Import Categories.
 Local Open Scope morphism_scope.
 Local Open Scope category_scope.
 

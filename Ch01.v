@@ -1800,7 +1800,7 @@ Definition pred (n : nat) : nat :=
 
 Theorem S_inj : forall (n m : nat), S n = S m -> n = m.
 Proof.
-  intros. 
+  intros n m H.
   change n with (pred (S n)). change m with (pred (S m)).
   apply (ap pred). apply H.
 Defined.

@@ -1,5 +1,5 @@
 (* begin hide *)
-Require Export HoTT Ch05 hit.TwoSphere.
+Require Export HoTT Ch05 HIT.TwoSphere.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -259,6 +259,8 @@ Proof.
   intro b; refine ((transport_paths_FFlr _ _) @ _);
   refine ((concat_pp_p _ _ _) @ _); apply moveR_Vp; symmetry;
   refine ((concat_p1 _) @ _);
+  (* [Susp_rec_beta_merid] is called [Susp_comp_merid] in HoTT/master.  This
+     uses the branch [jdoughertyii:spheres_with_S2], PR 782 *)
   refine ((ap (ap _) (Susp_rec_beta_merid b)) @ _);
   refine ((Susp_rec_beta_merid _) @ _);
   refine (_ @ (concat_1p _)^);
@@ -438,7 +440,7 @@ Proof.
                                 & (forall a : G, G (i a) a = G)}
                          _).
   issig (BuildIsGroup G i) (@g_invr G i) (@g_invl G i).
-  refine (equiv_adjointify _ _ _ _); intro z.
+  simple refine (equiv_adjointify _ _ _ _); intro z.
     apply (fun a => fst (z a); fun a => snd (z a)).
     apply (fun a => (z.1 a, z.2 a)).
     destruct z as [g h]. apply path_sigma_uncurried. exists 1. reflexivity.
@@ -809,7 +811,7 @@ Theorem isprod_ismonoidhom {A B : Monoid} (f : A -> B) :
 Proof.
   (* I think this should be a judgemental equality, but it's not *)
   etransitivity {_ : f A = B & forall a a' : A, f (A a a') = B (f a) (f a')}.
-  refine (equiv_adjointify _ _ _ _); intro z.
+  simple refine (equiv_adjointify _ _ _ _); intro z.
     exists (fst z). apply (snd z). apply (z.1, z.2). 
     apply eta_sigma. apply eta_prod.
     
@@ -1005,7 +1007,7 @@ homotopic to the identity function.
 Theorem univ_prop_susp `{Funext} {A B : Type} :
   (Susp A -> B) <~> {bn : B & {bs : B & A -> (bn = bs)}}.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro f. exists (f North). exists (f South). intro a. apply (ap f (merid a)).
   intro w. destruct w as [bn [bs f]]. apply (Susp_rec bn bs f).
 

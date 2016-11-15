@@ -1,6 +1,6 @@
 (* begin hide *)
 Require Export HoTT Ch03.
-Require Import hit.TwoSphere.
+Require Import HIT.TwoSphere.
 (* end hide *)
 (** printing <~> %\ensuremath{\eqvsym}% **)
 (** printing == %\ensuremath{\sim}% **)
@@ -92,12 +92,12 @@ Proof.
   equiv_via ({g : A -> A & {h : g == idmap & {e : g == idmap &
     (h == e) 
   * ((fun y => ap g (e y)) == (fun y => h (g y)))}}}).
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
-  refine (equiv_functor_prod' _ _). 
-  refine (equiv_functor_forall' _ _). apply equiv_idmap. intro b. simpl.
-  refine (equiv_adjointify _ _ _ _). 
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  simple refine (equiv_functor_prod' _ _). 
+  simple refine (equiv_functor_forall' _ _). apply equiv_idmap. intro b. simpl.
+  simple refine (equiv_adjointify _ _ _ _). 
     intro eq. apply ((ap_idmap _)^ @ eq).
     intro eq. apply ((ap_idmap _) @ eq).
     intro eq. hott_simpl.
@@ -106,10 +106,10 @@ Proof.
   
   equiv_via ({g : A -> A & {h : g == idmap & {e : g == idmap &
    (h = e) * ((fun y => ap g (e y)) = (fun y => h (g y)))}}}).
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
-  refine (equiv_functor_prod' _ _). 
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro g. simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro h. simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  simple refine (equiv_functor_prod' _ _). 
   apply equiv_path_forall.
   apply equiv_path_forall.
 
@@ -141,8 +141,8 @@ Proof.
   equiv_via ({e : (fun x : A => x) == idmap & 
              {p : (fun x => 1) = e 
              & ((fun y : A => ap idmap (e y)) = (fun y : A => 1))}}).
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e.
-  refine (equiv_adjointify _ _ _ _); simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e.
+  simple refine (equiv_adjointify _ _ _ _); simpl.
   intro p. apply (fst p; snd p).
   intro p. split. apply p.1. apply p.2.
   intro p. simpl. apply eta_sigma.
@@ -154,8 +154,8 @@ Proof.
 
   equiv_via ({h : {e : (fun x:A => x) == idmap & (fun x : A => 1) = e} 
                     & (fun y : A => h.1 y) = (fun y : A => 1)}).
-  refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
-  refine (equiv_adjointify _ _ _ _); simpl.
+  simple refine (equiv_functor_sigma' _ _). apply equiv_idmap. intro e. simpl.
+  simple refine (equiv_adjointify _ _ _ _); simpl.
   intro eq. apply path_forall; intro a. refine (_ @ (apD10 eq a)).
     apply (ap_idmap _)^.
   intro eq. apply path_forall; intro a. refine ((ap_idmap _) @ _).
@@ -170,9 +170,9 @@ Proof.
     reflexivity.
 
   equiv_via ((fun y : A => (center {e : (fun x:A => x) == idmap & (fun x : A => 1) = e}).1 y) = (fun y : A => 1)).
-  refine (equiv_sigma_contr_base _ _ _).
+  simple refine (equiv_sigma_contr_base _ _ _).
 
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   - intro eq. intro x. refine (_ @ (apD10 eq x)).
     apply (apD10 (center {e: (fun x:A => x) == idmap & (fun x:A => 1) = e}).2 x).
   - intro eq. apply path_forall. intro y.
@@ -207,7 +207,7 @@ Defined.
 
 Lemma Book_6_4_2 `{Univalence} : {h : forall (x : S1), x = x & h <> (fun x => 1)}.
 Proof.
-  refine (S1_ind _ loop _; _).
+  simple refine (S1_ind _ loop _; _).
   - refine ((transport_paths_lr _ _) @ _).
     refine ((ap (fun w => w @ _) (concat_Vp _)) @ _).
     refine (concat_1p _).
@@ -218,13 +218,13 @@ Defined.
 Definition not_all_1type `{U : Univalence} : ~ (forall A, IsTrunc 1 A).
 Proof.
   intro oops. apply Book_6_4_2.2.
-  refine (equiv_hprop_allpath _ _ _ _).
-  refine (trunc_equiv (@paths (S1 -> S1) idmap idmap) _).
+  simple refine (equiv_hprop_allpath _ _ _ _).
+  simple refine (trunc_equiv (@paths (S1 -> S1) idmap idmap) _).
   - apply apD10.
-  - refine (trunc_equiv (@equiv_idmap S1 = @equiv_idmap S1) 
+  - simple refine (trunc_equiv (@equiv_idmap S1 = @equiv_idmap S1) 
                         (@path_equiv _ _ _ 1%equiv 1%equiv)^-1).
-    apply hprop_allpath. refine (@set_path2 (S1 <~> S1) _ _ _).
-    refine (trunc_equiv (S1 = S1) _).
+    apply hprop_allpath. simple refine (@set_path2 (S1 <~> S1) _ _ _).
+    simple refine (trunc_equiv (S1 = S1) _).
     + apply equiv_path.
     + apply isequiv_equiv_path.
   - apply isequiv_apD10.
@@ -344,11 +344,11 @@ Proof.
   exists (fun a b => (e a = b)). split. 
   intro a. apply contr_basedpaths.
   intro b. refine (@contr_equiv' {a : A & e^-1 b = a} _ _ _).
-  refine (equiv_functor_sigma' _ _).
+  simple refine (equiv_functor_sigma' _ _).
   apply equiv_idmap. intro a. simpl.
-  refine (equiv_adjointify _ _ _ _).
-  intro eq. refine (_ @ (eisretr e b)). apply (ap e). apply eq^.
-  intro eq. refine (_ @ (eissect e a)). apply (ap e^-1). apply eq^.
+  simple refine (equiv_adjointify _ _ _ _).
+  intro eq. simple refine (_ @ (eisretr e b)). apply (ap e). apply eq^.
+  intro eq. simple refine (_ @ (eissect e a)). apply (ap e^-1). apply eq^.
   intro eq. induction eq. simpl. 
   apply moveR_pM. refine (_ @ (concat_1p _)^). refine ((ap_V _ _) @ _).
   apply inverse2. refine ((ap_pp _ _ _) @ _).
@@ -365,9 +365,9 @@ Defined.
 Theorem isequiv_equiv_to_contr_rel_equiv `{Univalence} (A B : Type) :
   IsEquiv (equiv_to_contr_rel_equiv A B).
 Proof.
-  refine (isequiv_adjointify _ _ _ _).
+  simple refine (isequiv_adjointify _ _ _ _).
   intro R. destruct R as [R [f g]].
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro a. apply (center {b : B & R a b}).1.
   intro b. apply (center {a : A & R a b}).1.
   
@@ -386,7 +386,7 @@ Proof.
   apply path_forall; intro a. apply path_forall; intro b.
   destruct (center {b0 : B & R a b0}) as [b' p]. simpl. 
   apply path_universe_uncurried.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro eq. apply (transport _ eq). apply p.
   intro q. change b with (b; q).1. change b' with (b'; p).1. apply (ap pr1).
   refine (path_contr _ _). apply (f a).
@@ -480,7 +480,7 @@ Theorem Book_4_1_1 `{Funext} (A B : Type) (f : A <~> B) :
 Proof.
   unfold qinv.
   equiv_via ({h : {g : B -> A & (f o g == idmap)} & (h.1 o f == idmap)}).
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro w. exists (w.1; fst w.2). apply (snd w.2).
   intro w. exists w.1.1. split. apply w.1.2. apply w.2.
   intro w. destruct w as [[g h] e]. reflexivity.
@@ -508,7 +508,7 @@ Proof.
   refine (equiv_sigma_contr_base _ _ _).
   simpl. clear H'.
 
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro h. apply path_forall in h. intro x. refine ((eissect f _)^ @ _).
   apply (ap10 h x).
   intro h. intro x. refine ((eissect f _) @ _). apply (h x).
@@ -661,7 +661,7 @@ Proof.
   equiv_via (g (center {b' : B & f a = b'}).1 = g b).
   refine (equiv_sigma_contr_base _ _ _). simpl.
 
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   - intro eq. apply eq.
   - intro eq. apply eq.
   - intro eq. reflexivity.
@@ -930,7 +930,7 @@ Proof.
   assert (Brck (a = x)) as p by auto. 
   assert (Brck (a = y)) as r by auto. 
   strip_truncations.
-  refine (@trunc_equiv (a = a) _ _ _ _ _).
+  simple refine (@trunc_equiv (a = a) _ _ _ _ _).
   intros s. apply (p^ @ s @ r).
   apply isequiv_concat_lr.
   set (B := fun x => {r : x = x & forall s : a = x, (r = s^ @ q @ s)}).

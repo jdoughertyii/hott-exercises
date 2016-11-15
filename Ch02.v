@@ -642,33 +642,30 @@ which, assuming function extensionality, is inhabited.  So $(g,
 Module Ex2_9.
 
 Theorem equiv_sum_distributive `{Funext} (A B X : Type)
-  : (A + B -> X) <~> (A -> X) * (B -> X).
+: (A + B -> X) <~> (A -> X) * (B -> X).
 Proof.
-  refine (equiv_adjointify _ _ _ _).
 
-  (* forward *)
-  intro f. split. 
-    intro a. exact (f (inl a)).
-    intro b. exact (f (inr b)).
-  
-  (* back *)
-  intro f. intro z. destruct f as [f g]. destruct z as [a | b]. 
-  exact (f a). exact (g b).
+  simple refine (equiv_adjointify _ _ _ _).
+  - intro f. split.
+    + intro a. apply (f (inl a)).
+    + intro b. apply (f (inr b)).
+      
+  - intros [f g] [a | b].
+    + apply (f a).
+    + apply (g b).
 
-  (* section *)
-  intro f. reflexivity.
+  - intro f. reflexivity.
   
-  (* retract *)
-  intro f. apply path_forall; intro x. destruct x as [a | b]; reflexivity.
+  - intro f. apply path_arrow. intros [a | b]; reflexivity.
 Defined.
-  
+
 End Ex2_9.
 
 
 Theorem equiv_forall_distributive `{Funext} (A B : Type) (C : A + B -> Type)
   : (forall p, C p) <~> (forall a, C (inl a)) * (forall b, C (inr b)).
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   
   (* forward *)
   intro f. split. 
@@ -733,7 +730,7 @@ Module Ex2_10.
 Theorem equiv_sigma_assoc (A : Type) (P : A -> Type) (Q : {a : A & P a} -> Type)
   : {a : A & {p : P a & Q (a; p)}} <~> {x : _ & Q x}.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   
   (* forward *)
   intro w. destruct w as [a [p q]]. apply ((a; p); q).
@@ -881,7 +878,7 @@ Lemma pullback_uprop `{Funext}
   : (X -> (Pullback f g)) <~> Pullback (fun h : X -> A => f o h) 
                                        (fun h : X -> B => g o h).
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   
   (* forward *)
   intro h. exists (fun x => pr1 (h x)). exists (fun x => pr1 (pr2 (h x))).
@@ -1004,7 +1001,7 @@ also straightforward to construct an explicit equivalence.
 
 Lemma equiv_const_sigma_prod (A B : Type) : {a : A & B} <~> A * B.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro w. apply (w.1, w.2).
   intro w. apply (fst w; snd w).
   intro w. apply eta_prod.
@@ -1014,7 +1011,7 @@ Defined.
 Lemma equiv_sigma_comm (A B : Type) (P : A -> B -> Type)
   : {a : A & {b : B & P a b}} <~> {b : B & {a : A & P a b}}.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro w. apply (w.2.1; (w.1; w.2.2)).
   intro w. apply (w.2.1; (w.1; w.2.2)).
   intro w. simpl. apply eta_sigma.
@@ -1025,7 +1022,7 @@ Defined.
 Lemma equiv_sigma_contr_base (A : Type) (P : A -> Type) (HA : Contr A)
   : {a : A & P a} <~> P (center A).
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro w. apply (transport _ (contr w.1)^). apply w.2.
   intro p. apply (center A; p).
 
@@ -1063,13 +1060,13 @@ Proof.
 
   equiv_via {c : Pullback (fun m : X -> D => h o m) 
                           (fun m : X -> E => k o m) & f o j = c.1}.
-  refine (equiv_functor_sigma' _ _). 
+  simple refine (equiv_functor_sigma' _ _). 
   apply (BuildEquiv _ _ xc_to_plbk He). intro l.
   apply equiv_idmap.
 
   equiv_via {c : {c : X -> E & {b : X -> D & h o b = k o c}} & f o j = c.2.1}.
-  refine (equiv_functor_sigma' _ _).
-  refine (equiv_sigma_comm _ _ _). intro c. apply equiv_idmap.
+  simple refine (equiv_functor_sigma' _ _).
+  simple refine (equiv_sigma_comm _ _ _). intro c. apply equiv_idmap.
 
   equiv_via {c : X -> E & {l : {b : X -> D & h o b = k o c} & f o j = l.1}}.
   apply equiv_inverse. refine (equiv_sigma_assoc _ _).
@@ -1093,7 +1090,7 @@ Proof.
   equiv_via (h o (center {n : X -> D & f o j = n}).1 = k o m).
   refine (equiv_sigma_contr_base _ _ _).
 
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro eq. refine (_ @ eq). apply (ap (compose h)).
   apply (center {n : X -> D & f o j = n}).2.
   intro eq. refine (_ @ eq). apply (ap (compose h)).
@@ -1189,7 +1186,7 @@ Defined.
 
 Theorem equiv_bool_equiv_bool `{Funext} : (Bool <~> Bool) <~> Bool.
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   - intro f. apply (f false).
   - intro b. destruct b.
     (* Case : b true; send to negation *)
@@ -1452,7 +1449,7 @@ Lemma Theorem477 (A : Type) (P Q : A -> Type) (f : forall x:A, P x -> Q x) :
   IsEquiv (total f) -> forall x:A, IsEquiv (f x).
 Proof.
   intros e a.
-  refine (isequiv_adjointify _ _ _ _).
+  simple refine (isequiv_adjointify _ _ _ _).
 
   (* quasi-inverse *)
   destruct e. intro q.

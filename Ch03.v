@@ -889,9 +889,9 @@ Definition nat_encode (n m : nat) (p : n = m) : (nat_code n m)
 
 Definition nat_decode : forall (n m : nat), (nat_code n m) -> (n = m).
 Proof.
-  induction n, m; intro.
+  induction n, m; intro H.
   reflexivity. contradiction. contradiction.
-  apply (ap S). apply IHn. apply X.
+  apply (ap S). apply IHn. apply H.
 Defined.
 
 Theorem equiv_path_nat : forall n m, (nat_code n m) <~> (n = m).
@@ -975,7 +975,7 @@ Proof.
   right. intro H. apply nat_encode in H. contradiction.
   destruct (IHn m). 
     left. apply (ap S p).
-    right. intro H. apply S_inj in H. contradiction.
+    right. intro H. apply S_inj in H. apply n0. apply H.
 Defined.
 
 Lemma hset_nat : IsHSet nat.
@@ -1196,7 +1196,7 @@ Defined.
 
 Lemma lt_bound_down (n m : nat) : n < S m -> (n <> m) -> n < m.
 Proof.
-  intros. destruct H as [k p].
+  intros H X. destruct H as [k p].
   exists (pred k). refine ((plus_n_Sm _ _)^ @ _).
   refine ((plus_n_Sm _ _) @ _). apply S_inj. refine (_ @ p).
   refine ((plus_n_Sm _ _) @ _). f_ap. apply (ap S). apply Spred.
@@ -1207,7 +1207,7 @@ Defined.
 
 Lemma lt_bound_up (n m : nat) : n < m -> (S n <> m) -> S n < m.
 Proof.
-  intros.
+  intros H X.
   destruct H as [k p]. exists (pred k). refine (_ @ p).
   refine ((plus_n_Sm _ _) @ _). f_ap. f_ap. apply Spred. intro H.
   apply X. refine (_ @ p). refine ((plus_1_r _) @ _). f_ap. f_ap. apply H^.
@@ -1338,7 +1338,7 @@ Defined.
 Lemma bmin_correct_self_P (n : nat) : bmin n = n -> P n.
 Proof.
   induction n.
-  intros. simpl in H. 
+  intros H. simpl in H. 
   destruct (DP O). 
     apply p. 
     apply nat_encode in H. contradiction.
@@ -1618,7 +1618,7 @@ Module Ex20.
 Theorem equiv_sigma_contr_base (A : Type) (P : A -> Type) (HA : Contr A) : 
   {x : A & P x} <~> P (center A).
 Proof.
-  refine (equiv_adjointify _ _ _ _).
+  simple refine (equiv_adjointify _ _ _ _).
   intro w. apply (transport _ (contr w.1)^). apply w.2.
   intro p. apply (center A; p).
 
@@ -1825,7 +1825,7 @@ Defined.
 
 Theorem isequiv_cardO : IsEquiv cardO.
 Proof.
-  refine (isequiv_adjointify _ _ _ _).
+  simple refine (isequiv_adjointify _ _ _ _).
   apply Empty_rect.
 
   (* Section *)
@@ -1882,7 +1882,7 @@ Defined.
 Theorem isequiv_cardF : forall n, IsEquiv (@cardF n).
 Proof.
   intro n.
-  refine (isequiv_adjointify _ _ _ _).
+  simple refine (isequiv_adjointify _ _ _ _).
 
   (* inverse *)
   intro H. destruct H as [w | t]. destruct w as [m [k p]].
@@ -1953,7 +1953,7 @@ Local Definition A' := A o (@equiv_inv _ _ cardF (isequiv_cardF n)).
 Local Definition P' : forall m, A' m -> Type.
 Proof.
   intros m a.
-  refine (P _ _).
+  simple refine (P _ _).
   apply (@equiv_inv _ _ cardF (isequiv_cardF n)).
   apply m. apply a.
 Defined.
@@ -1968,11 +1968,11 @@ Theorem domain_trans `{Funext} :
                                 P (n; (O; (plus_1_r _)^)) a}).
 Proof.
   equiv_via (forall z, Brck {a : A' z & P' z a}).
-  refine (equiv_functor_forall' _ _).
+  simple refine (equiv_functor_forall' _ _).
   apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro z.
   apply brck_equiv.
-  refine (equiv_functor_sigma' _ _).
+  simple refine (equiv_functor_sigma' _ _).
   unfold A'. apply equiv_idmap. 
   intro a. unfold P'. simpl. apply equiv_idmap.
   
@@ -1982,7 +1982,7 @@ Proof.
     (forall z, Brck {a : A' (inr z) & P' (inr z) a})
   ).
   apply equiv_inverse. 
-  refine (equiv_sum_ind _).
+  simple refine (equiv_sum_ind _).
   
   apply equiv_functor_prod'; apply equiv_idmap.
 Defined.
@@ -2000,11 +2000,11 @@ Theorem codomain_trans `{Funext} :
 Proof.
   equiv_via (Brck {g : forall z, A' z & forall z, P' z (g z)}).
   apply brck_equiv.
-  refine (equiv_functor_sigma' _ _).
-  refine (equiv_functor_forall' _ _).
+  simple refine (equiv_functor_sigma' _ _).
+  simple refine (equiv_functor_forall' _ _).
   apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro z. apply equiv_idmap.
-  intro g. refine (equiv_functor_forall' _ _).
+  intro g. simple refine (equiv_functor_forall' _ _).
   apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro z. apply equiv_idmap.
   
@@ -2106,7 +2106,7 @@ Theorem domain_trans' `{Funext} :
   * (forall z : Unit, Brck (Y (n; (O; (plus_1_r _)^)))).
 Proof.
   equiv_via (forall z, Brck (Y' z)).
-  refine (equiv_functor_forall' _ _).
+  simple refine (equiv_functor_forall' _ _).
   apply equiv_inverse. apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro b. apply equiv_idmap.
 
@@ -2132,7 +2132,7 @@ Proof.
   equiv_via (Brck (forall z, Y' z)).
   apply brck_equiv. refine (equiv_sum_ind _).
 
-  apply brck_equiv. refine (equiv_functor_forall' _ _).
+  apply brck_equiv. simple refine (equiv_functor_forall' _ _).
   apply (BuildEquiv _ _ cardF (isequiv_cardF n)).
   intro b. unfold Y'. apply equiv_path.
   f_ap. apply eissect.
@@ -2174,7 +2174,7 @@ Proof.
   )).
   equiv_via (Brck (forall m, {y : Y m & (fun z a => Unit) m y})).
   apply brck_equiv. refine (equiv_sigT_coind _ _).
-  apply brck_equiv. refine (equiv_functor_forall' _ _). apply equiv_idmap.
+  apply brck_equiv. simple refine (equiv_functor_forall' _ _). apply equiv_idmap.
   intro b. apply equiv_sigma_contr. intro y. apply contr_unit.
   apply e. clear e.
   
